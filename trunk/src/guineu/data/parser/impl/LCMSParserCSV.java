@@ -130,7 +130,11 @@ public class LCMSParserCSV implements Parser {
                     try {
                         lipid.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
-                        lipid.setPeak(header[i], 0.0);
+						if(sdata[i].matches("DETECTED")){
+							lipid.setPeak(header[i], 1.0);
+						}else{
+							lipid.setPeak(header[i], 0.0);
+						}
                     }
                 }
                 if (lipid.getName() == null || lipid.getName().isEmpty()) {

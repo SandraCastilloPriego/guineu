@@ -16,32 +16,32 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.modules.file.saveDatasetDB;
+package guineu.main;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
-
-
+import javax.swing.JOptionPane;
 
 /**
- *
- * @author scsandra
+ * This main class is executed when the user simply double-clicks on Guineu JAR
+ * file. Only displays error message.
  */
-public class SaveFileParameters extends SimpleParameterSet{
-   
-    public static final Parameter author = new SimpleParameter(
-            ParameterType.STRING, "Author: ",
-            "Author of the dataset", null, "Author", null);
+public class DummyMain {
 
-	public static final Parameter name = new SimpleParameter(
-            ParameterType.STRING, "Dataset name: ",
-            "Name of the dataset", null, "Name", null);
-    
-    
-    public SaveFileParameters() {
-        super(new Parameter[] { name, author });
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        String msg = "Please run Guineu using one of the provided startGuineu scripts.";
+
+        System.out.println(msg);
+
+        try {
+            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
+
+        } catch (Exception e) {
+            // do nothing
+        }
+
     }
 
 }

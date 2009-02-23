@@ -20,7 +20,7 @@ package guineu.modules.file.openMassLynxFiles;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleDataset_concatenate;
 import guineu.desktop.Desktop;
-import guineu.modules.file.openOtherFiles.DatasetDataModel_concatenate;
+import guineu.modules.file.openOtherFiles.OtherDataModel;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -87,7 +87,7 @@ public class OpenFileTask implements Task {
                     progress = parser.getProgress();
                     desktop.AddNewFile(dataset);
                     //creates internal frame with the table
-                    DataTableModel model = new DatasetDataModel_concatenate(dataset);
+                    DataTableModel model = new OtherDataModel(dataset);
                     DataTable table = new PushableTable(model);
                     table.formatNumbers(dataset.getType());
                     DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));

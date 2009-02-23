@@ -15,14 +15,12 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 package guineu.data;
 
 import guineu.data.impl.DatasetType;
 
-/**
- *
- * @author SCSANDRA
- */
+
 public interface Dataset {
 
     public String getDatasetName();
