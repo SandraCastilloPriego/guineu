@@ -71,16 +71,6 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        /*if(e.getSource() == dialog.btAddDataset){
-        try{               
-        Datasets = dialog.getSelectedDataset(); 
-        System.out.println(Datasets[2]);
-        runModule(null);
-        }catch (Exception ee){
-        ee.printStackTrace();
-        }
-        }*/
-
         ExitCode exitCode = setupParameters();
         if (exitCode != ExitCode.OK) {
             return;
@@ -92,10 +82,8 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
     }
 
     public ExitCode setupParameters() {
-        dialog = new DatasetOpenDBDialog();
-        //dialog.btAddDataset.addActionListener(this);      
+        dialog = new DatasetOpenDBDialog();    
         dialog.setVisible(true);
-        //Datasets = dialog.getSelectedDataset(); 
         return dialog.getExitCode();
     }
 

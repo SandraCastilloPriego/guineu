@@ -86,7 +86,7 @@ public class OpenFile_concatenateTask implements Task {
                     progress = parser.getProgress();
                     desktop.AddNewFile(dataset);
                     //creates internal frame with the table
-                    DataTableModel model = new DatasetDataModel_concatenate(dataset);
+                    DataTableModel model = new OtherDataModel(dataset);
                     DataTable table = new PushableTable(model);
                     table.formatNumbers(dataset.getType());
                     DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));

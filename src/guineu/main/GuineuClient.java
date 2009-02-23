@@ -41,9 +41,7 @@ public class GuineuClient extends GuineuCore implements Runnable {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Vector<GuineuModule> moduleSet;
 
-    //private ProjectManager projectManager;
-
-    // make GuineuClient a singleton
+	// make GuineuClient a singleton
     private static GuineuClient client = new GuineuClient();
 
     private GuineuClient() {
@@ -91,15 +89,6 @@ public class GuineuClient extends GuineuCore implements Runnable {
             logger.info("Guineu starting with " + numberOfNodes + " computation nodes");
 
             logger.finer("Loading core classes");
-
-
-
-            /*projectManager = new ProjectManagerImpl(ProjectType.xstream);
-            projectManager.createTemporalProject();
-            while (projectManager.getStatus() == ProjectStatus.Processing){
-            // wait;
-            Thread.sleep(500);
-            }*/
 
 
             // create instances of core modules
@@ -198,11 +187,7 @@ public class GuineuClient extends GuineuCore implements Runnable {
     private class ShutDownHook extends Thread {
 
         public void start() {
-            saveConfiguration(CONFIG_FILE);
-        //GuineuProject project = GuineuCore.getCurrentProject();
-        //if (project.getIsTemporal() == true) {
-        //	projectManager.removeProjectDir(project.getLocation());
-        //}
+            saveConfiguration(CONFIG_FILE);        
         }
     }
 }

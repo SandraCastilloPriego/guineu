@@ -49,7 +49,7 @@ public class DBask implements DataBase {
             return con;
         } catch (SQLException exception) {
             System.out.println("ERROR : " + exception);
-            exception.printStackTrace(System.out);
+            exception.printStackTrace();
             return null;
         }
     }
@@ -496,7 +496,7 @@ public class DBask implements DataBase {
             while (r.next()) {
                 try {                   
                     if (experimentIDs.containsKey(new Integer(r.getInt("SAMPLE_ID")))) {
-                        System.out.println(new Double(r.getFloat("CONCENTRATION")));
+                       // System.out.println(new Double(r.getFloat("CONCENTRATION")));
                         peakListRow.setPeak(experimentIDs.get(new Integer(r.getInt("SAMPLE_ID"))), new Double(r.getFloat("CONCENTRATION")));
                     }
                 } catch (Exception ee) {

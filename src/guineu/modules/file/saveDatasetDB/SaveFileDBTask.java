@@ -22,13 +22,14 @@ public class SaveFileDBTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private SaveFileParameters parameters;
-    private String author;
+    private String author, datasetName;
     private InDataBase db;
 
     public SaveFileDBTask(Dataset dataset, SaveFileParameters parameters) {
         this.dataset = (SimpleDataset) dataset;
         this.parameters = parameters;
         this.author = (String) parameters.getParameterValue(SaveFileParameters.author);
+		this.datasetName = (String) parameters.getParameterValue(SaveFileParameters.name);
         db = new InOracle();
     }
 
@@ -61,19 +62,18 @@ public class SaveFileDBTask implements Task {
             return;
         }
     }
-
-    //cambiar type...
-    public void saveFile() {
+   
+    public synchronized void saveFile() {
         try {
             status = TaskStatus.PROCESSING;
             Connection connection = db.connect();
             String type;
             if (dataset.getType() == DatasetType.LCMS) {
-                type = "LCMS";
-                db.lcms(connection, dataset, type, author);
+                type = "LC-MS";
+                db.lcms(connection, dataset, type, author, datasetName);
             } else if (dataset.getType() == DatasetType.GCGCTOF) {
-                type = "GCGC-Tof";
-                db.gcgctof(connection, dataset, type, author);
+                type = "GCxGC-MS";
+                db.gcgctof(connection, dataset, type, author,  datasetName);
             }
             status = TaskStatus.FINISHED;
         } catch (Exception e) {

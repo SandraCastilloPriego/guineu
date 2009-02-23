@@ -69,8 +69,8 @@ public class DatasetOpenDBDialog extends JDialog implements ActionListener {
     public void prepareFindPanel() {
         findPanel.jButtonFind.addActionListener(this);
         findPanel.jButtonReset.addActionListener(this);
-        findPanel.jComboBoxType.addItem("LCMS");
-        findPanel.jComboBoxType.addItem("GCGC-Tof");
+        findPanel.jComboBoxType.addItem("LC-MS");
+        findPanel.jComboBoxType.addItem("GCxGC-MS");
     }
 
     /**

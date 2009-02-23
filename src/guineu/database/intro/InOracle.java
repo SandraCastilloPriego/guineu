@@ -28,7 +28,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
-import oracle.jdbc.*;
 import oracle.jdbc.pool.OracleDataSource;
 
 /**
@@ -70,9 +69,9 @@ public class InOracle implements InDataBase {
      * @param author
      * @throws java.io.IOException
      */
-    public void lcms(Connection conn, SimpleDataset LipidMol, String type, String author) throws IOException {
+    public void lcms(Connection conn, SimpleDataset LipidMol, String type, String author, String DatasetName) throws IOException {
         WriteDataBase writer = new WriteDataBase();
-        String excel_name = LipidMol.getDatasetName();
+        String excel_name = DatasetName;
         if (excel_name == null) {
             excel_name = "unknown";
         }
@@ -96,12 +95,12 @@ public class InOracle implements InDataBase {
      * @param type
      * @param author
      */
-    public void gcgctof(Connection conn, SimpleDataset mol, String type, String author) throws IOException {
+    public void gcgctof(Connection conn, SimpleDataset mol, String type, String author, String DatasetName) throws IOException {
         try {
             WriteDataBase writer = new WriteDataBase();
             Statement st = null;
             //Intro table DATASET
-            String excel_name = mol.getDatasetName();
+            String excel_name = DatasetName;
             //Intro table DATASET_EXPERIMENTS
            // int sampleID = writer.tableEXPERIMENT(conn, mol);
             progress = 0.15f;

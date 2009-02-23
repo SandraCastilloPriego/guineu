@@ -30,7 +30,7 @@ import javax.swing.table.AbstractTableModel;
 
 import java.util.*;
 
-public class DatasetDataModel_concatenate extends AbstractTableModel implements DataTableModel {
+public class OtherDataModel extends AbstractTableModel implements DataTableModel {
 
     /**
      * All data in the main windows. It can be LCMS or GCGC-Tof data.
@@ -46,7 +46,7 @@ public class DatasetDataModel_concatenate extends AbstractTableModel implements 
     protected SortingDirection isSortAsc = SortingDirection.Ascending;
     protected int sortCol = 0;
 
-    public DatasetDataModel_concatenate(Dataset dataset) {
+    public OtherDataModel(Dataset dataset) {
         this.dataset = (SimpleDataset_concatenate) dataset;        
             //LCMS files           
             //columns_mol.add("Lipid Name");           
