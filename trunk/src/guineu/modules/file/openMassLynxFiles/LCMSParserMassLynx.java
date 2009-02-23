@@ -1,0 +1,169 @@
+/*
+Copyright 2007-2008 VTT Biotechnology
+This file is part of GUINEU.
+ */
+package guineu.modules.file.openMassLynxFiles;
+
+import guineu.modules.file.openOtherFiles.*;
+import guineu.data.parser.impl.*;
+import guineu.data.Dataset;
+import guineu.data.PeakListRow_concatenate;
+import guineu.data.impl.DatasetType;
+import guineu.data.impl.SimpleDataset_concatenate;
+import guineu.data.impl.SimplePeakListRowConcatenate;
+import guineu.data.parser.Parser;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ *
+ * @author scsandra
+ */
+public class LCMSParserMassLynx implements Parser {
+
+	private String datasetPath;
+	private SimpleDataset_concatenate dataset;
+	private float progress;
+	Lipidclass LipidClassLib;
+
+	public LCMSParserMassLynx(String datasetPath) {
+		progress = 0.1f;
+		this.datasetPath = datasetPath;
+		this.dataset = new SimpleDataset_concatenate(this.getDatasetName());
+		this.dataset.setType(DatasetType.OTHER);
+		progress = 0.3f;
+		this.dataset.setType(null);
+		this.LipidClassLib = new Lipidclass();
+		progress = 0.5f;
+		fillData();
+		progress = 1.0f;
+	}
+
+	public String getDatasetName() {
+		Pattern pat = Pattern.compile("\\\\");
+		Matcher matcher = pat.matcher(datasetPath);
+		int index = 0;
+		while (matcher.find()) {
+			index = matcher.start();
+		}
+		String n = datasetPath.substring(index + 1, datasetPath.length() - 4);
+		return n;
+	}
+
+	public float getProgress() {
+		return progress;
+	}
+
+	public void fillData() {
+		try {
+			FileReader fr = new FileReader(new File(datasetPath));
+			BufferedReader br = new BufferedReader(fr);
+			String line = br.readLine();
+			String head = null;
+			String[] header = null;
+			String compound = "";
+			PeakListRow_concatenate lipid = null;
+			int contRow = 0;
+			int contLipids = 0;
+			while ((line = (br.readLine())) != null) {
+				if (!line.isEmpty()) {
+					if (line.matches("^Compound.*")) {
+						compound = line;
+						compound = compound.substring(compound.indexOf(":") + 1);
+						br.readLine();
+						head = br.readLine();
+						header = head.split("\t");
+						contRow = 0;
+						contLipids++;
+
+						if (contLipids == 1) {
+							setExperimentsName(header, compound, true);
+						} else {
+							setExperimentsName(header, compound, false);
+						}
+						continue;
+					}
+					if (compound != null) {
+						if (contLipids == 1) {
+							lipid = new SimplePeakListRowConcatenate();
+						} else if (contLipids > 1) {
+							lipid = (PeakListRow_concatenate) this.dataset.getRow(contRow);
+						}
+						if (head != null && !head.isEmpty()) {
+							getData(lipid, line, header, compound);
+						}
+						if (contLipids == 1) {
+							this.dataset.AddRow(lipid);
+						}
+
+					}
+					contRow++;
+				}
+
+			}
+
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getData(PeakListRow_concatenate lipid, String line, String[] header, String compound) {
+		try {
+			//PeakListRow_concatenate lipid = new SimplePeakListRowConcatenate();
+			String[] sdata = line.split("\t");
+
+			for (int i = 0; i < sdata.length; i++) {
+				try {
+					if (!header[i].isEmpty()) {
+						String name = compound + " - " + header[i];
+						if (header[i].matches("Name")) {
+							name = "Name";
+						} else if (header[i].matches("#")) {
+							name = "#";
+						}
+						lipid.setPeak(name, sdata[i].toString());
+					}
+				} catch (Exception e) {
+				//lipid.setPeak(header[i], " ");
+				}
+
+			}
+
+		//this.dataset.AddRow(lipid);
+
+		} catch (Exception exception) {
+		}
+	}
+
+	public Dataset getDataset() {
+		return this.dataset;
+	}
+
+	private void setExperimentsName(String[] header, String compound, boolean putName) {
+		try {
+
+			for (int i = 0; i < header.length; i++) {
+				if (putName) {
+					String name = compound + " - " + header[i];
+					if (header[i].matches("Name")) {
+						name = "Name";
+					} else if (header[i].matches("#")) {
+						name = "#";
+					}if (header[i] != null && !header[i].isEmpty()){
+						this.dataset.AddNameExperiment(name);
+					}
+				} else if (header[i] != null && !header[i].isEmpty() && !header[i].matches("Name") && !header[i].matches("#") ) {
+					this.dataset.AddNameExperiment(compound + " - " + header[i]);
+				}
+			}
+
+
+		} catch (Exception exception) {
+		}
+	}
+}
