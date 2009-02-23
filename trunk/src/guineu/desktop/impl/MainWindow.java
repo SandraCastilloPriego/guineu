@@ -1,6 +1,19 @@
 /*
-Copyright 2007-2008 VTT Biotechnology
-This file is part of GUINEU.
+ * Copyright 2007-2008 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 package guineu.desktop.impl;
@@ -109,9 +122,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         setStatusBarText(text, Color.black);
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#displayMessage(java.lang.String)
-     */
+    
     public void displayMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Message",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -136,9 +147,9 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         parameters = new DesktopParameters();
 
         try {
-            BufferedImage MZmineIcon = ImageIO.read(new File(
+            BufferedImage GuineuIcon = ImageIO.read(new File(
                     "icons/GuineuIcon.png"));
-            setIconImage(MZmineIcon);
+            setIconImage(GuineuIcon);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -188,9 +199,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#getMainFrame()
-     */
+   
     public JFrame getMainFrame() {
         return this;
     }
@@ -199,11 +208,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         return help;
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#addMenuItem(net.sf.mzmine.desktop.Desktop.BatchStepCategory,
-     *      java.lang.String, java.awt.event.ActionListener, java.lang.String,
-     *      int, boolean, boolean)
-     */
+   
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
             String toolTip, int mnemonic, ActionListener listener,
             String actionCommand) {
@@ -211,47 +216,34 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 listener, actionCommand);
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#addMenuSeparator(net.sf.mzmine.desktop.Desktop.BatchStepCategory)
-     */
+    
     public void addMenuSeparator(GuineuMenu parentMenu) {
         menuBar.addMenuSeparator(parentMenu);
 
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#getSelectedFrame()
-     */
+    
     public JInternalFrame getSelectedFrame() {
         return desktopPane.getSelectedFrame();        
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#getInternalFrames()
-     */
+    
     public JInternalFrame[] getInternalFrames() {
         return desktopPane.getAllFrames();
     }
 
-    /**
-     * @see net.sf.mzmine.desktop.Desktop#setStatusBarText(java.lang.String,
-     *      java.awt.Color)
-     */
+   
     public void setStatusBarText(String text, Color textColor) {
         statusBar.setStatusText(text, textColor);
     }
 
    
-    /**
-     * @see net.sf.mzmine.main.MZmineModule#getParameterSet()
-     */
+    
     public DesktopParameters getParameterSet() {
         return parameters;
     }
 
-    /**
-     * @see net.sf.mzmine.main.MZmineModule#setParameters(net.sf.mzmine.data.ParameterSet)
-     */
+   
     public void setParameters(ParameterSet parameterValues) {
         this.parameters = (DesktopParameters) parameterValues;
     }
