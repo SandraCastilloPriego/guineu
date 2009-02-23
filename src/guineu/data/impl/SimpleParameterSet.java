@@ -1,20 +1,19 @@
 /*
- * Copyright 2006-2009 The MZmine 2 Development Team
- * 
- * This file is part of MZmine 2.
- * 
- * MZmine 2 is free software; you can redistribute it and/or modify it under the
+ * Copyright 2007-2008 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
- * MZmine 2 is distributed in the hope that it will be useful, but WITHOUT ANY
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
- * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA 02110-1301 USA
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 package guineu.data.impl;
@@ -69,16 +68,12 @@ public class SimpleParameterSet implements StorableParameterSet {
         multipleSelectionValues = new Hashtable<Parameter, Object[]>();
     }
 
-    /**
-     * @see net.sf.mzmine.data.ParameterSet#getAllParameters()
-     */
+    
     public Parameter[] getParameters() {
         return parameters;
     }
 
-    /**
-     * @see net.sf.mzmine.data.ParameterSet#getParameter(java.lang.String)
-     */
+    
     public Parameter getParameter(String name) {
         for (Parameter p : parameters) {
             if (p.getName().equals(name))
@@ -87,9 +82,7 @@ public class SimpleParameterSet implements StorableParameterSet {
         return null;
     }
 
-    /**
-     * @see net.sf.mzmine.data.ParameterSet#getParameterValue(net.sf.mzmine.data.Parameter)
-     */
+   
     public Object getParameterValue(Parameter parameter) {
         Object value = values.get(parameter);
         if (value == null)
@@ -225,9 +218,7 @@ public class SimpleParameterSet implements StorableParameterSet {
         values.put(parameter, value);
     }
 
-    /**
-     * @see net.sf.mzmine.data.ParameterSet#exportValuesToXML(org.w3c.dom.Element)
-     */
+   
     public void exportValuesToXML(Element element) {
 
         for (Parameter p : parameters) {
@@ -272,9 +263,7 @@ public class SimpleParameterSet implements StorableParameterSet {
 
     }
 
-    /**
-     * @see net.sf.mzmine.data.ParameterSet#importValuesFromXML(org.w3c.dom.Element)
-     */
+    
     public void importValuesFromXML(Element element) {
 
         Iterator paramIter = element.elementIterator(PARAMETER_ELEMENT_NAME);
