@@ -15,22 +15,22 @@
     <module class="guineu.modules.filter.simplelipidname.SimpleLipidNameFilter"/>  
     <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/>  
     <module class="guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilter"> 
-      <parameters> 
-        <parameter name="Multiply by" type="DOUBLE">0.0</parameter>  
-        <parameter name="Divide by" type="DOUBLE">0.0</parameter> 
+      <parameters>
+        <parameter name="Multiply by" type="DOUBLE">0.0</parameter>
+        <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.filter.dataselection.DataSelection"/>  
     <module class="guineu.modules.file.openOtherFiles.filterConcatenate"/>  
     <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
     <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch"> 
-      <parameters> 
-        <parameter name="Database file" type="FILE_NAME">C:\Documents and Settings\SCSANDRA\Desktop\celiac\standars-NORT.csv</parameter>  
-        <parameter name="Field separator" type="STRING">,</parameter>  
-        <parameter name="Field order" type="ORDERED_LIST">ID,m/z,Retention time,Identity,Formula</parameter>  
-        <parameter name="Ignore first line" type="BOOLEAN">true</parameter>  
-        <parameter name="m/z tolerance" type="DOUBLE">0.04</parameter>  
-        <parameter name="Time tolerance" type="DOUBLE">750.0</parameter> 
+      <parameters>
+        <parameter name="Database file" type="FILE_NAME">C:\Documents and Settings\SCSANDRA\Desktop\celiac\standars-NORT.csv</parameter>
+        <parameter name="Field separator" type="STRING">,</parameter>
+        <parameter name="Field order" type="ORDERED_LIST">ID,m/z,Retention time,Identity,Formula</parameter>
+        <parameter name="Ignore first line" type="BOOLEAN">true</parameter>
+        <parameter name="m/z tolerance" type="DOUBLE">0.04</parameter>
+        <parameter name="Time tolerance" type="DOUBLE">750.0</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.identification.identification.Identification"/>  

@@ -96,7 +96,7 @@ public class purgeIdentificationTask implements Task {
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;
-             errorMessage = e.toString();
+            // errorMessage = e.toString();
             return;
         }
     }
@@ -187,7 +187,7 @@ public class purgeIdentificationTask implements Task {
                 Matcher matcher = carbons.matcher(lipid.getName());
                 if (matcher.find()) {
                     double num = Double.valueOf(lipid.getName().substring(matcher.start(), matcher.end()));
-                    if (num < 42) {
+                    if (num < 42 || num > 60) {
                         this.getFirstName(lipid);
                         this.getName(lipid);
                     }
@@ -216,7 +216,7 @@ public class purgeIdentificationTask implements Task {
         }
         }catch(Exception e){
             lipid.setName("unknown");
-            System.out.println("getName ->  " + e.getMessage());
+           // System.out.println("getName ->  " + e.getMessage());
             return;
         }
     }
@@ -228,7 +228,7 @@ public class purgeIdentificationTask implements Task {
             lipidNames = lipid.getAllNames().split(" // ");           
         } catch (Exception e) {
             lipid.setName("unknown");   
-            System.out.println("e ->  " + e.getMessage());
+           // System.out.println("e ->  " + e.getMessage());
         }
         if (lipidNames == null || lipidNames.length < 2) {
             try{
@@ -240,7 +240,7 @@ public class purgeIdentificationTask implements Task {
                 }
             }catch(Exception ee){
                 lipid.setName("unknown");
-                System.out.println("ee ->  " + ee.getMessage());
+               // System.out.println("ee ->  " + ee.getMessage());
             }
         } else {
             if(lipidNames[0].length() > 7){
