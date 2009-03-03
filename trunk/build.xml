@@ -103,16 +103,7 @@
 	  	</manifest>
 	</target>
 	
-	<target name="compile">
-
-		<mkdir dir="${build}" />
-
-		<javac target="1.5" srcdir="${src}" destdir="${build}" debug="on">
-			<classpath refid="cppath" />
-		</javac>
-		
-	</target>       
-        
+	        
 	<target name="jar" depends="compile,manifest">
 		
 		<mkdir dir="${dist}" />
