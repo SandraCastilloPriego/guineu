@@ -106,7 +106,7 @@ public class SimpleDataset_concatenate implements Dataset {
     
     public boolean containRowName(String Name){
         for(PeakListRow_concatenate row : this.getRows()){
-            if(row.getPeak("Name").contains(Name) || Name.contains(row.getPeak("Name"))){
+            if(((String)row.getPeak("Name")).contains(Name) || Name.contains((CharSequence) row.getPeak("Name"))){
                 return true;
             }
         }
@@ -120,7 +120,7 @@ public class SimpleDataset_concatenate implements Dataset {
             newDataset.AddNameExperiment(experimentName);
         }
         for (PeakListRow_concatenate peakListRow : this.PeakList) {
-            newDataset.AddRow(peakListRow.clone());
+            newDataset.AddRow((PeakListRow_concatenate) peakListRow.clone());
         }
         newDataset.setType(this.type);
         return newDataset;

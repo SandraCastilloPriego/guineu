@@ -22,6 +22,7 @@ import guineu.data.PeakListRow_concatenate;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 
 /**
@@ -241,6 +242,10 @@ public class SimplePeakListRowConcatenate implements PeakListRow_concatenate {
     public void setPeak(String name, Double value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	public Object getPeak(int col, Vector<String> sampleNames) {
+		 return this.peaks.get(sampleNames.elementAt(col));
+	}
 
    
 }

@@ -17,6 +17,8 @@
  */
 package guineu.data;
 
+import java.util.Vector;
+
 /**
  *
  * @author SCSANDRA
@@ -42,8 +44,10 @@ public interface PeakListRow {
     public void setPeak(String name, Double value);
 
     public Object getPeak(String ExperimentName);
+
+	public Object getPeak(int col, Vector<String> sampleNames);
     
-    public Object[] getPeaks();
+    public Object[] getPeaks();	
 
     public void removePeaks();
 
