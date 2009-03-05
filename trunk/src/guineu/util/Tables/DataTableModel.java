@@ -34,9 +34,7 @@ public interface DataTableModel extends TableModel {
 
     public void setSortDirection(SortingDirection direction);
 
-    public void setSortCol(int column);
-
-    public Object[][] getData();
+    public void setSortCol(int column);   
 
     public void changeData(int column, int row);
 

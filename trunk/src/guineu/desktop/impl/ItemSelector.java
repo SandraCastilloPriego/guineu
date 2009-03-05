@@ -26,7 +26,6 @@ import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.modules.file.openOtherFiles.OtherDataModel;
-import guineu.modules.file.introExperimentsDB.IntroExperimentDB;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveDatasetFile.SaveFile;
 import guineu.util.GUIUtils;
@@ -42,7 +41,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -59,7 +59,8 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 	public static final String DATA_FILES_LABEL = "Dataset Files";
 	private DragOrderedJList DatasetFiles;
-	private Vector<Dataset> DatasetFilesModel = new Vector<Dataset>();
+	//private Vector<Dataset> DatasetFilesModel = new Vector<Dataset>();
+	private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
@@ -172,7 +173,8 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		for (Dataset file : selectedFiles) {
 			if (file != null) {
-				DatasetFilesModel.removeElement(file);
+				this.DatasetFilesModel.remove(file);
+				//DatasetFilesModel.removeElement(file);
 				DatasetNamesModel.removeElement(file.getDatasetName());
 			}
 		}
@@ -180,7 +182,8 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 	public void removeData(Dataset file) {
 		if (file != null) {
-			DatasetFilesModel.removeElement(file);
+			this.DatasetFilesModel.remove(file);
+			//DatasetFilesModel.removeElement(file);
 			DatasetNamesModel.removeElement(file.getDatasetName());
 		}
 
@@ -266,7 +269,8 @@ public class ItemSelector extends JPanel implements ActionListener,
 				dataset.setDatasetName(dataset.getDatasetName() + "_" + ++copies);
 			}
 		}
-		DatasetFilesModel.addElement(dataset);
+		this.DatasetFilesModel.add(dataset);
+		//DatasetFilesModel.addElement(dataset);
 		DatasetNamesModel.addElement(dataset.getDatasetName());
 		this.DatasetFiles.revalidate();
 		this.DatasetFiles.repaint();

@@ -21,6 +21,7 @@ import guineu.data.PeakListRow;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 /**
  *
@@ -260,4 +261,8 @@ public class SimplePeakListRowGCGC implements PeakListRow {
         }
         return aPeaks;
     }
+
+	public Object getPeak(int col, Vector<String> sampleNames) {
+		 return this.peaks.get(sampleNames.elementAt(col));
+	}
 }

@@ -76,12 +76,7 @@ public class LCMSParserCSV_concatenate implements Parser {
             String line = null;
             String head = br.readLine();
             String[] header;
-            if (head.contains("\t")) {
-                header = head.split("\t");
-            } else {
-                header = head.split(",");
-            }
-
+            header = head.split(",");  
             while ((line = (br.readLine())) != null) {
                 if (!line.isEmpty()) {
                     getData(line, header);
@@ -102,12 +97,12 @@ public class LCMSParserCSV_concatenate implements Parser {
 
             for (int i = 0; i < sdata.length; i++) {
                 try {
-                    if(sdata[i].toString().matches("null")){
-                        sdata[i] = "NA";
+                    if(sdata[i].toString().matches("null") || sdata[i].isEmpty()){
+                        sdata[i] = "NA";						
                     }
-                    lipid.setPeak(header[i], sdata[i].toString());
+					lipid.setPeak(header[i], sdata[i].toString());
                 } catch (Exception e) {
-                    lipid.setPeak(header[i], " ");
+                    lipid.setPeak(header[i], "NA");
                 }
 
             }

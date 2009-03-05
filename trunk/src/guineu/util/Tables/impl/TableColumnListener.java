@@ -36,12 +36,10 @@ import javax.swing.table.TableColumnModel;
  */
 public class TableColumnListener extends MouseAdapter {
         protected JTable table;
-        protected DataTableModel model;
-        protected Object[][] rows;
+        protected DataTableModel model;        
         public TableColumnListener(JTable table, DataTableModel model) {
             this.table = table;
-            this.model = model;
-            rows = model.getData();
+            this.model = model;          
         }
 
         @Override
@@ -70,17 +68,17 @@ public class TableColumnListener extends MouseAdapter {
             }
             table.getTableHeader().repaint();
 
-            Vector<Object> vt = new Vector<Object>();
+            /*Vector<Object> vt = new Vector<Object>();
             Vector<Object[]> realvt = new Vector<Object[]>();                
             for(int i = 0; i < table.getRowCount(); i++){
-                vt.addElement(rows[i][model.getSortCol()]);
+               // vt.addElement(rows[i][model.getSortCol()]);
                 Object [] rs = new Object[table.getColumnCount()];
-                for(int j = 0; j < table.getColumnCount(); j++){
+               /* for(int j = 0; j < table.getColumnCount(); j++){
                     rs[j] = rows[i][j];
-                }	    	  
-                realvt.addElement(rs);
+                }	*/
+              //  realvt.addElement(rs);
 
-
+/*
             }
             
             Collections.sort(vt,new TableComparator(model.getSortDirection()));
@@ -89,7 +87,7 @@ public class TableColumnListener extends MouseAdapter {
             for(int i = 0; i < table.getRowCount(); i++){	    	  
                 for(int j = 0; j < realvt.size(); j++){
                     if(((Object[])realvt.elementAt(j))[model.getSortCol()] != null && (realvt.elementAt(j))[model.getSortCol()].equals(vt.elementAt(i))){
-                        rows[i] = (Object[])realvt.elementAt(j);
+                       // rows[i] = (Object[])realvt.elementAt(j);
                         realvt.removeElementAt(j);                            
                         break;
                     }
@@ -98,7 +96,7 @@ public class TableColumnListener extends MouseAdapter {
 
             table.tableChanged(new TableModelEvent(model));
             table.repaint();
-           
+           */
         }
     }
 	
