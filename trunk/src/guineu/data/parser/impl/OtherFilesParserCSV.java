@@ -19,7 +19,7 @@ package guineu.data.parser.impl;
 
 import guineu.data.parser.impl.*;
 import guineu.data.Dataset;
-import guineu.data.PeakListRow_concatenate;
+import guineu.data.PeakListRowOther;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDatasetOther;
 import guineu.data.impl.SimplePeakListRowOther;
@@ -92,7 +92,7 @@ public class OtherFilesParserCSV implements Parser {
 
     private void getData(String line, String[] header) {
         try {
-            PeakListRow_concatenate lipid = new SimplePeakListRowOther();
+            PeakListRowOther lipid = new SimplePeakListRowOther();
             String[] sdata = line.split(",");
 
             for (int i = 0; i < sdata.length; i++) {

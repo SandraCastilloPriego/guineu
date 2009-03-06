@@ -20,7 +20,7 @@ package guineu.data.impl;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.PeakListRow_concatenate;
+import guineu.data.PeakListRowOther;
 import java.util.Vector;
 
 /**
@@ -30,13 +30,13 @@ import java.util.Vector;
 public class SimpleDatasetOther implements Dataset {
 
     String datasetName;
-    Vector<PeakListRow_concatenate> PeakList;
+    Vector<PeakListRowOther> PeakList;
     Vector<String> nameExperiments;
     DatasetType type;
 
     public SimpleDatasetOther(String datasetName) {
         this.datasetName = datasetName;
-        this.PeakList = new Vector<PeakListRow_concatenate>();
+        this.PeakList = new Vector<PeakListRowOther>();
         this.nameExperiments = new Vector<String>();
         type = DatasetType.LCMS;
     }
@@ -49,7 +49,7 @@ public class SimpleDatasetOther implements Dataset {
         this.datasetName = datasetName;
     }
 
-    public void AddRow(PeakListRow_concatenate peakListRow) {
+    public void AddRow(PeakListRowOther peakListRow) {
         this.PeakList.addElement(peakListRow);
     }
 
@@ -61,7 +61,7 @@ public class SimpleDatasetOther implements Dataset {
         return (PeakListRow) this.PeakList.elementAt(i);
     }
 
-    public Vector<PeakListRow_concatenate> getRows() {
+    public Vector<PeakListRowOther> getRows() {
         return this.PeakList;
     }
 
@@ -105,7 +105,7 @@ public class SimpleDatasetOther implements Dataset {
     }
     
     public boolean containRowName(String Name){
-        for(PeakListRow_concatenate row : this.getRows()){
+        for(PeakListRowOther row : this.getRows()){
             if(((String)row.getPeak("Name")).contains(Name) || Name.contains((CharSequence) row.getPeak("Name"))){
                 return true;
             }
@@ -119,8 +119,8 @@ public class SimpleDatasetOther implements Dataset {
         for (String experimentName : this.nameExperiments) {
             newDataset.AddNameExperiment(experimentName);
         }
-        for (PeakListRow_concatenate peakListRow : this.PeakList) {
-            newDataset.AddRow((PeakListRow_concatenate) peakListRow.clone());
+        for (PeakListRowOther peakListRow : this.PeakList) {
+            newDataset.AddRow((PeakListRowOther) peakListRow.clone());
         }
         newDataset.setType(this.type);
         return newDataset;

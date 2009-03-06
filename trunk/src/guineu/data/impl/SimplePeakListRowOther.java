@@ -18,7 +18,7 @@
 
 package guineu.data.impl;
 
-import guineu.data.PeakListRow_concatenate;
+import guineu.data.PeakListRowOther;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,7 +29,7 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimplePeakListRowOther implements PeakListRow_concatenate {
+public class SimplePeakListRowOther implements PeakListRowOther {
 
     private String FAComposition, allNames, Name;
     private double averageMZ,  averageRT,  numFound;
@@ -60,8 +60,8 @@ public class SimplePeakListRowOther implements PeakListRow_concatenate {
     }
 
     @Override
-    public PeakListRow_concatenate clone() {
-        PeakListRow_concatenate peakListRow = new SimplePeakListRowOther(this.ID, this.averageMZ, this.averageRT,
+    public PeakListRowOther clone() {
+        PeakListRowOther peakListRow = new SimplePeakListRowOther(this.ID, this.averageMZ, this.averageRT,
                 this.numFound, this.standard, this.lipidClass, this.Name, this.allNames,
                 this.FAComposition);
         peakListRow.setNumberAligment(aligment);
