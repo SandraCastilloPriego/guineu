@@ -17,6 +17,7 @@
  */
 package guineu.data.parser.impl;
 
+import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
@@ -52,7 +53,7 @@ public class LCMSParserCSV implements Parser {
     }
 
     public String getDatasetName() {
-        Pattern pat = Pattern.compile("\\\\");
+        Pattern pat = Pattern.compile("[\\\\/]");
         Matcher matcher = pat.matcher(datasetPath);
         int index = 0;
         while (matcher.find()) {
@@ -68,40 +69,30 @@ public class LCMSParserCSV implements Parser {
 
     public void fillData() {
         try {
-            FileReader fr = new FileReader(new File(datasetPath));
-            BufferedReader br = new BufferedReader(fr);
-            String line = null;
-            String head = br.readLine();
-            String[] header;
-            if (head.contains("\t")) {
-                header = head.split("\t");
-            } else {
-                header = head.split(",");
-            }
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
 
-            while ((line = (br.readLine())) != null) {
-                if (!line.isEmpty()) {
-                    getData(line, header);
-                }
+            reader.readHeaders();
+            String[] header = reader.getHeaders();
+
+            while (reader.readRecord()) {
+                getData(reader.getValues(), header);
             }
 
             setExperimentsName(header);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
-    private void getData(String line, String[] header) {
+    private void getData(String[] sdata, String[] header) {
         try {
             SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
-            String[] sdata = line.split(",");
-
             for (int i = 0; i < sdata.length; i++) {
                 if (i >= header.length) {
                 } else if (header[i].matches(".*ID.*")) {
                     lipid.setID(Integer.valueOf(sdata[i]));
-                } else if (header[i].matches(".*Average M/Z.*") || header[i].matches(".*Average m/z.*")  || header[i].matches(".*row m/z.*")) {
+                } else if (header[i].matches(".*Average M/Z.*") || header[i].matches(".*Average m/z.*") || header[i].matches(".*row m/z.*")) {
                     lipid.setMZ(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(".*Average RT.*") || header[i].matches(".*Average retention time.*") || header[i].matches(".*retention time*")) {
                     double rt = Double.valueOf(sdata[i]);
@@ -109,16 +100,16 @@ public class LCMSParserCSV implements Parser {
                         rt = rt * 60;
                     }
                     lipid.setRT(rt);
-                } else if (header[i].matches(".*Num Found.*") || header[i].matches(".*Number of detected peaks.*") || header[i].matches(".*n_found.*")  || header[i].matches(".*number of detected peaks.*")) {
+                } else if (header[i].matches(".*Num Found.*") || header[i].matches(".*Number of detected peaks.*") || header[i].matches(".*n_found.*") || header[i].matches(".*number of detected peaks.*")) {
                     lipid.setNumFound(Double.valueOf(sdata[i]).doubleValue());
                 } else if (header[i].matches(".*Standard.*")) {
                     lipid.setStandard(Integer.valueOf(sdata[i]));
                 } else if (header[i].matches(".*Class.*")) {
                 } else if (header[i].matches(".*FAComposition.*")) {
                     lipid.setFAComposition(sdata[i]);
-                } else if (header[i].matches(".*LipidName.*") || header[i].matches(".*Lipid name.*") || header[i].matches(".*Lipid Name.*") || header[i].matches("^Name.*") ) {
+                } else if (header[i].matches(".*LipidName.*") || header[i].matches(".*Lipid name.*") || header[i].matches(".*Lipid Name.*") || header[i].matches("^Name.*")) {
                     lipid.setName(sdata[i]);
-                } else if (header[i].matches(".*Identity.*") ||  header[i].matches(".*All Names.*")) {
+                } else if (header[i].matches(".*Identity.*") || header[i].matches(".*All Names.*")) {
                     lipid.setAllNames(sdata[i]);
                 } else if (header[i].matches(".*Aligment.*") || header[i].matches(".*Alignment.*")) {
                     try {
@@ -130,11 +121,11 @@ public class LCMSParserCSV implements Parser {
                     try {
                         lipid.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
-						if(sdata[i].matches("DETECTED")){
-							lipid.setPeak(header[i], 1.0);
-						}else{
-							lipid.setPeak(header[i], 0.0);
-						}
+                        if (sdata[i].matches("DETECTED")) {
+                            lipid.setPeak(header[i], 1.0);
+                        } else {
+                            lipid.setPeak(header[i], 0.0);
+                        }
                     }
                 }
                 if (lipid.getName() == null || lipid.getName().isEmpty()) {
@@ -145,7 +136,7 @@ public class LCMSParserCSV implements Parser {
 
             this.dataset.AddRow(lipid);
 
-        } catch (Exception exception) {           
+        } catch (Exception exception) {
         }
     }
 
@@ -155,10 +146,9 @@ public class LCMSParserCSV implements Parser {
 
     private void setExperimentsName(String[] header) {
         try {
-
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(".*ID.*") && !header[i].matches(".*Average M/Z.*") && !header[i].matches(".*Average m/z.*") && !header[i].matches(".*row m/z.*") && !header[i].matches(".*Alignment.*") && !header[i].matches(".*number of detected peaks.*") && !header[i].matches(".*Aligment.*") && (!header[i].matches(".*Average RT.*") && !header[i].matches(".*retention time.*") && !header[i].matches(".*Average retention time.*")) && (!header[i].matches(".*Num Found.*") && !header[i].matches(".*Number of detected peaks.*") && !header[i].matches(".*n_found.*")) && !header[i].matches(".*Standard.*") && !header[i].matches(".*Class.*") && !header[i].matches(".*FAComposition.*") && (!header[i].matches(".*LipidName.*") && !header[i].matches(".*Lipid name.*") && !header[i].matches(".*Lipid Name.*")) && (!header[i].matches(".*Identity.*") && !header[i].matches(".*Name.*") && !header[i].matches(".*All Names.*"))) {
-                    this.dataset.AddNameExperiment(header[i]);
+                    this.dataset.AddNameExperiment(header[i]);                    
                 }
             }
 
