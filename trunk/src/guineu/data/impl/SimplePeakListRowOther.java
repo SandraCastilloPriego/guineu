@@ -29,7 +29,7 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimplePeakListRowConcatenate implements PeakListRow_concatenate {
+public class SimplePeakListRowOther implements PeakListRow_concatenate {
 
     private String FAComposition, allNames, Name;
     private double averageMZ,  averageRT,  numFound;
@@ -38,7 +38,7 @@ public class SimplePeakListRowConcatenate implements PeakListRow_concatenate {
     private Hashtable<String, String> peaks;    
     
 
-    public SimplePeakListRowConcatenate(int ID, double averageMZ, double averageRT, double numFound,
+    public SimplePeakListRowOther(int ID, double averageMZ, double averageRT, double numFound,
             int standard, int lipidClass, String Name, String identity, String FAComposition) {
         this.ID = ID;
         this.FAComposition = FAComposition;
@@ -53,7 +53,7 @@ public class SimplePeakListRowConcatenate implements PeakListRow_concatenate {
         this.aligment = -1;
     }
 
-    public SimplePeakListRowConcatenate() {
+    public SimplePeakListRowOther() {
         this.peaks = new Hashtable<String, String>();
         this.ID = -1;
         this.aligment = -1;
@@ -61,7 +61,7 @@ public class SimplePeakListRowConcatenate implements PeakListRow_concatenate {
 
     @Override
     public PeakListRow_concatenate clone() {
-        PeakListRow_concatenate peakListRow = new SimplePeakListRowConcatenate(this.ID, this.averageMZ, this.averageRT,
+        PeakListRow_concatenate peakListRow = new SimplePeakListRowOther(this.ID, this.averageMZ, this.averageRT,
                 this.numFound, this.standard, this.lipidClass, this.Name, this.allNames,
                 this.FAComposition);
         peakListRow.setNumberAligment(aligment);

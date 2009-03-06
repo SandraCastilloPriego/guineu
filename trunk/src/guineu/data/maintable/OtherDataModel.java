@@ -17,8 +17,8 @@
  */
 package guineu.data.maintable;
 
-import guineu.data.impl.SimpleDataset_concatenate;
-import guineu.data.impl.SimplePeakListRowConcatenate;
+import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
 import guineu.util.Tables.DataTableModel;
@@ -32,12 +32,12 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
 
 	private int numColumns;
 	private int numRows;	
-	private SimpleDataset_concatenate dataset;
+	private SimpleDatasetOther dataset;
 	protected SortingDirection isSortAsc = SortingDirection.Ascending;
 	protected int sortCol = 0;
 
 	public OtherDataModel(Dataset dataset) {
-		this.dataset = (SimpleDataset_concatenate) dataset;
+		this.dataset = (SimpleDatasetOther) dataset;
 		numColumns = this.dataset.getNumberCols();
 		numRows = this.dataset.getNumberRows();
 	}
@@ -45,7 +45,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
 	
 	
 	public Dataset removeRows() {
-		SimpleDataset_concatenate newDataset = new SimpleDataset_concatenate(this.dataset.getDatasetName());
+		SimpleDatasetOther newDataset = new SimpleDatasetOther(this.dataset.getDatasetName());
 		/* for (int i = 0; i < rows.length; i++) {
 		if (!(Boolean) rows[i][0]) {
 		PeakListRow_concatenate peakListRow = (PeakListRow_concatenate) dataset.getRow(i).clone();
@@ -66,7 +66,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
 	}
 
 	public Object getValueAt(final int row, final int column) {
-		String peak = (String) ((SimplePeakListRowConcatenate)this.dataset.getRow(row)).getPeak(column, this.dataset.getNameExperiments());
+		String peak = (String) ((SimplePeakListRowOther)this.dataset.getRow(row)).getPeak(column, this.dataset.getNameExperiments());
 		if(peak != null){
 			return peak;
 		}else{
@@ -90,7 +90,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
 
 	@Override
 	public void setValueAt(Object aValue, int row, int column) {
-		((SimplePeakListRowConcatenate) this.dataset.getRow(row)).setPeak(this.dataset.getNameExperiments().elementAt(column), aValue.toString());
+		((SimplePeakListRowOther) this.dataset.getRow(row)).setPeak(this.dataset.getNameExperiments().elementAt(column), aValue.toString());
 		fireTableCellUpdated(row, column);
 	}
 
