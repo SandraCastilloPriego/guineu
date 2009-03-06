@@ -4,7 +4,7 @@ This file is part of GUINEU.
  */
 package guineu.modules.file.openLCMSDatasetFile;
 
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
 import guineu.data.impl.SimpleDataset;

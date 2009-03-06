@@ -19,7 +19,7 @@
 
 package guineu.modules.database.openDatasetDB;
 
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.LCMSParserDataBase;
 import guineu.data.impl.SimpleDataset;

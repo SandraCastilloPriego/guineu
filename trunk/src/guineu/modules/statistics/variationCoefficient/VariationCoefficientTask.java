@@ -19,7 +19,7 @@ package guineu.modules.statistics.variationCoefficient;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.Tables.variationcoefficienttable.VariationCoefficientDataModel;
+import guineu.data.datamodels.VariationCoefficientDataModel;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;

@@ -20,7 +20,7 @@ package guineu.modules.statistics.Media;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleDataset;
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;

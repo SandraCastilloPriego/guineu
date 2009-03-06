@@ -19,7 +19,7 @@
 package guineu.modules.file.openExperimentsData;
 
 
-import guineu.data.Tables.experimenttable.ExperimentDataModel;
+import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.parser.impl.ExperimentParserXLS;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
