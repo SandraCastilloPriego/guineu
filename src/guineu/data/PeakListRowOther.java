@@ -21,7 +21,7 @@ package guineu.data;
  *
  * @author SCSANDRA
  */
-public interface PeakListRow_concatenate extends PeakListRow{    
+public interface PeakListRowOther extends PeakListRow{
 
     public void setPeak(String name, String value);	
     

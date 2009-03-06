@@ -18,7 +18,7 @@
 package guineu.modules.filter.concatenation;
 
 import guineu.data.impl.SimpleDatasetOther;
-import guineu.data.PeakListRow_concatenate;
+import guineu.data.PeakListRowOther;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimplePeakListRowOther;
@@ -101,7 +101,7 @@ public class filterConcatenateTask implements Task {
 	private SimpleDatasetOther createDataset(Dataset[] datasets) {
 		SimpleDatasetOther dataset = new SimpleDatasetOther("concatenated");
 		for (int i = 0; i < datasets.length; i++) {
-			for (PeakListRow_concatenate row : ((SimpleDatasetOther) datasets[i]).getRows()) {
+			for (PeakListRowOther row : ((SimpleDatasetOther) datasets[i]).getRows()) {
 				if (!dataset.containRowName((String) row.getPeak("Name"))) {
 					SimplePeakListRowOther newRow = new SimplePeakListRowOther();
 					newRow.setPeak("Name", (String) row.getPeak("Name"));
@@ -123,9 +123,9 @@ public class filterConcatenateTask implements Task {
 				}
 			}
 		}
-		for (PeakListRow_concatenate row2 : newDataset.getRows()) {
+		for (PeakListRowOther row2 : newDataset.getRows()) {
 			for (Dataset data : otherDatasets) {
-				for (PeakListRow_concatenate row : ((SimpleDatasetOther) data).getRows()) {
+				for (PeakListRowOther row : ((SimpleDatasetOther) data).getRows()) {
 
 					try {
 //                       /* if(data.getDatasetName().matches(".*concatenated.*")){
@@ -166,7 +166,7 @@ public class filterConcatenateTask implements Task {
 	}
 
 	private void refillDataset(SimpleDatasetOther newDataset) {
-		for (PeakListRow_concatenate row : newDataset.getRows()) {
+		for (PeakListRowOther row : newDataset.getRows()) {
 			/* try {
 			if (!row.getPeak("is_ICA_Positive").matches("1")) {
 			Double value = Double.valueOf(row.getPeak("ICA"));

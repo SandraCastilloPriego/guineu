@@ -19,7 +19,7 @@ package guineu.modules.file.openMassLynxFiles;
 
 import guineu.data.parser.impl.*;
 import guineu.data.Dataset;
-import guineu.data.PeakListRow_concatenate;
+import guineu.data.PeakListRowOther;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDatasetOther;
 import guineu.data.impl.SimplePeakListRowOther;
@@ -77,7 +77,7 @@ public class LCMSParserMassLynx implements Parser {
 			String head = null;
 			String[] header = null;
 			String compound = "";
-			PeakListRow_concatenate lipid = null;
+			PeakListRowOther lipid = null;
 			int contRow = 0;
 			int contLipids = 0;
 			while ((line = (br.readLine())) != null) {
@@ -102,7 +102,7 @@ public class LCMSParserMassLynx implements Parser {
 						if (contLipids == 1) {
 							lipid = new SimplePeakListRowOther();
 						} else if (contLipids > 1) {
-							lipid = (PeakListRow_concatenate) this.dataset.getRow(contRow);
+							lipid = (PeakListRowOther) this.dataset.getRow(contRow);
 						}
 						if (head != null && !head.isEmpty()) {
 							getData(lipid, line, header, compound);
@@ -124,7 +124,7 @@ public class LCMSParserMassLynx implements Parser {
 		}
 	}
 
-	private void getData(PeakListRow_concatenate lipid, String line, String[] header, String compound) {
+	private void getData(PeakListRowOther lipid, String line, String[] header, String compound) {
 		try {
 			//PeakListRow_concatenate lipid = new SimplePeakListRowConcatenate();
 			String[] sdata = line.split("\t");

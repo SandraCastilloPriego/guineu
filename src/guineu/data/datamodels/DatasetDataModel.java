@@ -186,7 +186,6 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
         if (columnIndex < 11) {
             return LCMSColumnName.values()[columnIndex].getColumnName();
         } else {
-            System.out.println(this.dataset.getNameExperiments().elementAt(columnIndex - 11) + (columnIndex - 11));
             return this.dataset.getNameExperiments().elementAt(columnIndex - 11);
         }
     }
@@ -265,86 +264,6 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 
     public void setSortCol(int column) {
         this.sortCol = column;
-    }
-
-    public Object[][] getData() {
-        // return rows;
-		 /* Object[][] rows = new Object[dataset.getNumberRows()][dataset.getNumberCols() + this.columns_mol.size()];
-
-        if (dataset.getType() == DatasetType.LCMS) {
-        for (int i = 0; i < dataset.getNumberRows(); i++) {
-        SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) dataset.getRow(i);
-
-        rows[i][0] = new Boolean(false);
-        if (lipid.getID() != -1) {
-        rows[i][1] = lipid.getID();
-        } else {
-        rows[i][1] = i;
-        lipid.setID(i);
-        }
-        rows[i][2] = lipid.getMZ();
-        rows[i][3] = lipid.getRT();
-        rows[i][4] = lipid.getName();
-        rows[i][5] = lipid.getLipidClass();
-        rows[i][6] = lipid.getNumFound();
-        if (lipid.getStandard() == 1) {
-        rows[i][7] = new Boolean(true);
-        } else {
-        rows[i][7] = new Boolean(false);
-        }
-        rows[i][8] = lipid.getFAComposition();
-        rows[i][9] = lipid.getAllNames();
-        if (lipid.getNumberAlignment() != -1) {
-        rows[i][10] = lipid.getNumberAlignment();
-        } else {
-        rows[i][10] = 0;
-        }
-        int cont = this.columns_mol.size();
-        for (String nameExperiment : this.dataset.getNameExperiments()) {
-        try {
-        rows[i][cont++] = lipid.getPeak(nameExperiment);
-        } catch (Exception e) {
-        }
-        }
-
-        }
-
-        } else if (this.dataset.getType() == DatasetType.GCGCTOF) {
-        for (int i = 0; i < dataset.getNumberRows(); i++) {
-        SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
-
-        rows[i][0] = new Boolean(false);
-        if (metabolite.getID() == -1) {
-        rows[i][1] = i;
-        metabolite.setID(i);
-        } else {
-        rows[i][1] = metabolite.getID();
-        }
-        rows[i][2] = metabolite.getRT1();
-        rows[i][3] = metabolite.getRT2();
-        rows[i][4] = metabolite.getRTI();
-        rows[i][5] = metabolite.getNumFound();
-        rows[i][6] = metabolite.getMaxSimilarity();
-        rows[i][7] = metabolite.getMeanSimilarity();
-        rows[i][8] = metabolite.getSimilaritySTDDev();
-        rows[i][9] = metabolite.getName();
-        rows[i][10] = metabolite.getAllNames();
-        rows[i][11] = metabolite.getPubChemID();
-        rows[i][12] = metabolite.getMass();
-        rows[i][13] = metabolite.getDifference();
-        rows[i][14] = metabolite.getSpectrum();
-        int cont = this.columns_mol.size();
-        for (String nameExperiment : this.dataset.getNameExperiments()) {
-        try {
-        rows[i][cont++] = metabolite.getPeak(nameExperiment);
-        } catch (Exception e) {
-        }
-        }
-
-        }
-        }
-        return rows;*/
-        return null;
     }
 
     public void changeData(int column, int row) {
