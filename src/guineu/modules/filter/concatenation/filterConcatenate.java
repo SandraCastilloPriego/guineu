@@ -16,8 +16,9 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.modules.file.openOtherFiles;
+package guineu.modules.filter.concatenation;
 
+import guineu.modules.file.openOtherFiles.*;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;

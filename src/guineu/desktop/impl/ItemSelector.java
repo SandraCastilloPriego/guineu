@@ -25,7 +25,7 @@ import guineu.data.maintable.DatasetDataModel;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
-import guineu.modules.file.openOtherFiles.OtherDataModel;
+import guineu.data.maintable.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveDatasetFile.SaveFile;
 import guineu.util.GUIUtils;

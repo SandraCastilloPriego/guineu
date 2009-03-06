@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class OpenFile_concatenate implements GuineuModule, TaskListener, ActionListener {
+public class OpenOtherFile implements GuineuModule, TaskListener, ActionListener {
    private Logger logger = Logger.getLogger(this.getClass().getName());
  
 
@@ -62,13 +62,13 @@ public class OpenFile_concatenate implements GuineuModule, TaskListener, ActionL
     public void taskFinished(Task task) {
         if (task.getStatus() == Task.TaskStatus.FINISHED) {
             logger.info("Finished other Files on "
-                    + ((OpenFile_concatenateTask) task).getTaskDescription());
+                    + ((OpenOtherFileTask) task).getTaskDescription());
         }
 
         if (task.getStatus() == Task.TaskStatus.ERROR) {
 
             String msg = "Error while other Files on .. "
-                    + ((OpenFile_concatenateTask) task).getErrorMessage();
+                    + ((OpenOtherFileTask) task).getErrorMessage();
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
@@ -114,8 +114,8 @@ public class OpenFile_concatenate implements GuineuModule, TaskListener, ActionL
         
         // prepare a new group of tasks
         if(FilePath != null){
-            Task tasks[] = new OpenFile_concatenateTask[1];       
-            tasks[0] = new OpenFile_concatenateTask(FilePath, desktop);
+            Task tasks[] = new OpenOtherFileTask[1];
+            tasks[0] = new OpenOtherFileTask(FilePath, desktop);
 
             TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
