@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.openOtherFiles;
+package guineu.data.parser.impl;
 
 import guineu.data.parser.impl.*;
 import guineu.data.Dataset;
@@ -34,14 +34,14 @@ import java.util.regex.Pattern;
  *
  * @author scsandra
  */
-public class LCMSParserCSV_concatenate implements Parser {
+public class OtherFilesParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleDataset_concatenate dataset;
     private float progress;
     Lipidclass LipidClassLib;
 
-    public LCMSParserCSV_concatenate(String datasetPath) {
+    public OtherFilesParserCSV(String datasetPath) {
         progress = 0.1f;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDataset_concatenate(this.getDatasetName());

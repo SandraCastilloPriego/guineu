@@ -17,6 +17,7 @@
  */
 package guineu.modules.file.openOtherFiles;
 
+import guineu.data.parser.impl.OtherFilesParserCSV;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleDataset_concatenate;
 import guineu.desktop.Desktop;
@@ -31,7 +32,7 @@ import java.awt.Dimension;
  *
  * @author scsandra
  */
-public class OpenFile_concatenateTask implements Task {
+public class OpenOtherFileTask implements Task {
 
     private String fileDir;
     private TaskStatus status = TaskStatus.WAITING;
@@ -39,7 +40,7 @@ public class OpenFile_concatenateTask implements Task {
     private Desktop desktop;
     private double progress;
 
-    public OpenFile_concatenateTask(String fileDir, Desktop desktop) {
+    public OpenOtherFileTask(String fileDir, Desktop desktop) {
         if (fileDir != null) {
             this.fileDir = fileDir;
         }
@@ -80,7 +81,7 @@ public class OpenFile_concatenateTask implements Task {
         status = TaskStatus.PROCESSING;        
             try {
                 if (status == TaskStatus.PROCESSING) {
-                    LCMSParserCSV_concatenate parser = new LCMSParserCSV_concatenate(fileDir);
+                    OtherFilesParserCSV parser = new OtherFilesParserCSV(fileDir);
                     progress = parser.getProgress();
                     Dataset dataset = (SimpleDataset_concatenate) parser.getDataset();
                     progress = parser.getProgress();

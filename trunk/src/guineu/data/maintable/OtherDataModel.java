@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.openOtherFiles;
+package guineu.data.maintable;
 
 import guineu.data.impl.SimpleDataset_concatenate;
 import guineu.data.impl.SimplePeakListRowConcatenate;

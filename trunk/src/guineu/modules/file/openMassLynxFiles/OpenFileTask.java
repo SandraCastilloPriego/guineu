@@ -20,7 +20,7 @@ package guineu.modules.file.openMassLynxFiles;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleDataset_concatenate;
 import guineu.desktop.Desktop;
-import guineu.modules.file.openOtherFiles.OtherDataModel;
+import guineu.data.maintable.OtherDataModel;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
