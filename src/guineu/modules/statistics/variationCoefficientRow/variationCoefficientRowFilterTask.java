@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.data.impl.SimpleDataset;
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;

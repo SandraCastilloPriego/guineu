@@ -9,7 +9,7 @@ package guineu.modules.file.openGCGCDatasetFile;
 
 
 import guineu.data.parser.impl.GCGCParserXLS;
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;

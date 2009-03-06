@@ -18,7 +18,7 @@
 package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;

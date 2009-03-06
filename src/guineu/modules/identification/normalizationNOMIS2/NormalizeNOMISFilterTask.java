@@ -18,7 +18,7 @@
 package guineu.modules.identification.normalizationNOMIS2;
 
 import guineu.data.Dataset;
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;

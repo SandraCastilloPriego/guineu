@@ -19,13 +19,13 @@ package guineu.desktop.impl;
 
 import guineu.data.Dataset;
 
-import guineu.data.Tables.experimenttable.ExperimentDataModel;
+import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.maintable.DatasetDataModel;
+import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
-import guineu.data.maintable.OtherDataModel;
+import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveDatasetFile.SaveFile;
 import guineu.util.GUIUtils;
