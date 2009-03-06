@@ -21,8 +21,8 @@ import guineu.data.parser.impl.*;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow_concatenate;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset_concatenate;
-import guineu.data.impl.SimplePeakListRowConcatenate;
+import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,14 +37,14 @@ import java.util.regex.Pattern;
 public class LCMSParserMassLynx implements Parser {
 
 	private String datasetPath;
-	private SimpleDataset_concatenate dataset;
+	private SimpleDatasetOther dataset;
 	private float progress;
 	Lipidclass LipidClassLib;
 
 	public LCMSParserMassLynx(String datasetPath) {
 		progress = 0.1f;
 		this.datasetPath = datasetPath;
-		this.dataset = new SimpleDataset_concatenate(this.getDatasetName());
+		this.dataset = new SimpleDatasetOther(this.getDatasetName());
 		this.dataset.setType(DatasetType.OTHER);
 		progress = 0.3f;
 		this.dataset.setType(null);
@@ -100,7 +100,7 @@ public class LCMSParserMassLynx implements Parser {
 					}
 					if (compound != null) {
 						if (contLipids == 1) {
-							lipid = new SimplePeakListRowConcatenate();
+							lipid = new SimplePeakListRowOther();
 						} else if (contLipids > 1) {
 							lipid = (PeakListRow_concatenate) this.dataset.getRow(contRow);
 						}

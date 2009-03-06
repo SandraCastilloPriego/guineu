@@ -24,7 +24,7 @@ import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.data.impl.SimplePeakListRowConcatenate;
+import guineu.data.impl.SimplePeakListRowOther;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -120,7 +120,7 @@ public class WriteFile {
 			}
 			w.writeRecord(data);
 			for (int i = 0; i < dataset.getNumberRows(); i++) {
-				SimplePeakListRowConcatenate lipid = (SimplePeakListRowConcatenate) dataset.getRow(i);
+				SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 				c = 0;
 				for (String experimentName : dataset.getNameExperiments()) {
 					if(lipid.getPeak(experimentName) == null){
@@ -255,7 +255,7 @@ public class WriteFile {
 
 			}			
 			for (int i = 0; i < dataset.getNumberRows(); i++) {
-				SimplePeakListRowConcatenate lipid = (SimplePeakListRowConcatenate) dataset.getRow(i);
+				SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 
 				row = sheet.getRow(i + 1);
 				if (row == null) {

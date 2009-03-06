@@ -22,8 +22,8 @@ import guineu.data.PeakListRow;
 import guineu.data.PeakListRow_concatenate;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
-import guineu.data.impl.SimpleDataset_concatenate;
-import guineu.data.impl.SimplePeakListRowConcatenate;
+import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 
@@ -66,7 +66,7 @@ public class TransposeFilterTask implements Task {
 
     public void run() {
         try {
-            SimpleDataset_concatenate newDataset = new SimpleDataset_concatenate(dataset.getDatasetName() + "- transposed");
+            SimpleDatasetOther newDataset = new SimpleDatasetOther(dataset.getDatasetName() + "- transposed");
             newDataset.AddNameExperiment("Name");
             status = TaskStatus.PROCESSING;
            
@@ -82,7 +82,7 @@ public class TransposeFilterTask implements Task {
                 row.setName(row.getName()+ " - "+ row.getMZ() + " - " +row.getRT() + " - " + row.getNumFound());
             }
             for (String samples : dataset.getNameExperiments()) {
-                SimplePeakListRowConcatenate row = new SimplePeakListRowConcatenate();
+                SimplePeakListRowOther row = new SimplePeakListRowOther();
                 row.setPeak("Name", samples);
                 newDataset.AddRow(row);
             }

@@ -27,14 +27,14 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimpleDataset_concatenate implements Dataset {
+public class SimpleDatasetOther implements Dataset {
 
     String datasetName;
     Vector<PeakListRow_concatenate> PeakList;
     Vector<String> nameExperiments;
     DatasetType type;
 
-    public SimpleDataset_concatenate(String datasetName) {
+    public SimpleDatasetOther(String datasetName) {
         this.datasetName = datasetName;
         this.PeakList = new Vector<PeakListRow_concatenate>();
         this.nameExperiments = new Vector<String>();
@@ -114,8 +114,8 @@ public class SimpleDataset_concatenate implements Dataset {
     }
     
     @Override
-    public SimpleDataset_concatenate clone() {
-        SimpleDataset_concatenate newDataset = new SimpleDataset_concatenate(this.datasetName);
+    public SimpleDatasetOther clone() {
+        SimpleDatasetOther newDataset = new SimpleDatasetOther(this.datasetName);
         for (String experimentName : this.nameExperiments) {
             newDataset.AddNameExperiment(experimentName);
         }

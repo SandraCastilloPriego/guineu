@@ -21,8 +21,8 @@ import guineu.data.parser.impl.*;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow_concatenate;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset_concatenate;
-import guineu.data.impl.SimplePeakListRowConcatenate;
+import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,14 +37,14 @@ import java.util.regex.Pattern;
 public class OtherFilesParserCSV implements Parser {
 
     private String datasetPath;
-    private SimpleDataset_concatenate dataset;
+    private SimpleDatasetOther dataset;
     private float progress;
     Lipidclass LipidClassLib;
 
     public OtherFilesParserCSV(String datasetPath) {
         progress = 0.1f;
         this.datasetPath = datasetPath;
-        this.dataset = new SimpleDataset_concatenate(this.getDatasetName());
+        this.dataset = new SimpleDatasetOther(this.getDatasetName());
 		this.dataset.setType(DatasetType.OTHER);
         progress = 0.3f;
         this.dataset.setType(null);
@@ -92,7 +92,7 @@ public class OtherFilesParserCSV implements Parser {
 
     private void getData(String line, String[] header) {
         try {
-            PeakListRow_concatenate lipid = new SimplePeakListRowConcatenate();
+            PeakListRow_concatenate lipid = new SimplePeakListRowOther();
             String[] sdata = line.split(",");
 
             for (int i = 0; i < sdata.length; i++) {
