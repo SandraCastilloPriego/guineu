@@ -8,6 +8,7 @@ import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
 import guineu.data.impl.SimpleDataset;
+import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
@@ -68,29 +69,17 @@ public class OpenFileTask implements Task {
 
     public void openFile() {
         status = TaskStatus.PROCESSING;
+        Parser parser;
         if (fileDir.matches(".*xls")) {
             try {
-                LCMSParserXLS parser = new LCMSParserXLS(fileDir, null);
-                String[] sheetsNames = parser.getSheetNames(fileDir);
+                parser = new LCMSParserXLS(fileDir, null);
+                String[] sheetsNames = ((LCMSParserXLS)parser).getSheetNames(fileDir);
                 for (String Name : sheetsNames) {
                     try {
-                        if (status == TaskStatus.PROCESSING) {
-                            parser = new LCMSParserXLS(fileDir, Name);
-                            SimpleDataset dataset = (SimpleDataset) parser.getDataset();
-                            progress += parser.getProgress() / sheetsNames.length;
-                            desktop.AddNewFile(dataset);
-
-                            //creates internal frame with the table
-                            DataTableModel model = new DatasetDataModel(dataset);
-                            DataTable table = new PushableTable(model);
-                            table.formatNumbers(dataset.getType());
-                            DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-                            desktop.addInternalFrame(frame);
-                            frame.setVisible(true);
-                        }
+                         parser = new LCMSParserXLS(fileDir, Name);
+                        this.open(parser);
                     } catch (Exception exception) {
-                    // exception.printStackTrace();
+                        // exception.printStackTrace();
                     }
                 }
             } catch (IOException ex) {
@@ -98,24 +87,34 @@ public class OpenFileTask implements Task {
         } else if (fileDir.matches(".*csv")) {
             try {
                 if (status == TaskStatus.PROCESSING) {
-                    LCMSParserCSV parser = new LCMSParserCSV(fileDir);
-                    progress = parser.getProgress();
-                    SimpleDataset dataset = (SimpleDataset) parser.getDataset();
-                    progress = parser.getProgress();
-                    desktop.AddNewFile(dataset);
-                    //creates internal frame with the table
-                    DataTableModel model = new DatasetDataModel(dataset);
-                    DataTable table = new PushableTable(model);
-                    table.formatNumbers(dataset.getType());
-                    DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-                    desktop.addInternalFrame(frame);
-                    frame.setVisible(true);
+                    parser = new LCMSParserCSV(fileDir);
+                    this.open(parser);
                 }
             } catch (Exception ex) {
             }
         }
         progress = 1f;
         status = TaskStatus.FINISHED;
+    }
+
+    public void open(Parser parser) {
+        try {
+            if (status == TaskStatus.PROCESSING) {
+                SimpleDataset dataset = (SimpleDataset) parser.getDataset();
+                // progress += parser.getProgress() / sheetsNames.length;
+                desktop.AddNewFile(dataset);
+
+                //creates internal frame with the table
+                DataTableModel model = new DatasetDataModel(dataset);
+                DataTable table = new PushableTable(model);
+                table.formatNumbers(dataset.getType());
+                DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
+
+                desktop.addInternalFrame(frame);
+                frame.setVisible(true);
+            }
+        } catch (Exception exception) {
+            // exception.printStackTrace();
+        }
     }
 }

@@ -44,8 +44,8 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
     public LCMSParserXLS(String DatasetName, String sheetName) {
         this.DatasetName = DatasetName;
-        this.dataset = new SimpleDataset(this.getDatasetName());
         this.sheetName = sheetName;
+        this.dataset = new SimpleDataset(this.getDatasetName());        
         this.head = new Vector<String>();
         this.LipidClassLib = new Lipidclass();
         if (sheetName != null) {
@@ -178,7 +178,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
                 }
                 lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
             } catch (Exception exception) {
-                exception.printStackTrace();
+                //exception.printStackTrace();
             }
         }
         this.dataset.AddRow(lipid);
@@ -230,7 +230,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
     }
 
     public String getDatasetName() {
-        return "LCMS - " + this.getDatasetName(DatasetName);
+        return "LCMS - " + this.getDatasetName(DatasetName) + " - "+ sheetName;
     }
 
     public String[] getSheetNames(String fileName) throws IOException {

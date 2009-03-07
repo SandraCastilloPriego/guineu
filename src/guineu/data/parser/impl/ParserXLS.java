@@ -111,7 +111,7 @@ public class ParserXLS {
 	
 	//get the name experiment from the name of the excel file
 	public String getDatasetName(String file_name){
-		Pattern pat = Pattern.compile("\\\\");
+		Pattern pat = Pattern.compile("[\\\\/]");
 		Matcher matcher = pat.matcher(file_name);   
 		int index = 0;
 		while(matcher.find()){
