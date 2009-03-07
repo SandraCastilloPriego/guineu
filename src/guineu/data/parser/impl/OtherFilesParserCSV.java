@@ -53,7 +53,7 @@ public class OtherFilesParserCSV implements Parser {
     }
 
     public String getDatasetName() {
-        Pattern pat = Pattern.compile("\\\\");
+        Pattern pat = Pattern.compile("[\\\\/]");
         Matcher matcher = pat.matcher(datasetPath);
         int index = 0;
         while (matcher.find()) {
