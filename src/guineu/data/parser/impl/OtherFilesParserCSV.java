@@ -17,15 +17,13 @@
  */
 package guineu.data.parser.impl;
 
-import guineu.data.parser.impl.*;
+import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.PeakListRowOther;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDatasetOther;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +43,7 @@ public class OtherFilesParserCSV implements Parser {
         progress = 0.1f;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDatasetOther(this.getDatasetName());
-		this.dataset.setType(DatasetType.OTHER);
+        this.dataset.setType(DatasetType.OTHER);
         progress = 0.3f;
         this.dataset.setType(null);
         this.LipidClassLib = new Lipidclass();
@@ -71,38 +69,26 @@ public class OtherFilesParserCSV implements Parser {
 
     public void fillData() {
         try {
-            FileReader fr = new FileReader(new File(datasetPath));
-            BufferedReader br = new BufferedReader(fr);
-            String line = null;
-            String head = br.readLine();
-            String[] header;
-            header = head.split(",");  
-            while ((line = (br.readLine())) != null) {
-                if (!line.isEmpty()) {
-                    getData(line, header);
-                }
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
+            reader.readHeaders();
+            String[] header = reader.getHeaders();
+            while (reader.readRecord()) {
+                getData(reader.getValues(), header);
             }
-
             setExperimentsName(header);
 
         } catch (Exception e) {
-
         }
     }
 
-    private void getData(String line, String[] header) {
+    private void getData(String[] sdata, String[] header) {
         try {
             PeakListRowOther lipid = new SimplePeakListRowOther();
-            String[] sdata = line.split(",");
-
             for (int i = 0; i < sdata.length; i++) {
                 try {
-                    if(sdata[i].toString().matches("null") || sdata[i].isEmpty()){
-                        sdata[i] = "NA";						
-                    }
-					lipid.setPeak(header[i], sdata[i].toString());
+                    lipid.setPeak(header[i], sdata[i].toString());
                 } catch (Exception e) {
-                    lipid.setPeak(header[i], "NA");
+                    lipid.setPeak(header[i], " ");
                 }
 
             }
@@ -119,11 +105,9 @@ public class OtherFilesParserCSV implements Parser {
 
     private void setExperimentsName(String[] header) {
         try {
-
-            for (int i = 0; i < header.length; i++) { 
+            for (int i = 0; i < header.length; i++) {
                 this.dataset.AddNameExperiment(header[i]);
             }
-
         } catch (Exception exception) {
         }
     }
