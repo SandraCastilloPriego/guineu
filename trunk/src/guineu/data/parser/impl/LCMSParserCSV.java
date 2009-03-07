@@ -42,6 +42,7 @@ public class LCMSParserCSV implements Parser {
 
     public LCMSParserCSV(String datasetPath) {
         this.rowsNumber = 0;
+        this.rowsReaded = 0;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDataset(this.getDatasetName());
         this.dataset.setType(DatasetType.LCMS);

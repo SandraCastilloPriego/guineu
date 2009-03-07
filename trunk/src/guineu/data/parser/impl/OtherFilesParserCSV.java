@@ -36,20 +36,20 @@ public class OtherFilesParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleDatasetOther dataset;
-    private float progress;
+   private int rowsNumber;
+    private int rowsReaded;
     Lipidclass LipidClassLib;
 
     public OtherFilesParserCSV(String datasetPath) {
-        progress = 0.1f;
+        this.rowsNumber = 0;
+        this.rowsReaded = 0;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDatasetOther(this.getDatasetName());
         this.dataset.setType(DatasetType.OTHER);
-        progress = 0.3f;
+       
         this.dataset.setType(null);
         this.LipidClassLib = new Lipidclass();
-        progress = 0.5f;
-        fillData();
-        progress = 1.0f;
+        countNumberRows(); 
     }
 
     public String getDatasetName() {
@@ -64,7 +64,7 @@ public class OtherFilesParserCSV implements Parser {
     }
 
     public float getProgress() {
-        return progress;
+        return (float)rowsReaded/rowsNumber;
     }
 
     public void fillData() {
@@ -74,6 +74,7 @@ public class OtherFilesParserCSV implements Parser {
             String[] header = reader.getHeaders();
             while (reader.readRecord()) {
                 getData(reader.getValues(), header);
+                rowsReaded++;
             }
             setExperimentsName(header);
 
@@ -109,6 +110,17 @@ public class OtherFilesParserCSV implements Parser {
                 this.dataset.AddNameExperiment(header[i]);
             }
         } catch (Exception exception) {
+        }
+    }
+
+     private void countNumberRows() {
+        try {
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
+            while (reader.readRecord()) {
+                this.rowsNumber++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

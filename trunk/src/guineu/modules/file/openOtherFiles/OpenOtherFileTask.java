@@ -20,6 +20,7 @@ package guineu.modules.file.openOtherFiles;
 import guineu.data.parser.impl.OtherFilesParserCSV;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
@@ -38,7 +39,7 @@ public class OpenOtherFileTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private double progress;
+    private Parser parser;
 
     public OpenOtherFileTask(String fileDir, Desktop desktop) {
         if (fileDir != null) {
@@ -52,7 +53,11 @@ public class OpenOtherFileTask implements Task {
     }
 
     public double getFinishedPercentage() {
-        return progress;
+        if (parser != null) {
+            return parser.getProgress();
+        } else {
+            return 0.0f;
+        }
     }
 
     public TaskStatus getStatus() {
@@ -81,10 +86,9 @@ public class OpenOtherFileTask implements Task {
         status = TaskStatus.PROCESSING;        
             try {
                 if (status == TaskStatus.PROCESSING) {
-                    OtherFilesParserCSV parser = new OtherFilesParserCSV(fileDir);
-                    progress = parser.getProgress();
-                    Dataset dataset = (SimpleDatasetOther) parser.getDataset();
-                    progress = parser.getProgress();
+                    parser = new OtherFilesParserCSV(fileDir);
+                    parser.fillData();
+                    Dataset dataset = (SimpleDatasetOther) parser.getDataset();                   
                     desktop.AddNewFile(dataset);
                     //creates internal frame with the table
                     /*DataTableModel model = new OtherDataModel(dataset);
@@ -96,9 +100,8 @@ public class OpenOtherFileTask implements Task {
                     frame.setVisible(true);*/
                 }
             } catch (Exception ex) {
-            }
+            } 
        
-        progress = 1f;
         status = TaskStatus.FINISHED;
     }
 }
