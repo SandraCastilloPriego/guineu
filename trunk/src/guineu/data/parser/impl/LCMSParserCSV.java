@@ -88,28 +88,28 @@ public class LCMSParserCSV implements Parser {
             SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
             for (int i = 0; i < sdata.length; i++) {
                 if (i >= header.length) {
-                } else if (header[i].matches(".*ID.*")) {
+                } else if (header[i].matches(RegExp.ID.getREgExp())) {
                     lipid.setID(Integer.valueOf(sdata[i]));
-                } else if (header[i].matches(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*")) {
+                } else if (header[i].matches(RegExp.MZ.getREgExp())) {
                     lipid.setMZ(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(".*Average RT.*|.*Average retention time.*|.*retention time*")) {
+                } else if (header[i].matches(RegExp.RT.getREgExp())) {
                     double rt = Double.valueOf(sdata[i]);
                     if (rt < 20) {
                         rt = rt * 60;
                     }
                     lipid.setRT(rt);
-                } else if (header[i].matches(".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*")) {
+                } else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
                     lipid.setNumFound(Double.valueOf(sdata[i]).doubleValue());
-                } else if (header[i].matches(".*Standard.*")) {
+                } else if (header[i].matches(RegExp.STANDARD.getREgExp())) {
                     lipid.setStandard(Integer.valueOf(sdata[i]));
-                } else if (header[i].matches(".*Class.*")) {
-                } else if (header[i].matches(".*FAComposition.*")) {
+                } else if (header[i].matches(RegExp.CLASS.getREgExp())) {
+                } else if (header[i].matches(RegExp.FA.getREgExp())) {
                     lipid.setFAComposition(sdata[i]);
-                } else if (header[i].matches(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*")) {
+                } else if (header[i].matches(RegExp.NAME.getREgExp())) {
                     lipid.setName(sdata[i]);
-                } else if (header[i].matches(".*Identity.*|.*All Names.*")) {
+                } else if (header[i].matches(RegExp.ALLNAMES.getREgExp())) {
                     lipid.setAllNames(sdata[i]);
-                } else if (header[i].matches(".*Aligment.*|.*Alignment.*")) {
+                } else if (header[i].matches(RegExp.ALIGNMENT.getREgExp())) {
                     try {
                         lipid.setNumberAlignment(Integer.valueOf(sdata[i]));
                     } catch (Exception e) {
@@ -145,14 +145,12 @@ public class LCMSParserCSV implements Parser {
     private void setExperimentsName(String[] header) {
         try {
             int numFixColumns = 0;
+            String regExpression = "";
+            for (RegExp value : RegExp.values()) {
+                regExpression += value.getREgExp() + "|";
+            }
             for (int i = 0; i < header.length; i++) {
-                if (!header[i].matches(".*ID.*|.*Average M/Z.*|.*Average m/z.*" +
-                        "|.*row m/z.*|.*Alignment.*|.*number of detected peaks.*" +
-                        "|.*Aligment.*|.*Average RT.*|.*retention time.*" +
-                        "|.*Average retention time.*|.*Num Found.*|.*Number of detected peaks.*" +
-                        "|.*n_found.*|.*Standard.*|.*Class.*|.*FAComposition.*" +
-                        "|.*LipidName.*|.*Lipid name.*|.*Lipid Name.*" +
-                        "|.*Identity.*|.*Name.*|.*All Names.*")) {
+                if (!header[i].matches(regExpression)) {
                     this.dataset.AddNameExperiment(header[i]);
                 } else {
                     numFixColumns++;
