@@ -77,10 +77,9 @@ public class PushableTable implements DataTable, TableModelListener {
 
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
-                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
-                try {
-                    int STDColumn = getStandardColumn();
-                    if (STDColumn != -1 && (Boolean) table.getValueAt(Index_row, STDColumn)) {
+                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);               
+                try {                    
+                    if (getStandard(Index_row)) {
                         comp.setBackground(Color.yellow);
                     } else if (isDataSelected(Index_row) && (Index_col != 0)) {
                         comp.setBackground(new Color(173, 205, 203));
@@ -95,7 +94,7 @@ public class PushableTable implements DataTable, TableModelListener {
                 } catch (Exception e) {
                 }
 
-                return (Component) comp;
+                return comp;
             }
 
             private boolean isDataSelected(int row) {
@@ -111,14 +110,11 @@ public class PushableTable implements DataTable, TableModelListener {
         return colorTable;
     }
 
-    public int getStandardColumn() {
-        for (int i = 0; i < model.getColumnCount(); i++) {
-            String name = model.getColumnName(i);
-            if (name.matches(".*Standard.*")) {
-                return i;
-            }
+    public boolean getStandard(int row){
+        if((Integer)this.getTable().getValueAt(row, 8) == 1){
+            return true;
         }
-        return -1;
+        return false;
     }
 
     public void setTableProperties() {
@@ -171,13 +167,8 @@ public class PushableTable implements DataTable, TableModelListener {
     public void formatNumbers(DatasetType type) {
         NumberFormat format = NumberFormat.getNumberInstance();
         format.setMinimumFractionDigits(7);
-        int init = 0;
-        if (type == DatasetType.LCMS) {
-            init = 11;
-        } else if (type == DatasetType.GCGCTOF) {
-            init = 15;
-        }
-
+        int init = model.getFixColumns();
+        
         for (int i = init; i <
                 table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(new NumberRenderer(format));
@@ -370,9 +361,6 @@ public class PushableTable implements DataTable, TableModelListener {
         }
     }
 
-    public void tableChanged(TableModelEvent e) {
-        int row = e.getFirstRow();
-        int column = e.getColumn();
-        model.changeData(column, row);
+    public void tableChanged(TableModelEvent e) {      
     }
 }

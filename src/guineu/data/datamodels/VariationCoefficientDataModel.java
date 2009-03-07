@@ -194,4 +194,9 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
     public DatasetType getType() {
         return null;
     }
+
+    public int getFixColumns() {
+        return 0;
+    }
+
 }

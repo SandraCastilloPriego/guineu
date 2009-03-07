@@ -92,26 +92,26 @@ public class LCMSParserCSV implements Parser {
                 if (i >= header.length) {
                 } else if (header[i].matches(".*ID.*")) {
                     lipid.setID(Integer.valueOf(sdata[i]));
-                } else if (header[i].matches(".*Average M/Z.*") || header[i].matches(".*Average m/z.*") || header[i].matches(".*row m/z.*")) {
+                } else if (header[i].matches(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*")) {
                     lipid.setMZ(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(".*Average RT.*") || header[i].matches(".*Average retention time.*") || header[i].matches(".*retention time*")) {
+                } else if (header[i].matches(".*Average RT.*|.*Average retention time.*|.*retention time*")) {
                     double rt = Double.valueOf(sdata[i]);
                     if (rt < 20) {
                         rt = rt * 60;
                     }
                     lipid.setRT(rt);
-                } else if (header[i].matches(".*Num Found.*") || header[i].matches(".*Number of detected peaks.*") || header[i].matches(".*n_found.*") || header[i].matches(".*number of detected peaks.*")) {
+                } else if (header[i].matches(".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*")) {
                     lipid.setNumFound(Double.valueOf(sdata[i]).doubleValue());
                 } else if (header[i].matches(".*Standard.*")) {
                     lipid.setStandard(Integer.valueOf(sdata[i]));
                 } else if (header[i].matches(".*Class.*")) {
                 } else if (header[i].matches(".*FAComposition.*")) {
                     lipid.setFAComposition(sdata[i]);
-                } else if (header[i].matches(".*LipidName.*") || header[i].matches(".*Lipid name.*") || header[i].matches(".*Lipid Name.*") || header[i].matches("^Name.*")) {
+                } else if (header[i].matches(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*")) {
                     lipid.setName(sdata[i]);
-                } else if (header[i].matches(".*Identity.*") || header[i].matches(".*All Names.*")) {
+                } else if (header[i].matches(".*Identity.*|.*All Names.*")) {
                     lipid.setAllNames(sdata[i]);
-                } else if (header[i].matches(".*Aligment.*") || header[i].matches(".*Alignment.*")) {
+                } else if (header[i].matches(".*Aligment.*|.*Alignment.*")) {
                     try {
                         lipid.setNumberAlignment(Integer.valueOf(sdata[i]));
                     } catch (Exception e) {
@@ -146,11 +146,21 @@ public class LCMSParserCSV implements Parser {
 
     private void setExperimentsName(String[] header) {
         try {
+            int numFixColumns = 0;
             for (int i = 0; i < header.length; i++) {
-                if (!header[i].matches(".*ID.*") && !header[i].matches(".*Average M/Z.*") && !header[i].matches(".*Average m/z.*") && !header[i].matches(".*row m/z.*") && !header[i].matches(".*Alignment.*") && !header[i].matches(".*number of detected peaks.*") && !header[i].matches(".*Aligment.*") && (!header[i].matches(".*Average RT.*") && !header[i].matches(".*retention time.*") && !header[i].matches(".*Average retention time.*")) && (!header[i].matches(".*Num Found.*") && !header[i].matches(".*Number of detected peaks.*") && !header[i].matches(".*n_found.*")) && !header[i].matches(".*Standard.*") && !header[i].matches(".*Class.*") && !header[i].matches(".*FAComposition.*") && (!header[i].matches(".*LipidName.*") && !header[i].matches(".*Lipid name.*") && !header[i].matches(".*Lipid Name.*")) && (!header[i].matches(".*Identity.*") && !header[i].matches(".*Name.*") && !header[i].matches(".*All Names.*"))) {
+                if (!header[i].matches(".*ID.*|.*Average M/Z.*|.*Average m/z.*" +
+                        "|.*row m/z.*|.*Alignment.*|.*number of detected peaks.*" +
+                        "|.*Aligment.*|.*Average RT.*|.*retention time.*" +
+                        "|.*Average retention time.*|.*Num Found.*|.*Number of detected peaks.*" +
+                        "|.*n_found.*|.*Standard.*|.*Class.*|.*FAComposition.*" +
+                        "|.*LipidName.*|.*Lipid name.*|.*Lipid Name.*" +
+                        "|.*Identity.*|.*Name.*|.*All Names.*")) {
                     this.dataset.AddNameExperiment(header[i]);                    
+                }else{
+                    numFixColumns++;
                 }
-            }
+            }           
+            this.dataset.setNumberFixColumns(numFixColumns + 3);
 
         } catch (Exception exception) {
         }

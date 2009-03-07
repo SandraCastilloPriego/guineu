@@ -31,6 +31,7 @@ public class SimpleDataset implements Dataset {
     Vector<PeakListRow> PeakList;
     Vector<String> nameExperiments;
     DatasetType type;
+    int numFixColumns;
 
     public SimpleDataset(String datasetName) {
         this.datasetName = datasetName;
@@ -98,5 +99,13 @@ public class SimpleDataset implements Dataset {
         }
         newDataset.setType(this.type);
         return newDataset;
+    }
+
+    public int getNumberFixColumns() {
+        return this.numFixColumns;
+    }
+
+    public void setNumberFixColumns(int columnNum) {
+        this.numFixColumns = columnNum;
     }
 }

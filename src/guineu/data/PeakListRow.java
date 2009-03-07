@@ -41,13 +41,15 @@ public interface PeakListRow {
 
     public String getName();
 
+    public void setID(int i);
+
     public void setPeak(String name, Double value);
 
     public Object getPeak(String ExperimentName);
 
-	public Object getPeak(int col, Vector<String> sampleNames);
-    
-    public Object[] getPeaks();	
+    public Object getPeak(int col, Vector<String> sampleNames);
+
+    public Object[] getPeaks();
 
     public void removePeaks();
 
@@ -60,7 +62,7 @@ public interface PeakListRow {
     public void setName(String Name);
 
     public void setNumberAligment(int aligment);
-    
+
     public void setAllNames(String Names);
 
     public PeakListRow clone();
@@ -86,4 +88,8 @@ public interface PeakListRow {
     public double getDifference();
 
     public String getSpectrum();
+
+    public int getNumberFixColumns();
+
+    public void setNumberFixColumns(int columnNum);
 }

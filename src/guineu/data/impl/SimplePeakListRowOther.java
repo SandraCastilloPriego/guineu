@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data.impl;
 
 import guineu.data.PeakListRowOther;
@@ -24,47 +23,24 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
-
 /**
  *
  * @author SCSANDRA
  */
 public class SimplePeakListRowOther implements PeakListRowOther {
 
-    private String FAComposition, allNames, Name;
-    private double averageMZ,  averageRT,  numFound;
-    private int standard,  lipidClass,  ID,  aligment;
+    private int ID;
     private boolean control;
-    private Hashtable<String, String> peaks;    
-    
-
-    public SimplePeakListRowOther(int ID, double averageMZ, double averageRT, double numFound,
-            int standard, int lipidClass, String Name, String identity, String FAComposition) {
-        this.ID = ID;
-        this.FAComposition = FAComposition;
-        this.averageMZ = averageMZ;
-        this.averageRT = averageRT;
-        this.numFound = numFound;
-        this.standard = standard;
-        this.lipidClass = lipidClass;
-        this.Name = Name;
-        this.allNames = identity;
-        this.peaks = new Hashtable<String, String>();
-        this.aligment = -1;
-    }
+    private Hashtable<String, String> peaks;
 
     public SimplePeakListRowOther() {
         this.peaks = new Hashtable<String, String>();
         this.ID = -1;
-        this.aligment = -1;
     }
 
     @Override
     public PeakListRowOther clone() {
-        PeakListRowOther peakListRow = new SimplePeakListRowOther(this.ID, this.averageMZ, this.averageRT,
-                this.numFound, this.standard, this.lipidClass, this.Name, this.allNames,
-                this.FAComposition);
-        peakListRow.setNumberAligment(aligment);
+        PeakListRowOther peakListRow = new SimplePeakListRowOther();
         String str;
         Set<String> set = peaks.keySet();
 
@@ -77,61 +53,39 @@ public class SimplePeakListRowOther implements PeakListRowOther {
     }
 
     public double getMZ() {
-        return this.averageMZ;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public double getRT() {
-        return this.averageRT;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public double getNumFound() {
-        return this.numFound;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getStandard() {
-        return this.standard;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getLipidClass() {
-        return this.lipidClass;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public String getName() {
-        return this.Name;
-    }  
-    
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public String getPeak(String ExperimentName) {
         return this.peaks.get(ExperimentName);
     }
 
-   
-
-    public void setMZ(double averageMZ) {
-        this.averageMZ = averageMZ;
-    }
-
-    public void setRT(double averageRT) {
-        this.averageRT = averageRT;
-    }
-
-    public void setNumFound(double numFound) {
-        this.numFound = numFound;
-    }
-
-    public void setStandard(int standard) {
-        this.standard = standard;
-    }
-
-    public void setLipidClass(int lipidClass) {
-        this.lipidClass = lipidClass;
-    }
-
     public void setName(String Name) {
-        this.Name = Name;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setAllNames(String allNames) {
-        this.allNames = allNames;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setPeak(String name, String value) {
@@ -139,11 +93,11 @@ public class SimplePeakListRowOther implements PeakListRowOther {
     }
 
     public String getFAComposition() {
-        return this.FAComposition;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setFAComposition(String FAComposition) {
-        this.FAComposition = FAComposition;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getID() {
@@ -167,15 +121,11 @@ public class SimplePeakListRowOther implements PeakListRowOther {
     }
 
     public int getNumberAlignment() {
-        return this.aligment;
-    }
-
-    public void setNumberAlignment(int aligment) {
-        this.aligment = aligment;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setNumberAligment(int aligment) {
-        this.aligment = aligment;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public double getRT1() {
@@ -203,7 +153,7 @@ public class SimplePeakListRowOther implements PeakListRowOther {
     }
 
     public String getAllNames() {
-        return this.allNames;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public String getPubChemID() {
@@ -227,7 +177,7 @@ public class SimplePeakListRowOther implements PeakListRowOther {
     }
 
     public String[] getPeaks() {
-         String[] aPeaks = new String[this.peaks.size()];
+        String[] aPeaks = new String[this.peaks.size()];
         String str;
         Set<String> set = peaks.keySet();
         int cont = 0;
@@ -243,9 +193,15 @@ public class SimplePeakListRowOther implements PeakListRowOther {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-	public Object getPeak(int col, Vector<String> sampleNames) {
-		 return this.peaks.get(sampleNames.elementAt(col));
-	}
+    public Object getPeak(int col, Vector<String> sampleNames) {
+        return this.peaks.get(sampleNames.elementAt(col));
+    }
 
-   
+    public int getNumberFixColumns() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNumberFixColumns(int columnNum) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
