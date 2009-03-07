@@ -15,33 +15,150 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data.parser.impl;
 
-
+import com.csvreader.CsvReader;
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
+import guineu.data.impl.DatasetType;
+import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimplePeakListRowGCGC;
+import java.io.FileReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author scsandra
  */
-public class GCGCParserCSV implements Parser{
+public class GCGCParserCSV implements Parser {
+
+    private String datasetPath;
+    private SimpleDataset dataset;
+    private float progress;
+    Lipidclass LipidClassLib;
+
+    public GCGCParserCSV(String datasetPath) {
+        progress = 0.1f;
+        this.datasetPath = datasetPath;
+        this.dataset = new SimpleDataset(this.getDatasetName());
+        progress = 0.3f;
+        this.dataset.setType(DatasetType.GCGCTOF);
+        this.LipidClassLib = new Lipidclass();
+        progress = 0.5f;
+        fillData();
+        progress = 1.0f;
+    }
 
     public String getDatasetName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Pattern pat = Pattern.compile("[\\\\/]");
+        Matcher matcher = pat.matcher(datasetPath);
+        int index = 0;
+        while (matcher.find()) {
+            index = matcher.start();
+        }
+        String n = "GCGC - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
+        return n;
     }
-   
-    
+
     public float getProgress() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return progress;
     }
 
     public void fillData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
+
+            reader.readHeaders();
+            String[] header = reader.getHeaders();
+
+            while (reader.readRecord()) {
+                getData(reader.getValues(), header);
+            }
+
+            setExperimentsName(header);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getData(String[] sdata, String[] header) {
+        try {
+            SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
+            for (int i = 0; i < sdata.length; i++) {
+                if (i >= header.length) {
+                } else if (header[i].matches(RegExp.ID.getREgExp())) {
+                    metabolite.setID(Integer.valueOf(sdata[i]));
+                } else if (header[i].matches(RegExp.RT1.getREgExp())) {
+                    metabolite.setRT1(Double.valueOf(sdata[i]));
+                } else if (header[i].matches(RegExp.RT2.getREgExp())) {
+                    metabolite.setRT2(Double.valueOf(sdata[i]));
+                }else if (header[i].matches(RegExp.RTI.getREgExp())) {
+                    metabolite.setRTI(Double.valueOf(sdata[i]));
+                }else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
+                    metabolite.setNumFound(Double.valueOf(sdata[i]).doubleValue());
+                } else if (header[i].matches(RegExp.MAXSIM.getREgExp())) {
+                    metabolite.setMaxSimilarity(Double.valueOf(sdata[i]));
+                } else if (header[i].matches(RegExp.MEANSIM.getREgExp())) {
+                    metabolite.setMaxSimilarity(Double.valueOf(sdata[i]));
+                } else if (header[i].matches(RegExp.SIMSTD.getREgExp())) {
+                    metabolite.setSimilaritySTDDev(Double.valueOf(sdata[i]));
+                } else if (header[i].matches(RegExp.NAME.getREgExp())) {
+                    metabolite.setName(sdata[i]);
+                } else if (header[i].matches(RegExp.ALLNAMES.getREgExp())) {
+                    metabolite.setAllNames(sdata[i]);
+                } else if (header[i].matches(RegExp.MASS.getREgExp())) {
+                    metabolite.setMass(Double.valueOf(sdata[i]));
+                } else if (header[i].matches(RegExp.DIFFERENCE.getREgExp())) {
+                    metabolite.setDifference(Double.valueOf(sdata[i]));
+                }else if (header[i].matches(RegExp.PUBCHEM.getREgExp())) {
+                    metabolite.setPubChemID(sdata[i]);
+                }else if (header[i].matches(RegExp.SPECTRUM.getREgExp())) {
+                    metabolite.setSpectrum(sdata[i]);
+                }else {
+                    try {
+                        metabolite.setPeak(header[i], Double.valueOf(sdata[i]));
+                    } catch (Exception e) {
+                        if (sdata[i].matches("DETECTED")) {
+                            metabolite.setPeak(header[i], 1.0);
+                        } else {
+                            metabolite.setPeak(header[i], 0.0);
+                        }
+                    }
+                }
+                if (metabolite.getName() == null || metabolite.getName().isEmpty()) {
+                    metabolite.setName("unknown");
+                }               
+            }
+            metabolite.setSelectionMode(false);
+            this.dataset.AddRow(metabolite);
+
+        } catch (Exception exception) {
+        }
     }
 
     public Dataset getDataset() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.dataset;
     }
 
+    private void setExperimentsName(String[] header) {
+        try {
+            int numFixColumns = 0;
+            String regExpression = "";
+            for (RegExp value : RegExp.values()) {
+                regExpression += value.getREgExp() + "|";
+            }
+            for (int i = 0; i < header.length; i++) {
+                if (!header[i].matches(regExpression)) {
+                    this.dataset.AddNameExperiment(header[i]);
+                } else {
+                    numFixColumns++;
+                }
+            }
+            this.dataset.setNumberFixColumns(numFixColumns + 3);
+
+        } catch (Exception exception) {
+        }
+    }
 }
