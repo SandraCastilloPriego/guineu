@@ -48,7 +48,6 @@ public class PushableTable implements DataTable, TableModelListener {
     JTable table;
 
     public PushableTable() {
-
     }
 
     public PushableTable(DataTableModel model) {
@@ -77,8 +76,8 @@ public class PushableTable implements DataTable, TableModelListener {
 
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int Index_row, int Index_col) {
-                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);               
-                try {                    
+                Component comp = super.prepareRenderer(renderer, Index_row, Index_col);
+                try {
                     if (getStandard(Index_row)) {
                         comp.setBackground(Color.yellow);
                     } else if (isDataSelected(Index_row) && (Index_col != 0)) {
@@ -92,6 +91,7 @@ public class PushableTable implements DataTable, TableModelListener {
                     }
                     table.repaint();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 return comp;
@@ -110,11 +110,15 @@ public class PushableTable implements DataTable, TableModelListener {
         return colorTable;
     }
 
-    public boolean getStandard(int row){
-        if((Integer)this.getTable().getValueAt(row, 8) == 1){
-            return true;
+    public boolean getStandard(int row) {
+        try {
+            if ((Integer) this.getTable().getValueAt(row, 8) == 1) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 
     public void setTableProperties() {
@@ -148,7 +152,7 @@ public class PushableTable implements DataTable, TableModelListener {
             //columns size
             this.setColumnSize(8, 170, table);
             this.setColumnSize(9, 170, table);
-        } else if (this.model.getType() == DatasetType.LCMS){
+        } else if (this.model.getType() == DatasetType.LCMS) {
             //table listener
             // table.getSelectionModel().addListSelectionListener(new RowListener());	    
             //columns size
@@ -168,7 +172,7 @@ public class PushableTable implements DataTable, TableModelListener {
         NumberFormat format = NumberFormat.getNumberInstance();
         format.setMinimumFractionDigits(7);
         int init = model.getFixColumns();
-        
+
         for (int i = init; i <
                 table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(new NumberRenderer(format));
@@ -361,6 +365,6 @@ public class PushableTable implements DataTable, TableModelListener {
         }
     }
 
-    public void tableChanged(TableModelEvent e) {      
+    public void tableChanged(TableModelEvent e) {
     }
 }
