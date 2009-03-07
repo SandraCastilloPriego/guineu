@@ -23,8 +23,6 @@ import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.parser.Parser;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
