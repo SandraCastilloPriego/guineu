@@ -57,7 +57,7 @@ public class LCMSParserCSV implements Parser {
         while (matcher.find()) {
             index = matcher.start();
         }
-        String n = datasetPath.substring(index + 1, datasetPath.length() - 4);
+        String n = "LCMS - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
         return n;
     }
 
@@ -153,11 +153,11 @@ public class LCMSParserCSV implements Parser {
                         "|.*n_found.*|.*Standard.*|.*Class.*|.*FAComposition.*" +
                         "|.*LipidName.*|.*Lipid name.*|.*Lipid Name.*" +
                         "|.*Identity.*|.*Name.*|.*All Names.*")) {
-                    this.dataset.AddNameExperiment(header[i]);                    
-                }else{
+                    this.dataset.AddNameExperiment(header[i]);
+                } else {
                     numFixColumns++;
                 }
-            }           
+            }
             this.dataset.setNumberFixColumns(numFixColumns + 3);
 
         } catch (Exception exception) {
