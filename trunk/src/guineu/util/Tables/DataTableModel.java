@@ -34,11 +34,11 @@ public interface DataTableModel extends TableModel {
 
     public void setSortDirection(SortingDirection direction);
 
-    public void setSortCol(int column);   
+    public void setSortCol(int column);  
 
-    public void changeData(int column, int row);
+    public int getFixColumns();
 
     public Dataset removeRows();
     
-    public DatasetType getType();
+    public DatasetType getType();   
 }

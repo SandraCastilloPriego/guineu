@@ -25,109 +25,109 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.table.AbstractTableModel;
 
-
-
-
 public class OtherDataModel extends AbstractTableModel implements DataTableModel {
 
-	private int numColumns;
-	private int numRows;	
-	private SimpleDatasetOther dataset;
-	protected SortingDirection isSortAsc = SortingDirection.Ascending;
-	protected int sortCol = 0;
+    private int numColumns;
+    private int numRows;
+    private SimpleDatasetOther dataset;
+    protected SortingDirection isSortAsc = SortingDirection.Ascending;
+    protected int sortCol = 0;
 
-	public OtherDataModel(Dataset dataset) {
-		this.dataset = (SimpleDatasetOther) dataset;
-		numColumns = this.dataset.getNumberCols();
-		numRows = this.dataset.getNumberRows();
-	}
-	
-	
-	
-	public Dataset removeRows() {
-		SimpleDatasetOther newDataset = new SimpleDatasetOther(this.dataset.getDatasetName());
-		/* for (int i = 0; i < rows.length; i++) {
-		if (!(Boolean) rows[i][0]) {
-		PeakListRow_concatenate peakListRow = (PeakListRow_concatenate) dataset.getRow(i).clone();
-		newDataset.AddRow(peakListRow);
-		}
-		}*/
-		newDataset.setNameExperiments(dataset.getNameExperiments());
-		newDataset.setType(dataset.getType());
-		return newDataset;
-	}
+    public OtherDataModel(Dataset dataset) {
+        this.dataset = (SimpleDatasetOther) dataset;
+        numColumns = this.dataset.getNumberCols();
+        numRows = this.dataset.getNumberRows();
+    }
 
-	public int getColumnCount() {
-		return numColumns;
-	}
+    public Dataset removeRows() {
+        SimpleDatasetOther newDataset = new SimpleDatasetOther(this.dataset.getDatasetName());
+        /* for (int i = 0; i < rows.length; i++) {
+        if (!(Boolean) rows[i][0]) {
+        PeakListRow_concatenate peakListRow = (PeakListRow_concatenate) dataset.getRow(i).clone();
+        newDataset.AddRow(peakListRow);
+        }
+        }*/
+        newDataset.setNameExperiments(dataset.getNameExperiments());
+        newDataset.setType(dataset.getType());
+        return newDataset;
+    }
 
-	public int getRowCount() {
-		return numRows;
-	}
+    public int getColumnCount() {
+        return numColumns;
+    }
 
-	public Object getValueAt(final int row, final int column) {
-		String peak = (String) ((SimplePeakListRowOther)this.dataset.getRow(row)).getPeak(column, this.dataset.getNameExperiments());
-		if(peak != null){
-			return peak;
-		}else{
-			return "NA";
-		}
-	}
+    public int getRowCount() {
+        return numRows;
+    }
 
-	@Override
-	public String getColumnName(int columnIndex) {
-		return this.dataset.getNameExperiments().elementAt(columnIndex);
-	}
+    public Object getValueAt(final int row, final int column) {
+        String peak = (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(column, this.dataset.getNameExperiments());
+        if (peak != null) {
+            return peak;
+        } else {
+            return "NA";
+        }
+    }
 
-	@Override
-	public Class<?> getColumnClass(int c) {
-		if (getValueAt(0, c) != null) {
-			return getValueAt(0, c).getClass();
-		} else {
-			return Object.class;
-		}
-	}
+    @Override
+    public String getColumnName(int columnIndex) {
+        return this.dataset.getNameExperiments().elementAt(columnIndex);
+    }
 
-	@Override
-	public void setValueAt(Object aValue, int row, int column) {
-		((SimplePeakListRowOther) this.dataset.getRow(row)).setPeak(this.dataset.getNameExperiments().elementAt(column), aValue.toString());
-		fireTableCellUpdated(row, column);
-	}
+    @Override
+    public Class<?> getColumnClass(int c) {
+        if (getValueAt(0, c) != null) {
+            return getValueAt(0, c).getClass();
+        } else {
+            return Object.class;
+        }
+    }
 
-	@Override
-	public boolean isCellEditable(int row, int column) {
-		return true;
-	}
+    @Override
+    public void setValueAt(Object aValue, int row, int column) {
+        ((SimplePeakListRowOther) this.dataset.getRow(row)).setPeak(this.dataset.getNameExperiments().elementAt(column), aValue.toString());
+        fireTableCellUpdated(row, column);
+    }
 
-	public SortingDirection getSortDirection() {
-		return isSortAsc;
-	}
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return true;
+    }
 
-	public int getSortCol() {
-		return sortCol;
-	}
+    public SortingDirection getSortDirection() {
+        return isSortAsc;
+    }
 
-	public void setSortDirection(SortingDirection direction) {
-		this.isSortAsc = direction;
-	}
+    public int getSortCol() {
+        return sortCol;
+    }
 
-	public void setSortCol(int column) {
-		this.sortCol = column;
-	}
+    public void setSortDirection(SortingDirection direction) {
+        this.isSortAsc = direction;
+    }
 
-	public void changeData(int column, int row) {
-		/* if (dataset.getType() != DatasetType.LCMS || dataset.getType() != DatasetType.GCGCTOF ) {
-		SimplePeakListRowConcatenate peakListRow = (SimplePeakListRowConcatenate) this.dataset.getRow(row);
-		try {
-		String experimentName = this.columns[column];
-		peakListRow.setPeak(experimentName, (String)rows[row][column]);
-		} catch (Exception e) {
-		e.printStackTrace();
-		}
-		} */
-	}
+    public void setSortCol(int column) {
+        this.sortCol = column;
+    }
 
-	public DatasetType getType() {
-		return this.dataset.getType();
-	}
+    public void changeData(int column, int row) {
+        /* if (dataset.getType() != DatasetType.LCMS || dataset.getType() != DatasetType.GCGCTOF ) {
+        SimplePeakListRowConcatenate peakListRow = (SimplePeakListRowConcatenate) this.dataset.getRow(row);
+        try {
+        String experimentName = this.columns[column];
+        peakListRow.setPeak(experimentName, (String)rows[row][column]);
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        } */
+    }
+
+    public DatasetType getType() {
+        return this.dataset.getType();
+    }
+
+    public int getFixColumns() {
+        return 0;
+    }
+
 }

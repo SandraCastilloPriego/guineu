@@ -126,5 +126,13 @@ public class SimpleDatasetOther implements Dataset {
         return newDataset;
     }
 
+    public int getNumberFixColumns() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNumberFixColumns(int columnNum) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     
 }

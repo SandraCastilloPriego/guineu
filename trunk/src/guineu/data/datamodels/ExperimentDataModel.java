@@ -215,6 +215,10 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
         this.numColumns = count;
     }
 
+    public int getFixColumns() {
+        return 0;
+    }
+   
    
 	
 /*sort the table*/

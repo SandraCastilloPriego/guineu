@@ -29,7 +29,7 @@ import java.util.Vector;
  */
 public class SimplePeakListRowGCGC implements PeakListRow {
 
-    private int ID;
+    private int ID, numberFixColumns;
     private double RT1,  RT2,  RTI,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  numFound,  mass,  difference;
     private String name,  allNames,  spectra,  pubChemID;
     private Hashtable<String, Double> peaks;
@@ -55,6 +55,7 @@ public class SimplePeakListRowGCGC implements PeakListRow {
         this.pubChemID = pubChemID;
         this.control = true;
         this.peaks = new Hashtable<String, Double>();
+        this.numberFixColumns = 15;
     }
 
     public SimplePeakListRowGCGC() {
@@ -265,4 +266,12 @@ public class SimplePeakListRowGCGC implements PeakListRow {
 	public Object getPeak(int col, Vector<String> sampleNames) {
 		 return this.peaks.get(sampleNames.elementAt(col));
 	}
+
+    public int getNumberFixColumns() {
+        return this.numberFixColumns;
+    }
+
+    public void setNumberFixColumns(int columnNum) {
+        this.numberFixColumns = columnNum;
+    }
 }

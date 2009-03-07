@@ -75,6 +75,14 @@ public class ExperimentDataset implements Dataset {
 	public void setType(DatasetType type) {
 		this.type = type;
 	}
+
+    public int getNumberFixColumns() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNumberFixColumns(int columnNum) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
     
 }
