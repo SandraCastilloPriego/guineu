@@ -234,7 +234,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
     }
 
     public String getDatasetName() {
-        return this.getDatasetName(DatasetName);
+        return "LCMS - " + this.getDatasetName(DatasetName);
     }
 
     public String[] getSheetNames(String fileName) throws IOException {

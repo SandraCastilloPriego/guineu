@@ -69,7 +69,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
     }
 
     public String getDatasetName() {
-        return this.getDatasetName(DatasetPath);
+        return "GCGC - " +this.getDatasetName(DatasetPath);
     }
 
     public float getProgress() {
