@@ -115,45 +115,44 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
                     continue;
                 }
                 cell = row.getCell((short) i);
-                if (title.matches(".*Average M/Z.*") || title.matches(".*Average m/z.*")) {
+                if (title.matches(RegExp.MZ.getREgExp())) {
                     if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
                         lipid.setMZ(cell.getNumericCellValue());
                     } else {
                         lipid.setMZ(Double.valueOf(cell.toString()));
                     }
-                } else if (title.matches(".*Average RT.*") || title.matches(".*Average retention time.*")) {
+                } else if (title.matches(RegExp.RT.getREgExp())) {
                     if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
                         lipid.setRT(cell.getNumericCellValue());
                     } else {
                         lipid.setRT(Double.valueOf(cell.toString()));
                     }
-                } else if (title.matches(".*LipidName.*") || title.matches(".*Lipid name.*") || title.matches(".*Lipid Name.*") || title.matches("^Name.*")) {
+                } else if (title.matches(RegExp.NAME.getREgExp())) {
                     String str = cell.toString();
                     if (str.indexOf("GPEth") > -1) {
                         str = this.replace(str, "GPEth", "GPEtn");
                     }
                     lipid.setName(str);
                     lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
-                } else if (title.matches(".*Class.*")) {
-
-                } else if (title.matches(".*Num Found.*") || title.matches(".*n_found.*") || title.matches(".*Number of detected peaks.*")) {
+                } else if (title.matches(RegExp.CLASS.getREgExp())) {
+                } else if (title.matches(RegExp.NFOUND.getREgExp())) {
                     if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
                         lipid.setNumFound((int) cell.getNumericCellValue());
                     } else {
                         lipid.setNumFound(Integer.valueOf(cell.toString()));
                     }
-                } else if (title.matches(".*Standard.*")) {
+                } else if (title.matches(RegExp.STANDARD.getREgExp())) {
                     if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
                         lipid.setStandard((int) cell.getNumericCellValue());
                     } else {
                         lipid.setStandard(Integer.valueOf(cell.toString()));
                     }
-                } else if (title.matches(".*Identity.*") || title.matches(".*All Names.*")) {
+                } else if (title.matches(RegExp.ALLNAMES.getREgExp())) {
                     try {
                         lipid.setAllNames(cell.toString());
                     } catch (Exception e) {
                     }
-                } else if (title.matches(".*Aligment.*")) {
+                } else if (title.matches(RegExp.ALIGNMENT.getREgExp())) {
                     try {
                         lipid.setAllNames(cell.toString());
                     } catch (Exception e) {
@@ -199,7 +198,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
             String str = row.getCell(i).toString().replaceAll("'", ",");
             if (row.getCell(i) != null) {
                 this.head.addElement(str);
-                if (row.getCell(i).toString().matches(".*Class.*") || row.getCell(i).toString().matches(".*Num Found.*") || row.getCell(i).toString().matches(".*Standard.*")) {
+                if (row.getCell(i).toString().matches(".*Class.*|.*Num Found.*|.*Standard.*")) {
                     N++;
                 }
             }
@@ -248,9 +247,13 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
     private void setExperimentsName(Vector<String> header) {
         try {
+            String regExpression = "";
+            for (RegExp value : RegExp.values()) {
+                regExpression += value.getREgExp() + "|";
+            }
 
             for (int i = 0; i < header.size(); i++) {
-                if (!header.elementAt(i).matches(".*ID.*") && !header.elementAt(i).matches(".*Alignment.*") && !header.elementAt(i).matches(".*Aligment.*") && (!header.elementAt(i).matches(".*Average M/Z.*") && !header.elementAt(i).matches(".*Average m/z.*")) && (!header.elementAt(i).matches(".*Average RT.*") && !header.elementAt(i).matches(".*Average retention time.*")) && (!header.elementAt(i).matches(".*Num Found.*") && !header.elementAt(i).matches(".*Number of detected peaks.*") && !header.elementAt(i).matches(".*n_found.*")) && !header.elementAt(i).matches(".*Standard.*") && !header.elementAt(i).matches(".*Class.*") && !header.elementAt(i).matches(".*FAComposition.*") && (!header.elementAt(i).matches(".*LipidName.*") && !header.elementAt(i).matches(".*Lipid name.*") && !header.elementAt(i).matches(".*Lipid Name.*")) && (!header.elementAt(i).matches(".*Identity.*") && !header.elementAt(i).matches(".*Name.*") && !header.elementAt(i).matches(".*All Names.*"))) {
+                if (!header.elementAt(i).matches(regExpression)) {
                     this.dataset.AddNameExperiment(header.elementAt(i));
                 }
             }
