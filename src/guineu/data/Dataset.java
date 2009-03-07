@@ -37,6 +37,8 @@ public interface Dataset {
 
     public PeakListRow getRow(int row);
 
+    public void removeRow(PeakListRow row);
+
     public int getNumberFixColumns();
 
     public void setNumberFixColumns(int columnNum);

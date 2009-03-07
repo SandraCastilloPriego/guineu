@@ -38,7 +38,7 @@ public interface DataTableModel extends TableModel {
 
     public int getFixColumns();
 
-    public Dataset removeRows();
+    public void removeRows();
     
     public DatasetType getType();   
 }

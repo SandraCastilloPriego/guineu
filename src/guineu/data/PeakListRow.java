@@ -92,4 +92,8 @@ public interface PeakListRow {
     public int getNumberFixColumns();
 
     public void setNumberFixColumns(int columnNum);
+
+    public boolean isSelected();
+
+    public void setSelectionMode(boolean selectionMode);
 }

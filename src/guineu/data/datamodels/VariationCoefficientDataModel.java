@@ -186,10 +186,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
     public void changeData(int column, int row) {
 
     }
-
-    public SimpleDataset removeRows() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+   
 
     public DatasetType getType() {
         return null;
@@ -197,6 +194,10 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
 
     public int getFixColumns() {
         return 0;
+    }
+
+    public void removeRows() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

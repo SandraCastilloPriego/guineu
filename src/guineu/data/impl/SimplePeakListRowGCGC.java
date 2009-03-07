@@ -33,7 +33,7 @@ public class SimplePeakListRowGCGC implements PeakListRow {
     private double RT1,  RT2,  RTI,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  numFound,  mass,  difference;
     private String name,  allNames,  spectra,  pubChemID;
     private Hashtable<String, Double> peaks;
-    private boolean control;
+    private boolean control, selection;
 
     public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
             double maxSimilarity, double meanSimilarity, double similaritySTDDev,
@@ -273,5 +273,13 @@ public class SimplePeakListRowGCGC implements PeakListRow {
 
     public void setNumberFixColumns(int columnNum) {
         this.numberFixColumns = columnNum;
+    }
+
+    public boolean isSelected() {
+        return this.selection;
+    }
+
+    public void setSelectionMode(boolean selectionMode) {
+        this.selection = selectionMode;
     }
 }
