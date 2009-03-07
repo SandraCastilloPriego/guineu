@@ -23,6 +23,7 @@ import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.parser.Parser;
+import guineu.taskcontrol.Task;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,19 +36,17 @@ public class LCMSParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleDataset dataset;
-    private float progress;
+    private int rowsNumber;
+    private int rowsReaded;
     Lipidclass LipidClassLib;
 
     public LCMSParserCSV(String datasetPath) {
-        progress = 0.1f;
+        this.rowsNumber = 0;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDataset(this.getDatasetName());
-        progress = 0.3f;
         this.dataset.setType(DatasetType.LCMS);
         this.LipidClassLib = new Lipidclass();
-        progress = 0.5f;
-        fillData();
-        progress = 1.0f;
+        countNumberRows(); 
     }
 
     public String getDatasetName() {
@@ -62,7 +61,7 @@ public class LCMSParserCSV implements Parser {
     }
 
     public float getProgress() {
-        return progress;
+        return (float)rowsReaded/rowsNumber;
     }
 
     public void fillData() {
@@ -74,6 +73,7 @@ public class LCMSParserCSV implements Parser {
 
             while (reader.readRecord()) {
                 getData(reader.getValues(), header);
+                rowsReaded++;
             }
 
             setExperimentsName(header);
@@ -159,6 +159,17 @@ public class LCMSParserCSV implements Parser {
             this.dataset.setNumberFixColumns(numFixColumns + 3);
 
         } catch (Exception exception) {
+        }
+    }
+
+    private void countNumberRows() {
+        try {
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
+            while (reader.readRecord()) {
+                this.rowsNumber++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
