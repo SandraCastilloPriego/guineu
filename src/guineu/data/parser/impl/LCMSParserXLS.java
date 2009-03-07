@@ -39,7 +39,6 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
     private Lipidclass LipidClassLib;
     private HSSFWorkbook book;
     private String sheetName;
-    private float progress;
     private int numberRows,  rowsReaded;
 
     public LCMSParserXLS(String DatasetName, String sheetName) {
@@ -62,20 +61,19 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
                 sheet = book.getSheetAt(0);
             }
 
-            progress = 0.1f;
             int initRow = this.getRowInit(sheet);
-            progress = 0.2f;
+
             numberRows = this.getNumberRows(initRow, sheet);
-            progress = 0.4f;
+
             HSSFRow row = sheet.getRow(initRow);
             for (int i = 0; i < row.getLastCellNum(); i++) {
                 HSSFCell cell = row.getCell((short) i);
                 this.head.addElement(cell.toString());
             }
             this.readLipids(initRow + 1, numberRows, sheet);
-            progress = 0.7f;
+
             this.setExperimentsName(head);
-            progress = 0.9f;
+
         } catch (IOException ex) {
             Logger.getLogger(LCMSParserXLS.class.getName()).log(Level.SEVERE, null, ex);
         }
