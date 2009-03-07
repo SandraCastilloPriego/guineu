@@ -31,10 +31,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-/**
- *
- * @author scsandra
- */
+
 public class LCMSParserXLS extends ParserXLS implements Parser {
 
     private String DatasetName;
@@ -247,6 +244,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
     private void setExperimentsName(Vector<String> header) {
         try {
+            int numFixColumns = 0;
             String regExpression = "";
             for (RegExp value : RegExp.values()) {
                 regExpression += value.getREgExp() + "|";
@@ -255,8 +253,12 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
             for (int i = 0; i < header.size(); i++) {
                 if (!header.elementAt(i).matches(regExpression)) {
                     this.dataset.AddNameExperiment(header.elementAt(i));
+                } else {
+                    numFixColumns++;
                 }
             }
+
+            this.dataset.setNumberFixColumns(numFixColumns + 3);
 
         } catch (Exception exception) {
         }

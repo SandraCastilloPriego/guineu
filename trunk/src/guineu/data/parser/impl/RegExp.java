@@ -15,31 +15,37 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data.parser.impl;
 
-/**
- *
- * @author bicha
- */
 public enum RegExp {
-    ID (".*ID.*"),
-    MZ (".*Average M/Z.*|.*Average m/z.*|.*row m/z.*"),
-    RT (".*Average RT.*|.*Average retention time.*|.*retention time*"),
-    NAME (".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*"),
+
+    ID(".*ID.*"),
+    MZ(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*"),
+    RT(".*Average RT.*|.*Average retention time.*|.*retention time*"),
+    NAME(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*"),
     ALLNAMES(".*Identity.*|.*All Names.*"),
-    CLASS (".*Class.*"),
-    NFOUND (".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*"),
-    STANDARD (".*Standard.*"),
-    FA (".*FAComposition.*"),
-    ALIGNMENT (".*Aligment.*|.*Alignment.*");
+    CLASS(".*Class.*"),
+    NFOUND(".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*"),
+    STANDARD(".*Standard.*"),
+    FA(".*FAComposition.*"),
+    ALIGNMENT(".*Aligment.*|.*Alignment.*"),
+    MASS(".*Mass.*"),
+    RT1(".*RT1.*"),
+    RT2(".*RT2.*"),
+    RTI(".*RTI.*"),
+    DIFFERENCE(".*Difference.*"),
+    PUBCHEM(".*Pubchem.*"),
+    MAXSIM(".*Max.*"),
+    MEANSIM(".*Mean.*"),
+    SIMSTD(".*Similarity std dev.*"),
+    SPECTRUM(".*Spectrum.*");
     private final String columnName;
 
-    RegExp(String columnName){
+    RegExp(String columnName) {
         this.columnName = columnName;
     }
 
-    public String getREgExp(){
+    public String getREgExp() {
         return this.columnName;
     }
 }
