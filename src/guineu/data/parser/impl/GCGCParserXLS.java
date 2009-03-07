@@ -31,41 +31,20 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-/**
- *
- * @author scsandra
- */
+
 public class GCGCParserXLS extends ParserXLS implements Parser {
 
     private String DatasetPath;
     private HSSFWorkbook book;
-    private float progress;
-    private String[] mol_dates;
-    private Vector<String> head;
-    private Vector<String> experimentName;
+    private float progress; 
+    private Vector<String> head;  
     SimpleDataset dataset;
 
     public GCGCParserXLS(String DatasetPath) {
         this.DatasetPath = DatasetPath;
         this.dataset = new SimpleDataset(this.getDatasetName());
-        this.dataset.setType(DatasetType.GCGCTOF);
-        experimentName = new Vector<String>();
-        head = new Vector<String>();
-
-        mol_dates = new String[13];
-        mol_dates[0] = ".*Mass.*";
-        mol_dates[1] = ".*RT1.*";
-        mol_dates[2] = ".*RT2.*";
-        mol_dates[3] = ".*RTI.*";
-        mol_dates[4] = ".*Num Found.*";
-        mol_dates[5] = ".*Difference.*";
-        mol_dates[6] = ".*All names.*";
-        mol_dates[7] = ".*Name.*";
-        mol_dates[8] = ".*Pubchem.*";
-        mol_dates[9] = ".*Max.*";
-        mol_dates[10] = ".*Mean.*";
-        mol_dates[11] = ".*Similarity std dev.*";
-        mol_dates[12] = ".*Spectrum.*";
+        this.dataset.setType(DatasetType.GCGCTOF);       
+        head = new Vector<String>();       
     }
 
     public String getDatasetName() {
@@ -85,64 +64,23 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
             sheet = book.getSheetAt(0);
 
             HSSFRow row = sheet.getRow(0);
-            readHead(row);
+            for (int i = 0; i < row.getLastCellNum(); i++) {
+                HSSFCell cell = row.getCell((short) i);
+                this.head.addElement(cell.toString());
+            }
             int numberRows = this.getNumberRows(0, sheet);
 
             progress = 0.4f;
             for (int i = 1; i < numberRows + 1; i++) {
                 this.read_data(sheet, i);
             }
-            this.dataset.setNameExperiments(experimentName);
+            this.setExperimentsName(head);
             progress = 1.0f;
         } catch (IOException ex) {
             Logger.getLogger(GCGCParserXLS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
-
-    private void readHead(HSSFRow row) {
-        int N = 0;
-
-        int index = this.getLastIndex(row);
-
-        for (short i = 0; i < index; i++) {
-            String str = row.getCell(i).toString().replaceAll("'", "");
-            this.head.addElement(str);
-            for (int j = 0; j < mol_dates.length - 1; j++) {
-                if (str.matches(this.mol_dates[j])) {
-                    N++;
-                }
-            }
-        }
-
-        for (short i = (short) N; i < index; i++) {
-            String str = row.getCell(i).toString().replaceAll("'", "");
-            if (!str.matches(mol_dates[12]) && !str.isEmpty()) {
-                experimentName.addElement(str);
-            }
-        }
-        String str = row.getCell((short) index).toString();
-        //Spectrum
-        if (str.matches(mol_dates[12])) {
-            this.head.addElement(str);
-        }
-
-    }
-
-    private int getLastIndex(HSSFRow row) {
-        int index = row.getLastCellNum();
-        try {
-            HSSFCell cell = row.getCell((short) index);
-            while (cell == null) {
-                index--;
-                cell = row.getCell((short) index);
-            }
-            return index;
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return index;
-        }
-    }
+    }   
 
     /**
      * Read one line of data in the dataset (=excel file) and introduce it in the StructGCGC gcgctof
@@ -152,31 +90,31 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
             HSSFRow row = sheet.getRow(Index);
             SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
             for (int e = 0; e < head.size(); e++) {
-                if (head.elementAt(e).matches(this.mol_dates[0])) {
+                if (head.elementAt(e).matches(RegExp.MASS.getREgExp())) {
                     metabolite.setMass(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[1])) {
+                } else if (head.elementAt(e).matches(RegExp.RT1.getREgExp())) {
                     metabolite.setRT1(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[2])) {
+                } else if (head.elementAt(e).matches(RegExp.RT2.getREgExp())) {
                     metabolite.setRT2(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[3])) {
+                } else if (head.elementAt(e).matches(RegExp.RTI.getREgExp())) {
                     metabolite.setRTI(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[4])) {
+                } else if (head.elementAt(e).matches(RegExp.NFOUND.getREgExp())) {
                     metabolite.setNumFound(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[5])) {
+                } else if (head.elementAt(e).matches(RegExp.DIFFERENCE.getREgExp())) {
                     metabolite.setDifference(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[6])) {
+                } else if (head.elementAt(e).matches(RegExp.ALLNAMES.getREgExp())) {
                     metabolite.setAllNames(this.setStringDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[7])) {
+                } else if (head.elementAt(e).matches(RegExp.NAME.getREgExp())) {
                     metabolite.setName(this.setStringDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[8])) {
+                } else if (head.elementAt(e).matches(RegExp.PUBCHEM.getREgExp())) {
                     metabolite.setPubChemID(this.setStringDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[9])) {
+                } else if (head.elementAt(e).matches(RegExp.MAXSIM.getREgExp())) {
                     metabolite.setMaxSimilarity(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[10])) {
+                } else if (head.elementAt(e).matches(RegExp.MEANSIM.getREgExp())) {
                     metabolite.setMeanSimilarity(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[11])) {
+                } else if (head.elementAt(e).matches(RegExp.SIMSTD.getREgExp())) {
                     metabolite.setSimilaritySTDDev(this.setDateInToStruct(row, e));
-                } else if (head.elementAt(e).matches(this.mol_dates[12])) {
+                } else if (head.elementAt(e).matches(RegExp.SPECTRUM.getREgExp())) {
                     metabolite.setSpectrum(this.setStringDateInToStruct(row, e));
                 } else {
                     try{
@@ -220,6 +158,28 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
         } catch (Exception e) {
             System.out.println("ParserMetGCGC.java ---> setStringDataInToStruct() " + e);
             return "";
+        }
+    }
+
+     private void setExperimentsName(Vector<String> header) {
+        try {
+            int numFixColumns = 0;
+            String regExpression = "";
+            for (RegExp value : RegExp.values()) {
+                regExpression += value.getREgExp() + "|";
+            }
+
+            for (int i = 0; i < header.size(); i++) {
+                if (!header.elementAt(i).matches(regExpression)) {
+                    this.dataset.AddNameExperiment(header.elementAt(i));
+                } else {
+                    numFixColumns++;
+                }
+            }
+
+            this.dataset.setNumberFixColumns(numFixColumns + 3);
+
+        } catch (Exception exception) {
         }
     }
 
