@@ -41,7 +41,7 @@ public class OpenFileTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private double progress;
+    private Parser parser;
 
     public OpenFileTask(String fileDir, Desktop desktop) {
         if (fileDir != null) {
@@ -55,7 +55,11 @@ public class OpenFileTask implements Task {
     }
 
     public double getFinishedPercentage() {
-        return progress;
+        if (parser != null) {
+            return parser.getProgress();
+        } else {
+            return 0.0f;
+        }
     }
 
     public TaskStatus getStatus() {
@@ -82,14 +86,14 @@ public class OpenFileTask implements Task {
 
     public void openFile() {
         status = TaskStatus.PROCESSING;
-        Parser parser;
         if (fileDir.matches(".*xls")) {
             try {
-                parser = new LCMSParserXLS(fileDir, null);
-                String[] sheetsNames = ((LCMSParserXLS)parser).getSheetNames(fileDir);
+                Parser parserName = new LCMSParserXLS(fileDir, null);
+                String[] sheetsNames = ((LCMSParserXLS) parserName).getSheetNames(fileDir);
                 for (String Name : sheetsNames) {
                     try {
-                         parser = new LCMSParserXLS(fileDir, Name);
+                        parser = new LCMSParserXLS(fileDir, Name);
+                        parser.fillData();
                         this.open(parser);
                     } catch (Exception exception) {
                         // exception.printStackTrace();
@@ -101,12 +105,12 @@ public class OpenFileTask implements Task {
             try {
                 if (status == TaskStatus.PROCESSING) {
                     parser = new LCMSParserCSV(fileDir);
+                    parser.fillData();
                     this.open(parser);
                 }
             } catch (Exception ex) {
             }
         }
-        progress = 1f;
         status = TaskStatus.FINISHED;
     }
 
@@ -114,7 +118,6 @@ public class OpenFileTask implements Task {
         try {
             if (status == TaskStatus.PROCESSING) {
                 SimpleDataset dataset = (SimpleDataset) parser.getDataset();
-                // progress += parser.getProgress() / sheetsNames.length;
                 desktop.AddNewFile(dataset);
 
                 //creates internal frame with the table

@@ -31,7 +31,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-
 public class LCMSParserXLS extends ParserXLS implements Parser {
 
     private String DatasetName;
@@ -41,16 +40,16 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
     private HSSFWorkbook book;
     private String sheetName;
     private float progress;
+    private int numberRows,  rowsReaded;
 
     public LCMSParserXLS(String DatasetName, String sheetName) {
+        this.numberRows = 0;
+        this.rowsReaded = 0;
         this.DatasetName = DatasetName;
         this.sheetName = sheetName;
-        this.dataset = new SimpleDataset(this.getDatasetName());        
+        this.dataset = new SimpleDataset(this.getDatasetName());
         this.head = new Vector<String>();
         this.LipidClassLib = new Lipidclass();
-        if (sheetName != null) {
-            this.fillData();
-        }
     }
 
     public void fillData() {
@@ -66,7 +65,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
             progress = 0.1f;
             int initRow = this.getRowInit(sheet);
             progress = 0.2f;
-            int numberRows = this.getNumberRows(initRow, sheet);
+            numberRows = this.getNumberRows(initRow, sheet);
             progress = 0.4f;
             HSSFRow row = sheet.getRow(initRow);
             for (int i = 0; i < row.getLastCellNum(); i++) {
@@ -93,6 +92,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
         for (int i = initRow; i < numberRows + initRow; i++) {
             HSSFRow row = sheet.getRow(i);
             this.readRow(row);
+            this.rowsReaded++;
         }
     }
 
@@ -230,7 +230,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
     }
 
     public String getDatasetName() {
-        return "LCMS - " + this.getDatasetName(DatasetName) + " - "+ sheetName;
+        return "LCMS - " + this.getDatasetName(DatasetName) + " - " + sheetName;
     }
 
     public String[] getSheetNames(String fileName) throws IOException {
@@ -265,7 +265,11 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
     }
 
     public float getProgress() {
-        return progress;
+        if (this.numberRows != 0) {
+            return (float) this.rowsReaded / this.numberRows;
+        } else {
+            return 0.0f;
+        }
     }
 
     public Dataset getDataset() {
