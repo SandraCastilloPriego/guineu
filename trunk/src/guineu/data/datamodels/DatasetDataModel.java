@@ -150,7 +150,13 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     @Override
     public String getColumnName(int columnIndex) {
         if (columnIndex < this.dataset.getNumberFixColumns()) {
-            return LCMSColumnName.values()[columnIndex].getColumnName();
+            if(this.dataset.getType() == DatasetType.LCMS){
+                return LCMSColumnName.values()[columnIndex].getColumnName();
+            }else if(this.dataset.getType() == DatasetType.GCGCTOF){
+                return CGCGColumnName.values()[columnIndex].getColumnName();
+            }else{
+                return this.dataset.getNameExperiments().elementAt(columnIndex - this.dataset.getNumberFixColumns());
+            }
         } else {
             return this.dataset.getNameExperiments().elementAt(columnIndex - this.dataset.getNumberFixColumns());
         }
@@ -269,43 +275,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     @Override
     public boolean isCellEditable(int row, int column) {
         return true;
-    }
-
-    void addColumn() {
-        /*    String[] oldColumns = this.columns.clone();
-        this.columns = new String[oldColumns.length + 1];
-        for (int i = 0; i < oldColumns.length; i++) {
-        System.out.println(oldColumns[i]);
-        this.columns[i] = oldColumns[i];
-        }
-        this.columns[oldColumns.length] = "New Column";
-        this.numColumns = this.columns.length;*/
-
-        /* this.addColumnObject(this.rows);
-        this.numRows = this.rows.length;*/
-    }
-
-    public void addColumnObject(Object[][] o) {
-        Object[][] oldRows = o.clone();
-        o = new Object[oldRows.length][oldRows[0].length + 1];
-        for (int i = 0; i < oldRows.length; i++) {
-            for (int j = 0; j < oldRows[0].length; j++) {
-                o[i][j] = oldRows[i][j];
-            }
-            o[i][oldRows[0].length] = " ";
-        }
-    }
-
-    public void addColumnObject(int[][] o) {
-        int[][] oldRows = o.clone();
-        o = new int[oldRows.length][oldRows[0].length + 1];
-        for (int i = 0; i < oldRows.length; i++) {
-            for (int j = 0; j < oldRows[0].length; j++) {
-                o[i][j] = oldRows[i][j];
-            }
-            o[i][oldRows[0].length] = 0;
-        }
-    }
+    }   
 
     public void setColumnCount(int count) {
         this.numColumns = count;
