@@ -36,18 +36,13 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     /**
      * All data in the main windows. It can be LCMS or GCGC-Tof data.
      */
-    private static final long serialVersionUID = 1L;
-    private Object[] selection;
-    private int numColumns;
-    private int numRows;
+    private int numColumns;   
     private SimpleDataset dataset;
     protected SortingDirection isSortAsc = SortingDirection.Ascending;
     protected int sortCol = 0;
 
     public DatasetDataModel(Dataset dataset) {
-        this.dataset = (SimpleDataset) dataset;
-        this.selection = new Object[this.dataset.getNumberRows()];
-        numRows = this.dataset.getNumberRows();
+        this.dataset = (SimpleDataset) dataset;        
         this.writeData();
     }
 
@@ -56,7 +51,6 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
         numColumns = this.dataset.getNumberCols() + this.dataset.getNumberFixColumns();
         for (int i = 0; i < dataset.getNumberRows(); i++) {
             peakListRow = (SimplePeakListRowLCMS) this.dataset.getRow(i);
-            selection[i] = new Boolean(false);
             if (peakListRow.getID() == -1) {
                 peakListRow.setID(i);
             }
@@ -64,17 +58,16 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 
     }
 
-    public SimpleDataset removeRows() {
-        SimpleDataset newDataset = new SimpleDataset(this.dataset.getDatasetName());
-        /*for (int i = 0; i < rows.length; i++) {
-        if (!(Boolean) rows[i][0]) {
-        PeakListRow peakListRow = dataset.getRow(i).clone();
-        newDataset.AddRow(peakListRow);
-        }
-        }*/
-        newDataset.setNameExperiments(dataset.getNameExperiments());
-        newDataset.setType(dataset.getType());
-        return newDataset;
+    public void removeRows() {       
+        for (int i= 0; i < this.dataset.getNumberRows(); i++) {
+            PeakListRow row = this.dataset.getRow(i);
+            if (row.isSelected()) {
+                this.dataset.removeRow(row);
+                fireTableStructureChanged();
+                this.removeRows();
+                break;
+            }
+        }         
     }
 
     public int getColumnCount() {
@@ -82,72 +75,76 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     }
 
     public int getRowCount() {
-        return numRows;
+        return this.dataset.getNumberRows();
     }
 
     public Object getValueAt(final int row, final int column) {
-        if (this.dataset.getType() == DatasetType.GCGCTOF) {
-            //GCGC-Tof files
-            switch (column) {
-                case 0:
-                    return selection[row];
-                case 1:
-                    return this.dataset.getRow(row).getID();
-                case 2:
-                    return this.dataset.getRow(row).getRT1();
-                case 3:
-                    return this.dataset.getRow(row).getRT2();
-                case 4:
-                    return this.dataset.getRow(row).getRTI();
-                case 5:
-                    return this.dataset.getRow(row).getNumFound();
-                case 6:
-                    return this.dataset.getRow(row).getMaxSimilarity();
-                case 7:
-                    return this.dataset.getRow(row).getMeanSimilarity();
-                case 8:
-                    return this.dataset.getRow(row).getSimilaritySTDDev();
-                case 9:
-                    return this.dataset.getRow(row).getName();
-                case 10:
-                    return this.dataset.getRow(row).getAllNames();
-                case 11:
-                    return this.dataset.getRow(row).getPubChemID();
-                case 12:
-                    return this.dataset.getRow(row).getMass();
-                case 13:
-                    return this.dataset.getRow(row).getDifference();
-                case 14:
-                    return this.dataset.getRow(row).getSpectrum();
-            }
-        } else if (this.dataset.getType() == DatasetType.LCMS) {
-            switch (column) {
-                case 0:
-                    return selection[row];
-                case 1:
-                    return this.dataset.getRow(row).getID();
-                case 2:
-                    return this.dataset.getRow(row).getMZ();
-                case 3:
-                    return this.dataset.getRow(row).getRT();
-                case 4:
-                    return this.dataset.getRow(row).getName();
-                case 5:
-                    return this.dataset.getRow(row).getAllNames();
-                case 6:
-                    return this.dataset.getRow(row).getLipidClass();
-                case 7:
-                    return this.dataset.getRow(row).getNumFound();
-                case 8:
-                    return this.dataset.getRow(row).getStandard();
-                case 9:
-                    return this.dataset.getRow(row).getFAComposition();
-                case 10:
-                    return " ";
-            }
+        try{
+            if (this.dataset.getType() == DatasetType.GCGCTOF) {
+                //GCGC-Tof files
+                switch (column) {
+                    case 0:
+                        return this.dataset.getRow(row).isSelected();
+                    case 1:
+                        return this.dataset.getRow(row).getID();
+                    case 2:
+                        return this.dataset.getRow(row).getRT1();
+                    case 3:
+                        return this.dataset.getRow(row).getRT2();
+                    case 4:
+                        return this.dataset.getRow(row).getRTI();
+                    case 5:
+                        return this.dataset.getRow(row).getNumFound();
+                    case 6:
+                        return this.dataset.getRow(row).getMaxSimilarity();
+                    case 7:
+                        return this.dataset.getRow(row).getMeanSimilarity();
+                    case 8:
+                        return this.dataset.getRow(row).getSimilaritySTDDev();
+                    case 9:
+                        return this.dataset.getRow(row).getName();
+                    case 10:
+                        return this.dataset.getRow(row).getAllNames();
+                    case 11:
+                        return this.dataset.getRow(row).getPubChemID();
+                    case 12:
+                        return this.dataset.getRow(row).getMass();
+                    case 13:
+                        return this.dataset.getRow(row).getDifference();
+                    case 14:
+                        return this.dataset.getRow(row).getSpectrum();
+                }
+            } else if (this.dataset.getType() == DatasetType.LCMS) {
+                switch (column) {
+                    case 0:
+                        return this.dataset.getRow(row).isSelected();
+                    case 1:
+                        return this.dataset.getRow(row).getID();
+                    case 2:
+                        return this.dataset.getRow(row).getMZ();
+                    case 3:
+                        return this.dataset.getRow(row).getRT();
+                    case 4:
+                        return this.dataset.getRow(row).getName();
+                    case 5:
+                        return this.dataset.getRow(row).getAllNames();
+                    case 6:
+                        return this.dataset.getRow(row).getLipidClass();
+                    case 7:
+                        return this.dataset.getRow(row).getNumFound();
+                    case 8:
+                        return this.dataset.getRow(row).getStandard();
+                    case 9:
+                        return this.dataset.getRow(row).getFAComposition();
+                    case 10:
+                        return " ";
+                }
 
+            }
+            return this.dataset.getRow(row).getPeak(column - this.dataset.getNumberFixColumns(), this.dataset.getNameExperiments());
+        }catch(Exception e){            
+            return null;
         }
-        return this.dataset.getRow(row).getPeak(column - this.dataset.getNumberFixColumns(), this.dataset.getNameExperiments());
     }
 
     @Override
@@ -175,7 +172,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
             //GCGC-Tof files
             switch (column) {
                 case 0:
-                    selection[row] = aValue;
+                    this.dataset.getRow(row).setSelectionMode((Boolean) aValue);
                     break;
                 case 1:
                     this.dataset.getRow(row).setID(((Integer) aValue).intValue());
@@ -226,7 +223,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
         } else if (this.dataset.getType() == DatasetType.LCMS) {
             switch (column) {
                 case 0:
-                    selection[row] = aValue;
+                    this.dataset.getRow(row).setSelectionMode((Boolean) aValue);
                     break;
                 case 1:
                     this.dataset.getRow(row).setID(((Integer) aValue).intValue());
@@ -329,58 +326,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     public void setSortCol(int column) {
         this.sortCol = column;
     }
-
-    public void changeData(int column, int row) {
-        /*if (dataset.getType() == DatasetType.LCMS) {
-        SimplePeakListRowLCMS peakListRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
-        try {
-        switch (column) {
-        case 1:
-        peakListRow.setID((Integer) rows[row][column]);
-        break;
-        case 2:
-        peakListRow.setMZ((Double) rows[row][column]);
-        break;
-        case 3:
-        peakListRow.setRT((Double) rows[row][column]);
-        break;
-        case 4:
-        peakListRow.setName((String) rows[row][column]);
-        break;
-        case 5:
-        peakListRow.setLipidClass((Integer) rows[row][column]);
-        break;
-        case 6:
-        peakListRow.setNumFound((Double) rows[row][column]);
-        break;
-        case 7:
-        if ((Boolean) rows[row][column]) {
-        peakListRow.setStandard(1);
-        } else {
-        peakListRow.setStandard(0);
-        }
-        break;
-        case 8:
-        peakListRow.setFAComposition((String) rows[row][column]);
-        break;
-        case 9:
-        peakListRow.setAllNames((String) rows[row][column]);
-        break;
-        case 10:
-        peakListRow.setNumberAlignment((Integer) rows[row][column]);
-        break;
-        default:
-        String experimentName = this.columns[column];
-        peakListRow.setPeak(experimentName, (Double) rows[row][column]);
-        break;
-        }
-        } catch (Exception e) {
-        }
-        }else if(this.dataset.getType() == DatasetType.GCGCTOF){
-        //GCGC changes....
-        }*/
-    }
-
+    
     public DatasetType getType() {
         return this.dataset.getType();
     }
@@ -388,5 +334,4 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     public int getFixColumns() {
         return this.dataset.getNumberFixColumns();
     }
-    
 }

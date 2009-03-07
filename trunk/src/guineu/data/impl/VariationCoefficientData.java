@@ -18,10 +18,6 @@
 
 package guineu.data.impl;
 
-/**
- *
- * @author SCSANDRA
- */
 public class VariationCoefficientData {
     public double variationCoefficient;
     public int numberMol, NumberIdentMol, numberExperiments;

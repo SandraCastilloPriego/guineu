@@ -30,7 +30,7 @@ import java.util.Vector;
 public class SimplePeakListRowOther implements PeakListRowOther {
 
     private int ID;
-    private boolean control;
+    private boolean control, selection;
     private Hashtable<String, String> peaks;
 
     public SimplePeakListRowOther() {
@@ -203,5 +203,13 @@ public class SimplePeakListRowOther implements PeakListRowOther {
 
     public void setNumberFixColumns(int columnNum) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isSelected() {
+        return this.selection;
+    }
+
+    public void setSelectionMode(boolean selectionMode) {
+        this.selection = selectionMode;
     }
 }

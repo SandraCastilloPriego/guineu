@@ -134,5 +134,14 @@ public class SimpleDatasetOther implements Dataset {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void removeRow(PeakListRow row) {
+        try {
+            this.PeakList.removeElement(row);
+
+        } catch (Exception e) {
+            System.out.println("No row found");
+        }
+    }
+
     
 }

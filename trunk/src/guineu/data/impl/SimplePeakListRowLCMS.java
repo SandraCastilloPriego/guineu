@@ -32,7 +32,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
     private String FAComposition, allNames, Name;
     private double averageMZ,  averageRT,  numFound;
     private int standard,  lipidClass,  ID,  aligment, numFixColumns;
-    private boolean control;
+    private boolean control, selection;
     private Hashtable<String, Double> peaks;    
     
 
@@ -246,6 +246,14 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
     public void setNumberFixColumns(int columnNum) {
         this.numFixColumns = columnNum;
+    }
+
+    public boolean isSelected() {
+        return this.selection;
+    }
+
+    public void setSelectionMode(boolean selectionMode) {
+        this.selection = selectionMode;
     }
     
 }

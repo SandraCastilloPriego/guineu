@@ -108,4 +108,12 @@ public class SimpleDataset implements Dataset {
     public void setNumberFixColumns(int columnNum) {
         this.numFixColumns = columnNum;
     }
+
+    public void removeRow(PeakListRow row) {
+        try {
+            this.PeakList.removeElement(row);
+        } catch (Exception e) {
+            System.out.println("No row found");
+        }
+    }
 }

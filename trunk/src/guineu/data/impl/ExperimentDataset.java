@@ -30,17 +30,17 @@ public class ExperimentDataset implements Dataset {
     String datasetName;
     Vector<Bexperiments> experiments;
     DatasetType type = DatasetType.EXPERIMENTINFO;
-    
-    public ExperimentDataset(String datasetName){
+
+    public ExperimentDataset(String datasetName) {
         this.datasetName = datasetName;
         this.experiments = new Vector<Bexperiments>();
     }
-    
-    public void addExperiment(Bexperiments experiment){
+
+    public void addExperiment(Bexperiments experiment) {
         this.experiments.addElement(experiment);
     }
-    
-    public Vector<Bexperiments> getExperiments(){
+
+    public Vector<Bexperiments> getExperiments() {
         return this.experiments;
     }
 
@@ -72,9 +72,9 @@ public class ExperimentDataset implements Dataset {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-	public void setType(DatasetType type) {
-		this.type = type;
-	}
+    public void setType(DatasetType type) {
+        this.type = type;
+    }
 
     public int getNumberFixColumns() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -83,6 +83,8 @@ public class ExperimentDataset implements Dataset {
     public void setNumberFixColumns(int columnNum) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-	
-    
+
+    public void removeRow(PeakListRow row) {
+         throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

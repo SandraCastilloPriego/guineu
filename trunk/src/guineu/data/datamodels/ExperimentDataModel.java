@@ -218,6 +218,10 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
     public int getFixColumns() {
         return 0;
     }
+
+    public void removeRows() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
    
    
 	
@@ -337,10 +341,6 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
                 experiment.EDATE = rows[row][column].toString();
                 break;
         }
-    }
-
-    public SimpleDataset removeRows() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public DatasetType getType() {
