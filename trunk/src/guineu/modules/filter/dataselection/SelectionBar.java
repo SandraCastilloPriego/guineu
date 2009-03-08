@@ -34,6 +34,7 @@ public class SelectionBar extends javax.swing.JPanel {
     
     /** Creates new form SelectionBar */
     private Desktop desktop;
+    private JTable selectedTable;
     public SelectionBar(Desktop desktop) {
         this.desktop = desktop;
         initComponents();
@@ -243,12 +244,14 @@ public class SelectionBar extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseClicked
-        JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-        this.jComboBox1.removeAllItems();
-        for(int i = 0; i < table.getColumnCount(); i++){
-            this.jComboBox1.addItem(table.getColumnName(i));
+        if(selectedTable == null || selectedTable != ((DataInternalFrame)desktop.getSelectedFrame()).getTable()){
+            selectedTable = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
+            this.jComboBox1.removeAllItems();
+            for(int i = 0; i < selectedTable.getColumnCount(); i++){
+                this.jComboBox1.addItem(selectedTable.getColumnName(i));
+            }
+            this.jComboBox1.revalidate();
         }
-        this.jComboBox1.revalidate();
 
     }//GEN-LAST:event_jTextField1MouseClicked
 
@@ -271,22 +274,21 @@ public class SelectionBar extends javax.swing.JPanel {
 }//GEN-LAST:event_jButtonInvertActionPerformed
    
     
-    private void select(){
-        JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
+    private void select(){        
         int index = this.jComboBox1.getSelectedIndex();
-        for(int i = 0; i < table.getRowCount(); i++){
+        for(int i = 0; i < selectedTable.getRowCount(); i++){
             if(index == 6){ 
                 try{
-                    if(table.getValueAt(i, index).toString().matches(Double.valueOf(this.jTextField1.getText()).toString())){
-                        table.setValueAt(new Boolean(true), i, 0);
+                    if(selectedTable.getValueAt(i, index).toString().matches(Double.valueOf(this.jTextField1.getText()).toString())){
+                        selectedTable.setValueAt(new Boolean(true), i, 0);
                     }    
                 }catch(Exception e){                    
                 }
-            }else if(table.getValueAt(i, index).toString().matches(".*"+this.jTextField1.getText()+".*")){
-                table.setValueAt(new Boolean(true), i, 0);
+            }else if(selectedTable.getValueAt(i, index).toString().matches(".*"+this.jTextField1.getText()+".*")){
+                selectedTable.setValueAt(new Boolean(true), i, 0);
             }
         }
-        table.repaint();
+        selectedTable.repaint();
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
