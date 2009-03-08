@@ -18,6 +18,7 @@
 package guineu.data;
 
 import guineu.data.impl.DatasetType;
+import java.util.Vector;
 
 public interface Dataset {
 
@@ -42,4 +43,8 @@ public interface Dataset {
     public int getNumberFixColumns();
 
     public void setNumberFixColumns(int columnNum);
+
+    public void AddNameExperiment(String nameExperiment);
+
+    public Vector<PeakListRow> getRows();
 }

@@ -17,9 +17,9 @@
  */
 package guineu.modules.file.openMassLynxFiles;
 
-import guineu.data.parser.impl.*;
+
 import guineu.data.Dataset;
-import guineu.data.PeakListRowOther;
+import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDatasetOther;
 import guineu.data.impl.SimplePeakListRowOther;
@@ -39,7 +39,6 @@ public class LCMSParserMassLynx implements Parser {
 	private String datasetPath;
 	private SimpleDatasetOther dataset;
 	private float progress;
-	Lipidclass LipidClassLib;
 
 	public LCMSParserMassLynx(String datasetPath) {
 		progress = 0.1f;
@@ -47,8 +46,7 @@ public class LCMSParserMassLynx implements Parser {
 		this.dataset = new SimpleDatasetOther(this.getDatasetName());
 		this.dataset.setType(DatasetType.OTHER);
 		progress = 0.3f;
-		this.dataset.setType(null);
-		this.LipidClassLib = new Lipidclass();
+		this.dataset.setType(null);		
 		progress = 0.5f;
 		fillData();
 		progress = 1.0f;
@@ -77,7 +75,7 @@ public class LCMSParserMassLynx implements Parser {
 			String head = null;
 			String[] header = null;
 			String compound = "";
-			PeakListRowOther lipid = null;
+			PeakListRow lipid = null;
 			int contRow = 0;
 			int contLipids = 0;
 			while ((line = (br.readLine())) != null) {
@@ -102,7 +100,7 @@ public class LCMSParserMassLynx implements Parser {
 						if (contLipids == 1) {
 							lipid = new SimplePeakListRowOther();
 						} else if (contLipids > 1) {
-							lipid = (PeakListRowOther) this.dataset.getRow(contRow);
+							lipid = (PeakListRow) this.dataset.getRow(contRow);
 						}
 						if (head != null && !head.isEmpty()) {
 							getData(lipid, line, header, compound);
@@ -124,7 +122,7 @@ public class LCMSParserMassLynx implements Parser {
 		}
 	}
 
-	private void getData(PeakListRowOther lipid, String line, String[] header, String compound) {
+	private void getData(PeakListRow lipid, String line, String[] header, String compound) {
 		try {
 			//PeakListRow_concatenate lipid = new SimplePeakListRowConcatenate();
 			String[] sdata = line.split("\t");

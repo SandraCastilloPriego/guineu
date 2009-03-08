@@ -17,7 +17,8 @@
  */
 package guineu.data.impl;
 
-import guineu.data.PeakListRowOther;
+
+import guineu.data.PeakListRow;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,7 +28,7 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimplePeakListRowOther implements PeakListRowOther {
+public class SimplePeakListRowOther implements PeakListRow {
 
     private int ID;
     private boolean control, selection;
@@ -39,8 +40,8 @@ public class SimplePeakListRowOther implements PeakListRowOther {
     }
 
     @Override
-    public PeakListRowOther clone() {
-        PeakListRowOther peakListRow = new SimplePeakListRowOther();
+    public PeakListRow clone() {
+        PeakListRow peakListRow = new SimplePeakListRowOther();
         String str;
         Set<String> set = peaks.keySet();
 

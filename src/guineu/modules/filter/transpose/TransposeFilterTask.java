@@ -19,7 +19,6 @@ package guineu.modules.filter.transpose;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.PeakListRowOther;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimpleDatasetOther;
@@ -89,7 +88,7 @@ public class TransposeFilterTask implements Task {
 
             for (PeakListRow row2 : dataset.getRows()) {
 
-                for (PeakListRowOther row : newDataset.getRows()) {
+                for (PeakListRow row : newDataset.getRows()) {
 
                     row.setPeak(row2.getName(), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
                 }

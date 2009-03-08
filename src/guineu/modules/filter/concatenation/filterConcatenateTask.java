@@ -18,18 +18,13 @@
 package guineu.modules.filter.concatenation;
 
 import guineu.data.impl.SimpleDatasetOther;
-import guineu.data.PeakListRowOther;
 import guineu.data.Dataset;
+import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.Task.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.Vector;
 
 public class filterConcatenateTask implements Task {
@@ -101,7 +96,7 @@ public class filterConcatenateTask implements Task {
 	private SimpleDatasetOther createDataset(Dataset[] datasets) {
 		SimpleDatasetOther dataset = new SimpleDatasetOther("concatenated");
 		for (int i = 0; i < datasets.length; i++) {
-			for (PeakListRowOther row : ((SimpleDatasetOther) datasets[i]).getRows()) {
+			for (PeakListRow row : ((SimpleDatasetOther) datasets[i]).getRows()) {
 				if (!dataset.containRowName((String) row.getPeak("Name"))) {
 					SimplePeakListRowOther newRow = new SimplePeakListRowOther();
 					newRow.setPeak("Name", (String) row.getPeak("Name"));
@@ -123,9 +118,9 @@ public class filterConcatenateTask implements Task {
 				}
 			}
 		}
-		for (PeakListRowOther row2 : newDataset.getRows()) {
+		for (PeakListRow row2 : newDataset.getRows()) {
 			for (Dataset data : otherDatasets) {
-				for (PeakListRowOther row : ((SimpleDatasetOther) data).getRows()) {
+				for (PeakListRow row : ((SimpleDatasetOther) data).getRows()) {
 
 					try {
 //                       /* if(data.getDatasetName().matches(".*concatenated.*")){
@@ -166,7 +161,7 @@ public class filterConcatenateTask implements Task {
 	}
 
 	private void refillDataset(SimpleDatasetOther newDataset) {
-		for (PeakListRowOther row : newDataset.getRows()) {
+		for (PeakListRow row : newDataset.getRows()) {
 			/* try {
 			if (!row.getPeak("is_ICA_Positive").matches("1")) {
 			Double value = Double.valueOf(row.getPeak("ICA"));

@@ -255,5 +255,9 @@ public class SimplePeakListRowLCMS implements PeakListRow {
     public void setSelectionMode(boolean selectionMode) {
         this.selection = selectionMode;
     }
+
+    public void setPeak(String str, String get) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

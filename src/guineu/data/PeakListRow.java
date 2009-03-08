@@ -95,5 +95,7 @@ public interface PeakListRow {
 
     public boolean isSelected();
 
+    public void setPeak(String str, String get);
+
     public void setSelectionMode(boolean selectionMode);
 }

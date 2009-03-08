@@ -19,7 +19,7 @@ package guineu.data.parser.impl;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
-import guineu.data.PeakListRowOther;
+import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDatasetOther;
 import guineu.data.impl.SimplePeakListRowOther;
@@ -36,7 +36,7 @@ public class OtherFilesParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleDatasetOther dataset;
-   private int rowsNumber;
+    private int rowsNumber;
     private int rowsReaded;
     Lipidclass LipidClassLib;
 
@@ -46,10 +46,10 @@ public class OtherFilesParserCSV implements Parser {
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDatasetOther(this.getDatasetName());
         this.dataset.setType(DatasetType.OTHER);
-       
+
         this.dataset.setType(null);
         this.LipidClassLib = new Lipidclass();
-        countNumberRows(); 
+        countNumberRows();
     }
 
     public String getDatasetName() {
@@ -64,7 +64,7 @@ public class OtherFilesParserCSV implements Parser {
     }
 
     public float getProgress() {
-        return (float)rowsReaded/rowsNumber;
+        return (float) rowsReaded / rowsNumber;
     }
 
     public void fillData() {
@@ -84,7 +84,7 @@ public class OtherFilesParserCSV implements Parser {
 
     private void getData(String[] sdata, String[] header) {
         try {
-            PeakListRowOther lipid = new SimplePeakListRowOther();
+            PeakListRow lipid = new SimplePeakListRowOther();
             for (int i = 0; i < sdata.length; i++) {
                 try {
                     lipid.setPeak(header[i], sdata[i].toString());
@@ -113,7 +113,7 @@ public class OtherFilesParserCSV implements Parser {
         }
     }
 
-     private void countNumberRows() {
+    private void countNumberRows() {
         try {
             CsvReader reader = new CsvReader(new FileReader(datasetPath));
             while (reader.readRecord()) {
