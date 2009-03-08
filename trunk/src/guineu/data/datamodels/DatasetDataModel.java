@@ -25,30 +25,27 @@ import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.TableComparator.SortingDirection;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 
 
 
 import java.util.*;
+import javax.swing.event.TableModelListener;
 
 public class DatasetDataModel extends AbstractTableModel implements DataTableModel {
-
-    /**
-     * All data in the main windows. It can be LCMS or GCGC-Tof data.
-     */
-    private int numColumns;   
+    
     private SimpleDataset dataset;
     protected SortingDirection isSortAsc = SortingDirection.Ascending;
     protected int sortCol = 0;
 
     public DatasetDataModel(Dataset dataset) {
-        this.dataset = (SimpleDataset) dataset;        
+        this.dataset = (SimpleDataset) dataset;
         this.writeData();
     }
 
     public void writeData() {
         PeakListRow peakListRow;
-        numColumns = this.dataset.getNumberCols() + this.dataset.getNumberFixColumns();
         for (int i = 0; i < dataset.getNumberRows(); i++) {
             peakListRow = (SimplePeakListRowLCMS) this.dataset.getRow(i);
             if (peakListRow.getID() == -1) {
@@ -58,8 +55,8 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 
     }
 
-    public void removeRows() {       
-        for (int i= 0; i < this.dataset.getNumberRows(); i++) {
+    public void removeRows() {
+        for (int i = 0; i < this.dataset.getNumberRows(); i++) {
             PeakListRow row = this.dataset.getRow(i);
             if (row.isSelected()) {
                 this.dataset.removeRow(row);
@@ -67,11 +64,11 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
                 this.removeRows();
                 break;
             }
-        }         
+        }
     }
 
     public int getColumnCount() {
-        return numColumns;
+        return this.dataset.getNumberCols() + this.dataset.getNumberFixColumns();
     }
 
     public int getRowCount() {
@@ -79,7 +76,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     }
 
     public Object getValueAt(final int row, final int column) {
-        try{
+        try {
             if (this.dataset.getType() == DatasetType.GCGCTOF) {
                 //GCGC-Tof files
                 switch (column) {
@@ -142,7 +139,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 
             }
             return this.dataset.getRow(row).getPeak(column - this.dataset.getNumberFixColumns(), this.dataset.getNameExperiments());
-        }catch(Exception e){            
+        } catch (Exception e) {
             return null;
         }
     }
@@ -150,11 +147,11 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     @Override
     public String getColumnName(int columnIndex) {
         if (columnIndex < this.dataset.getNumberFixColumns()) {
-            if(this.dataset.getType() == DatasetType.LCMS){
+            if (this.dataset.getType() == DatasetType.LCMS) {
                 return LCMSColumnName.values()[columnIndex].getColumnName();
-            }else if(this.dataset.getType() == DatasetType.GCGCTOF){
+            } else if (this.dataset.getType() == DatasetType.GCGCTOF) {
                 return CGCGColumnName.values()[columnIndex].getColumnName();
-            }else{
+            } else {
                 return this.dataset.getNameExperiments().elementAt(columnIndex - this.dataset.getNumberFixColumns());
             }
         } else {
@@ -275,10 +272,6 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     @Override
     public boolean isCellEditable(int row, int column) {
         return true;
-    }   
-
-    public void setColumnCount(int count) {
-        this.numColumns = count;
     }
 
     public SortingDirection getSortDirection() {
@@ -296,7 +289,7 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     public void setSortCol(int column) {
         this.sortCol = column;
     }
-    
+
     public DatasetType getType() {
         return this.dataset.getType();
     }

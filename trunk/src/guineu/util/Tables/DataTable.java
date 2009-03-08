@@ -15,22 +15,26 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.util.Tables;
 
 import guineu.data.impl.DatasetType;
 import javax.swing.JTable;
-
 
 /**
  *
  * @author scsandra
  */
 public interface DataTable {
+
     public void createTable(DataTableModel model);
+
     public void setTableProperties();
+
     public JTable getTable();
+
     public void formatNumbers(DatasetType type);
+
     public void formatNumbers(int column);
+
     public void setColumnSize();
 }

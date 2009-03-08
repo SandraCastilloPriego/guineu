@@ -28,6 +28,8 @@ import guineu.util.Tables.DataTable;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
+import javax.swing.JInternalFrame;
+import javax.swing.JTable;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -84,7 +86,7 @@ public class variationCoefficientRowFilterTask implements Task {
         progress = 0.0f;
         double steps = 1f / datasets.length;
         for (Dataset dataset : datasets) {
-           /* SimpleDataset newDataset = ((SimpleDataset) dataset).clone();
+            SimpleDataset newDataset = ((SimpleDataset) dataset).clone();
             newDataset.setDatasetName("Var Coefficient - " + dataset.getDatasetName());
             newDataset.AddNameExperiment("Coefficient of variation");
             for (PeakListRow lipid : newDataset.getRows()) {
@@ -101,13 +103,23 @@ public class variationCoefficientRowFilterTask implements Task {
             DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName() + " - Coefficient of Variation", table.getTable(), new Dimension(450, 450));
             desktop.addInternalFrame(frame);
             desktop.AddNewFile(newDataset);
-            frame.setVisible(true);*/
+            frame.setVisible(true);
 
-            dataset.AddNameExperiment("Coefficient of variation", 2);
-            for (PeakListRow peakList : dataset.getRows()) {
-                double stdDev = this.getSTDDev(peakList);
-                peakList.setPeak("Coefficient of variation", stdDev);
-            }
+        /* dataset.AddNameExperiment("Coefficient of variation", 0);
+        for (PeakListRow peakList : dataset.getRows()) {
+        double stdDev = this.getSTDDev(peakList);
+        peakList.setPeak("Coefficient of variation", stdDev);
+        }
+        JInternalFrame[] frames = desktop.getInternalFrames();
+        for (JInternalFrame frame : frames) {
+        try {
+        JTable table = ((DataInternalFrame) frame).getTable();
+        table.createDefaultColumnsFromModel();
+        ((DataTable) table).formatNumbers(dataset.getType());
+
+        } catch (Exception e) {
+        }
+        }*/
         }
         progress = 1f;
 

@@ -37,12 +37,13 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author scsandra
  */
-public class PushableTable implements DataTable, TableModelListener {
+public class PushableTable implements DataTable {
 
     protected DataTableModel model;
     JTable table;
@@ -129,14 +130,8 @@ public class PushableTable implements DataTable, TableModelListener {
         table.setAutoCreateRowSorter(true);
         table.setUpdateSelectionOnSort(true);
 
-        // sort         
-       /* this.createSortHeader();        
-        this.createPushableHeader(table);*/
 
         table.setMinimumSize(new Dimension(300, 800));
-
-
-        table.getModel().addTableModelListener(this);
 
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -173,8 +168,7 @@ public class PushableTable implements DataTable, TableModelListener {
         format.setMinimumFractionDigits(7);
         int init = model.getFixColumns();
 
-        for (int i = init; i <
-                table.getColumnCount(); i++) {
+        for (int i = init; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(new NumberRenderer(format));
         }
 
@@ -203,21 +197,6 @@ public class PushableTable implements DataTable, TableModelListener {
         toolheader = new ToolTipHeader(table.getColumnModel());
         toolheader.setToolTipStrings(toolTipStr);
         table.setTableHeader(toolheader);
-    }
-
-    /**
-     * Creates sorting header.
-     * @param table
-     * @param tableModel
-     * @param newdata
-     */
-    private void createSortHeader() {
-        JTableHeader header = table.getTableHeader();
-        header.setUpdateTableInRealTime(true);
-        header.addMouseListener(new TableColumnListener(table, model));
-        header.setReorderingAllowed(true);
-        table.setTableHeader(header);
-        table.setModel(model);
     }
 
     /**
@@ -260,30 +239,6 @@ public class PushableTable implements DataTable, TableModelListener {
     }
 
     /**
-     * Creates Pushable Header.
-     * @param table
-     */
-    private void createPushableHeader(JTable table) {
-        String[] headerStr = new String[table.getColumnCount()];
-        for (int i = 0; i <
-                table.getColumnCount(); i++) {
-            headerStr[i] = table.getColumnName(i);
-        }
-
-        ButtonHeaderRenderer renderer = new ButtonHeaderRenderer();
-        TableColumnModel columModel = table.getColumnModel();
-        int n = headerStr.length;
-        for (int i = 0; i <
-                n; i++) {
-            columModel.getColumn(i).setHeaderRenderer(renderer);
-        }
-
-        JTableHeader header = table.getTableHeader();
-        header.addMouseListener(new HeaderListener(header, renderer));
-        header.setUpdateTableInRealTime(true);
-    }
-
-    /**
      * Push header
      * 
      */
@@ -306,7 +261,6 @@ public class PushableTable implements DataTable, TableModelListener {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            int col = header.columnAtPoint(e.getPoint());
             renderer.setPressedColumn(-1); // clear
             header.repaint();
         }
@@ -363,8 +317,5 @@ public class PushableTable implements DataTable, TableModelListener {
 
             super.setValue(value);
         }
-    }
-
-    public void tableChanged(TableModelEvent e) {
     }
 }

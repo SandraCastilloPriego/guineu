@@ -17,7 +17,6 @@
  */
 package guineu.util.Tables;
 
-import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
 import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.table.TableModel;
