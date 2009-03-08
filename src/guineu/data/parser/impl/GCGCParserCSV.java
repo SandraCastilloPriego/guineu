@@ -35,19 +35,16 @@ public class GCGCParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleDataset dataset;
-    private float progress;
-    Lipidclass LipidClassLib;
+    private int rowsNumber;
+    private int rowsReaded;
 
     public GCGCParserCSV(String datasetPath) {
-        progress = 0.1f;
+        this.rowsNumber = 0;
+        this.rowsReaded = 0;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleDataset(this.getDatasetName());
-        progress = 0.3f;
         this.dataset.setType(DatasetType.GCGCTOF);
-        this.LipidClassLib = new Lipidclass();
-        progress = 0.5f;
-        fillData();
-        progress = 1.0f;
+        countNumberRows();
     }
 
     public String getDatasetName() {
@@ -62,7 +59,7 @@ public class GCGCParserCSV implements Parser {
     }
 
     public float getProgress() {
-        return progress;
+        return (float) rowsReaded / rowsNumber;
     }
 
     public void fillData() {
@@ -74,6 +71,7 @@ public class GCGCParserCSV implements Parser {
 
             while (reader.readRecord()) {
                 getData(reader.getValues(), header);
+                rowsReaded++;
             }
 
             setExperimentsName(header);
@@ -94,9 +92,9 @@ public class GCGCParserCSV implements Parser {
                     metabolite.setRT1(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(RegExp.RT2.getREgExp())) {
                     metabolite.setRT2(Double.valueOf(sdata[i]));
-                }else if (header[i].matches(RegExp.RTI.getREgExp())) {
+                } else if (header[i].matches(RegExp.RTI.getREgExp())) {
                     metabolite.setRTI(Double.valueOf(sdata[i]));
-                }else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
+                } else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
                     metabolite.setNumFound(Double.valueOf(sdata[i]).doubleValue());
                 } else if (header[i].matches(RegExp.MAXSIM.getREgExp())) {
                     metabolite.setMaxSimilarity(Double.valueOf(sdata[i]));
@@ -112,11 +110,11 @@ public class GCGCParserCSV implements Parser {
                     metabolite.setMass(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(RegExp.DIFFERENCE.getREgExp())) {
                     metabolite.setDifference(Double.valueOf(sdata[i]));
-                }else if (header[i].matches(RegExp.PUBCHEM.getREgExp())) {
+                } else if (header[i].matches(RegExp.PUBCHEM.getREgExp())) {
                     metabolite.setPubChemID(sdata[i]);
-                }else if (header[i].matches(RegExp.SPECTRUM.getREgExp())) {
+                } else if (header[i].matches(RegExp.SPECTRUM.getREgExp())) {
                     metabolite.setSpectrum(sdata[i]);
-                }else {
+                } else {
                     try {
                         metabolite.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
@@ -129,7 +127,7 @@ public class GCGCParserCSV implements Parser {
                 }
                 if (metabolite.getName() == null || metabolite.getName().isEmpty()) {
                     metabolite.setName("unknown");
-                }               
+                }
             }
             metabolite.setSelectionMode(false);
             this.dataset.AddRow(metabolite);
@@ -159,6 +157,17 @@ public class GCGCParserCSV implements Parser {
             this.dataset.setNumberFixColumns(numFixColumns + 3);
 
         } catch (Exception exception) {
+        }
+    }
+
+    private void countNumberRows() {
+        try {
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
+            while (reader.readRecord()) {
+                this.rowsNumber++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

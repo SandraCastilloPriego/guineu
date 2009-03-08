@@ -31,34 +31,38 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-
 public class GCGCParserXLS extends ParserXLS implements Parser {
 
     private String DatasetPath;
     private HSSFWorkbook book;
-    private float progress; 
-    private Vector<String> head;  
+    private Vector<String> head;
     SimpleDataset dataset;
+    private int numberRows,  rowsReaded;
 
     public GCGCParserXLS(String DatasetPath) {
+        this.numberRows = 0;
+        this.rowsReaded = 0;
         this.DatasetPath = DatasetPath;
         this.dataset = new SimpleDataset(this.getDatasetName());
-        this.dataset.setType(DatasetType.GCGCTOF);       
-        head = new Vector<String>();       
+        this.dataset.setType(DatasetType.GCGCTOF);
+        head = new Vector<String>();
     }
 
     public String getDatasetName() {
-        return "GCGC - " +this.getDatasetName(DatasetPath);
+        return "GCGC - " + this.getDatasetName(DatasetPath);
     }
 
     public float getProgress() {
-        return progress;
+        if (this.numberRows != 0) {
+            return (float) this.rowsReaded / this.numberRows;
+        } else {
+            return 0.0f;
+        }
     }
 
     public void fillData() {
         try {
 
-            progress = 0.1f;
             book = openExcel(DatasetPath);
             HSSFSheet sheet;
             sheet = book.getSheetAt(0);
@@ -68,19 +72,19 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 HSSFCell cell = row.getCell((short) i);
                 this.head.addElement(cell.toString());
             }
-            int numberRows = this.getNumberRows(0, sheet);
+            numberRows = this.getNumberRows(0, sheet);
 
-            progress = 0.4f;
             for (int i = 1; i < numberRows + 1; i++) {
                 this.read_data(sheet, i);
+                this.rowsReaded++;
             }
             this.setExperimentsName(head);
-            progress = 1.0f;
+
         } catch (IOException ex) {
             Logger.getLogger(GCGCParserXLS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }   
+    }
 
     /**
      * Read one line of data in the dataset (=excel file) and introduce it in the StructGCGC gcgctof
@@ -117,10 +121,10 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 } else if (head.elementAt(e).matches(RegExp.SPECTRUM.getREgExp())) {
                     metabolite.setSpectrum(this.setStringDateInToStruct(row, e));
                 } else {
-                    try{
-                        Double concentration = new Double(this.setDateInToStruct(row, e));                   
+                    try {
+                        Double concentration = new Double(this.setDateInToStruct(row, e));
                         metabolite.setPeak(head.elementAt(e), concentration);
-                    }catch(Exception ee){                                         
+                    } catch (Exception ee) {
                         metabolite.setPeak(head.elementAt(e), 0.0);
                     }
                 }
@@ -161,7 +165,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
         }
     }
 
-     private void setExperimentsName(Vector<String> header) {
+    private void setExperimentsName(Vector<String> header) {
         try {
             int numFixColumns = 0;
             String regExpression = "";
