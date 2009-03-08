@@ -46,5 +46,7 @@ public interface Dataset {
 
     public void AddNameExperiment(String nameExperiment);
 
+    public void AddNameExperiment(String nameExperiment, int position);
+
     public Vector<PeakListRow> getRows();
 }

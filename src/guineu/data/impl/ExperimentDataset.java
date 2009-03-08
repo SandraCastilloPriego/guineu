@@ -95,4 +95,8 @@ public class ExperimentDataset implements Dataset {
     public Vector<PeakListRow> getRows() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void AddNameExperiment(String nameExperiment, int position) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
