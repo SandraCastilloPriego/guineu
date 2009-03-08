@@ -118,6 +118,6 @@ public class SimpleDataset implements Dataset {
     }
 
     public void AddNameExperiment(String nameExperiment, int position) {
-        this.nameExperiments.insertElementAt(datasetName, position);
+        this.nameExperiments.insertElementAt(nameExperiment, position);
     }
 }
