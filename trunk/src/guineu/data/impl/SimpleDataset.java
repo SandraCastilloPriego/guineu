@@ -116,4 +116,8 @@ public class SimpleDataset implements Dataset {
             System.out.println("No row found");
         }
     }
+
+    public void AddNameExperiment(String nameExperiment, int position) {
+        this.nameExperiments.insertElementAt(datasetName, position);
+    }
 }

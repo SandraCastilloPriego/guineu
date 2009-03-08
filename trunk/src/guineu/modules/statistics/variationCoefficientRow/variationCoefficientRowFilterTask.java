@@ -103,7 +103,7 @@ public class variationCoefficientRowFilterTask implements Task {
             desktop.AddNewFile(newDataset);
             frame.setVisible(true);*/
 
-            dataset.AddNameExperiment("Coefficient of variation");
+            dataset.AddNameExperiment("Coefficient of variation", 2);
             for (PeakListRow peakList : dataset.getRows()) {
                 double stdDev = this.getSTDDev(peakList);
                 peakList.setPeak("Coefficient of variation", stdDev);
