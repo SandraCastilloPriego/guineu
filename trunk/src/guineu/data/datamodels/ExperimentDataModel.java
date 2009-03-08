@@ -5,7 +5,6 @@ import guineu.data.Dataset;
 import guineu.data.impl.Bexperiments;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.ExperimentDataset;
-import guineu.data.impl.SimpleDataset;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.JTable;

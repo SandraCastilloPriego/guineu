@@ -89,6 +89,7 @@ public class VariationCoefficientRowFilter implements GuineuModule, TaskListener
 
     }
 
+    @Override
     public String toString() {
         return "Coefficient of variation";
     }
@@ -104,7 +105,5 @@ public class VariationCoefficientRowFilter implements GuineuModule, TaskListener
         newGroup.start();
 
         return newGroup;
-
-
     }
 }

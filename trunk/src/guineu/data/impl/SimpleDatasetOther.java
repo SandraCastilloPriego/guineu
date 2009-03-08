@@ -20,7 +20,6 @@ package guineu.data.impl;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.PeakListRowOther;
 import java.util.Vector;
 
 /**
@@ -30,13 +29,13 @@ import java.util.Vector;
 public class SimpleDatasetOther implements Dataset {
 
     String datasetName;
-    Vector<PeakListRowOther> PeakList;
+    Vector<PeakListRow> PeakList;
     Vector<String> nameExperiments;
     DatasetType type;
 
     public SimpleDatasetOther(String datasetName) {
         this.datasetName = datasetName;
-        this.PeakList = new Vector<PeakListRowOther>();
+        this.PeakList = new Vector<PeakListRow>();
         this.nameExperiments = new Vector<String>();
         type = DatasetType.LCMS;
     }
@@ -49,7 +48,7 @@ public class SimpleDatasetOther implements Dataset {
         this.datasetName = datasetName;
     }
 
-    public void AddRow(PeakListRowOther peakListRow) {
+    public void AddRow(PeakListRow peakListRow) {
         this.PeakList.addElement(peakListRow);
     }
 
@@ -61,7 +60,7 @@ public class SimpleDatasetOther implements Dataset {
         return (PeakListRow) this.PeakList.elementAt(i);
     }
 
-    public Vector<PeakListRowOther> getRows() {
+    public Vector<PeakListRow> getRows() {
         return this.PeakList;
     }
 
@@ -105,7 +104,7 @@ public class SimpleDatasetOther implements Dataset {
     }
     
     public boolean containRowName(String Name){
-        for(PeakListRowOther row : this.getRows()){
+        for(PeakListRow row : this.getRows()){
             if(((String)row.getPeak("Name")).contains(Name) || Name.contains((CharSequence) row.getPeak("Name"))){
                 return true;
             }
@@ -119,8 +118,8 @@ public class SimpleDatasetOther implements Dataset {
         for (String experimentName : this.nameExperiments) {
             newDataset.AddNameExperiment(experimentName);
         }
-        for (PeakListRowOther peakListRow : this.PeakList) {
-            newDataset.AddRow((PeakListRowOther) peakListRow.clone());
+        for (PeakListRow peakListRow : this.PeakList) {
+            newDataset.AddRow(peakListRow.clone());
         }
         newDataset.setType(this.type);
         return newDataset;
@@ -142,6 +141,5 @@ public class SimpleDatasetOther implements Dataset {
             System.out.println("No row found");
         }
     }
-
     
 }

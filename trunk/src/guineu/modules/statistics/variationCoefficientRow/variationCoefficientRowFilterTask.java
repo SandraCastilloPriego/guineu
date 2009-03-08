@@ -41,12 +41,10 @@ public class variationCoefficientRowFilterTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private double progress;
-    private Lipidclass lipidClass;
 
     public variationCoefficientRowFilterTask(Dataset[] datasets, Desktop desktop) {
         this.datasets = datasets;
         this.desktop = desktop;
-        this.lipidClass = new Lipidclass();
     }
 
     public String getTaskDescription() {
@@ -71,7 +69,9 @@ public class variationCoefficientRowFilterTask implements Task {
 
     public void run() {
         try {
+            status = TaskStatus.PROCESSING;
             this.variationCoefficient();
+            status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;
             errorMessage = e.toString();
@@ -80,43 +80,43 @@ public class variationCoefficientRowFilterTask implements Task {
     }
 
     public void variationCoefficient() {
-        status = TaskStatus.PROCESSING;
-        try {
-            progress = 0.0f;
-            double steps = 1f / datasets.length;
-            for (Dataset dataset : datasets) {
-                SimpleDataset newDataset = ((SimpleDataset) dataset).clone();
-                newDataset.setDatasetName("Var Coefficient - "+dataset.getDatasetName());
-                ((SimpleDataset) newDataset).AddNameExperiment("Coefficient of variation");
-                for (PeakListRow lipid : ((SimpleDataset) newDataset).getRows()) {
-                    double stdDev = this.getSTDDev(lipid);
-                    lipid.setPeak("Coefficient of variation", stdDev);
-                }
-                progress += steps;
-                DatasetDataModel model = new DatasetDataModel(newDataset);
 
-
-                progress = 0.5f;
-                DataTable table = new PushableTable(model);
-                table.formatNumbers(11);
-                DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName() + " - Coefficient of Variation", table.getTable(), new Dimension(450, 450));
-                desktop.addInternalFrame(frame);
-                desktop.AddNewFile(newDataset);
-                frame.setVisible(true);
+        progress = 0.0f;
+        double steps = 1f / datasets.length;
+        for (Dataset dataset : datasets) {
+           /* SimpleDataset newDataset = ((SimpleDataset) dataset).clone();
+            newDataset.setDatasetName("Var Coefficient - " + dataset.getDatasetName());
+            newDataset.AddNameExperiment("Coefficient of variation");
+            for (PeakListRow lipid : newDataset.getRows()) {
+                double stdDev = this.getSTDDev(lipid);
+                lipid.setPeak("Coefficient of variation", stdDev);
             }
+            progress += steps;
+            DatasetDataModel model = new DatasetDataModel(newDataset);
 
 
-            progress = 1f;
+            progress = 0.5f;
+            DataTable table = new PushableTable(model);
+            table.formatNumbers(11);
+            DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName() + " - Coefficient of Variation", table.getTable(), new Dimension(450, 450));
+            desktop.addInternalFrame(frame);
+            desktop.AddNewFile(newDataset);
+            frame.setVisible(true);*/
 
-        } catch (Exception ex) {
+            dataset.AddNameExperiment("Coefficient of variation");
+            for (PeakListRow peakList : dataset.getRows()) {
+                double stdDev = this.getSTDDev(peakList);
+                peakList.setPeak("Coefficient of variation", stdDev);
+            }
         }
-        status = TaskStatus.FINISHED;
+        progress = 1f;
+
     }
 
     public double getSTDDev(PeakListRow row) {
         DescriptiveStatistics stats = new DescriptiveStatistics();
         for (Object peak : row.getPeaks()) {
-            stats.addValue((Double)peak);
+            stats.addValue((Double) peak);
         }
         return stats.getStandardDeviation() / stats.getMean();
     }

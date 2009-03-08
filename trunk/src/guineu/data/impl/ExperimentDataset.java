@@ -87,4 +87,12 @@ public class ExperimentDataset implements Dataset {
     public void removeRow(PeakListRow row) {
          throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void AddNameExperiment(String nameExperiment) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Vector<PeakListRow> getRows() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
