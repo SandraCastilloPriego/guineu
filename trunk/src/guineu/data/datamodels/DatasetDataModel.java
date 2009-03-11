@@ -41,7 +41,6 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 		} else if (this.dataset.getType() == DatasetType.LCMS) {
 			fixNumberColumns = LCMSColumnName.values().length;
 		}
-		System.out.println(this.fixNumberColumns);
 		this.writeData();
 	}
 
@@ -131,7 +130,11 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 					case 7:
 						return this.dataset.getRow(row).getNumFound();
 					case 8:
-						return this.dataset.getRow(row).getStandard();
+						if (this.dataset.getRow(row).getStandard() == 1) {
+							return new Boolean(true);
+						} else {
+							return new Boolean(false);
+						}
 					case 9:
 						return this.dataset.getRow(row).getFAComposition();
 					case 10:
@@ -251,7 +254,11 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 					((SimplePeakListRowLCMS) this.dataset.getRow(row)).setNumFound(((Double) aValue).doubleValue());
 					break;
 				case 8:
-					((SimplePeakListRowLCMS) this.dataset.getRow(row)).setStandard(((Integer) aValue).intValue());
+					if ((Boolean) aValue) {
+						((SimplePeakListRowLCMS) this.dataset.getRow(row)).setStandard(1);
+					} else {
+						((SimplePeakListRowLCMS) this.dataset.getRow(row)).setStandard(0);
+					}
 					break;
 				case 9:
 					((SimplePeakListRowLCMS) this.dataset.getRow(row)).setFAComposition((String) aValue);
