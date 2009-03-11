@@ -23,7 +23,6 @@ import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.parser.Parser;
-import guineu.taskcontrol.Task;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,11 +119,7 @@ public class LCMSParserCSV implements Parser {
                     try {
                         lipid.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
-                        if (sdata[i].matches("DETECTED")) {
-                            lipid.setPeak(header[i], 1.0);
-                        } else {
-                            lipid.setPeak(header[i], 0.0);
-                        }
+                        lipid.setPeak(header[i], Double.valueOf(0.0));
                     }
                 }
                 if (lipid.getName() == null || lipid.getName().isEmpty()) {
@@ -145,7 +140,7 @@ public class LCMSParserCSV implements Parser {
 
     private void setExperimentsName(String[] header) {
         try {
-            int numFixColumns = 0;
+           
             String regExpression = "";
             for (RegExp value : RegExp.values()) {
                 regExpression += value.getREgExp() + "|";
@@ -153,12 +148,9 @@ public class LCMSParserCSV implements Parser {
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
                     this.dataset.AddNameExperiment(header[i]);
-                } else {
-                    numFixColumns++;
                 }
             }
-            this.dataset.setNumberFixColumns(numFixColumns + 3);
-
+           
         } catch (Exception exception) {
         }
     }

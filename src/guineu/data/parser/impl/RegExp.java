@@ -35,8 +35,8 @@ public enum RegExp {
     RTI(".*RTI.*"),
     DIFFERENCE(".*Difference.*"),
     PUBCHEM(".*Pubchem.*"),
-    MAXSIM(".*Max.*"),
-    MEANSIM(".*Mean.*"),
+    MAXSIM(".*Max sim.*"),
+    MEANSIM(".*Mean sim.*"),
     SIMSTD(".*Similarity std dev.*"),
     SPECTRUM(".*Spectrum.*");
     private final String columnName;

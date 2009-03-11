@@ -142,7 +142,7 @@ public class GCGCParserCSV implements Parser {
 
     private void setExperimentsName(String[] header) {
         try {
-            int numFixColumns = 0;
+            
             String regExpression = "";
             for (RegExp value : RegExp.values()) {
                 regExpression += value.getREgExp() + "|";
@@ -150,12 +150,9 @@ public class GCGCParserCSV implements Parser {
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
                     this.dataset.AddNameExperiment(header[i]);
-                } else {
-                    numFixColumns++;
-                }
+                } 
             }
-            this.dataset.setNumberFixColumns(numFixColumns + 3);
-
+           
         } catch (Exception exception) {
         }
     }

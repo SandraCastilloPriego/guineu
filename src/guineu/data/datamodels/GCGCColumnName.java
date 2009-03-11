@@ -19,7 +19,7 @@
 package guineu.data.datamodels;
 
 
-public enum CGCGColumnName {
+public enum GCGCColumnName {
     SELECTION ("Selection"),
     ID ("ID"),
     RT1 ("RT1"),
@@ -38,7 +38,7 @@ public enum CGCGColumnName {
 
     private final String columnName;
 
-    CGCGColumnName(String columnName){
+    GCGCColumnName(String columnName){
         this.columnName = columnName;
     }
 

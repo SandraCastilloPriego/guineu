@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data.datamodels;
 
 /**
@@ -23,25 +22,33 @@ package guineu.data.datamodels;
  * @author bicha
  */
 public enum LCMSColumnName {
-    SELECTION ("Selection"),
-    ID ("Id"),
-    MZ ("m/z"),
-    RT ("Retention time"),
-    NAME ("Name"),
-    ALLNAMES("All names"),
-    Class ("Lipid class"),
-    NFOUND ("Num found"),
-    STANDARD ("Standard"),
-    FA ("FA Composition"),
-    ALIGNMENT ("Alignment");
 
-    private final String columnName;
-    
-    LCMSColumnName(String columnName){
-        this.columnName = columnName;
-    }
+	SELECTION("Selection", 0),
+	ID("Id", 1),
+	MZ("m/z", 2),
+	RT("Retention time", 3),
+	NAME("Name", 4),
+	ALLNAMES("All names", 5),
+	Class("Lipid class", 6),
+	NFOUND("Num found", 7),
+	STANDARD("Standard", 8),
+	FA("FA Composition", 9),
+	ALIGNMENT("Alignment", 10);
 
-    public String getColumnName(){
-        return this.columnName;
-    }
+	private final String columnName;
+	private final int index;
+	LCMSColumnName(String columnName, int index) {
+		this.columnName = columnName;
+		this.index = index;
+	}
+
+	public String getColumnName() {
+		return this.columnName;
+	}
+
+	public int getIndex(){
+		return this.index;
+	}
+
+
 }

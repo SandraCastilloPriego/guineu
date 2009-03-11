@@ -24,10 +24,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.logging.Logger;
 
-/**
- *
- * @author scsandra
- */
+
 public class OpenFile implements GuineuModule, TaskListener, ActionListener {
    private Logger logger = Logger.getLogger(this.getClass().getName());
  
