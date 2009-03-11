@@ -23,32 +23,24 @@ package guineu.data.datamodels;
  */
 public enum LCMSColumnName {
 
-	SELECTION("Selection", 0),
-	ID("Id", 1),
-	MZ("m/z", 2),
-	RT("Retention time", 3),
-	NAME("Name", 4),
-	ALLNAMES("All names", 5),
-	Class("Lipid class", 6),
-	NFOUND("Num found", 7),
-	STANDARD("Standard", 8),
-	FA("FA Composition", 9),
-	ALIGNMENT("Alignment", 10);
-
+	SELECTION("Selection"),
+	ID("Id"),
+	MZ("m/z"),
+	RT("Retention time"),
+	NAME("Name"),
+	ALLNAMES("All names"),
+	Class("Lipid class"),
+	NFOUND("Num found"),
+	STANDARD("Standard"),
+	FA("FA Composition"),
+	ALIGNMENT("Alignment");
 	private final String columnName;
-	private final int index;
-	LCMSColumnName(String columnName, int index) {
+
+	LCMSColumnName(String columnName) {
 		this.columnName = columnName;
-		this.index = index;
 	}
 
 	public String getColumnName() {
 		return this.columnName;
 	}
-
-	public int getIndex(){
-		return this.index;
-	}
-
-
 }
