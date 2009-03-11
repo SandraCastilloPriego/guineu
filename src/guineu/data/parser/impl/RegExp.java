@@ -19,11 +19,11 @@ package guineu.data.parser.impl;
 
 public enum RegExp {
 
-    ID(".*ID.*"),
+    ID(".*ID"),
     MZ(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*"),
     RT(".*Average RT.*|.*Average retention time.*|.*retention time*"),
-    NAME(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*"),
-    ALLNAMES(".*Identity.*|.*All Names.*|.*All names.*"),
+    NAME(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*"),
+    ALLNAMES(".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*"),
     CLASS(".*Class.*"),
     NFOUND(".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*"),
     STANDARD(".*Standard.*"),

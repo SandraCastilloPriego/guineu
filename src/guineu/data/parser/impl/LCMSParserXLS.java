@@ -253,8 +253,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 					this.dataset.AddNameExperiment(header.elementAt(i));
 				}
 			}
-
-
+			
 		} catch (Exception exception) {
 		}
 	}
