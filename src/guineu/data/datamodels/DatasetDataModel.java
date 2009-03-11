@@ -296,6 +296,6 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 	}
 
 	public int getFixColumns() {
-		return this.dataset.getNumberFixColumns();
+		return this.fixNumberColumns;
 	}
 }
