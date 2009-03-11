@@ -78,7 +78,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 				this.read_data(sheet, i);
 				this.rowsReaded++;
 			}
-			this.setExperimentsName(head);
+			this.setExperimentsName();
 
 		} catch (IOException ex) {
 			Logger.getLogger(GCGCParserXLS.class.getName()).log(Level.SEVERE, null, ex);
@@ -165,20 +165,21 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 		}
 	}
 
-	private void setExperimentsName(Vector<String> header) {
+	private void setExperimentsName() {
 		try {
 			String regExpression = "";
 			for (RegExp value : RegExp.values()) {
 				regExpression += value.getREgExp() + "|";
 			}
 
-			for (int i = 0; i < header.size(); i++) {
-				if (!header.elementAt(i).matches(regExpression)) {
-					this.dataset.AddNameExperiment(header.elementAt(i));
+			for (int i = 0; i < head.size(); i++) {
+				if (!head.elementAt(i).matches(regExpression)) {
+					this.dataset.AddNameExperiment(head.elementAt(i));
 				}
 			}
 
 		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 

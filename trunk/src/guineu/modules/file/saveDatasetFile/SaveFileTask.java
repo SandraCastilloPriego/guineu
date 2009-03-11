@@ -92,7 +92,7 @@ public class SaveFileTask implements Task {
 
 	public ExitCode setupParameters() {
 		try {
-			if (dataset.getType() == DatasetType.LCMS) {
+			if (dataset.getType() == DatasetType.LCMS || dataset.getType() == DatasetType.GCGCTOF) {
 				ParameterSetupDialog dialog = new ParameterSetupDialog("Fields", OptionParameters);
 				dialog.setVisible(true);
 				return dialog.getExitCode();

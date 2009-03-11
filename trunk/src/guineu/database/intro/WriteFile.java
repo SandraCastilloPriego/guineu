@@ -20,7 +20,6 @@ package guineu.database.intro;
 import com.csvreader.CsvWriter;
 import guineu.data.Dataset;
 import guineu.data.Parameter;
-import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;

@@ -30,14 +30,11 @@ import java.text.NumberFormat;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -137,7 +134,7 @@ public class PushableTable implements DataTable {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // Columns position and size  
-        this.setColumnSize();
+        //this.setColumnSize();
     }
 
     public void setColumnSize() {
