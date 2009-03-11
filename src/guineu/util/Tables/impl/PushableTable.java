@@ -110,10 +110,7 @@ public class PushableTable implements DataTable {
 
     public boolean getStandard(int row) {
         try {
-            if ((Integer) this.getTable().getValueAt(row, 8) == 1) {
-                return true;
-            }
-            return false;
+           return (Boolean) this.getTable().getValueAt(row, 8);
         } catch (Exception e) {
             return false;
         }
