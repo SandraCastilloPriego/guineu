@@ -1,8 +1,6 @@
 package guineu.desktop.impl;
 
 import guineu.desktop.GuineuMenu;
-import java.awt.Frame;
-import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
