@@ -31,8 +31,7 @@ public class SimpleDataset implements Dataset {
     Vector<PeakListRow> PeakList;
     Vector<String> nameExperiments;
     DatasetType type;
-    int numFixColumns;
-
+  
     public SimpleDataset(String datasetName) {
         this.datasetName = datasetName;
         this.PeakList = new Vector<PeakListRow>();
@@ -101,14 +100,7 @@ public class SimpleDataset implements Dataset {
         return newDataset;
     }
 
-    public int getNumberFixColumns() {
-        return this.numFixColumns;
-    }
-
-    public void setNumberFixColumns(int columnNum) {
-        this.numFixColumns = columnNum;
-    }
-
+    
     public void removeRow(PeakListRow row) {
         try {
             this.PeakList.removeElement(row);

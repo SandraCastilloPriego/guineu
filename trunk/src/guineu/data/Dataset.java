@@ -22,31 +22,27 @@ import java.util.Vector;
 
 public interface Dataset {
 
-    public String getDatasetName();
+	public String getDatasetName();
 
-    public Iterable<String> getNameExperiments();
+	public Iterable<String> getNameExperiments();
 
-    public int getNumberCols();
+	public int getNumberCols();
 
-    public int getNumberRows();
+	public int getNumberRows();
 
-    public void setDatasetName(String name);
+	public void setDatasetName(String name);
 
-    public DatasetType getType();
+	public DatasetType getType();
 
-    public void setType(DatasetType type);
+	public void setType(DatasetType type);
 
-    public PeakListRow getRow(int row);
+	public PeakListRow getRow(int row);
 
-    public void removeRow(PeakListRow row);
+	public void removeRow(PeakListRow row);
 
-    public int getNumberFixColumns();
+	public void AddNameExperiment(String nameExperiment);
 
-    public void setNumberFixColumns(int columnNum);
+	public void AddNameExperiment(String nameExperiment, int position);
 
-    public void AddNameExperiment(String nameExperiment);
-
-    public void AddNameExperiment(String nameExperiment, int position);
-
-    public Vector<PeakListRow> getRows();
+	public Vector<PeakListRow> getRows();
 }
