@@ -178,22 +178,31 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 
         double doubleValue = 0;
         int intValue = 0;
+        if (aValue == null) {
+            aValue = "0";
+        }
         if (aValue.getClass().toString().matches(".*String.*")) {
-            try {
-                doubleValue = Double.parseDouble((String) aValue);               
-            } catch (Exception e) {
+            if (aValue.toString().equals("NA")) {
+                doubleValue = 0;
+                intValue = 0;
+                aValue = "";
+            } else {
                 try {
-                    doubleValue = (Double) this.getValueAt(row, column);
-                } catch (Exception ee) {
-                }               
-            }
-            try{
-                 doubleValue = Double.parseDouble((String) aValue);
-                 intValue = (int)doubleValue;
-            }catch (Exception e) {
+                    doubleValue = Double.parseDouble((String) aValue);
+                } catch (Exception e) {
+                    try {
+                        doubleValue = (Double) this.getValueAt(row, column);
+                    } catch (Exception ee) {
+                    }
+                }
                 try {
-                    intValue = (Integer) this.getValueAt(row, column);
-                } catch (Exception ee) {
+                    doubleValue = Double.parseDouble((String) aValue);
+                    intValue = (int) doubleValue;
+                } catch (Exception e) {
+                    try {
+                        intValue = (Integer) this.getValueAt(row, column);
+                    } catch (Exception ee) {
+                    }
                 }
             }
         } else if (aValue.getClass().toString().matches(".*Double.*")) {

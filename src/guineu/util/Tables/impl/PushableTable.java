@@ -153,14 +153,13 @@ public class PushableTable implements DataTable, ActionListener {
 
 
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
-        // Identifying the copy KeyStroke user can modify this
-        // to copy on some other Key combination.
-        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);
-        // Identifying the Paste KeyStroke user can modify this
-        //to copy on some other Key combination.
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);       
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);      
+        KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0,false);
+
         table.registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Paste", paste, JComponent.WHEN_FOCUSED);
+        table.registerKeyboardAction(this, "Delete", delete, JComponent.WHEN_FOCUSED);
         system = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 
@@ -259,23 +258,20 @@ public class PushableTable implements DataTable, ActionListener {
             system.setContents(stsel, stsel);
         }
         if (e.getActionCommand().compareTo("Paste") == 0) {
-            //System.out.println("Trying to Paste");
             int startRow = (table.getSelectedRows())[0];
             int startCol = (table.getSelectedColumns())[0];
             try {
                 String trstring = (String) (system.getContents(this).getTransferData(DataFlavor.stringFlavor));
-               // System.out.println("String is:" + trstring);
                 StringTokenizer st1 = new StringTokenizer(trstring, "\n");
                 for (int i = 0; st1.hasMoreTokens(); i++) {
                     rowstring = st1.nextToken();
                     StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
                     for (int j = 0; st2.hasMoreTokens(); j++) {
-                        value = (String) st2.nextToken();
+                        value = st2.nextToken();
                         if (startRow + i < table.getRowCount() &&
                                 startCol + j < table.getColumnCount()) {
                             table.setValueAt(value, startRow + i, startCol + j);
                         }
-                       // System.out.println("Putting " + value + "atrow=" + startRow + i + "column=" + startCol + j);
                     }
                 }
             } catch (Exception ex) {
@@ -283,6 +279,20 @@ public class PushableTable implements DataTable, ActionListener {
             }
         }
 
+        if (e.getActionCommand().compareTo("Delete") == 0) {
+            int[] selectedRow = table.getSelectedRows();
+            int[] selectedCol = table.getSelectedColumns();
+
+            try {
+                for (int i = 0; i < selectedRow.length; i++) {
+                    for (int j = 0; j < selectedCol.length; j++) {
+                        table.setValueAt("NA", selectedRow[i], selectedCol[j]);
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
