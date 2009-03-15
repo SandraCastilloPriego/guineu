@@ -281,7 +281,7 @@ public class PushableTable implements DataTable, ActionListener {
                 StringTokenizer rst1 = new StringTokenizer(rtrstring, "\n");
                 rowstring = rst1.nextToken();
                 StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
-                newRegister = new register(startRow, rst1.countTokens()+1, startCol, st2.countTokens());
+                newRegister = new register(startRow, rst1.countTokens() + 1, startCol, st2.countTokens());
                 newRegister.getValues();
             } catch (Exception ex) {
                 Logger.getLogger(PushableTable.class.getName()).log(Level.SEVERE, null, ex);
@@ -484,11 +484,11 @@ public class PushableTable implements DataTable, ActionListener {
         private register(int startRow, int rowCount, int startCol, int columnCount) {
             rowIndex = new int[rowCount];
             columnIndex = new int[columnCount];
-            for(int i = 0; i < rowCount; i++){
-                rowIndex[i] = startRow+i;
+            for (int i = 0; i < rowCount; i++) {
+                rowIndex[i] = startRow + i;
             }
-            for(int i = 0; i < columnCount; i++){
-                columnIndex[i] = startCol+i;
+            for (int i = 0; i < columnCount; i++) {
+                columnIndex[i] = startCol + i;
             }
             values = new Object[columnIndex.length * rowIndex.length];
             newValues = new Object[columnIndex.length * rowIndex.length];
@@ -498,7 +498,10 @@ public class PushableTable implements DataTable, ActionListener {
             int cont = 0;
             for (int row : rowIndex) {
                 for (int column : columnIndex) {
-                    values[cont++] = table.getValueAt(row, column);
+                    try {
+                        values[cont++] = table.getValueAt(row, column);
+                    } catch (Exception e) {
+                    }
                 }
             }
         }
@@ -507,7 +510,10 @@ public class PushableTable implements DataTable, ActionListener {
             int cont = 0;
             for (int row : rowIndex) {
                 for (int column : columnIndex) {
-                    newValues[cont++] = table.getValueAt(row, column);
+                    try {
+                        newValues[cont++] = table.getValueAt(row, column);
+                    } catch (Exception e) {
+                    }
                 }
             }
         }
