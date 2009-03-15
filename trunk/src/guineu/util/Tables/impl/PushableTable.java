@@ -24,11 +24,23 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
+import java.util.StringTokenizer;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -40,10 +52,13 @@ import javax.swing.table.TableColumnModel;
  *
  * @author scsandra
  */
-public class PushableTable implements DataTable {
+public class PushableTable implements DataTable, ActionListener {
 
     protected DataTableModel model;
     JTable table;
+    private String rowstring,  value;
+    private Clipboard system;
+    private StringSelection stsel;
 
     public PushableTable() {
     }
@@ -78,7 +93,10 @@ public class PushableTable implements DataTable {
                 try {
                     if (getStandard(Index_row)) {
                         comp.setBackground(Color.yellow);
-                    } else if (isDataSelected(Index_row) && (Index_col != 0)) {
+                        if (isCellSelected(Index_row, Index_col) || isDataSelected(Index_row)) {
+                            comp.setBackground(Color.ORANGE);
+                        }
+                    } else if (isDataSelected(Index_row)) {
                         comp.setBackground(new Color(173, 205, 203));
                     } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
                         comp.setBackground(new Color(234, 235, 243));
@@ -110,13 +128,16 @@ public class PushableTable implements DataTable {
 
     public boolean getStandard(int row) {
         try {
-           return (Boolean) this.getTable().getValueAt(row, 8);
+            return (Boolean) this.getTable().getValueAt(row, 8);
         } catch (Exception e) {
             return false;
         }
     }
 
     public void setTableProperties() {
+
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        table.setColumnSelectionAllowed(true);
 
         // Tooltips      
         this.createTooltips();
@@ -130,8 +151,21 @@ public class PushableTable implements DataTable {
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        // Columns position and size  
-        //this.setColumnSize();
+
+
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
+        // Identifying the copy KeyStroke user can modify this
+        // to copy on some other Key combination.
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);
+        // Identifying the Paste KeyStroke user can modify this
+        //to copy on some other Key combination.
+        table.registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
+        table.registerKeyboardAction(this, "Paste", paste, JComponent.WHEN_FOCUSED);
+        system = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+
+    // Columns position and size
+    //this.setColumnSize();
     }
 
     public void setColumnSize() {
@@ -191,6 +225,64 @@ public class PushableTable implements DataTable {
         toolheader = new ToolTipHeader(table.getColumnModel());
         toolheader.setToolTipStrings(toolTipStr);
         table.setTableHeader(toolheader);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().compareTo("Copy") == 0) {
+            StringBuffer sbf = new StringBuffer();
+            // Check to ensure we have selected only a contiguous block of
+            // cells
+            int numcols = table.getSelectedColumnCount();
+            int numrows = table.getSelectedRowCount();
+            int[] rowsselected = table.getSelectedRows();
+            int[] colsselected = table.getSelectedColumns();
+            if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] &&
+                    numrows == rowsselected.length) &&
+                    (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0] &&
+                    numcols == colsselected.length))) {
+                JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
+                        "Invalid Copy Selection",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            for (int i = 0; i < numrows; i++) {
+                for (int j = 0; j < numcols; j++) {
+                    sbf.append(table.getValueAt(rowsselected[i], colsselected[j]));
+                    if (j < numcols - 1) {
+                        sbf.append("\t");
+                    }
+                }
+                sbf.append("\n");
+            }
+            stsel = new StringSelection(sbf.toString());
+            system = Toolkit.getDefaultToolkit().getSystemClipboard();
+            system.setContents(stsel, stsel);
+        }
+        if (e.getActionCommand().compareTo("Paste") == 0) {
+            //System.out.println("Trying to Paste");
+            int startRow = (table.getSelectedRows())[0];
+            int startCol = (table.getSelectedColumns())[0];
+            try {
+                String trstring = (String) (system.getContents(this).getTransferData(DataFlavor.stringFlavor));
+               // System.out.println("String is:" + trstring);
+                StringTokenizer st1 = new StringTokenizer(trstring, "\n");
+                for (int i = 0; st1.hasMoreTokens(); i++) {
+                    rowstring = st1.nextToken();
+                    StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
+                    for (int j = 0; st2.hasMoreTokens(); j++) {
+                        value = (String) st2.nextToken();
+                        if (startRow + i < table.getRowCount() &&
+                                startCol + j < table.getColumnCount()) {
+                            table.setValueAt(value, startRow + i, startCol + j);
+                        }
+                       // System.out.println("Putting " + value + "atrow=" + startRow + i + "column=" + startCol + j);
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
     }
 
     /**
