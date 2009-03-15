@@ -28,13 +28,18 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.StringTokenizer;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -59,14 +64,18 @@ public class PushableTable implements DataTable, ActionListener {
     private String rowstring,  value;
     private Clipboard system;
     private StringSelection stsel;
+    private Vector<register> registers;
+    int indexRegister = 0;
 
     public PushableTable() {
+        registers = new Vector<register>();
     }
 
     public PushableTable(DataTableModel model) {
         this.model = model;
         table = this.tableRowsColor(model);
         setTableProperties();
+        registers = new Vector<register>();
     }
 
     public void createTable(DataTableModel model) {
@@ -153,13 +162,17 @@ public class PushableTable implements DataTable, ActionListener {
 
 
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);       
-        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);      
-        KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0,false);
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);
+        KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0, false);
+        KeyStroke registerBack = KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK, false);
+        KeyStroke registerForward = KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK, false);
 
         table.registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Paste", paste, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Delete", delete, JComponent.WHEN_FOCUSED);
+        table.registerKeyboardAction(this, "Back", registerBack, JComponent.WHEN_FOCUSED);
+        table.registerKeyboardAction(this, "Forward", registerForward, JComponent.WHEN_FOCUSED);
         system = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 
@@ -258,8 +271,22 @@ public class PushableTable implements DataTable, ActionListener {
             system.setContents(stsel, stsel);
         }
         if (e.getActionCommand().compareTo("Paste") == 0) {
+
             int startRow = (table.getSelectedRows())[0];
             int startCol = (table.getSelectedColumns())[0];
+            register newRegister = null;
+            String rtrstring;
+            try {
+                rtrstring = (String) (system.getContents(this).getTransferData(DataFlavor.stringFlavor));
+                StringTokenizer rst1 = new StringTokenizer(rtrstring, "\n");
+                rowstring = rst1.nextToken();
+                StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
+                newRegister = new register(startRow, rst1.countTokens()+1, startCol, st2.countTokens());
+                newRegister.getValues();
+            } catch (Exception ex) {
+                Logger.getLogger(PushableTable.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             try {
                 String trstring = (String) (system.getContents(this).getTransferData(DataFlavor.stringFlavor));
                 StringTokenizer st1 = new StringTokenizer(trstring, "\n");
@@ -277,9 +304,16 @@ public class PushableTable implements DataTable, ActionListener {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+
+            newRegister.getNewValues();
+            this.registers.addElement(newRegister);
+            this.indexRegister = this.registers.size() - 1;
         }
 
         if (e.getActionCommand().compareTo("Delete") == 0) {
+            register newRegister = new register(table.getSelectedColumns(), table.getSelectedRows());
+            newRegister.getValues();
+
             int[] selectedRow = table.getSelectedRows();
             int[] selectedCol = table.getSelectedColumns();
 
@@ -291,6 +325,24 @@ public class PushableTable implements DataTable, ActionListener {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
+            }
+
+            newRegister.getNewValues();
+            this.registers.addElement(newRegister);
+            this.indexRegister = this.registers.size() - 1;
+        }
+
+        if (e.getActionCommand().compareTo("Back") == 0) {
+            this.registers.elementAt(indexRegister).back();
+            if (indexRegister > 0) {
+                indexRegister--;
+            }
+        }
+
+        if (e.getActionCommand().compareTo("Forward") == 0) {
+            this.registers.elementAt(indexRegister).forward();
+            if (indexRegister < this.registers.size() - 1) {
+                indexRegister++;
             }
         }
     }
@@ -412,6 +464,70 @@ public class PushableTable implements DataTable, ActionListener {
             }
 
             super.setValue(value);
+        }
+    }
+
+    class register {
+
+        int[] columnIndex;
+        int[] rowIndex;
+        Object[] values;
+        Object[] newValues;
+
+        public register(int[] columnIndex, int[] rowIndex) {
+            this.columnIndex = columnIndex;
+            this.rowIndex = rowIndex;
+            values = new Object[columnIndex.length * rowIndex.length];
+            newValues = new Object[columnIndex.length * rowIndex.length];
+        }
+
+        private register(int startRow, int rowCount, int startCol, int columnCount) {
+            rowIndex = new int[rowCount];
+            columnIndex = new int[columnCount];
+            for(int i = 0; i < rowCount; i++){
+                rowIndex[i] = startRow+i;
+            }
+            for(int i = 0; i < columnCount; i++){
+                columnIndex[i] = startCol+i;
+            }
+            values = new Object[columnIndex.length * rowIndex.length];
+            newValues = new Object[columnIndex.length * rowIndex.length];
+        }
+
+        public void getValues() {
+            int cont = 0;
+            for (int row : rowIndex) {
+                for (int column : columnIndex) {
+                    values[cont++] = table.getValueAt(row, column);
+                }
+            }
+        }
+
+        public void getNewValues() {
+            int cont = 0;
+            for (int row : rowIndex) {
+                for (int column : columnIndex) {
+                    newValues[cont++] = table.getValueAt(row, column);
+                }
+            }
+        }
+
+        public void back() {
+            int cont = 0;
+            for (int row : rowIndex) {
+                for (int column : columnIndex) {
+                    table.setValueAt(values[cont++], row, column);
+                }
+            }
+        }
+
+        public void forward() {
+            int cont = 0;
+            for (int row : rowIndex) {
+                for (int column : columnIndex) {
+                    table.setValueAt(newValues[cont++], row, column);
+                }
+            }
         }
     }
 }
