@@ -286,4 +286,12 @@ public class SimplePeakListRowGCGC implements PeakListRow {
     public void setPeak(String str, String get) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	public void removeNoSamplePeaks(String[] group) {
+		for (String name : group) {
+			if (this.peaks.containsKey(name)) {
+				this.peaks.remove(name);
+			}
+		}
+	}
 }

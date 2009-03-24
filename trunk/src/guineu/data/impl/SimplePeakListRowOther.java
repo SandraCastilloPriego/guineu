@@ -213,4 +213,12 @@ public class SimplePeakListRowOther implements PeakListRow {
     public void setSelectionMode(boolean selectionMode) {
         this.selection = selectionMode;
     }
+
+	public void removeNoSamplePeaks(String[] group) {
+		for (String name : group) {
+			if (this.peaks.containsKey(name)) {
+				this.peaks.remove(name);
+			}
+		}
+	}
 }
