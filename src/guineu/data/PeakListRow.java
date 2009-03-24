@@ -41,6 +41,8 @@ public interface PeakListRow {
 
     public String getName();
 
+	public void removeNoSamplePeaks(String[] group);
+
     public void setID(int i);
 
     public void setPeak(String name, Double value);
