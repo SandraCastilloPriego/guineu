@@ -125,12 +125,13 @@ public class LCMSParserCSV implements Parser {
                 if (lipid.getName() == null || lipid.getName().isEmpty()) {
                     lipid.setName("unknown");
                 }
-                lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
+               // lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
             }
             lipid.setSelectionMode(false);
             this.dataset.AddRow(lipid);
 
         } catch (Exception exception) {
+			exception.printStackTrace();
         }
     }
 

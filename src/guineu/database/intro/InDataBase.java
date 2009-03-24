@@ -35,7 +35,7 @@ public interface InDataBase {
 
     public float getProgress();
 
-    public void lcms(Connection conn, SimpleDataset lcms_known, String tipe, String author, String DatasetName) throws IOException;
+    public void lcms(Connection conn, SimpleDataset lcms_known, String tipe, String author, String DatasetName, String parameters) throws IOException;
 
     public void gcgctof(Connection conn, SimpleDataset lcms_known, String tipe, String author, String DatasetName) throws IOException;
 
