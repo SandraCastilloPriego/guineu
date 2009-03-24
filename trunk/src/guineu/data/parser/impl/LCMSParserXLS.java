@@ -62,18 +62,21 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 			}
 
 			int initRow = this.getRowInit(sheet);
+			
+			if (initRow > -1) {
+				numberRows = this.getNumberRows(initRow, sheet);
+				HSSFRow row = sheet.getRow(initRow);
 
-			numberRows = this.getNumberRows(initRow, sheet);
+				for (int i = 0; i < row.getLastCellNum(); i++) {
+					HSSFCell cell = row.getCell((short) i);
+					this.head.addElement(cell.toString());
+				}
+				this.readLipids(initRow + 1, numberRows, sheet);
 
-			HSSFRow row = sheet.getRow(initRow);
-			for (int i = 0; i < row.getLastCellNum(); i++) {
-				HSSFCell cell = row.getCell((short) i);
-				this.head.addElement(cell.toString());
+				this.setExperimentsName(head);
+			}else{
+				this.dataset = null;
 			}
-			this.readLipids(initRow + 1, numberRows, sheet);
-
-			this.setExperimentsName(head);
-
 		} catch (IOException ex) {
 			Logger.getLogger(LCMSParserXLS.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -253,7 +256,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 					this.dataset.AddNameExperiment(header.elementAt(i));
 				}
 			}
-			
+
 		} catch (Exception exception) {
 		}
 	}

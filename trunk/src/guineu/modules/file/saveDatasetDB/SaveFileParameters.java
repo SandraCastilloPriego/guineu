@@ -38,10 +38,13 @@ public class SaveFileParameters extends SimpleParameterSet{
 	public static final Parameter name = new SimpleParameter(
             ParameterType.STRING, "Dataset name: ",
             "Name of the dataset", null, "Name", null);
-    
+
+    public static final Parameter parameters = new SimpleParameter(
+            ParameterType.FILE_NAME, "Dataset name: ",
+            "Name of the dataset", null, "Name", null);
     
     public SaveFileParameters() {
-        super(new Parameter[] { name, author });
+        super(new Parameter[] { name, author, parameters });
     }
 
 }
