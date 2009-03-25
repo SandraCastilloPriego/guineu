@@ -41,17 +41,13 @@ public class NormalizeSerum {
 		this.stdMol.vCer.removeAllElements();
 		this.fillStd(".*Cer.*", this.stdMol.vCer);
 		this.stdMol.vTAG.removeAllElements();
-		this.fillStd(".*TAG.*", this.stdMol.vTAG);
-		this.fillStd(".*TG.*", this.stdMol.vTAG);
+		this.fillStd(".*TAG.*|.*TG.*", this.stdMol.vTAG);
 		this.stdMol.vGPEtn.removeAllElements();
-		this.fillStd("^GPEtn.*", this.stdMol.vGPEtn);
-		this.fillStd("^PE.*", this.stdMol.vGPEtn);
+		this.fillStd("^GPEtn.*|^PE.*", this.stdMol.vGPEtn);
 		this.stdMol.vGPCho.removeAllElements();
-		this.fillStd("^GPCho.*", this.stdMol.vGPCho);
-		this.fillStd("^PC.*", this.stdMol.vGPCho);
+		this.fillStd("^GPCho.*|^PC.*", this.stdMol.vGPCho);
 		this.stdMol.vLysoGPCho.removeAllElements();
-		this.fillStd(".*Lyso.*", this.stdMol.vLysoGPCho);
-		this.fillStd(".*LP.*", this.stdMol.vLysoGPCho);
+		this.fillStd(".*Lyso.*|.*LP.*|.*lyso.*", this.stdMol.vLysoGPCho);
 		this.stdMol.vOtherValue.removeAllElements();
 		this.fillStd(".*" + this.stdMol.other + ".*", this.stdMol.vOtherValue);
 		this.stdMol.vOtherValue1.removeAllElements();
@@ -105,7 +101,7 @@ public class NormalizeSerum {
 			return "GPA(32:0)";
 		}
 		if (RT >= 410) {
-			return "TAG(52:0)";
+			return "TAG(52:0)";			
 		}
 		return null;
 	}
@@ -136,42 +132,42 @@ public class NormalizeSerum {
 									valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vTAG.elementAt(e), this.stdMol.TAG);
 									break;
 								case 2:
-									if (this.stdMol.vTAG.isEmpty()) {
+									if (this.stdMol.vGPEtn.isEmpty()) {
 										status = TaskStatus.ERROR;
 										return;
 									}
 									valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vGPEtn.elementAt(e), this.stdMol.GPEtn);
 									break;
 								case 3:
-									if (this.stdMol.vTAG.isEmpty()) {
+									if (this.stdMol.vLysoGPCho.isEmpty()) {
 										status = TaskStatus.ERROR;
 										return;
 									}
 									valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vLysoGPCho.elementAt(e), this.stdMol.LysoGPCho);
 									break;
 								case 4:
-									if (this.stdMol.vTAG.isEmpty()) {
+									if (this.stdMol.vCer.isEmpty()) {
 										status = TaskStatus.ERROR;
 										return;
 									}
 									valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vCer.elementAt(e), this.stdMol.Cer);
 									break;
 								case 5:
-									if (this.stdMol.vTAG.isEmpty()) {
+									if (this.stdMol.vGPCho.isEmpty()) {
 										status = TaskStatus.ERROR;
 										return;
 									}
 									valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vGPCho.elementAt(e), this.stdMol.GPCho);
 									break;
 								case 6:
-									if (this.stdMol.vTAG.isEmpty()) {
+									if (this.stdMol.vOtherValue.isEmpty()) {
 										status = TaskStatus.ERROR;
 										return;
 									}
 									valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vOtherValue.elementAt(e), this.stdMol.otherValue);
 									break;
 								case 7:
-									if (this.stdMol.vTAG.isEmpty()) {
+									if (this.stdMol.vOtherValue1.isEmpty()) {
 										status = TaskStatus.ERROR;
 										return;
 									}
