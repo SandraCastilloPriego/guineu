@@ -102,8 +102,7 @@ public class NormalizeTissue {
 			return "PA(32:0)";
 		}
 		if (RT >= 410) {
-			//return "TG(52:0)";
-			return "PA(32:0)";
+			return "TG(52:0)";			
 		}
 		return null;
 	}
