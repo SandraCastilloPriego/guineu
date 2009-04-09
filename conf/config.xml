@@ -12,7 +12,6 @@
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
     <module class="guineu.modules.file.exit.ExitProgram"/>  
     <module class="guineu.modules.filter.Alignment.AlignmentDatasets"/>  
-    <module class="guineu.modules.filter.splitdatasets.Split"/>  
     <module class="guineu.modules.filter.simplelipidname.SimpleLipidNameFilter"/>  
     <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/>  
     <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  
@@ -63,13 +62,13 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>-4</x>
-      <y>-4</y>
-      <width>-1</width>
-      <height>-1</height>
+      <x>140</x>
+      <y>145</y>
+      <width>1000</width>
+      <height>700</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
-    <lastProjectDirectory>Y:\PROJECTS\datasetsProcessed\143-64\143-part2.csv</lastProjectDirectory>
-    <lastSaveDirectory>Y:\PROJECTS\datasetsProcessed\143-64\143.csv</lastSaveDirectory>
+    <lastProjectDirectory>C:\Documents and Settings\SCSANDRA\Desktop\analizar\112\vein112-ident22.csv</lastProjectDirectory>
+    <lastSaveDirectory>C:\Documents and Settings\SCSANDRA\Desktop\jdfkdf</lastSaveDirectory>
   </desktop> 
 </configuration>

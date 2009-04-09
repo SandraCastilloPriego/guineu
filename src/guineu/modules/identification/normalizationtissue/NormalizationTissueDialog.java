@@ -329,14 +329,15 @@ public class NormalizationTissueDialog extends javax.swing.JDialog implements Ac
             FileReader fr = null;
             
         try {
-            fr = new FileReader(new File("C:\\Documents and Settings\\SCSANDRA\\Desktop\\list.csv"));
+            fr = new FileReader(new File("list.csv"));
             BufferedReader br = new BufferedReader(fr);     
             String line;           
             while ((line = (br.readLine())) != null) {
                 if (!line.isEmpty()) {
                     String[] w = line.split(",");
-                    for(int i = 0; i < this.jTable.getRowCount(); i++){                        
-                        if(this.jTable.getValueAt(i, 0).toString().matches(".*"+w[0]+".*")){                           
+                    for(int i = 0; i < this.jTable.getRowCount(); i++){
+						w[0] = w[0].replaceAll("_", "").toLowerCase();
+                        if(this.jTable.getValueAt(i, 0).toString().replace("_", "").toLowerCase().matches(".*"+w[0]+".*")){
                             this.jTable.setValueAt(Double.valueOf(w[1]), i, 1);
                             break;
                         }

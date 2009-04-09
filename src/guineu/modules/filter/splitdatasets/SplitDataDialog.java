@@ -83,6 +83,7 @@ public class SplitDataDialog extends JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jTablefrom.setAutoCreateRowSorter(true);
         jTablefrom.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -107,6 +108,7 @@ public class SplitDataDialog extends JDialog {
             }
         });
         jTablefrom.setShowHorizontalLines(false);
+        jTablefrom.setUpdateSelectionOnSort(false);
         jScrollPane1.setViewportView(jTablefrom);
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.PAGE_AXIS));

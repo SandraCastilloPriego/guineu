@@ -119,8 +119,9 @@ public class NormalizeTissue {
 					try {
 						String lipid = this.getLipidName(i);
 						if (lipid != null) {
-							lipid = lipid.substring(0, lipid.indexOf("("));
-
+							try{
+								lipid = lipid.substring(0, lipid.indexOf("("));
+							}catch(Exception exception){}
 
 							Double valueNormalized = (Double) dataset.getRow(i).getPeak(experimentName);
 
