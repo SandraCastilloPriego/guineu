@@ -344,4 +344,8 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
     public int getFixColumns() {
         return this.fixNumberColumns;
     }
+    
+    public void addColumn(String columnName){
+        this.dataset.AddNameExperiment(columnName);
+    }
 }

@@ -17,10 +17,7 @@
  */
 package guineu.data.datamodels;
 
-/**
- *
- * @author bicha
- */
+
 public enum LCMSColumnName {
 
 	SELECTION("Selection"),

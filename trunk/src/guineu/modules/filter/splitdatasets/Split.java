@@ -50,7 +50,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Split dataset..",
                 "TODO write description", KeyEvent.VK_S, this, null);
-
+        desktop.addMenuSeparator(GuineuMenu.FILTER);
     }
 
     public void taskStarted(Task task) {
@@ -99,7 +99,6 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
     }
 
     public void setParameters(ParameterSet parameterValues) {
-
     }
 
     public String toString() {
