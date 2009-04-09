@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
+
 public class ExperimentDataModel extends AbstractTableModel implements DataTableModel {
 
     /**
@@ -334,8 +335,11 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
     public DatasetType getType() {
         return DatasetType.EXPERIMENTINFO;
     }
-}
 
+    public void addColumn(String ColumnName) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
 class MyComparator implements Comparator<Object> {
 
     protected boolean isSortAsc;

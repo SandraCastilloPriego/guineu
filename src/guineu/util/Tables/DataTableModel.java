@@ -39,5 +39,7 @@ public interface DataTableModel extends TableModel {
 
     public void removeRows();
     
-    public DatasetType getType();   
+    public DatasetType getType(); 
+    
+    public void addColumn(String ColumnName);
 }

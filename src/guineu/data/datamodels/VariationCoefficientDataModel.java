@@ -158,4 +158,8 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void addColumn(String ColumnName) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

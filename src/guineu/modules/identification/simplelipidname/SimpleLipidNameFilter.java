@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.simplelipidname;
+package guineu.modules.identification.simplelipidname;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
@@ -44,7 +44,7 @@ public class SimpleLipidNameFilter implements GuineuModule, TaskListener, Action
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILTER, "Simplify Lipid Name..",
+        desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "Simplify Lipid Name..",
                 "TODO write description", KeyEvent.VK_I, this, null);
 
     }

@@ -28,12 +28,10 @@ import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
 
-import guineu.util.internalframe.DataInternalFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
-import javax.swing.JInternalFrame;
 
 /**
  *
@@ -49,7 +47,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "Purge Identification.. ",
                 "TODO write description", KeyEvent.VK_U, this, null);
-
+        desktop.addMenuSeparator(GuineuMenu.IDENTIFICATION);
     }
 
     public void taskStarted(Task task) {
@@ -79,7 +77,6 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
     }
 
     public void setParameters(ParameterSet parameterValues) {
-
     }
 
     public String toString() {
@@ -92,14 +89,14 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new purgeIdentificationTask[datasets.length];
         int cont = 0;
-        for (Dataset dataset : datasets) {                 
-                tasks[cont++] = new purgeIdentificationTask(dataset, desktop);
+        for (Dataset dataset : datasets) {
+            tasks[cont++] = new purgeIdentificationTask(dataset, desktop);
 
-                TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
-                // start the group
-                newGroup.start();
-                return newGroup;            
+            // start the group
+            newGroup.start();
+            return newGroup;
         }
 
         return null;

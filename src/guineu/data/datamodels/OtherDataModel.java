@@ -122,4 +122,8 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
     public int getFixColumns() {
         return 1;
     }
+
+    public void addColumn(String ColumnName) {
+        this.dataset.AddNameExperiment(ColumnName);
+    }
 }
