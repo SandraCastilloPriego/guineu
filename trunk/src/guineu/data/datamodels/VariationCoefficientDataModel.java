@@ -1,7 +1,6 @@
 package guineu.data.datamodels;
 
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.TableComparator.SortingDirection;
@@ -122,43 +121,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
     public boolean isCellEditable(int row, int column) {
         return true;
     }
-
-    void addColumn() {
-        String[] oldColumns = this.columns.clone();
-        this.columns = new String[oldColumns.length + 1];
-        for (int i = 0; i < oldColumns.length; i++) {
-            System.out.println(oldColumns[i]);
-            this.columns[i] = oldColumns[i];
-        }
-        this.columns[oldColumns.length] = "New Column";
-        this.numColumns = this.columns.length;
-
-        this.addColumnObject(this.rows);
-        this.numRows = this.rows.length;
-    }
-
-    public void addColumnObject(Object[][] o) {
-        Object[][] oldRows = o.clone();
-        o = new Object[oldRows.length][oldRows[0].length + 1];
-        for (int i = 0; i < oldRows.length; i++) {
-            for (int j = 0; j < oldRows[0].length; j++) {
-                o[i][j] = oldRows[i][j];
-            }
-            o[i][oldRows[0].length] = " ";
-        }
-    }
-
-    public void addColumnObject(int[][] o) {
-        int[][] oldRows = o.clone();
-        o = new int[oldRows.length][oldRows[0].length + 1];
-        for (int i = 0; i < oldRows.length; i++) {
-            for (int j = 0; j < oldRows[0].length; j++) {
-                o[i][j] = oldRows[i][j];
-            }
-            o[i][oldRows[0].length] = 0;
-        }
-    }
-
+      
     public void setColumnCount(int count) {
         this.numColumns = count;
     }
@@ -182,11 +145,6 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
     public Object[][] getData() {
         return rows;
     }
-
-    public void changeData(int column, int row) {
-
-    }
-   
 
     public DatasetType getType() {
         return null;
