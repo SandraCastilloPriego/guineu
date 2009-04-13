@@ -117,6 +117,5 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
 
         return newGroup;
 
-
     }
 }

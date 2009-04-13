@@ -28,6 +28,7 @@ public class SplitDataModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private String columns;
     private Vector<String> rows; //content all data   
+
     private int numColumns;
     private int numRows;
 
@@ -48,8 +49,15 @@ public class SplitDataModel extends AbstractTableModel {
         this.fireTableDataChanged();
     }
 
-    public void removeRow(int rowIndex) {
-        this.rows.setElementAt("1", rowIndex);
+    public void removeRow(String rowName) {
+        for (int i = 0; i < this.rows.size(); i++) {
+            if (this.rows.elementAt(i).compareTo(rowName) == 0) {
+                this.rows.removeElementAt(i);
+                this.numRows = this.rows.size();
+                this.fireTableDataChanged();
+                return;
+            }
+        }
     }
 
     public int getColumnCount() {
@@ -116,16 +124,5 @@ public class SplitDataModel extends AbstractTableModel {
 
     public void setColumnCount(int count) {
         this.numColumns = count;
-    }
-
-    public void reconstruct() {
-        for (int i = 0; i < this.rows.size(); i++) {
-            if (this.rows.elementAt(i).matches("1")) {
-                this.rows.removeElementAt(i);
-                i--;
-            }
-        }
-        this.numRows = this.rows.size();
-        this.fireTableDataChanged();
     }
 }
