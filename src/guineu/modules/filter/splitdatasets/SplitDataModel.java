@@ -73,11 +73,8 @@ public class SplitDataModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int columnIndex) {
-        String str = columns;
-        /* if (columnIndex == sortCol && columnIndex != 0)
-        str += isSortAsc ? " >>" : " <<";*/
-        return str;
+    public String getColumnName(int columnIndex) {     
+        return columns;
     }
 
     @Override
@@ -91,8 +88,7 @@ public class SplitDataModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int row, int column) {
-        rows.setElementAt(aValue.toString(), row);
-    //fireTableCellUpdated (row, column);
+        rows.setElementAt(aValue.toString(), row);    
     }
 
     @Override
