@@ -37,11 +37,12 @@ public class SplitDataDialog extends JDialog {
     /** Creates new form TtestDataDialog */
     public SplitDataDialog(SimpleDataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
-                "Please select a experiment groups to do the t-test...", true);
+                "Please select a experiment groups to do the split filter...", true);
 
         logger.finest("Displaying experiment open dialog");
         this.dataset = dataset;
         initComponents();
+
         try {
             this.from = new SplitDataModel("Experiment Names");
             this.group1 = new SplitDataModel("Group1 - Experiment Names");
@@ -107,8 +108,8 @@ public class SplitDataDialog extends JDialog {
                 return canEdit [columnIndex];
             }
         });
+        jTablefrom.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTablefrom.setShowHorizontalLines(false);
-        jTablefrom.setUpdateSelectionOnSort(false);
         jScrollPane1.setViewportView(jTablefrom);
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.PAGE_AXIS));
@@ -129,6 +130,7 @@ public class SplitDataDialog extends JDialog {
         });
         jPanel2.add(jButtonder2);
 
+        jTablegroup1.setAutoCreateRowSorter(true);
         jTablegroup1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -155,6 +157,7 @@ public class SplitDataDialog extends JDialog {
         jTablegroup1.setShowHorizontalLines(false);
         jScrollPane2.setViewportView(jTablegroup1);
 
+        jTablegroup2.setAutoCreateRowSorter(true);
         jTablegroup2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -220,7 +223,7 @@ public class SplitDataDialog extends JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -288,55 +291,95 @@ public class SplitDataDialog extends JDialog {
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     private void jButtonizq2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonizq2ActionPerformed
-        int[] selRows = this.jTablefrom.getSelectedRows();
-        for (int i = 0; i < selRows.length; i++) {
-            if (!this.from.getValueAt(selRows[i], 0).isEmpty()) {
-                this.group2.addRows((String) this.from.getValueAt(selRows[i], 0));
-                this.from.removeRow(selRows[i]);
+        try {
+            int[] selRows = this.jTablefrom.getSelectedRows();
+            String[] names = new String[selRows.length];
+            int cont = 0;
+            for (int selected : selRows) {
+                int index = this.jTablefrom.convertRowIndexToModel(selected);
+                names[cont++] = this.from.getValueAt(index, 0);
             }
+            for (String name : names) {
+                if (!name.isEmpty()) {
+                    this.group2.addRows((String) name);
+                    this.from.removeRow(name);
+                }
+            }
+
+            this.jTablefrom.revalidate();
+            this.jTablefrom.repaint();
+            this.jTablegroup2.revalidate();
+        } catch (Exception e) {
         }
-        this.from.reconstruct();
-        this.jTablefrom.revalidate();
-        this.jTablegroup2.revalidate();
 }//GEN-LAST:event_jButtonizq2ActionPerformed
 
     private void jButtonder2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonder2ActionPerformed
-        int[] selRows = this.jTablegroup2.getSelectedRows();
-        for (int i = 0; i < selRows.length; i++) {
-            if (!this.group2.getValueAt(selRows[i], 0).isEmpty()) {
-                this.from.addRows((String) this.group2.getValueAt(selRows[i], 0));
-                this.group2.removeRow(selRows[i]);
+        try {
+            int[] selRows = this.jTablegroup2.getSelectedRows();
+            String[] names = new String[selRows.length];
+            int cont = 0;
+            for (int selected : selRows) {
+                int index = this.jTablegroup2.convertRowIndexToModel(selected);
+                names[cont++] = this.group2.getValueAt(index, 0);
             }
+            for (String name : names) {
+                if (!name.isEmpty()) {
+                    this.from.addRows((String) name);
+                    this.group2.removeRow(name);
+                }
+            }
+
+            this.jTablefrom.revalidate();
+            this.jTablefrom.repaint();
+            this.jTablegroup2.revalidate();
+        } catch (Exception e) {
         }
-        this.group2.reconstruct();
-        this.jTablefrom.revalidate();
-        this.jTablegroup2.revalidate();
 }//GEN-LAST:event_jButtonder2ActionPerformed
 
     private void jButtonizq1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonizq1ActionPerformed
-        int[] selRows = this.jTablefrom.getSelectedRows();
-        for (int i = 0; i < selRows.length; i++) {
-            if (!this.from.getValueAt(selRows[i], 0).isEmpty()) {
-                this.group1.addRows((String) this.from.getValueAt(selRows[i], 0));
-                this.from.removeRow(selRows[i]);
+        try {
+            int[] selRows = this.jTablefrom.getSelectedRows();
+            String[] names = new String[selRows.length];
+            int cont = 0;
+            for (int selected : selRows) {
+                int index = this.jTablefrom.convertRowIndexToModel(selected);
+                names[cont++] = this.from.getValueAt(index, 0);
             }
+            for (String name : names) {
+                if (!name.isEmpty()) {
+                    this.group1.addRows((String) name);
+                    this.from.removeRow(name);
+                }
+            }
+
+            this.jTablefrom.revalidate();
+            this.jTablefrom.repaint();
+            this.jTablegroup1.revalidate();
+        } catch (Exception e) {
         }
-        this.from.reconstruct();
-        this.jTablefrom.revalidate();
-        this.jTablegroup1.revalidate();
     }//GEN-LAST:event_jButtonizq1ActionPerformed
 
     private void jButtonder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonder1ActionPerformed
-        int[] selRows = this.jTablegroup1.getSelectedRows();
-        for (int i = 0; i < selRows.length; i++) {
-            if (!this.group1.getValueAt(selRows[i], 0).isEmpty()) {
-                this.from.addRows((String) this.group1.getValueAt(selRows[i], 0));
-                this.group1.removeRow(selRows[i]);
+        try {
+            int[] selRows = this.jTablegroup1.getSelectedRows();
+            String[] names = new String[selRows.length];
+            int cont = 0;
+            for (int selected : selRows) {
+                int index = this.jTablegroup1.convertRowIndexToModel(selected);
+                names[cont++] = this.group1.getValueAt(index, 0);
             }
+            for (String name : names) {
+                if (!name.isEmpty()) {
+                    this.from.addRows((String) name);
+                    this.group1.removeRow(name);
+                }
+            }
+
+            this.jTablefrom.revalidate();
+            this.jTablefrom.repaint();
+            this.jTablegroup1.revalidate();
+        } catch (Exception e) {
         }
-        this.group1.reconstruct();
-        this.jTablefrom.revalidate();
-        this.jTablegroup1.revalidate();
     }//GEN-LAST:event_jButtonder1ActionPerformed
 
     public ExitCode getExitCode() {
@@ -377,6 +420,7 @@ public class SplitDataDialog extends JDialog {
     private javax.swing.JTable jTablegroup1;
     private javax.swing.JTable jTablegroup2;
     // End of variables declaration//GEN-END:variables
+
     private void setValuesTable() {
         for (String experimentName : dataset.getNameExperiments()) {
             this.from.addRows(experimentName);
