@@ -22,7 +22,8 @@
         <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.filter.dataselection.DataSelection"/>  
+    <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>
+	<module class="guineu.modules.filter.dataselection.DataSelection"/>
     <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch"> 
       <parameters>
         <parameter name="Database file" type="FILE_NAME">C:\Documents and Settings\SCSANDRA\Desktop\celiac\standars-NORT.csv</parameter>
