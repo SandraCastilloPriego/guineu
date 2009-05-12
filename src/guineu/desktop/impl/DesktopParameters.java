@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl;
 
 import guineu.data.StorableParameterSet;
@@ -51,15 +50,15 @@ public class DesktopParameters implements StorableParameterSet,
 	public static final String HEIGHT_ELEMENT_NAME = "height";
 	public static final String LASTPATH_ELEMENT_NAME = "lastdirectory";
 	public static final String LAST_PROJECT_PATH_ELEMENT_NAME = "lastProjectDirectory";
-        public static final String LAST_SAVE_PATH_ELEMENT_NAME = "lastSaveDirectory";
-
+	public static final String LAST_SAVE_PATH_ELEMENT_NAME = "lastSaveDirectory";
+	public static final String IDENTIFICATION_PATH = "LastidentificationDirectory";
 	public static final int MAXIMIZED = -1;
-
-	private NumberFormatter mzFormat, rtFormat, intensityFormat;
-	private int mainWindowX, mainWindowY, mainWindowWidth, mainWindowHeight;
+	private NumberFormatter mzFormat,  rtFormat,  intensityFormat;
+	private int mainWindowX,  mainWindowY,  mainWindowWidth,  mainWindowHeight;
 	private String lastOpenPath = "";
 	private String lastOpenProjectPath = "";
-        private String lastSavePath = "";
+	private String lastSavePath = "";
+	private String lastIdentificationPath = "";
 
 	DesktopParameters() {
 		this(new NumberFormatter(FormatterType.NUMBER, "0.000"),
@@ -189,11 +188,18 @@ public class DesktopParameters implements StorableParameterSet,
 		this.lastOpenPath = lastOpenPath;
 	}
 
-        /**
+	/**
 	 * @return Returns the lastSavePath.
 	 */
 	public String getLastSavePath() {
 		return lastSavePath;
+	}
+
+	/**
+	 * @return Returns the lastIndentificationPath.
+	 */
+	public String getLastIndentifycationPath() {
+		return lastIdentificationPath;
 	}
 
 	/**
@@ -204,8 +210,13 @@ public class DesktopParameters implements StorableParameterSet,
 		this.lastSavePath = lastSavePath;
 	}
 
-        
-
+	/**
+	 * @param lastIdentificationPath
+	 *            The lastIdentificationPath to set.
+	 */
+	public void setLastIdentificationPath(String lastPath) {
+		this.lastIdentificationPath = lastPath;
+	}
 
 	public void exportValuesToXML(Element element) {
 		Element mzFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
@@ -218,8 +229,7 @@ public class DesktopParameters implements StorableParameterSet,
 				FORMAT_TYPE_ATTRIBUTE_RT);
 		rtFormat.exportToXML(rtFormatElement);
 
-		Element intensityFormatElement = element
-				.addElement(FORMAT_ELEMENT_NAME);
+		Element intensityFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
 		intensityFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
 				FORMAT_TYPE_ATTRIBUTE_INT);
 		intensityFormat.exportToXML(intensityFormatElement);
@@ -237,63 +247,58 @@ public class DesktopParameters implements StorableParameterSet,
 		element.addElement(LASTPATH_ELEMENT_NAME).setText(lastOpenPath);
 		element.addElement(LAST_PROJECT_PATH_ELEMENT_NAME).setText(
 				lastOpenProjectPath);
-                element.addElement(LAST_SAVE_PATH_ELEMENT_NAME).setText(
+		element.addElement(LAST_SAVE_PATH_ELEMENT_NAME).setText(
 				lastSavePath);
 
 	}
-
-
 
 	public void importValuesFromXML(Element element) {
 		Iterator i = element.elements(FORMAT_ELEMENT_NAME).iterator();
 		while (i.hasNext()) {
 			Element formatElement = (Element) i.next();
-			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME)
-					.equals(FORMAT_TYPE_ATTRIBUTE_MZ))
+			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME).equals(FORMAT_TYPE_ATTRIBUTE_MZ)) {
 				mzFormat.importFromXML(formatElement);
-			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME)
-					.equals(FORMAT_TYPE_ATTRIBUTE_RT))
+			}
+			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME).equals(FORMAT_TYPE_ATTRIBUTE_RT)) {
 				rtFormat.importFromXML(formatElement);
-			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME)
-					.equals(FORMAT_TYPE_ATTRIBUTE_INT))
+			}
+			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME).equals(FORMAT_TYPE_ATTRIBUTE_INT)) {
 				intensityFormat.importFromXML(formatElement);
+			}
 		}
 
 		Element mainWindowElement = element.element(MAINWINDOW_ELEMENT_NAME);
 		if (mainWindowElement != null) {
-			mainWindowX = Integer.parseInt(mainWindowElement
-					.elementText(X_ELEMENT_NAME));
-			mainWindowY = Integer.parseInt(mainWindowElement
-					.elementText(Y_ELEMENT_NAME));
-			mainWindowWidth = Integer.parseInt(mainWindowElement
-					.elementText(WIDTH_ELEMENT_NAME));
-			mainWindowHeight = Integer.parseInt(mainWindowElement
-					.elementText(HEIGHT_ELEMENT_NAME));
+			mainWindowX = Integer.parseInt(mainWindowElement.elementText(X_ELEMENT_NAME));
+			mainWindowY = Integer.parseInt(mainWindowElement.elementText(Y_ELEMENT_NAME));
+			mainWindowWidth = Integer.parseInt(mainWindowElement.elementText(WIDTH_ELEMENT_NAME));
+			mainWindowHeight = Integer.parseInt(mainWindowElement.elementText(HEIGHT_ELEMENT_NAME));
 		}
 
 		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
-		if (mainWindowX > 0)
+		if (mainWindowX > 0) {
 			mainWindow.setLocation(mainWindowX, mainWindowY);
+		}
 
-		if ((mainWindowWidth > 0) || (mainWindowHeight > 0))
+		if ((mainWindowWidth > 0) || (mainWindowHeight > 0)) {
 			mainWindow.setSize(mainWindowWidth, mainWindowHeight);
+		}
 
 		int newState = Frame.NORMAL;
-		if (mainWindowWidth == MAXIMIZED)
+		if (mainWindowWidth == MAXIMIZED) {
 			newState |= Frame.MAXIMIZED_HORIZ;
+		}
 
-		if (mainWindowHeight == MAXIMIZED)
+		if (mainWindowHeight == MAXIMIZED) {
 			newState |= Frame.MAXIMIZED_VERT;
+		}
 
 		mainWindow.setExtendedState(newState);
 
 		lastOpenPath = element.elementText(LASTPATH_ELEMENT_NAME);
-		lastOpenProjectPath = element
-				.elementText(LAST_PROJECT_PATH_ELEMENT_NAME);
-                lastSavePath = element.elementText(LAST_SAVE_PATH_ELEMENT_NAME);
+		lastOpenProjectPath = element.elementText(LAST_PROJECT_PATH_ELEMENT_NAME);
+		lastSavePath = element.elementText(LAST_SAVE_PATH_ELEMENT_NAME);
 	}
-
-
 
 	public DesktopParameters clone() {
 		return new DesktopParameters(mzFormat.clone(), rtFormat.clone(),
@@ -323,14 +328,16 @@ public class DesktopParameters implements StorableParameterSet,
 		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
 		int state = mainWindow.getExtendedState();
 		Dimension size = mainWindow.getSize();
-		if ((state & Frame.MAXIMIZED_HORIZ) != 0)
+		if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
 			mainWindowWidth = MAXIMIZED;
-		else
+		} else {
 			mainWindowWidth = size.width;
-		if ((state & Frame.MAXIMIZED_VERT) != 0)
+		}
+		if ((state & Frame.MAXIMIZED_VERT) != 0) {
 			mainWindowHeight = MAXIMIZED;
-		else
+		} else {
 			mainWindowHeight = size.height;
+		}
 	}
 
 	/**
@@ -338,5 +345,4 @@ public class DesktopParameters implements StorableParameterSet,
 	 */
 	public void componentShown(ComponentEvent arg0) {
 	}
-
 }

@@ -1,10 +1,9 @@
 /*
-    Copyright 2007-2008 VTT Biotechnology
+Copyright 2007-2008 VTT Biotechnology
 
-    This file is part of GUINEU.
-    
+This file is part of GUINEU.
+
  */
-
 package guineu.modules.file.openLCMSDatasetFile;
 
 import guineu.data.ParameterSet;
@@ -24,95 +23,92 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.logging.Logger;
 
-
 public class OpenFile implements GuineuModule, TaskListener, ActionListener {
-   private Logger logger = Logger.getLogger(this.getClass().getName());
- 
 
-    private Desktop desktop;
-    private String FilePath;
-    
-    public void initModule() {
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private Desktop desktop;
+	private File[] FilePath;
 
-        this.desktop = GuineuCore.getDesktop();        
-        desktop.addMenuItem(GuineuMenu.FILE, "Open LCMS Local File..",
-                "TODO write description", KeyEvent.VK_L, this, null);
+	public void initModule() {
 
-    }
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuItem(GuineuMenu.FILE, "Open LCMS Local File..",
+				"TODO write description", KeyEvent.VK_L, this, null);
 
-    
-    public void taskStarted(Task task) {
-        logger.info("Running Open File");
-    }
+	}
 
-    public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
-            logger.info("Finished open file on "
-                    + ((OpenFileTask) task).getTaskDescription());
-        }
+	public void taskStarted(Task task) {
+		logger.info("Running Open File");
+	}
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+	public void taskFinished(Task task) {
+		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+			logger.info("Finished open file on " + ((OpenFileTask) task).getTaskDescription());
+		}
 
-            String msg = "Error while open file on .. "
-                    + ((OpenFileTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-        }
-    }
+			String msg = "Error while open file on .. " + ((OpenFileTask) task).getErrorMessage();
+			logger.severe(msg);
+			desktop.displayErrorMessage(msg);
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK)
-            return;
+		}
+	}
 
-        runModule(null);
-    }
+	public void actionPerformed(ActionEvent e) {
+		ExitCode exitCode = setupParameters();
+		if (exitCode != ExitCode.OK) {
+			return;
+		}
 
-    public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore
-						.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
-        if (lastPath == null)
-                lastPath = "";
-        File lastFilePath = new File(lastPath);
-        DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-        dialog.setVisible(true);
-        try{
-            this.FilePath = dialog.getCurrentDirectory();      
-        }catch(Exception e){}
-        return dialog.getExitCode();
-    }
+		runModule(null);
+	}
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+	public ExitCode setupParameters() {
+		DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
+		String lastPath = deskParameters.getLastOpenProjectPath();
+		if (lastPath == null) {
+			lastPath = "";
+		}
+		File lastFilePath = new File(lastPath);
+		DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
+		dialog.setVisible(true);
+		try {
+			this.FilePath = dialog.getCurrentDirectory();
+		} catch (Exception e) {
+		}
+		return dialog.getExitCode();
+	}
 
-    public void setParameters(ParameterSet parameterValues) {
-        
-    }
-    
-    public String toString() {
-        return "Open File";
-    }
+	public ParameterSet getParameterSet() {
+		return null;
+	}
 
-    public TaskGroup runModule( TaskGroupListener taskGroupListener) {
-        
-        // prepare a new group of tasks
-        if(FilePath != null){
-            Task tasks[] = new OpenFileTask[1];       
-            tasks[0] = new OpenFileTask(FilePath, desktop);
+	public void setParameters(ParameterSet parameterValues) {
+	}
 
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+	public String toString() {
+		return "Open File";
+	}
 
-            // start the group
-            newGroup.start();
+	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-            return newGroup;
-        }else return null;
+		// prepare a new group of tasks
+		if (FilePath != null) {
+			Task tasks[] = new OpenFileTask[FilePath.length];
+			for (int i = 0; i < FilePath.length; i++) {
 
-    }
-    
-  
+				tasks[i] = new OpenFileTask(FilePath[i].toString(), desktop);
+			}
+			TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
+			// start the group
+			newGroup.start();
+
+			return newGroup;
+		} else {
+			return null;
+		}
+
+	}
 }
