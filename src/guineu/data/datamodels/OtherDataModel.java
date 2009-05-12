@@ -35,7 +35,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
 
     public OtherDataModel(Dataset dataset) {
         this.dataset = (SimpleDatasetOther) dataset;
-        numColumns = this.dataset.getNumberCols();
+        numColumns = this.dataset.getNumberCols()+1;
     }
 
     public void removeRows() {
