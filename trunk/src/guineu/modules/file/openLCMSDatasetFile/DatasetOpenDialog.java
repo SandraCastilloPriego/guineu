@@ -1,11 +1,9 @@
 /*
-    Copyright 2007-2008 VTT Biotechnology
+Copyright 2007-2008 VTT Biotechnology
 
-    This file is part of GUINEU.
-    
+This file is part of GUINEU.
+
  */
-
-
 package guineu.modules.file.openLCMSDatasetFile;
 
 import java.awt.BorderLayout;
@@ -30,10 +28,9 @@ import guineu.util.dialogs.ExitCode;
 public class DatasetOpenDialog extends JDialog implements ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-
 	private JFileChooser fileChooser;
-	private File datasetFile;
-        private ExitCode exit = ExitCode.UNKNOWN;
+	private File[] datasetFile;
+	private ExitCode exit = ExitCode.UNKNOWN;
 
 	public DatasetOpenDialog(File lastpath) {
 
@@ -42,21 +39,21 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
 		logger.finest("Displaying dataset open dialog");
 
-		fileChooser = new JFileChooser();		             
-                if (lastpath != null) {
+		fileChooser = new JFileChooser();		
+		if (lastpath != null) {
 			fileChooser.setCurrentDirectory(lastpath);
 		}
-		fileChooser.setMultiSelectionEnabled(false);
+		fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.addActionListener(this);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		
-                ExampleFileFilter csv = new ExampleFileFilter();
-                csv.addExtension("csv");
-                csv.addExtension("xls");
+
+		ExampleFileFilter csv = new ExampleFileFilter();
+		csv.addExtension("csv");
+		csv.addExtension("xls");
 		csv.setDescription("Excel and Comma Separated Files");
-		fileChooser.addChoosableFileFilter(csv);                
-		fileChooser.setFileFilter(csv);                
-                
+		fileChooser.addChoosableFileFilter(csv);
+		fileChooser.setFileFilter(csv);
+
 		add(fileChooser, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
@@ -71,32 +68,31 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
 		// check if user clicked "Open"
 
-		if (command.equals("ApproveSelection")) {			
+		if (command.equals("ApproveSelection")) {
 			try {
-                                datasetFile = fileChooser.getSelectedFile();
-                                DesktopParameters deskParameters = (DesktopParameters) GuineuCore
-                                                    .getDesktop().getParameterSet();
-                                deskParameters.setLastOpenProjectPath(datasetFile.getPath()); 
-                                exit = ExitCode.OK;
+				datasetFile = fileChooser.getSelectedFiles();
+				DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
+				deskParameters.setLastOpenProjectPath(datasetFile[0].getPath());
+				exit = ExitCode.OK;
 			} catch (Throwable e) {
 				JOptionPane.showMessageDialog(this,
 						"Could not open dataset file", "Dataset opening error",
 						JOptionPane.ERROR_MESSAGE);
 				logger.fine("Could not open dataset file." + e.getMessage());
-                                exit = ExitCode.CANCEL;
-			}                        
-		}else{
-                    exit = ExitCode.CANCEL;
-                }
+				exit = ExitCode.CANCEL;
+			}
+		} else {
+			exit = ExitCode.CANCEL;
+		}
 		// discard this dialog
 		dispose();
 	}
 
-	public String getCurrentDirectory() {
-		return this.datasetFile.toString();
+	public File[] getCurrentDirectory() {
+		return this.datasetFile;
 	}
-        
-        public ExitCode getExitCode(){
-            return exit;
-        }
+
+	public ExitCode getExitCode() {
+		return exit;
+	}
 }
