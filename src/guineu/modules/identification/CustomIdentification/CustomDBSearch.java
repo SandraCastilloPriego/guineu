@@ -22,7 +22,6 @@ import guineu.data.ParameterSet;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
@@ -82,9 +81,6 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
 			return;
 		}
 
-		//DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-		//deskParameters.setLastOpenProjectPath((String) parameters.getParameterValue(CustomDBSearchParameters.dataBaseFile));
-
 		runModule(selectedPeakLists, parameters.clone(), null);
 
 	}
@@ -112,9 +108,6 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
 	}
 
 	public ExitCode setupParameters(ParameterSet parameters) {
-		//DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-	//	String lastPath = deskParameters.getLastIndentifycationPath();
-	//	((CustomDBSearchParameters) parameters).setParameterValue(CustomDBSearchParameters.dataBaseFile, lastPath);
 		ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
 				(SimpleParameterSet) parameters);

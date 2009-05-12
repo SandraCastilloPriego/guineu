@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -326,7 +327,8 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
             btnFileBrowser.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    JFileChooser fileChooser = new JFileChooser();
+                    JFileChooser fileChooser = new JFileChooser();					
+					fileChooser.setCurrentDirectory(new File((String)getComponentValue(fileParameter)));
                     fileChooser.setMultiSelectionEnabled(false);
                     int returnVal = fileChooser.showDialog(
                             GuineuCore.getDesktop().getMainFrame(), "Select");
