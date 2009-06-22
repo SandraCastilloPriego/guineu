@@ -22,29 +22,35 @@ import guineu.data.Parameter;
 import guineu.data.ParameterType;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
+import guineu.database.ask.DBask;
 
 
-
-/**
- *
- * @author scsandra
- */
 public class SaveFileParameters extends SimpleParameterSet{
+ 	
+	private static Object[] studies = DBask.getStudies();
    
     public static final Parameter author = new SimpleParameter(
             ParameterType.STRING, "Author: ",
-            "Author of the dataset", null, "Author", null);
+            "Author of the processing of the dataset", null, "Author", null);
 
 	public static final Parameter name = new SimpleParameter(
             ParameterType.STRING, "Dataset name: ",
             "Name of the dataset", null, "Name", null);
 
+	public static final Parameter studyId = new SimpleParameter(
+            ParameterType.STRING , "Studies: ",
+            "Select study", "", studies);
+
+	public static final Parameter units = new SimpleParameter(
+            ParameterType.STRING, "Dataset units: ",
+            "Units of the dataset", null, "Units", null);
+
     public static final Parameter parameters = new SimpleParameter(
-            ParameterType.FILE_NAME, "Dataset name: ",
-            "Name of the dataset", null, "Name", null);
+            ParameterType.FILE_NAME, "Dataset parameters: ",
+            "Parameter file of the dataset", null, "Parameters", null);
     
     public SaveFileParameters() {
-        super(new Parameter[] { name, author, parameters });
+        super(new Parameter[] { name, author, studyId, units, parameters });
     }
 
 }
