@@ -58,6 +58,5 @@ public interface DataBase {
     public String getDatasetName(Vector ExperimentNames);
     public String getDatasetName(int ID);
     public Vector<Double> get_concentration(String sampleName, int exp_id);
-    public void getLCMSRows(int ID, SimpleDataset dataset); 
-    
+    public void getLCMSRows(int ID, SimpleDataset dataset);  
 }
