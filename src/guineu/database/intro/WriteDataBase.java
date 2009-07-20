@@ -17,13 +17,13 @@
  */
 package guineu.database.intro;
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.database.ask.DBask;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -49,18 +49,18 @@ public class WriteDataBase {
 	 * @param lmcs_known
 	 * @param excel_id
 	 */
-	public void tableEXPERIMENT(Connection conn, SimpleDataset lcms_known, int DatasetId) {
+	public void tableEXPERIMENT(Connection conn, SimpleDataset dataset, int DatasetId) {
 		try {
 			Statement statement = conn.createStatement();
 			ResultSet r = null;
-
-			for (String sampleName : lcms_known.getNameExperiments()) {
+			for (String sampleName : dataset.getNameExperiments()) {
+				String sampleNameExp = sampleName.substring(0, sampleName.indexOf(" "));
 				if (sampleName != null) {
-					r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleName + "'");
+					r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleNameExp + "'");
 					if (r.next()) {
-						statement.executeUpdate("INSERT INTO COLUMN_NAMES (NAME, EXPERIMENT_ID ,DATASET_ID) VALUES ('" + sampleName + "', '" + r.getInt(1)+ "', '" + DatasetId + "')");
-					}else{
-						statement.executeUpdate("INSERT INTO COLUMN_NAMES (NAME,DATASET_ID) VALUES ('" + sampleName + "', '" + DatasetId + "')");
+						statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME, EXPERIMENT_ID ,DATASET_ID) VALUES ('" + sampleName + "', '" + r.getInt(1) + "', '" + DatasetId + "')");
+					} else {
+						statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME,DATASET_ID) VALUES ('" + sampleName + "', '" + DatasetId + "')");
 					}
 				}
 			}
@@ -80,42 +80,42 @@ public class WriteDataBase {
 	 * @param author (Author of the data)
 	 * @return the ID of the data in the database.
 	 */
-	public int tableDATASET(Connection conn, String excel_name, String type, String author, String parameters) {
+	public int tableDATASET(Connection conn, String excel_name, String type, String author, String parameters, String study) {
 		{
-			FileInputStream fis = null;
 			try {
 				int exp_id = 0;
 				if (excel_name != null) {
 					Statement statement = conn.createStatement();
 					try {
-						System.out.println(parameters);
-						int line = parameters.lastIndexOf("\\");
-						String dir = parameters.substring(0, line);
-						System.out.println(dir);
-						String file = parameters.substring(line + 1);
-						System.out.println(file);
-						statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS) VALUES ('" + excel_name + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'))");
+						String dir = "";
+						String file = "";
+						try {
+							int line = parameters.lastIndexOf("\\");
+							dir = parameters;
+							file = parameters;
+							if (line > 0) {
+								dir = parameters.substring(0, line);
+								file = parameters.substring(line + 1);
+							}
+						} catch (Exception exception) {
+						}
+						statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY) VALUES ('" + excel_name + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + DBask.getStudyID(study, conn) + "')");
 					} catch (SQLException sqlexception) {
 						sqlexception.printStackTrace();
 					}
 					ResultSet r = statement.executeQuery("SELECT * FROM DATASET WHERE EXCEL_NAME = '" + excel_name + "' ORDER BY DATASETID desc");
 					if (r.next()) {
-						exp_id = r.getInt(1);
+						exp_id = r.getInt(8);
 					}
 					statement.close();
+
 					return exp_id;
 				}
 				return -1;
-			} catch (SQLException exception) {
+			} catch (Exception exception) {
 				System.out.println("ERROR : " + exception);
 				exception.printStackTrace();
 				return -1;
-			} finally {
-				try {
-					fis.close();
-				} catch (IOException ex) {
-					Logger.getLogger(WriteDataBase.class.getName()).log(Level.SEVERE, null, ex);
-				}
 			}
 		}
 	}
@@ -140,8 +140,8 @@ public class WriteDataBase {
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
 							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, IDENTITY, DATASET_ID)" +
 							" VALUES ( '" + Double.valueOf(lipid.getMZ()).floatValue() +
-							"' , '" + Double.valueOf(lipid.getRT()).floatValue() +
-							"' ,'" + lipid.getName() +
+							"', '" + Double.valueOf(lipid.getRT()).floatValue() +
+							"', '" + lipid.getName() +
 							"', '" + (int) lipid.getLipidClass() +
 							"', '" + (int) lipid.getNumFound() +
 							"', '" + lipid.getStandard() +
@@ -179,11 +179,11 @@ public class WriteDataBase {
 		try {
 			statement = conn.createStatement();
 			for (int i = 0; i < Molecules.getNumberRows(); i++) {
-				SimplePeakListRowLCMS row = (SimplePeakListRowLCMS) Molecules.getRow(i);
+				PeakListRow row = Molecules.getRow(i);
 				for (String experimentName : Molecules.getNameExperiments()) {
-					Double peak = row.getPeak(experimentName);
+					Double peak = (Double) row.getPeak(experimentName);
 					//ID_sample
-					ResultSet r = statement.executeQuery("SELECT EPID FROM EXPERIMENT WHERE NAME = '" + experimentName + "'");
+					ResultSet r = statement.executeQuery("SELECT COLUMN_ID FROM DATASET_COLUMNS WHERE NAME = '" + experimentName + "'");
 					int ID_sample = 0;
 					if (r.next()) {
 						ID_sample = r.getInt(1);
@@ -194,13 +194,13 @@ public class WriteDataBase {
 					}
 					statement = conn.createStatement();
 					if (Molecules.getType() == DatasetType.LCMS) {
-						statement.executeUpdate("INSERT INTO MEASUREMENT (SAMPLE_ID," +
+						statement.executeUpdate("INSERT INTO MEASUREMENT (DATASET_CID," +
 								"MOL_LCMS_ID,CONCENTRATION, DATASETID) VALUES ('" + ID_sample +
 								"', '" + mol_ID[i] +
 								"', '" + (float) ((Double) peak).floatValue() +
 								"', '" + excel_id + "') ");
 					} else if (Molecules.getType() == DatasetType.GCGCTOF) {
-						statement.executeUpdate("INSERT INTO MEASUREMENT (SAMPLE_ID,MOL_GCGCTOF_ID,CONCENTRATION, DATASETID) VALUES " +
+						statement.executeUpdate("INSERT INTO MEASUREMENT (DATASET_CID,MOL_GCGCTOF_ID,CONCENTRATION, DATASETID) VALUES " +
 								"('" + ID_sample + "', '" + mol_ID[i] +
 								"', '" + (float) ((Double) peak).floatValue() +
 								"', '" + excel_id + "') ");
@@ -218,12 +218,12 @@ public class WriteDataBase {
 		}
 	}
 
-	public int[] tableMOL_GCGCTof(Connection conn, SimpleDataset mol, int exp_id) {
+	public int[] tableMOL_GCGCTof(Connection conn, SimpleDataset dataset, int exp_id) {
 		//intro table MOL_GCGCTOF
 		Statement st = null;
-		int[] mol_ID = new int[mol.getNumberRows() + 1];
-		for (int i = 0; i < mol.getNumberRows(); i++) {
-			SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) mol.getRow(i);
+		int[] mol_ID = new int[dataset.getNumberRows() + 1];
+		for (int i = 0; i < dataset.getNumberRows(); i++) {
+			SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
 			try {
 				int result = 0;
 				/*String name = "nan";

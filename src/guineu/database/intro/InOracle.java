@@ -69,15 +69,15 @@ public class InOracle implements InDataBase {
 	 * @param author
 	 * @throws java.io.IOException
 	 */
-	public void lcms(Connection conn, SimpleDataset LipidMol, String type, String author, String DatasetName, String parameters) throws IOException {
+	public void lcms(Connection conn, SimpleDataset LipidMol, String type, String author, String DatasetName, String parameters, String study) throws IOException {
 		WriteDataBase writer = new WriteDataBase();
 		String excel_name = DatasetName;
 		if (excel_name == null) {
 			excel_name = "unknown";
 		}
 		//Intro table DATASET
-		int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters);
-		progress = 0.25f;
+		int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters, study);
+		progress = 0.25f;	
 		if (excel_id != -1) {
 			writer.tableEXPERIMENT(conn, LipidMol, excel_id);
 			progress = 0.50f;
@@ -97,29 +97,30 @@ public class InOracle implements InDataBase {
 	 * @param type
 	 * @param author
 	 */
-	public void gcgctof(Connection conn, SimpleDataset mol, String type, String author, String DatasetName) throws IOException {
+	public void gcgctof(Connection conn, SimpleDataset mol, String type, String author, String DatasetName, String study) throws IOException {
 		try {
 			WriteDataBase writer = new WriteDataBase();
 			Statement st = null;
 			//Intro table DATASET
 			String excel_name = DatasetName;
 			//Intro table DATASET_EXPERIMENTS
-			// int sampleID = writer.tableEXPERIMENT(conn, mol);
+		
 			progress = 0.15f;
-			//   int exp_id = writer.tableDATASET(conn, excel_name, type, author, sampleID);
+		    int exp_id = writer.tableDATASET(conn, excel_name, type, author, null, study);
 			progress = 0.25f;
+			writer.tableEXPERIMENT(conn, mol, exp_id);
 			//Intro table GCGCTof
-			// int[] mol_ID = writer.tableMOL_GCGCTof(conn, mol, exp_id);
+			 int[] mol_ID = writer.tableMOL_GCGCTof(conn, mol, exp_id);
 			progress = 0.50f;
 			//Intro table MEASUREMENT
-			//   writer.tableMEASUREMENT(conn, mol, mol_ID, exp_id);
+			  writer.tableMEASUREMENT(conn, mol, mol_ID, exp_id);
 			progress = 0.75f;
 			//Intro table SPECTRUM
-			//   writer.tableSPECTRUM(conn, mol, st, mol_ID);
-			//   writer.get_spectrum(""/*((SimpleMetabolite) mol.getMolecule(0)).getSpectrum()*/);
+			  writer.tableSPECTRUM(conn, mol, st, mol_ID);
+		 //  writer.get_spectrum(""/*((SimpleMetabolite) mol.getMolecule(0)).getSpectrum()*/);
 			progress = 1f;
 		} catch (Exception exception) {
-			System.out.println("Inoracle2.java ---> gcgctof() " + exception);
+			System.out.println("Inoracle.java ---> gcgctof() " + exception);
 		}
 	}
 
