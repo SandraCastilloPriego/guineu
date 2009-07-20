@@ -510,6 +510,31 @@ public class DBask implements DataBase {
 
 	}
 
+	public static synchronized int getStudyID(String StudyName, Connection conn) {
+		Statement st = null;
+		try {
+
+			st = conn.createStatement();
+			ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES WHERE NAMES = '"+StudyName+"'");
+			int ID = 0;
+			if(r.next()) {
+				try {
+					ID =r.getInt(1);
+				} catch (Exception ee) {
+				}
+			}
+
+			r.close();
+			st.close();
+
+			return ID;
+		} catch (Exception e) {
+			return 0;
+		}
+
+	}
+
+
 
 	public static synchronized String[] getStudies() {
 		Statement st = null;
@@ -524,7 +549,7 @@ public class DBask implements DataBase {
 			oracleDataSource.setPassword(ORACLE_QUERY_PASSWORD);
 			Connection conn = oracleDataSource.getConnection();
 
-			System.out.println("connected");
+			
 			st = conn.createStatement();
 			ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES ORDER BY ID asc");
 			Vector<String> studies = new Vector<String>();
@@ -534,7 +559,7 @@ public class DBask implements DataBase {
 				} catch (Exception ee) {
 				}
 			}
-			System.out.println("2");
+		
 			r.close();
 			st.close();
 			String[] studiesString= {""};

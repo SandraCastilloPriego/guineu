@@ -15,11 +15,13 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveDatasetDB;
+package guineu.modules.database.saveDatasetDB;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
+import guineu.desktop.GuineuMenu;
+import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
@@ -27,29 +29,26 @@ import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class SaveFileDB implements GuineuModule, TaskListener {
+public class SaveFileDB implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private Dataset Datasets;
+	private Dataset Dataset;
 	private SaveFileParameters parameters;
 
-	public SaveFileDB(Dataset Datasets) {
-		this.Datasets = Datasets;
-	}
-
 	public void initModule() {
-		parameters = new SaveFileParameters();
-		if (Datasets.getDatasetName() != null) {
-			parameters.setParameterValue(SaveFileParameters.name, Datasets.getDatasetName());
-		}
-		setupParameters(parameters);
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuItem(GuineuMenu.DATABASE, "Intro Dataset..",
+				"TODO write description", KeyEvent.VK_I, this, null);
 	}
 
 	public void taskStarted(Task task) {
@@ -75,8 +74,8 @@ public class SaveFileDB implements GuineuModule, TaskListener {
 				"Please set parameter values for " + toString(),
 				(SaveFileParameters) currentParameters);
 		dialog.setVisible(true);
-		
-		if(dialog.getExitCode() == ExitCode.OK){
+
+		if (dialog.getExitCode() == ExitCode.OK) {
 			runModule(null);
 		}
 	}
@@ -99,7 +98,7 @@ public class SaveFileDB implements GuineuModule, TaskListener {
 		// prepare a new group of tasks
 		Task tasks[] = new SaveFileDBTask[1];
 
-		tasks[0] = new SaveFileDBTask(Datasets, parameters);
+		tasks[0] = new SaveFileDBTask(Dataset, parameters);
 
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
@@ -109,4 +108,18 @@ public class SaveFileDB implements GuineuModule, TaskListener {
 		return newGroup;
 
 	}
+
+	public void actionPerformed(ActionEvent e) {
+		parameters = new SaveFileParameters();
+		try {
+			Dataset = desktop.getSelectedDataFiles()[0];
+
+			if (Dataset.getDatasetName() != null) {
+				parameters.setParameterValue(SaveFileParameters.name, Dataset.getDatasetName());
+				setupParameters(parameters);
+			}
+		} catch (Exception exception) {
+		}
+	}
 }
+

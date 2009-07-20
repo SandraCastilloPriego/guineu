@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveDatasetDB;
+package guineu.modules.database.saveDatasetDB;
 
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;

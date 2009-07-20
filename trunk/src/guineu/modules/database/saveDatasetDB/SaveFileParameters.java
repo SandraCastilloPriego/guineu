@@ -16,7 +16,7 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.modules.file.saveDatasetDB;
+package guineu.modules.database.saveDatasetDB;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;

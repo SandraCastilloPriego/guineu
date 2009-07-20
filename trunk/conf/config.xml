@@ -3,8 +3,9 @@
 <configuration> 
   <nodes local="2"/>  
   <modules> 
+    <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>    
     <module class="guineu.modules.database.openDatasetDB.OpenFileDB"/>  
-    <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  
+    <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>    
     <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
     <module class="guineu.modules.file.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.file.openExperimentsData.OpenFile"/>  

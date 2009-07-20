@@ -142,7 +142,8 @@ public class purgeIdentificationTask implements Task {
 				}
 
 			} else if (lipid.getName().matches(".*PS.*") || lipid.getName().matches(".*PI.*")) {
-				if (lipid.getRT() < 300 || lipid.getRT() > 420 || lipid.getMZ() < 550) {
+				lipid.setName("unknown");
+				/*if (lipid.getRT() < 300 || lipid.getRT() > 420 || lipid.getMZ() < 550) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				} else {
@@ -155,7 +156,7 @@ public class purgeIdentificationTask implements Task {
 							this.getName(lipid);
 						}
 					}
-				}
+				}*/
 			} else if (lipid.getName().matches(".*MG.*")) {
 				/* if (lipid.getRT() > 300 || lipid.getMZ() > 500) {
 				this.getFirstName(lipid);
@@ -184,7 +185,7 @@ public class purgeIdentificationTask implements Task {
 			}
 			}*/
 			} else if (lipid.getName().matches(".*DG.*")) {
-				if (lipid.getRT() > 410 || lipid.getMZ() < 350) {
+				if (lipid.getRT() > 410 || lipid.getMZ() < 350|| lipid.getName().matches(".*e.*")) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				} else {
