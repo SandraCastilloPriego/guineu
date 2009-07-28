@@ -336,8 +336,8 @@ public class NormalizationTissueDialog extends javax.swing.JDialog implements Ac
                 if (!line.isEmpty()) {
                     String[] w = line.split(",");
                     for(int i = 0; i < this.jTable.getRowCount(); i++){
-						w[0] = w[0].replaceAll("_", "").toLowerCase();
-                        if(this.jTable.getValueAt(i, 0).toString().replace("_", "").toLowerCase().matches(".*"+w[0]+".*")){
+						w[0] = w[0]./*replaceAll("_", "").*/toLowerCase();
+                        if(this.jTable.getValueAt(i, 0).toString()/*.replace("_", "")*/.toLowerCase().matches(".*"+w[0]+".*")){
                             this.jTable.setValueAt(Double.valueOf(w[1]), i, 1);
                             break;
                         }
