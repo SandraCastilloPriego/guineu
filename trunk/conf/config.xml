@@ -50,6 +50,7 @@
     <!-- <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
     <module class="guineu.modules.statistics.standardVariation.standardVariation"/> 
+    <module class="guineu.modules.msms.open.OpenFile"/>
   </modules>  
   <desktop>
     <format type="m/z">
