@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl;
 
 import java.awt.event.ActionEvent;
@@ -37,12 +36,8 @@ import guineu.util.GUIUtils;
  */
 class MainMenu extends JMenuBar implements ActionListener {
 
-
-	private JMenu fileMenu, databaseMenu, filterMenu, IdentificationMenu,
-			 helpMenu, statisticsMenu;
-
+	private JMenu fileMenu,  msmsMenu,  databaseMenu,  filterMenu,  IdentificationMenu,  helpMenu,  statisticsMenu;
 	private JWindowsMenu windowsMenu;
-
 	private JMenuItem hlpAbout;
 
 	MainMenu() {
@@ -50,25 +45,29 @@ class MainMenu extends JMenuBar implements ActionListener {
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		add(fileMenu);
-		
-                databaseMenu = new JMenu("Database");
+
+		databaseMenu = new JMenu("Database");
 		databaseMenu.setMnemonic(KeyEvent.VK_D);
 		add(databaseMenu);
-                
+
 		filterMenu = new JMenu("Filter");
 		filterMenu.setMnemonic(KeyEvent.VK_L);
 		this.add(filterMenu);
-                
+
 		IdentificationMenu = new JMenu("Identification");
 		IdentificationMenu.setMnemonic(KeyEvent.VK_C);
 		this.add(IdentificationMenu);
 
 		statisticsMenu = new JMenu("Statistics");
 		statisticsMenu.setMnemonic(KeyEvent.VK_S);
-		this.add(statisticsMenu);	
+		this.add(statisticsMenu);
 
-		JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop())
-				.getDesktopPane();
+		msmsMenu = new JMenu("MS/MS Filters");
+		msmsMenu.setMnemonic(KeyEvent.VK_F);
+		add(msmsMenu);
+
+
+		JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop()).getDesktopPane();
 		windowsMenu = new JWindowsMenu(mainDesktopPane);
 		CascadingWindowPositioner positioner = new CascadingWindowPositioner(
 				mainDesktopPane);
@@ -84,26 +83,29 @@ class MainMenu extends JMenuBar implements ActionListener {
 				KeyEvent.VK_A);
 	}
 
-	public void addMenuItem(GuineuMenu parentMenu, JMenuItem newItem) {           
+	public void addMenuItem(GuineuMenu parentMenu, JMenuItem newItem) {
 		switch (parentMenu) {
-		case FILE:
-			fileMenu.add(newItem);
-			break;
-                case DATABASE:
-                        databaseMenu.add(newItem);
-                        break;
-		case FILTER:
-			filterMenu.add(newItem);
-			break;
-		case IDENTIFICATION:
-			IdentificationMenu.add(newItem);
-			break;
-		case STATISTICS:
-			statisticsMenu.add(newItem);
-			break;		
-		case HELP:			
-			helpMenu.add(newItem);
-			break;
+			case FILE:
+				fileMenu.add(newItem);
+				break;
+			case DATABASE:
+				databaseMenu.add(newItem);
+				break;
+			case FILTER:
+				filterMenu.add(newItem);
+				break;
+			case IDENTIFICATION:
+				IdentificationMenu.add(newItem);
+				break;
+			case STATISTICS:
+				statisticsMenu.add(newItem);
+				break;
+			case MSMS:
+				msmsMenu.add(newItem);
+				break;
+			case HELP:
+				helpMenu.add(newItem);
+				break;
 		}
 	}
 
@@ -112,12 +114,15 @@ class MainMenu extends JMenuBar implements ActionListener {
 			String actionCommand) {
 
 		JMenuItem newItem = new JMenuItem(text);
-		if (listener != null)
+		if (listener != null) {
 			newItem.addActionListener(listener);
-		if (actionCommand != null)
+		}
+		if (actionCommand != null) {
 			newItem.setActionCommand(actionCommand);
-		if (toolTip != null)
+		}
+		if (toolTip != null) {
 			newItem.setToolTipText(toolTip);
+		}
 		if (mnemonic > 0) {
 			newItem.setMnemonic(mnemonic);
 			newItem.setAccelerator(KeyStroke.getKeyStroke(mnemonic,
@@ -130,24 +135,27 @@ class MainMenu extends JMenuBar implements ActionListener {
 
 	public void addMenuSeparator(GuineuMenu parentMenu) {
 		switch (parentMenu) {
-		case FILE:
-			fileMenu.addSeparator();
-			break;
-                case DATABASE:
-                        databaseMenu.addSeparator();
-                        break;
-		case FILTER:
-                        filterMenu.addSeparator();
-			break;
-                case IDENTIFICATION:
-			IdentificationMenu.addSeparator();
-			break;
-		case STATISTICS:
-			statisticsMenu.addSeparator();
-			break;			
-		case HELP:
-			helpMenu.addSeparator();
-			break;
+			case FILE:
+				fileMenu.addSeparator();
+				break;
+			case DATABASE:
+				databaseMenu.addSeparator();
+				break;
+			case FILTER:
+				filterMenu.addSeparator();
+				break;
+			case IDENTIFICATION:
+				IdentificationMenu.addSeparator();
+				break;
+			case STATISTICS:
+				statisticsMenu.addSeparator();
+				break;
+			case MSMS:
+				msmsMenu.addSeparator();
+				break;
+			case HELP:
+				helpMenu.addSeparator();
+				break;
 
 		}
 	}
@@ -158,7 +166,7 @@ class MainMenu extends JMenuBar implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		Object src = e.getSource();
-		
+
 		// Help->About
 		if (src == hlpAbout) {
 			AboutDialog dialog = new AboutDialog();
@@ -166,5 +174,4 @@ class MainMenu extends JMenuBar implements ActionListener {
 		}
 
 	}
-	
 }

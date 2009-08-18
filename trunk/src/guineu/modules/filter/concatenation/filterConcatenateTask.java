@@ -67,10 +67,12 @@ public class filterConcatenateTask implements Task {
 			int cont = 0;
 			for (Dataset dataset : datasets) {
 				// newDataset = createDataset(datasets);
-				if (dataset.getDatasetName().matches(".*lipidomic.*")) {
+				if (cont == 0) {
 					newDataset = ((SimpleDatasetOther) dataset).clone();
+					cont++;
 				} else {
-					otherDatasets[cont++] = dataset;
+					otherDatasets[cont - 1] = dataset;
+					cont++;
 				}
 			}
 			this.fillDataset(newDataset, otherDatasets);
@@ -113,8 +115,9 @@ public class filterConcatenateTask implements Task {
 		for (Dataset data : otherDatasets) {
 			//Vector<String> experimentsNames = newDataset.getNameExperiments();
 			for (String Name : ((SimpleDatasetOther) data).getNameExperiments()) {
-				if(!Name.matches(".*Name.*")/* && !Name.matches(".*dg present.*")*/)
+				if (!Name.matches(".*Name.*")/* && !Name.matches(".*dg present.*")*/) {
 					newDataset.AddNameExperiment(Name);
+				}
 			}
 			newDataset.AddNameExperiment("Name2");
 		}
@@ -123,45 +126,60 @@ public class filterConcatenateTask implements Task {
 				for (PeakListRow row : ((SimpleDatasetOther) data).getRows()) {
 
 					try {
-					//	String realName = row.getPeak("Name").toString().replace("b", "");
+						//	String realName = row.getPeak("Name").toString().replace("b", "");
 						//realName+="_";
 						if (row2.getPeak("Name").toString().matches(".*" + row.getPeak("Name").toString() + ".*")) {
 							/*if (row.getPeak("Name").toString().matches(".*b.*") && row2.getPeak("Name").toString().matches(".*150.*")) {
-								for (String peak : data.getNameExperiments()) {
-									if (peak.matches(".*Name.*")) {
-										row2.setPeak("Name2", row.getPeak(peak).toString());
-									} else {
-										row2.setPeak(peak, row.getPeak(peak).toString());
-									}
-									
-								}
-								break;
+							for (String peak : data.getNameExperiments()) {
+							if (peak.matches(".*Name.*")) {
+							row2.setPeak("Name2", row.getPeak(peak).toString());
+							} else {
+							row2.setPeak(peak, row.getPeak(peak).toString());
+							}
+
+							}
+							break;
 							} else if (!row.getPeak("Name").toString().matches(".*b.*") && row2.getPeak("Name").toString().matches(".*137.*")) {
-								for (String peak : data.getNameExperiments()) {
-									if (!peak.matches(".*dg present.*")) {
-										if (peak.matches(".*Name.*")) {
-											row2.setPeak("Name2", row.getPeak(peak).toString());
-										} else {
-											row2.setPeak(peak, row.getPeak(peak).toString());
-										}
-										
-									}
-								}
-								break;
+							for (String peak : data.getNameExperiments()) {
+							if (!peak.matches(".*dg present.*")) {
+							if (peak.matches(".*Name.*")) {
+							row2.setPeak("Name2", row.getPeak(peak).toString());
+							} else {
+							row2.setPeak(peak, row.getPeak(peak).toString());
+							}
+
+							}
+							}
+							break;
 							}*/
 							for (String peak : data.getNameExperiments()) {
-									if (peak.matches(".*Name.*")) {
-										row2.setPeak("Name2", row.getPeak(peak).toString());
-									} else {
-										row2.setPeak(peak, row.getPeak(peak).toString());
-									}
 
+								if (peak.matches(".*Name.*")) {
+									row2.setPeak("Name2", row.getPeak(peak).toString());
+								} else {
+									row2.setPeak(peak, row.getPeak(peak).toString());
 								}
-								break;
+
+							}
+							break;
 						}
+
+
+
+
 					} catch (Exception e) {
 					}
 				}
+			}
+		}
+		for (PeakListRow row2 : newDataset.getRows()) {
+			for (String peak : newDataset.getNameExperiments()) {
+			try{
+				if (row2.getPeak(peak)== null) {
+					row2.setPeak(peak, "NA");					
+				}
+				} catch (Exception e) {
+					}
 			}
 		}
 

@@ -15,8 +15,29 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.desktop;
 
-public enum GuineuMenu {
-    FILE, DATABASE, FILTER, IDENTIFICATION, STATISTICS, MSMS, HELP
-};
+package guineu.modules.msms.open;
+
+import guineu.data.Parameter;
+import guineu.data.ParameterType;
+import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimpleParameterSet;
+
+/**
+ *
+ * @author scsandra
+ */
+public class OpenMSMSFileParameters extends SimpleParameterSet{
+	public static final Parameter rtTolerance = new SimpleParameter(
+			ParameterType.DOUBLE, "rt tolerance",
+			"Tolerance of the retention time",
+			"rt", new Double(1.0), new Double(0.0), null);
+
+    public static final Parameter parameters = new SimpleParameter(
+            ParameterType.FILE_NAME, "MSMS file: ",
+            "File path", null, "Parameters", null);
+
+	 public OpenMSMSFileParameters() {
+        super(new Parameter[] {rtTolerance, parameters});
+    }
+}
