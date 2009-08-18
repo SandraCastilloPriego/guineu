@@ -15,8 +15,13 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.desktop;
 
-public enum GuineuMenu {
-    FILE, DATABASE, FILTER, IDENTIFICATION, STATISTICS, MSMS, HELP
-};
+package guineu.modules.mylly.openFiles;
+
+/**
+ *
+ * @author scsandra
+ */
+public class OpenFiles {
+
+}
