@@ -50,13 +50,15 @@ public class DesktopParameters implements StorableParameterSet,
 	public static final String HEIGHT_ELEMENT_NAME = "height";
 	public static final String LASTPATH_ELEMENT_NAME = "lastdirectory";
 	public static final String LAST_PROJECT_PATH_ELEMENT_NAME = "lastProjectDirectory";
-	public static final String LAST_SAVE_PATH_ELEMENT_NAME = "lastSaveDirectory";	
+	public static final String LAST_MYLLY_PATH_ELEMENT_NAME = "lastMyllyDirectory";
+	public static final String LAST_SAVE_PATH_ELEMENT_NAME = "lastSaveDirectory";
 	public static final int MAXIMIZED = -1;
 	private NumberFormatter mzFormat,  rtFormat,  intensityFormat;
 	private int mainWindowX,  mainWindowY,  mainWindowWidth,  mainWindowHeight;
 	private String lastOpenPath = "";
 	private String lastOpenProjectPath = "";
 	private String lastSavePath = "";
+	private String lastMyllyPath = "";
 
 	DesktopParameters() {
 		this(new NumberFormatter(FormatterType.NUMBER, "0.000"),
@@ -193,7 +195,21 @@ public class DesktopParameters implements StorableParameterSet,
 		return lastSavePath;
 	}
 
-	
+	/**
+	 * @return Returns the lastMyllyPath (GCGC-tof part).
+	 */
+	public String getLastMyllyPath() {
+		return lastMyllyPath;
+	}
+
+	/**
+	 * @return Returns the lastMyllyPath (GCGC-tof part).
+	 */
+	public void setLastMyllyPath(String lastMyllyPath) {
+		this.lastMyllyPath = lastMyllyPath;
+	}
+
+
 	/**
 	 * @param lastSavePath
 	 *            The lastSavePath to set.
@@ -202,7 +218,6 @@ public class DesktopParameters implements StorableParameterSet,
 		this.lastSavePath = lastSavePath;
 	}
 
-	
 	public void exportValuesToXML(Element element) {
 		Element mzFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
 		mzFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
@@ -234,7 +249,9 @@ public class DesktopParameters implements StorableParameterSet,
 				lastOpenProjectPath);
 		element.addElement(LAST_SAVE_PATH_ELEMENT_NAME).setText(
 				lastSavePath);
-		
+		element.addElement(LAST_MYLLY_PATH_ELEMENT_NAME).setText(
+				lastMyllyPath);
+
 	}
 
 	public void importValuesFromXML(Element element) {
@@ -282,7 +299,8 @@ public class DesktopParameters implements StorableParameterSet,
 
 		lastOpenPath = element.elementText(LASTPATH_ELEMENT_NAME);
 		lastOpenProjectPath = element.elementText(LAST_PROJECT_PATH_ELEMENT_NAME);
-		lastSavePath = element.elementText(LAST_SAVE_PATH_ELEMENT_NAME);		
+		lastSavePath = element.elementText(LAST_SAVE_PATH_ELEMENT_NAME);
+		lastMyllyPath = element.elementText(LAST_MYLLY_PATH_ELEMENT_NAME);
 	}
 
 	public DesktopParameters clone() {

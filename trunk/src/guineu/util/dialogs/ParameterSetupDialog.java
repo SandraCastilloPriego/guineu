@@ -329,12 +329,23 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser fileChooser = new JFileChooser();					
 					fileChooser.setCurrentDirectory(new File((String)getComponentValue(fileParameter)));
-                    fileChooser.setMultiSelectionEnabled(false);
+                    fileChooser.setMultiSelectionEnabled(true);
                     int returnVal = fileChooser.showDialog(
                             GuineuCore.getDesktop().getMainFrame(), "Select");
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        setComponentValue(fileParameter,
-                                fileChooser.getSelectedFile().getAbsolutePath());
+						String fileName = null;
+						File[] fileNames = fileChooser.getSelectedFiles();
+						if(fileNames.length == 1){
+							 setComponentValue(fileParameter,
+                                fileChooser.getSelectedFile());
+						}else if(fileNames.length > 1){
+							for(File file: fileNames){
+								fileName += file.getAbsolutePath();
+								fileName += "&&";
+							}
+							setComponentValue(fileParameter,
+                                fileName);
+						}                       
                     }
 
                 }
