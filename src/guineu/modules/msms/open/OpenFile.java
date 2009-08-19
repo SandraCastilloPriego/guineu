@@ -27,7 +27,6 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private File[] FilePath;
 	private OpenMSMSFileParameters parameters;
 
 	public void initModule() {
