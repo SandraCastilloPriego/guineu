@@ -24,6 +24,7 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.util.components.TaskProgressWindow;
 import java.awt.BorderLayout;
@@ -36,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -255,6 +257,10 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
     public Dataset[] getSelectedDataFiles() {
         return this.itemSelector.getSelectedDatasets();
     }
+
+	public List<GCGCData> getSelectedGCGCDataFiles(){
+		return this.itemSelector.getSelectedGCGCDataFiles();
+	}
     
     /*public Vector[] getSelectedExperiments() {
         return this.itemSelector.getSelectedExperiments();
@@ -262,6 +268,10 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
     
     public void AddNewFile(Dataset dataset){
         this.itemSelector.addNewFile(dataset);
+    }
+
+	public void AddNewFile(GCGCData dataToAlign){
+        this.itemSelector.addNewFile(dataToAlign);
     }
     
     public void removeData(Dataset file) { 

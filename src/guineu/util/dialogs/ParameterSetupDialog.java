@@ -333,7 +333,7 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
                     int returnVal = fileChooser.showDialog(
                             GuineuCore.getDesktop().getMainFrame(), "Select");
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
-						String fileName = null;
+						String fileName = "";
 						File[] fileNames = fileChooser.getSelectedFiles();
 						if(fileNames.length == 1){
 							 setComponentValue(fileParameter,

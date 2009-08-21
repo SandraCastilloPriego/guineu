@@ -24,6 +24,7 @@ import guineu.data.impl.SimplePeakListRowOther;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -75,6 +76,8 @@ public class OpenFileTask implements Task {
 			List<GCGCDatum> data = reader.readGCGCDataFile(file);
 			SimpleDatasetOther dataset = writeDataset(data);
 			GuineuCore.getDesktop().AddNewFile(dataset);
+			GCGCData gcgcData = new GCGCData(data, file.getName());
+			GuineuCore.getDesktop().AddNewFile(gcgcData);
 			status = TaskStatus.FINISHED;
 		} catch (IOException ex) {
 			Logger.getLogger(OpenFileTask.class.getName()).log(Level.SEVERE, null, ex);

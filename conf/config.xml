@@ -52,6 +52,8 @@
     <module class="guineu.modules.statistics.standardVariation.standardVariation"/> 
     <module class="guineu.modules.msms.open.OpenFile"/>
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>
+    <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"/>
+
   </modules>  
   <desktop>
     <format type="m/z">
