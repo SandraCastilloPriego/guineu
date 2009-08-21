@@ -19,9 +19,11 @@ package guineu.desktop;
 
 import guineu.data.Dataset;
 import guineu.main.GuineuModule;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -118,7 +120,11 @@ public interface Desktop extends GuineuModule {
      */
     public Dataset[] getSelectedDataFiles();
 
+	public List<GCGCData> getSelectedGCGCDataFiles();
+
     public void AddNewFile(Dataset dataset);
+
+	public void AddNewFile(GCGCData dataToAlign);
 
     public void removeData(Dataset file);
 }

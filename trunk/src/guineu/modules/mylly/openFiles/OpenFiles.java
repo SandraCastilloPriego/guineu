@@ -119,12 +119,10 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
 				fileSplit[0] = fileNames;
 			}
 			DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-			fileSplit[0] = fileSplit[0].replace("null", "");
 			deskParameters.setLastMyllyPath(fileSplit[0]);
 
 			Task tasks[] = new OpenFileTask[fileSplit.length];
-			for (int i = 0; i < fileSplit.length; i++) {
-				fileSplit[i] = fileSplit[i].replace("null", "");
+			for (int i = 0; i < fileSplit.length; i++) {				
 				tasks[i] = new OpenFileTask(fileSplit[i], separator, filterClassified);
 			}
 			TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);

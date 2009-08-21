@@ -28,6 +28,7 @@ import guineu.main.GuineuCore;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveDatasetFile.SaveFile;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.util.GUIUtils;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -42,6 +43,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -61,6 +63,8 @@ public class ItemSelector extends JPanel implements ActionListener,
 	private DragOrderedJList DatasetFiles;
 	//private Vector<Dataset> DatasetFilesModel = new Vector<Dataset>();
 	private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
+	private Hashtable<String, GCGCData> GCGCDataAling = new Hashtable<String, GCGCData>();
+
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
@@ -145,6 +149,8 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 	}
 
+
+
 	private void showData() {
 		Dataset[] selectedFiles = getSelectedDatasets();
 		Desktop desktop = GuineuCore.getDesktop();
@@ -208,6 +214,22 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		return res;
 
+	}
+
+	public List<GCGCData> getSelectedGCGCDataFiles() {
+		Object o[] = DatasetFiles.getSelectedValues();
+
+		List<GCGCData> res= new ArrayList<GCGCData>();
+
+		for (int i = 0; i < o.length; i++) {
+			for (Dataset dataset : DatasetFilesModel) {
+				if (dataset.getDatasetName().compareTo((String) o[i]) == 0) {
+					res.add(this.GCGCDataAling.get(dataset.getDatasetName()));
+				}
+			}
+		}
+
+		return res;
 	}
 
 	/**
@@ -275,4 +297,10 @@ public class ItemSelector extends JPanel implements ActionListener,
 		this.DatasetFiles.revalidate();
 		this.DatasetFiles.repaint();
 	}
+
+
+	public void addNewFile(GCGCData dataToAlign){
+		this.GCGCDataAling.put(dataToAlign.getName(), dataToAlign);
+	}
+
 }
