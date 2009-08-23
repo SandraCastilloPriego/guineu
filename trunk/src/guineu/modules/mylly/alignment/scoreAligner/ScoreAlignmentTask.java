@@ -83,6 +83,7 @@ public class ScoreAlignmentTask implements Task {
 			Alignment alignment = aligner.align();
 			SimpleDatasetOther dataset = writeDataset(alignment);
 			GuineuCore.getDesktop().AddNewFile(dataset);
+            GuineuCore.getDesktop().AddNewFile(alignment);
 			status = TaskStatus.FINISHED;
 			//alignment.SaveToFile(new File("c:/alignment"), "\t");
 		} catch (Exception ex) {

@@ -19,6 +19,7 @@ package guineu.desktop;
 
 import guineu.data.Dataset;
 import guineu.main.GuineuModule;
+import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -120,11 +121,15 @@ public interface Desktop extends GuineuModule {
      */
     public Dataset[] getSelectedDataFiles();
 
-	public List<GCGCData> getSelectedGCGCDataFiles();
+    public List<GCGCData> getSelectedGCGCDataFiles();
+
+    public List<Alignment> getSelectedGCGCAligmentFiles();
 
     public void AddNewFile(Dataset dataset);
 
-	public void AddNewFile(GCGCData dataToAlign);
+    public void AddNewFile(GCGCData dataToAlign);
 
     public void removeData(Dataset file);
+
+    public void AddNewFile(Alignment dataToAlign);
 }
