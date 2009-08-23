@@ -15,13 +15,31 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
+package guineu.modules.mylly.filter.prefilter.NameFilter;
 
-package guineu.modules.mylly.openFiles;
+import guineu.data.Parameter;
+import guineu.data.ParameterType;
+import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimpleParameterSet;
 
 /**
  *
  * @author scsandra
  */
-class GuineuCore {
+public class NameFilterParameters extends SimpleParameterSet {
 
+
+	public static final Parameter suffix = new SimpleParameter(
+            ParameterType.STRING, "Suffix: ",
+            "Suffix", null, "-Name Filter", null);
+
+
+    public static final Parameter fileNames = new SimpleParameter(
+            ParameterType.FILE_NAME, "Name Filter File: ",
+            "Name Filter File", null, "Name Filter File", null);
+	
+	
+	public NameFilterParameters() {
+		super(new Parameter[]{suffix, fileNames});
+	}
 }
