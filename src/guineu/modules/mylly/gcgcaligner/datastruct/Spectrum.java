@@ -297,22 +297,6 @@ public class Spectrum implements Cloneable
 				return comparison;
 			}
 		};
-	}
+	}	
 	
-	public static void main(String args[])
-	{
-		List<Pair<Integer, Integer>> peaks = new ArrayList<Pair<Integer, Integer>>();
-		
-		Random r = new Random();
-		int max = 10;
-		for (int i = 0; i < max; i++)
-		{
-			peaks.add(new Pair<Integer, Integer>(r.nextInt(1000), r.nextInt(1000)));
-		}
-		
-		System.out.printf("%s\n", peaks);
-		Spectrum s = new Spectrum(peaks);
-		System.out.printf("%s\n", s);
-		
-	}
 }

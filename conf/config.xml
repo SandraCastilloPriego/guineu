@@ -59,6 +59,7 @@
     <module class="guineu.modules.mylly.filter.peakCounter.PeakCountFilter"/>	
     <module class="guineu.modules.mylly.filter.SimilarityFilter.SimilarityFilter"/>	
     <module class="guineu.modules.mylly.filter.singlingFilter.SinglingFilter"/>	
+    <module class="guineu.modules.mylly.filter.linearNormalizer.LinearNormalizerFilter"/>	
   </modules>  
   <desktop>
     <format type="m/z">
