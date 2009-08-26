@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.peakCounter;
+package guineu.modules.mylly.filter.singlingFilter;
 
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
@@ -39,32 +39,32 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class PeakCountFilter implements GuineuModule, TaskListener, ActionListener {
+public class SinglingFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private PeakCountParameters parameters;
+	private SinglingParameters parameters;
 
 	public void initModule() {
-		parameters = new PeakCountParameters();
+		parameters = new SinglingParameters();
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Peak Count Filter..",
-				"TODO write description", KeyEvent.VK_C, this, null);
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Leave Only Uniques Filter..",
+				"TODO write description", KeyEvent.VK_U, this, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Peak Count Filter");
+		logger.info("Leave Only Uniques Filter");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Peak Count Filter ");
+			logger.info("Finished Leave Only Uniques Filter ");
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Peak Count Filtering .. ";
+			String msg = "Error while Leave Only Uniques Filtering .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
@@ -81,7 +81,7 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(PeakCountParameters) currentParameters);
+				(SinglingParameters) currentParameters);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
@@ -94,11 +94,11 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		parameters = (PeakCountParameters) parameters;
+		parameters = (SinglingParameters) parameters;
 	}
 
 	public String toString() {
-		return "Peak Count Filter";
+		return "Leave Only Uniques Filter";
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
@@ -106,9 +106,9 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 		List<Alignment> DataFiles = desktop.getSelectedGCGCAligmentFiles();
 
 		// prepare a new group of tasks
-		Task tasks[] = new PeakCountFilterTask[DataFiles.size()];
+		Task tasks[] = new SinglingFilterTask[DataFiles.size()];
 		for (int cont = 0; cont < DataFiles.size(); cont++) {
-			tasks[cont] = new PeakCountFilterTask(DataFiles.get(cont), parameters);
+			tasks[cont] = new SinglingFilterTask(DataFiles.get(cont), parameters);
 		}
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 		// start the group

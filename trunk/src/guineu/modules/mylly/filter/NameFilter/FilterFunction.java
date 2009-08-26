@@ -19,7 +19,6 @@
 */
 package guineu.modules.mylly.filter.NameFilter;
 
-import guineu.modules.mylly.gcgcaligner.filter.*;
 
 public interface FilterFunction<T> extends MapFunction<T,T>
 {

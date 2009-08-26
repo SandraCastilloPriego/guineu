@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.peakCounter;
+package guineu.modules.mylly.filter.singlingFilter;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
@@ -34,21 +34,21 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class PeakCountFilterTask implements Task {
+public class SinglingFilterTask implements Task {
 
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private Alignment dataset;
-	private PeakCountParameters parameters;
+	private SinglingParameters parameters;
 	private int ID = 1;
 
-	public PeakCountFilterTask(Alignment dataset, PeakCountParameters parameters) {
+	public SinglingFilterTask(Alignment dataset, SinglingParameters parameters) {
 		this.dataset = dataset;
 		this.parameters = parameters;
 	}
 
 	public String getTaskDescription() {
-		return "Filtering files with Peak Count Filter... ";
+		return "Filtering files with Leave Only Uniques Filter... ";
 	}
 
 	public double getFinishedPercentage() {
@@ -71,11 +71,12 @@ public class PeakCountFilterTask implements Task {
 		status = TaskStatus.PROCESSING;
 		try {
 
-			int peakCount = (Integer) parameters.getParameterValue(PeakCountParameters.numFound);
-			peakCount--;
-			PeakCount filter = new PeakCount(peakCount);
-			Alignment newAlignment = this.actualMap(dataset, filter);
-			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(PeakCountParameters.suffix));
+			double minSimilarity = (Double) parameters.getParameterValue(SinglingParameters.similarity);
+			boolean unknownPeaks = (Boolean) parameters.getParameterValue(SinglingParameters.unknownPeaks);
+
+			Singling filter = new Singling(minSimilarity, unknownPeaks);
+			Alignment newAlignment = filter.actualMap(dataset);
+			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SinglingParameters.suffix));
 			SimpleDataset newTableOther = this.writeDataset(newAlignment);
 			GuineuCore.getDesktop().AddNewFile(newTableOther);
 			GuineuCore.getDesktop().AddNewFile(newAlignment);
@@ -83,7 +84,7 @@ public class PeakCountFilterTask implements Task {
 
 			status = TaskStatus.FINISHED;
 		} catch (Exception ex) {
-			Logger.getLogger(PeakCountFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(SinglingFilterTask.class.getName()).log(Level.SEVERE, null, ex);
 			status = TaskStatus.ERROR;
 		}
 	}
@@ -92,7 +93,7 @@ public class PeakCountFilterTask implements Task {
 		SimpleDataset datasetOther = new SimpleDataset(alignment.toString());
 		datasetOther.setType(DatasetType.GCGCTOF);
 		ScoreAlignmentParameters alignmentParameters = alignment.getParameters();
-		boolean concentration = (Boolean)alignmentParameters.getParameterValue(ScoreAlignmentParameters.useConcentration);
+		boolean concentration = (Boolean) alignmentParameters.getParameterValue(ScoreAlignmentParameters.useConcentration);
 		String[] columnsNames = alignment.getColumnNames();
 		for (String columnName : columnsNames) {
 			datasetOther.AddNameExperiment(columnName);
@@ -130,22 +131,5 @@ public class PeakCountFilterTask implements Task {
 		}
 		return row;
 	}
-
-	private Alignment actualMap(Alignment input, PeakCount filter) {
-		if (input == null) {
-			return null;
-		}
-
-		Alignment filteredAlignment = new Alignment(input.getColumnNames(),
-				input.getParameters(),
-				input.getAligner());
-
-		for (AlignmentRow row : input.getAlignment()) {
-			if (filter.include(row)) {
-				filteredAlignment.addAlignmentRow(row);
-			}
-		}
-
-		return filteredAlignment;
-	}
+	
 }
