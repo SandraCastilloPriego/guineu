@@ -56,7 +56,7 @@ public class AlignmentRowFilter
 	}
 	
 
-	protected Alignment actualMap(Alignment input) 
+	public Alignment actualMap(Alignment input)
 	{
 		Alignment newAlignment = new Alignment(input.getColumnNames(), input.getParameters(),input.getAligner());
 

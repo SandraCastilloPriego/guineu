@@ -54,8 +54,10 @@
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"/>
     <module class="guineu.modules.mylly.filter.alkaneRTCorrector.AlkaneRTICorrectorFilter"/>	
-    <module class="guineu.modules.mylly.filter.NameFilter.NameFilter"/>	
+    <module class="guineu.modules.mylly.filter.NameFilter.pre.NameFilter"/>	
+    <module class="guineu.modules.mylly.filter.NameFilter.post.NameFilter"/>	
     <module class="guineu.modules.mylly.filter.peakCounter.PeakCountFilter"/>	
+    <module class="guineu.modules.mylly.filter.SimilarityFilter.SimilarityFilter"/>	
   </modules>  
   <desktop>
     <format type="m/z">

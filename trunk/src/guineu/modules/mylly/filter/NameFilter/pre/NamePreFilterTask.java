@@ -15,14 +15,15 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter;
+package guineu.modules.mylly.filter.NameFilter.pre;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
+import guineu.modules.mylly.filter.NameFilter.NameFilterModule;
+import guineu.modules.mylly.filter.NameFilter.NameFilterParameters;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
@@ -45,9 +46,7 @@ public class NamePreFilterTask implements Task {
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private List<GCGCData> datasets;
-	private NameFilterParameters parameters;
-	private int ID = 1;
-	private Aligner aligner;
+	private NameFilterParameters parameters;	
 
 	public NamePreFilterTask(List<GCGCData> datasets, NameFilterParameters parameters) {
 		this.datasets = datasets;
@@ -55,11 +54,11 @@ public class NamePreFilterTask implements Task {
 	}
 
 	public String getTaskDescription() {
-		return "Filtering files with Name Filter... ";
+		return "Filtering files with Name Preprocessor Filter... ";
 	}
 
 	public double getFinishedPercentage() {
-		return aligner.getProgress();
+		return 1f;
 	}
 
 	public TaskStatus getStatus() {

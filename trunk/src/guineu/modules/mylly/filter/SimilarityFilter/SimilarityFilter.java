@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter;
+package guineu.modules.mylly.filter.SimilarityFilter;
 
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
@@ -23,7 +23,6 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -40,39 +39,39 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class NameFilter implements GuineuModule, TaskListener, ActionListener {
+public class SimilarityFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private NameFilterParameters parameters;
+	private SimilarityParameters parameters;
 
 	public void initModule() {
-		parameters = new NameFilterParameters();
-		this.desktop = GuineuCore.getDesktop();		
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
-				"TODO write description", KeyEvent.VK_N, this, null);
+		parameters = new SimilarityParameters();
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Similarity Filter..",
+				"TODO write description", KeyEvent.VK_S, this, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Name Filter");
+		logger.info("Similarity Filter");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Name Filter " );
+			logger.info("Finished Similarity Filter ");
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Name Filtering .. " ;
+			String msg = "Error while Similarity Filtering .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {
 		try {
 			setupParameters(parameters);
 		} catch (Exception exception) {
@@ -82,7 +81,7 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(NameFilterParameters) currentParameters);
+				(SimilarityParameters) currentParameters);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
@@ -95,45 +94,28 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		 parameters = (NameFilterParameters) parameters;
+		parameters = (SimilarityParameters) parameters;
 	}
 
 	public String toString() {
-		return "Name Filter";
+		return "Similarity Filter";
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-        List<Alignment> AlignmentFiles = desktop.getSelectedGCGCAligmentFiles();
-        List<GCGCData> DataFiles = desktop.getSelectedGCGCDataFiles();
+		List<Alignment> DataFiles = desktop.getSelectedGCGCAligmentFiles();
 
-        if(DataFiles.isEmpty()){
 		// prepare a new group of tasks
-            Task tasks[] = new NamePreFilterTask[1];
+		Task tasks[] = new SimilarityFilterTask[DataFiles.size()];
+		for (int cont = 0; cont < DataFiles.size(); cont++) {
+			tasks[cont] = new SimilarityFilterTask(DataFiles.get(cont), parameters);
+		}
+		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		// start the group
+		newGroup.start();
 
-            tasks[0] = new NamePreFilterTask(DataFiles,parameters);
+		return newGroup;
 
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-
-            // start the group
-            newGroup.start();
-
-            return newGroup;
-        }else {
-            // prepare a new group of tasks
-            Task tasks[] = new NamePostFilterTask[1];
-
-            tasks[0] = new NamePostFilterTask(AlignmentFiles,parameters);
-
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-
-            // start the group
-            newGroup.start();
-
-            return newGroup;
-        }
 
 	}
-
-
 }
