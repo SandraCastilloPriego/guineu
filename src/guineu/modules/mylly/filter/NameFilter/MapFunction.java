@@ -17,29 +17,24 @@
     along with MYLLY; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-package guineu.modules.mylly.gcgcaligner.process;
+package guineu.modules.mylly.filter.NameFilter;
 
-public class BooleanLatch
+public interface MapFunction<T,Y>
 {
-	private boolean val;
-	private boolean toggled;
+	/**
+	 * Maps obj to a new object. If this map is used as a
+	 * filter, it may return <code>null</code> to signify
+	 * that this object should not be included in the result.
+	 * Therefore check for nulls is needed when using such
+	 * maps if result will not copy with nulls. 
+	 * @param obj
+	 * @return
+	 */
+	public Y map(T obj);
 	
-	public BooleanLatch(){this(false);}
-	
-	public BooleanLatch(boolean startVal)
-	{
-		val = startVal;
-		toggled = false;
-	}
-	
-	public boolean isSet(){return val;}
-	public void set(boolean val)
-	{
-		if (!toggled)
-		{
-			this.val = val;
-			toggled = true; 
-		}
-	}
-	public String toString(){return String.valueOf(val);}
+	/**
+	 * Returns the name of this map.
+	 * @return name.
+	 */
+	public String getName();
 }

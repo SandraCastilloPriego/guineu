@@ -17,15 +17,14 @@
     along with MYLLY; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-package guineu.modules.mylly.gcgcaligner.filter;
+package guineu.modules.mylly.filter.linearNormalizer;
 
-import guineu.modules.mylly.gcgcaligner.alignment.Alignment;
-import guineu.modules.mylly.gcgcaligner.alignment.AlignmentRow;
-import guineu.modules.mylly.gcgcaligner.alignment.AlignmentSorterFactory;
+
+
+import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
+import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.process.AbstractStatusReportingModule;
-import guineu.modules.mylly.gcgcaligner.process.PollableCallable;
-import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +34,7 @@ import java.util.concurrent.CancellationException;
 
 
 
-public class LinearNormalizer extends AbstractStatusReportingModule<Alignment, Alignment> implements PollableCallable<Alignment>
+public class LinearNormalizer 
 {
 	
 	private final static double BASE_LEVEL = 100.0;
@@ -101,7 +100,7 @@ public class LinearNormalizer extends AbstractStatusReportingModule<Alignment, A
 		Collections.sort(rows, AlignmentSorterFactory.getComparator(AlignmentSorterFactory.SORT_MODE.rt1));
 	}
 
-	@Override
+	
 	protected Alignment actualMap(Alignment input) throws CancellationException
 	{
 		synchronized(this)
@@ -128,7 +127,7 @@ public class LinearNormalizer extends AbstractStatusReportingModule<Alignment, A
 		return index;
 	}
 
-	@Override
+
 	public String getName()
 	{
 		return "Linear normalizer";
