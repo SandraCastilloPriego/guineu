@@ -21,10 +21,7 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 import guineu.modules.mylly.alignment.*;
 
-
-import guineu.modules.mylly.gcgcaligner.Nullable;
-
-public class DistValue implements Nullable, Comparable<DistValue>, Cloneable
+public class DistValue implements Comparable<DistValue>, Cloneable
 {
 	public final static DistValue nullObject;
 	public final static double NO_VALUE = -Double.MAX_VALUE;
