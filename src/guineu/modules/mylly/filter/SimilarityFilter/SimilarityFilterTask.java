@@ -1,8 +1,21 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2007-2008 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter;
+package guineu.modules.mylly.filter.SimilarityFilter;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
@@ -14,36 +27,29 @@ import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author bicha
+ * @author scsandra
  */
-public class NamePostFilterTask implements Task {
+public class SimilarityFilterTask implements Task {
 
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
-	private List<Alignment> datasets;
-	private NameFilterParameters parameters;
+	private Alignment dataset;
+	private SimilarityParameters parameters;
 	private int ID = 1;
 
-	public NamePostFilterTask(List<Alignment> datasets, NameFilterParameters parameters) {
-		this.datasets = datasets;		
+	public SimilarityFilterTask(Alignment dataset, SimilarityParameters parameters) {
+		this.dataset = dataset;
+		System.out.println(dataset.toString());
 		this.parameters = parameters;
 	}
 
 	public String getTaskDescription() {
-		return "Filtering files with Name Filter... ";
+		return "Filtering files with Similarity Filter... ";
 	}
 
 	public double getFinishedPercentage() {
@@ -65,23 +71,21 @@ public class NamePostFilterTask implements Task {
 	public void run() {
 		status = TaskStatus.PROCESSING;
 		try {
-			NamePostFilter filter = new NamePostFilter();
-			String names = (String) parameters.getParameterValue(NameFilterParameters.fileNames);
-			filter.generateNewFilter(this.askParameters(names));
-			List<Alignment> newDatasets = new ArrayList<Alignment>();
-			for (Alignment alignDataset : datasets) {				
-				newDatasets.add(filter.actualMap(alignDataset));
+			double minValue = (Double)parameters.getParameterValue(SimilarityParameters.minSimilarity);
+			String typeSimilarity = (String)parameters.getParameterValue(SimilarityParameters.type);
+			int mode = 0;
+			if(typeSimilarity.matches("maximum similarity")){
+				mode = 1;
 			}
-
-			for (Alignment dates : newDatasets) {
-				dates.setName(dates.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
-				SimpleDataset dataset = writeDataset(dates);
-				GuineuCore.getDesktop().AddNewFile(dataset);
-			}
-
+			Similarity filter = new Similarity(minValue, mode);
+			Alignment newAlignment = filter.actualMap(dataset);
+			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
+			SimpleDataset newTableOther = this.writeDataset(newAlignment);
+			GuineuCore.getDesktop().AddNewFile(newTableOther);
+			GuineuCore.getDesktop().AddNewFile(newAlignment);
 			status = TaskStatus.FINISHED;
 		} catch (Exception ex) {
-			Logger.getLogger(NamePreFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(SimilarityFilterTask.class.getName()).log(Level.SEVERE, null, ex);
 			status = TaskStatus.ERROR;
 		}
 	}
@@ -90,8 +94,7 @@ public class NamePostFilterTask implements Task {
 		SimpleDataset datasetOther = new SimpleDataset(alignment.toString());
 		datasetOther.setType(DatasetType.GCGCTOF);
 		ScoreAlignmentParameters alignmentParameters = alignment.getParameters();
-		boolean concentration = (Boolean) alignmentParameters.getParameterValue(ScoreAlignmentParameters.useConcentration);
-
+		boolean concentration = (Boolean)alignmentParameters.getParameterValue(ScoreAlignmentParameters.useConcentration);
 		String[] columnsNames = alignment.getColumnNames();
 		for (String columnName : columnsNames) {
 			datasetOther.AddNameExperiment(columnName);
@@ -129,27 +132,5 @@ public class NamePostFilterTask implements Task {
 		}
 		return row;
 	}
-
-	public List<String> askParameters(String names) throws FileNotFoundException {
-		File f = new File(names);
-		if (f != null) {
-			try {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String line = null;
-				List<String> namesList = new ArrayList<String>();
-				while ((line = (br.readLine())) != null) {
-					namesList.add(line);
-				}
-				return namesList;
-			} catch (FileNotFoundException e) {
-				return null;
-			//	GCGCAlign.getMainWindow().displayErrorDialog("File " + f + " was not found");
-			} catch (IOException e) {
-				return null;
-			//	GCGCAlign.getMainWindow().displayErrorDialog(e);
-			}
-		}
-		return null;
-	}
+	
 }

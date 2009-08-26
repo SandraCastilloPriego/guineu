@@ -56,7 +56,7 @@ public class NamePostFilter {
 	}
 	
 
-	protected Alignment actualMap(Alignment input) 
+	public Alignment actualMap(Alignment input)
 	{
 		//we don't want to apply this filter in the peaks with Quant Mass
 		List<AlignmentRow> QuantMassOnes = input.getQuantMassAlignments();		

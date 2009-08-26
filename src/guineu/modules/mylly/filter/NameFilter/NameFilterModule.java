@@ -53,7 +53,7 @@ public class NameFilterModule
 	}
 
 	
-	protected List<GCGCData> actualMap(List<GCGCData> obj)
+	public List<GCGCData> actualMap(List<GCGCData> obj)
 	{
 
 		int done = 0;
