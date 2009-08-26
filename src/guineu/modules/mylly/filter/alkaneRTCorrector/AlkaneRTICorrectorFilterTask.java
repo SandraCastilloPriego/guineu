@@ -15,18 +15,17 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.openFiles;
+package guineu.modules.mylly.filter.alkaneRTCorrector;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.taskcontrol.Task;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,26 +34,24 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class OpenFileTask implements Task {
+public class AlkaneRTICorrectorFilterTask implements Task {
 
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
-	private String separator;
-	private File file;
-	private boolean filterClassified;
+	private List<GCGCData> datasets;
+	private AlkaneRTICorrectorParameters parameters;
 
-	OpenFileTask(String fileName, String separator, boolean filterClassified) {		
-		file = new File(fileName);
-		this.separator = separator;
-		this.filterClassified = filterClassified;
+	public AlkaneRTICorrectorFilterTask(List<GCGCData> datasets, AlkaneRTICorrectorParameters parameters) {
+		this.datasets = datasets;
+		this.parameters = parameters;
 	}
 
 	public String getTaskDescription() {
-		return "Opening GCGC File... ";
+		return "Filtering files with Alkane RTI Corrector Filter... ";
 	}
 
 	public double getFinishedPercentage() {
-		return 1.0f;
+		return 1f;
 	}
 
 	public TaskStatus getStatus() {
@@ -71,29 +68,33 @@ public class OpenFileTask implements Task {
 
 	public void run() {
 		status = TaskStatus.PROCESSING;
-		GCGCFileReader reader = new GCGCFileReader(separator, filterClassified);
 		try {
-			List<GCGCDatum> data = reader.readGCGCDataFile(file);
-			SimpleDataset dataset = writeDataset(data);
-			GuineuCore.getDesktop().AddNewFile(dataset);
-			GCGCData gcgcData = new GCGCData(data, file.getName());
-			GuineuCore.getDesktop().AddNewFile(gcgcData);
+
+			String name = (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.fileNames);
+			AlkaneRTICorrector filter = AlkaneRTICorrector.createCorrector(new File(name));
+			List<GCGCData> newDatasets = filter.actualMap(datasets);
+
+			for (GCGCData dates : newDatasets) {
+				dates.setName(dates.getName() + (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.suffix));
+				SimpleDataset newTableOther = this.writeDataset(dates.toList(), dates.getName());
+				GuineuCore.getDesktop().AddNewFile(newTableOther);
+				GuineuCore.getDesktop().AddNewFile(dates);
+			}
+
 			status = TaskStatus.FINISHED;
-		} catch (IOException ex) {
-			Logger.getLogger(OpenFileTask.class.getName()).log(Level.SEVERE, null, ex);
-			errorMessage = "There has been an error opening the file";
+		} catch (Exception ex) {
+			Logger.getLogger(AlkaneRTICorrectorFilterTask.class.getName()).log(Level.SEVERE, null, ex);
 			status = TaskStatus.ERROR;
 		}
-
 	}
 
-	private SimpleDataset writeDataset(List<GCGCDatum> data) {
+	private SimpleDataset writeDataset(List<GCGCDatum> data, String name) {
 
-		SimpleDataset datasetOther = new SimpleDataset(file.getName());
+		SimpleDataset datasetOther = new SimpleDataset(name);
 		datasetOther.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {
-			PeakListRow row = new SimplePeakListRowGCGC((int)mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
+			PeakListRow row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
 					mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), 0, mol.getName(),
 					null, mol.getSpectrum().toString(), null);
 			datasetOther.AddRow(row);
@@ -102,16 +103,3 @@ public class OpenFileTask implements Task {
 		return datasetOther;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

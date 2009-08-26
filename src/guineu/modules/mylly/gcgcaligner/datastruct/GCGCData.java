@@ -97,6 +97,10 @@ public class GCGCData implements Iterable<GCGCDatum>, Cloneable {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getCAS() {
 		return CAS;
 	}
