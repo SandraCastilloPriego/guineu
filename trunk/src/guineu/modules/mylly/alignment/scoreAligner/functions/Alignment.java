@@ -46,6 +46,7 @@ public class Alignment {
 	private ScoreAlignmentParameters params;
 	private Aligner aligner;
 	private final long id;
+	private String name;
 
 	private static synchronized long getNextId() {
 		return nextId++;
@@ -59,6 +60,7 @@ public class Alignment {
 		this.params = parameters;
 		this.aligner = aligner;
 		id = getNextId();
+		name =  "Alignment " + id;
 	}
 
 	public Alignment(Alignment other) {
@@ -298,6 +300,10 @@ public class Alignment {
 	}
 
 	public String toString() {
-		return "Alignment " + id;
+		return name;
+	}
+
+	public void setName(String name){
+		this.name = name;
 	}
 }

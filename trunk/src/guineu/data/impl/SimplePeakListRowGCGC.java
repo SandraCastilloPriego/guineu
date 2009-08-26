@@ -34,6 +34,7 @@ public class SimplePeakListRowGCGC implements PeakListRow {
     private String name,  allNames,  spectra,  pubChemID;
     private Hashtable<String, Double> peaks;
     private boolean control, selection;
+	private String CAS;
 
     public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
             double maxSimilarity, double meanSimilarity, double similaritySTDDev,
@@ -82,6 +83,14 @@ public class SimplePeakListRowGCGC implements PeakListRow {
 
     public String getName() {
         return this.name;
+    }
+
+	public String getCAS() {
+        return this.CAS;
+    }
+
+	public void getCAS(String CAS) {
+		this.CAS = CAS;
     }
 
     public Double getPeak(String ExperimentName) {

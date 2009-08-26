@@ -20,9 +20,7 @@
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 import guineu.modules.mylly.alignment.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
 
 import guineu.modules.mylly.gcgcaligner.Nullable;
 
@@ -107,33 +105,6 @@ public class DistValue implements Nullable, Comparable<DistValue>, Cloneable
 	public String toString()
 	{
 		return isNull() ? "" : Double.toString(_dist);
-	}
-	
-	public static void main (String args[])
-	{
-		test();
-	}
+	}	
 
-	private static void test()
-	{
-		Random r = new Random();
-		int nullCount = 5;
-		int nonNullCount = 15;
-		
-		List<DistValue> distVals = new ArrayList<DistValue>(); 
-		
-		int i;
-		for (i = 0; i < nonNullCount; i++)
-		{
-			distVals.add(new DistValue(r.nextInt(1000)));
-		}
-		for (; i < nonNullCount + nullCount; i++)
-		{
-			distVals.add(getNull());
-		}
-		java.util.Collections.shuffle(distVals);
-		System.out.printf("List before:\n%s\n", distVals);
-		java.util.Collections.sort(distVals);
-		System.out.printf("List after:\n%s\n", distVals);
-	}
 }
