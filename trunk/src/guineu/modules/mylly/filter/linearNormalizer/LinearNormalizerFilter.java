@@ -15,9 +15,8 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter.post;
+package guineu.modules.mylly.filter.linearNormalizer;
 
-import guineu.modules.mylly.filter.NameFilter.*;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
@@ -40,86 +39,74 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class NameFilter implements GuineuModule, TaskListener, ActionListener {
+public class LinearNormalizerFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private NameFilterParameters parameters;
+	private Desktop desktop;	
 
-	public void initModule() {
-		parameters = new NameFilterParameters();
-		this.desktop = GuineuCore.getDesktop();		
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Postprocessor Filter..",
-				"TODO write description", KeyEvent.VK_O, this, null);
+	public void initModule() {		
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Linear Normalizer..",
+				"TODO write description", KeyEvent.VK_L, this, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Name Postprocessor Filter");
+		logger.info("Linear Normalizer");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Name Postprocessor Filter " );
+			logger.info("Finished Linear Normalizer ");
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Name Postprocessor Filtering .. " ;
+			String msg = "Error while Linear Normalizer .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {
 		try {
-			setupParameters(parameters);
+			setupParameters(null);
 		} catch (Exception exception) {
 		}
 	}
 
 	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(NameFilterParameters) currentParameters);
-		dialog.setVisible(true);
-
-		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
-		}
+		runModule(null);		
 	}
 
 	public ParameterSet getParameterSet() {
-		return this.parameters;
+		return null;
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		 parameters = (NameFilterParameters) parameters;
+		
 	}
 
 	public String toString() {
-		return "Name Postprocessor Filter";
+		return "Linear Normalizer";
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-        List<Alignment> AlignmentFiles = desktop.getSelectedGCGCAligmentFiles();    
+		List<Alignment> DataFiles = desktop.getSelectedGCGCAligmentFiles();
 
-        
-            // prepare a new group of tasks
-            Task tasks[] = new NamePostFilterTask[1];
+		// prepare a new group of tasks
+		Task tasks[] = new LinearNormalizerFilterTask[DataFiles.size()];
+		for (int cont = 0; cont < DataFiles.size(); cont++) {
+			tasks[cont] = new LinearNormalizerFilterTask(DataFiles.get(cont));
+		}
+		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		// start the group
+		newGroup.start();
 
-            tasks[0] = new NamePostFilterTask(AlignmentFiles,parameters);
+		return newGroup;
 
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
-            // start the group
-            newGroup.start();
-
-            return newGroup;
-       
 	}
-
-
 }

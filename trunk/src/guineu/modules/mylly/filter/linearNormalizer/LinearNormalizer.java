@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
 
 
@@ -101,19 +100,18 @@ public class LinearNormalizer
 	}
 
 	
-	protected Alignment actualMap(Alignment input) throws CancellationException
+	protected Alignment actualMap(Alignment input) 
 	{
-		synchronized(this)
-		{
-			_input = input;
-			_total = input.rowCount();
-		}
+		_input = input;
+		_total = input.rowCount();
+		
 		try
 		{
 			return call();
 		} catch (Exception e)
 		{
-			throw new CancellationException(e.getLocalizedMessage());
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
