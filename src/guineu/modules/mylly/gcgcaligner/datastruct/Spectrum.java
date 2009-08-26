@@ -19,12 +19,9 @@
 */
 package guineu.modules.mylly.gcgcaligner.datastruct;
 
-import guineu.modules.mylly.gcgcaligner.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -32,7 +29,7 @@ import java.util.Random;
 /**
  * @author jmjarkko
  */
-public class Spectrum implements Cloneable, Nullable
+public class Spectrum implements Cloneable
 {	
 	private final static Comparator<Pair<Integer, Integer>> reverseIntensityComp = getRevIntensityComparator();
 	private final static Comparator<Pair<Integer, Integer>> intensityComp = getIntensityComparator();
