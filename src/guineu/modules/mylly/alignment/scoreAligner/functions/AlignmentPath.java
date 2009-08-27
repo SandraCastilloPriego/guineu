@@ -18,6 +18,7 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 
 
+import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 import guineu.modules.mylly.gcgcaligner.datastruct.ConsensusSpectrum;
@@ -262,8 +263,8 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
         return peaks.length;
     }
 
-    public AlignmentRow convertToAlignmentRow() {
-        AlignmentRow row = new AlignmentRow(this);
+    public SimplePeakListRowGCGC convertToAlignmentRow() {
+        SimplePeakListRowGCGC row = new SimplePeakListRowGCGC(this);
         return row;
     }
 

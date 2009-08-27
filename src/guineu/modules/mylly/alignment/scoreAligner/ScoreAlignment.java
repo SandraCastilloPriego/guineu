@@ -32,6 +32,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
+import guineu.data.Dataset;
+import guineu.data.impl.SimpleGCGCDataset;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -103,8 +110,16 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 		// prepare a new group of tasks
 		Task tasks[] = new ScoreAlignmentTask[1];
-
-		tasks[0] = new ScoreAlignmentTask(desktop.getSelectedGCGCDataFiles(),parameters);
+		Dataset[] datasets = desktop.getSelectedDataFiles();
+		List<GCGCData> newDatasets = new ArrayList<GCGCData>();
+			
+		for(int i = 0; i < datasets.length; i++){
+			GCGCDatum[][] datum = ((SimpleGCGCDataset)datasets[i]).toArray();
+			List<GCGCDatum> datumList = Arrays.asList(datum[0]);			
+			newDatasets.add(new GCGCData(datumList, datumList.get(0).getColumnName()));
+		}		
+		
+		tasks[0] = new ScoreAlignmentTask(newDatasets,parameters);
 
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 

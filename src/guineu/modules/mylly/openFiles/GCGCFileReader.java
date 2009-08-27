@@ -20,7 +20,6 @@ package guineu.modules.mylly.openFiles;
 import guineu.modules.mylly.gcgcaligner.datastruct.ComparablePair;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatumWithConcentration;
-import guineu.modules.mylly.helper.Helper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +33,8 @@ import java.util.regex.Pattern;
  *
  * @author scsandra
  */
-public class GCGCFileReader {	
+public class GCGCFileReader {
+
 	private String _separator;
 	private boolean _filterClassified;
 	private boolean _findSpectrum;
@@ -119,8 +119,8 @@ public class GCGCFileReader {
 			while ((line = br.readLine()) != null) {
 				boolean foundArea = false;
 				boolean foundRT1 = false;
-				boolean foundRT2 = false;				
-				boolean foundName = false;				
+				boolean foundRT2 = false;
+				boolean foundName = false;
 				boolean foundRetentionIndex = false;
 				boolean foundClassificationPos = false;
 				boolean foundSpectrum = false;
@@ -182,13 +182,13 @@ public class GCGCFileReader {
 							foundConc = true;
 						}
 					} else if (i == casPos) {
-						CAS = curStr;						
+						CAS = curStr;
 					} else if (i == namePos) {
-						name = Helper.stripCAS(curStr);
+						name = curStr;
 						foundName = true;
 					} else if (i == simPos) {
 						try {
-							similarity = "".equals(curStr) ? 0 : Integer.parseInt(curStr);							
+							similarity = "".equals(curStr) ? 0 : Integer.parseInt(curStr);
 						} catch (NumberFormatException e) {
 						}
 					} else if (_filterClassified && i == ClassificationsPos) {
@@ -224,15 +224,15 @@ public class GCGCFileReader {
 							GCGCDatum currentRow;
 							if (foundConc) {
 								currentRow = new GCGCDatumWithConcentration(rt1, rt2, retentionIndex,
-										quantMass, similarity, area, CAS, name, useConc,
+										quantMass, similarity, area, CAS, name, useConc, file.getName(),
 										spectrum, conc);
 							} else if (foundRetentionIndex) {
 								currentRow = new GCGCDatum(rt1, rt2, retentionIndex,
 										quantMass, similarity, area, conc, useConc,
-										CAS, name, spectrum);
+										CAS, name, file.getName(), spectrum);
 							} else {
 								currentRow = new GCGCDatum(rt1, rt2, quantMass,
-										area, conc, useConc, similarity, CAS, name, spectrum);
+										area, conc, useConc, similarity, CAS, name, file.getName(), spectrum);
 							}
 							peaks.add(currentRow);
 

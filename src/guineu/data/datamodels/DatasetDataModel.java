@@ -92,24 +92,26 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
                         return this.dataset.getRow(row).getRTI();
                     case 5:
                         return this.dataset.getRow(row).getNumFound();
-                    case 6:
-                        return this.dataset.getRow(row).getMaxSimilarity();
+					case 6:
+                        return this.dataset.getRow(row).getCAS();
                     case 7:
-                        return this.dataset.getRow(row).getMeanSimilarity();
+                        return this.dataset.getRow(row).getMaxSimilarity();
                     case 8:
-                        return this.dataset.getRow(row).getSimilaritySTDDev();
+                        return this.dataset.getRow(row).getMeanSimilarity();
                     case 9:
-                        return this.dataset.getRow(row).getName();
+                        return this.dataset.getRow(row).getSimilaritySTDDev();
                     case 10:
-                        return this.dataset.getRow(row).getAllNames();
+                        return this.dataset.getRow(row).getName();
                     case 11:
-                        return this.dataset.getRow(row).getPubChemID();
+                        return this.dataset.getRow(row).getAllNames();
                     case 12:
-                        return this.dataset.getRow(row).getMass();
+                        return this.dataset.getRow(row).getPubChemID();
                     case 13:
-                        return this.dataset.getRow(row).getDifference();
+                        return this.dataset.getRow(row).getMass();
                     case 14:
-                        return this.dataset.getRow(row).getSpectrum();
+                        return this.dataset.getRow(row).getDifference();
+                    case 15:
+                        return this.dataset.getRow(row).getSpectrumString();
                 }
             } else if (this.dataset.getType() == DatasetType.LCMS) {
                 switch (column) {
@@ -235,31 +237,34 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
                 case 5:
                     ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setNumFound(intValue);
                     break;
-                case 6:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMaxSimilarity(doubleValue);
+				case 6:
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setCAS((String)aValue);
                     break;
                 case 7:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMeanSimilarity(doubleValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMaxSimilarity(doubleValue);
                     break;
                 case 8:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setSimilaritySTDDev(doubleValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMeanSimilarity(doubleValue);
                     break;
                 case 9:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setName((String) aValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setSimilaritySTDDev(doubleValue);
                     break;
                 case 10:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setAllNames((String) aValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setName((String) aValue);
                     break;
                 case 11:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setPubChemID((String) aValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setAllNames((String) aValue);
                     break;
                 case 12:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMass(doubleValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setPubChemID((String) aValue);
                     break;
                 case 13:
-                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setDifference(doubleValue);
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMass(doubleValue);
                     break;
                 case 14:
+                    ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setDifference(doubleValue);
+                    break;
+                case 15:
                     ((SimplePeakListRowGCGC) this.dataset.getRow(row)).setSpectrum((String) aValue);
                     break;
                 default:

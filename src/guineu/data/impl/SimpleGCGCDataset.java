@@ -17,8 +17,10 @@ You should have received a copy of the GNU General Public License
 along with MYLLY; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package guineu.modules.mylly.alignment.scoreAligner.functions;
+package guineu.data.impl;
 
+
+import guineu.modules.mylly.alignment.scoreAligner.functions.*;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory.SORT_MODE;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
@@ -33,29 +35,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Collections;
-
+import guineu.data.Dataset;
+import guineu.data.PeakListRow;
+import java.util.Vector;
 /**
  * @author jmjarkko
  */
-public class Alignment {
+public class SimpleGCGCDataset implements Dataset{
 
 	private static long nextId = 1;
-	private List<AlignmentRow> alignment;
-	private String[] names;
+	private List<SimplePeakListRowGCGC> alignment;
+	private Vector<String> names;
 	private AlignmentSorterFactory.SORT_MODE lastSortMode;
 	private ScoreAlignmentParameters params;
 	private Aligner aligner;
 	private final long id;
 	private String name;
+	private DatasetType type;
 
 	private static synchronized long getNextId() {
 		return nextId++;
 	}
 
-	public Alignment(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
-		this.names = new String[names.length];
-		System.arraycopy(names, 0, this.names, 0, names.length);
-		alignment = new ArrayList<AlignmentRow>();
+	public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
+		this.names = new Vector<String>();
+		for(String experimentName : names){
+			this.names.addElement(experimentName);
+		}
+		alignment = new ArrayList<SimplePeakListRowGCGC>();
 		lastSortMode = SORT_MODE.none;
 		this.params = parameters;
 		this.aligner = aligner;
@@ -63,16 +70,24 @@ public class Alignment {
 		name =  "Alignment " + id;
 	}
 
-	public Alignment(Alignment other) {
-		this(other.names, other.params, other.aligner);
+	public SimpleGCGCDataset(SimpleGCGCDataset other) {
+		this((String[])other.names.toArray(new String[0]), other.params, other.aligner);
 		alignment.addAll(other.alignment);
 		this.lastSortMode = other.lastSortMode;
 
 	}
 
+	public SimpleGCGCDataset(String datasetName) {
+		this.names = new Vector<String>();
+		this.names.addElement(datasetName);
+		alignment = new ArrayList<SimplePeakListRowGCGC>();
+		id = 0;
+		this.name = datasetName;
+	}
+
 	public void setGCGCDataConcentration() {
 		if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
-			for (AlignmentRow row : alignment) {
+			for (SimplePeakListRowGCGC row : alignment) {
 				for (GCGCDatum data : row) {
 					if (data.getConcentration() > 0) {
 						data.setUseConcentration(true);
@@ -82,7 +97,7 @@ public class Alignment {
 				}
 			}
 		} else {
-			for (AlignmentRow row : alignment) {
+			for (SimplePeakListRowGCGC row : alignment) {
 				for (GCGCDatum data : row) {
 					data.setUseConcentration(false);
 				}
@@ -100,8 +115,8 @@ public class Alignment {
 	/**
 	 * @return a list containing the AlignmentRows in this Alignment
 	 */
-	public List<AlignmentRow> getAlignment() {
-		return new ArrayList<AlignmentRow>(alignment);
+	public List<SimplePeakListRowGCGC> getAlignment() {
+		return new ArrayList<SimplePeakListRowGCGC>(alignment);
 	}
 
 	public GCGCDatum[][] toArray() {
@@ -119,7 +134,7 @@ public class Alignment {
 		return returnedArray;
 	}
 
-	public List<AlignmentRow> getSortedAlignment(SORT_MODE mode) {
+	public List<SimplePeakListRowGCGC> getSortedAlignment(SORT_MODE mode) {
 		sort(mode);
 		return getAlignment();
 	}
@@ -138,7 +153,7 @@ public class Alignment {
 
 	public boolean containsMainPeaks() {
 		boolean contains = false;
-		for (AlignmentRow row : alignment) {
+		for (SimplePeakListRowGCGC row : alignment) {
 			if (!row.getDistValue().isNull()) {
 				contains = true;
 				break;
@@ -187,12 +202,12 @@ public class Alignment {
 		out.write(separator);
 		out.write("Spectrum");
 		out.write('\n');
-		for (AlignmentRow row : alignment) {
+		for (SimplePeakListRowGCGC row : alignment) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(formatter.format(row.getMeanRT1())).append(separator);
-			sb.append(formatter.format(row.getMeanRT2())).append(separator);
-			sb.append(formatter.format(row.getMeanRTI())).append(separator);
-			sb.append(formatter.format(row.getQuantMass())).append(separator);
+			sb.append(formatter.format(row.getRT1())).append(separator);
+			sb.append(formatter.format(row.getRT2())).append(separator);
+			sb.append(formatter.format(row.getRTI())).append(separator);
+			sb.append(formatter.format(row.getMass())).append(separator);
 			sb.append(row.nonNullPeakCount()).append(separator);
 			if (containsMainPeaks) {
 				if (!row.getDistValue().isNull()) {
@@ -222,7 +237,7 @@ public class Alignment {
 
 			sb.append(formatter.format(row.getMaxSimilarity())).append(separator);
 			sb.append(formatter.format(row.getMeanSimilarity())).append(separator);
-			sb.append(formatter.format(row.getSimilarityStdDev())).append(separator);
+			sb.append(formatter.format(row.getSimilaritySTDDev())).append(separator);
 			for (GCGCDatum d : row) {
 				if (d != null) {
 					if (d.getConcentration() > 0 && (Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
@@ -236,8 +251,8 @@ public class Alignment {
 				}
 				sb.append(separator);
 			}
-			if (row.getSpectrum() != null) {
-				sb.append(row.getSpectrum().toString());
+			if (row.getSpectrumString() != null) {
+				sb.append(row.getSpectrumString().toString());
 			}
 			out.write(sb.toString());
 			out.write('\n');
@@ -245,11 +260,11 @@ public class Alignment {
 		out.close();
 	}
 
-	public List<AlignmentRow> getQuantMassAlignments() {
-		List<AlignmentRow> QuantMassList = new ArrayList<AlignmentRow>();
+	public List<SimplePeakListRowGCGC> getQuantMassAlignments() {
+		List<SimplePeakListRowGCGC> QuantMassList = new ArrayList<SimplePeakListRowGCGC>();
 		for (int i = 0; i < alignment.size(); i++) {
-			AlignmentRow alignmentRow = alignment.get(i);
-			if (alignmentRow.getQuantMass() > -1) {
+			SimplePeakListRowGCGC alignmentRow = alignment.get(i);
+			if (alignmentRow.getMass() > -1) {
 				QuantMassList.add(alignmentRow);
 			}
 		}
@@ -267,7 +282,7 @@ public class Alignment {
 	}
 
 	public int colCount() {
-		return names.length;
+		return names.size();
 	}
 
 	public int rowCount() {
@@ -275,26 +290,27 @@ public class Alignment {
 	}
 
 	public String[] getColumnNames() {
-		return names.clone();
+		return (String[])names.toArray(new String[0]).clone();
 	}
 
-	public boolean addAlignmentRow(AlignmentRow row) {
+	public boolean addAlignmentRow(SimplePeakListRowGCGC row) {
 		return alignment.add(row);
 	}
 
-	public void addAll(Collection<? extends AlignmentRow> rows) {
-		for (AlignmentRow r : rows) {
+	public void addAll(Collection<? extends SimplePeakListRowGCGC> rows) {
+		for (SimplePeakListRowGCGC r : rows) {
 			addAlignmentRow(r);
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		return (int) ((id % 0xFFFFFFFFL) + Integer.MIN_VALUE);
 	}
 
 	public boolean equals(Object o) {
-		if (o instanceof Alignment) {
-			return ((Alignment) o).id == id;
+		if (o instanceof SimpleGCGCDataset) {
+			return ((SimpleGCGCDataset) o).id == id;
 		}
 		return false;
 	}
@@ -305,5 +321,52 @@ public class Alignment {
 
 	public void setName(String name){
 		this.name = name;
+	}
+
+	public String getDatasetName() {
+		return name;
+	}
+
+	public Vector<String> getNameExperiments() {	
+		return names;
+	}
+	public int getNumberCols() {
+		return names.size();
+	}
+
+	public int getNumberRows() {
+		return this.rowCount();
+	}
+
+	public void setDatasetName(String name) {
+		this.name = name;
+	}
+
+	public DatasetType getType() {
+		return this.type;
+	}
+
+	public void setType(DatasetType type) {
+		this.type = type;
+	}
+
+	public PeakListRow getRow(int row) {
+		return this.alignment.get(row);
+	}
+
+	public void removeRow(PeakListRow row) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void AddNameExperiment(String nameExperiment) {
+		this.names.add(nameExperiment);
+	}
+
+	public void AddNameExperiment(String nameExperiment, int position) {
+		 this.names.insertElementAt(nameExperiment, position);
+	}
+
+	public Vector<PeakListRow> getRows() {
+		return (Vector<PeakListRow>) this.alignment.iterator();
 	}
 }

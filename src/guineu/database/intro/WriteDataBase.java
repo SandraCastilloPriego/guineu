@@ -286,7 +286,7 @@ public class WriteDataBase {
 			st = conn.createStatement();
 			for (int i = 0; i < mol.getNumberRows(); i++) {
 				SimplePeakListRowGCGC peak = (SimplePeakListRowGCGC) mol.getRow(i);
-				double[][] spectrum = this.get_spectrum(peak.getSpectrum());
+				double[][] spectrum = this.get_spectrum(peak.getSpectrumString());
 				if (spectrum == null) {
 					break;
 				}

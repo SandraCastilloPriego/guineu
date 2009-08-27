@@ -22,7 +22,6 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -32,8 +31,9 @@ import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.List;
 import java.util.logging.Logger;
+import guineu.data.Dataset;
+import guineu.data.impl.SimpleGCGCDataset;
 
 /**
  *
@@ -103,12 +103,12 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-		List<Alignment> DataFiles = desktop.getSelectedGCGCAligmentFiles();
+		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
 		// prepare a new group of tasks
-		Task tasks[] = new SimilarityFilterTask[DataFiles.size()];
-		for (int cont = 0; cont < DataFiles.size(); cont++) {
-			tasks[cont] = new SimilarityFilterTask(DataFiles.get(cont), parameters);
+		Task tasks[] = new SimilarityFilterTask[DataFiles.length];
+		for (int cont = 0; cont < DataFiles.length; cont++) {
+			tasks[cont] = new SimilarityFilterTask((SimpleGCGCDataset)DataFiles[cont], parameters);
 		}
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 		// start the group

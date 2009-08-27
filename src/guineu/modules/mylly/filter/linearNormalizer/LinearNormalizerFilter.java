@@ -22,18 +22,16 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
-import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.List;
 import java.util.logging.Logger;
+import guineu.data.Dataset;
 
 /**
  *
@@ -94,12 +92,12 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-		List<Alignment> DataFiles = desktop.getSelectedGCGCAligmentFiles();
+		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
 		// prepare a new group of tasks
-		Task tasks[] = new LinearNormalizerFilterTask[DataFiles.size()];
-		for (int cont = 0; cont < DataFiles.size(); cont++) {
-			tasks[cont] = new LinearNormalizerFilterTask(DataFiles.get(cont));
+		Task tasks[] = new LinearNormalizerFilterTask[DataFiles.length];
+		for (int cont = 0; cont < DataFiles.length; cont++) {
+			tasks[cont] = new LinearNormalizerFilterTask((SimpleGCGCDataset)DataFiles[cont]);
 		}
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 		// start the group

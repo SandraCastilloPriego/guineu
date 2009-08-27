@@ -24,7 +24,7 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.util.components.TaskProgressWindow;
@@ -257,15 +257,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
     public Dataset[] getSelectedDataFiles() {
         return this.itemSelector.getSelectedDatasets();
-    }
-
-	public List<GCGCData> getSelectedGCGCDataFiles(){
-		return this.itemSelector.getSelectedGCGCDataFiles();
-	}
-
-    public List<Alignment> getSelectedGCGCAligmentFiles(){
-		return this.itemSelector.getSelectedGCGCAlignmentFiles();
-	}
+    }	
     
     /*public Vector[] getSelectedExperiments() {
         return this.itemSelector.getSelectedExperiments();
@@ -273,15 +265,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
     
     public void AddNewFile(Dataset dataset){
         this.itemSelector.addNewFile(dataset);
-    }
-
-	public void AddNewFile(GCGCData dataToAlign){
-        this.itemSelector.addNewFile(dataToAlign);
-    }
-
-    public void AddNewFile(Alignment dataToAlign){
-        this.itemSelector.addNewFile(dataToAlign);
-    }
+    }	    
     
     public void removeData(Dataset file) { 
         this.itemSelector.removeData(file);

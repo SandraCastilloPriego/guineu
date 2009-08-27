@@ -26,14 +26,14 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimpleDatasetOther implements Dataset {
+public class SimpleOtherDataset implements Dataset {
 
     String datasetName;
     Vector<PeakListRow> PeakList;
     Vector<String> nameExperiments;
     DatasetType type;
 
-    public SimpleDatasetOther(String datasetName) {
+    public SimpleOtherDataset(String datasetName) {
         this.datasetName = datasetName;
         this.PeakList = new Vector<PeakListRow>();
         this.nameExperiments = new Vector<String>();
@@ -113,8 +113,8 @@ public class SimpleDatasetOther implements Dataset {
     }
     
     @Override
-    public SimpleDatasetOther clone() {
-        SimpleDatasetOther newDataset = new SimpleDatasetOther(this.datasetName);
+    public SimpleOtherDataset clone() {
+        SimpleOtherDataset newDataset = new SimpleOtherDataset(this.datasetName);
         for (String experimentName : this.nameExperiments) {
             newDataset.AddNameExperiment(experimentName);
         }

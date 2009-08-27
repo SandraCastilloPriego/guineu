@@ -20,6 +20,7 @@ package guineu.modules.mylly.filter.alkaneRTCorrector;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
@@ -76,9 +77,8 @@ public class AlkaneRTICorrectorFilterTask implements Task {
 
 			for (GCGCData dates : newDatasets) {
 				dates.setName(dates.getName() + (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.suffix));
-				SimpleDataset newTableOther = this.writeDataset(dates.toList(), dates.getName());
-				GuineuCore.getDesktop().AddNewFile(newTableOther);
-				GuineuCore.getDesktop().AddNewFile(dates);
+				SimpleGCGCDataset newTableOther = this.writeDataset(dates.toList(), dates.getName());
+				GuineuCore.getDesktop().AddNewFile(newTableOther);				
 			}
 
 			status = TaskStatus.FINISHED;
@@ -88,18 +88,23 @@ public class AlkaneRTICorrectorFilterTask implements Task {
 		}
 	}
 
-	private SimpleDataset writeDataset(List<GCGCDatum> data, String name) {
+	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data, String name) {
 
-		SimpleDataset datasetOther = new SimpleDataset(name);
-		datasetOther.setType(DatasetType.GCGCTOF);
+		SimpleGCGCDataset dataset = new SimpleGCGCDataset(name);
+		dataset.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {
-			PeakListRow row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
+			SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
 					mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), 0, mol.getName(),
-					null, mol.getSpectrum().toString(), null);
-			datasetOther.AddRow(row);
+					null, mol.getSpectrum().toString(), null, mol.getCAS());
+
+			mol.setColumnName(name);
+			GCGCDatum[] peaks = new GCGCDatum[1];
+			peaks[0] = mol;
+			row.setDatum(peaks);
+			dataset.addAlignmentRow(row);
 		}
 
-		return datasetOther;
+		return dataset;
 	}
 }

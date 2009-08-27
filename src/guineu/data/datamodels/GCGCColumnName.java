@@ -26,6 +26,7 @@ public enum GCGCColumnName {
     RT2 ("RT2"),
     RTI ("RTI"),
     NFOUND ("N Found"),
+	CAS ("Cas Number"),
     MAXSIM ("Max similarity"),
     MEANSIM ("Mean similarity"),
     SIMSTD ("Similarity std dev"),

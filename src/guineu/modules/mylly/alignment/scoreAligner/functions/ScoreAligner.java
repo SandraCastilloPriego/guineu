@@ -17,6 +17,7 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.QuantMassScoreCalc;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
@@ -48,7 +49,7 @@ public class ScoreAligner implements Aligner {
 	private int originalOrder[];
 	private String names[];
 	private ScoreCalculator calc;
-	private Alignment alignment;
+	private SimpleGCGCDataset alignment;
 	private ScoreAlignmentParameters params;
 
 	public ScoreAligner(InputSet data, ScoreAlignmentParameters params, ScoreCalculator calc) {
@@ -348,7 +349,7 @@ public class ScoreAligner implements Aligner {
 	/* (non-Javadoc)
 	 * @see gcgcaligner.AbstractAligner#align()
 	 */
-	public Alignment align() {
+	public SimpleGCGCDataset align() {
 
 		if (alignment == null) //Do the actual alignment if we already do not have the result
 		{
@@ -356,7 +357,7 @@ public class ScoreAligner implements Aligner {
 			for (int i = 0; i < peakList.size(); i++) {
 				peaksTotal += peakList.get(i).size();
 			}
-			alignment = new Alignment(names, params, this);
+			alignment = new SimpleGCGCDataset(names, params, this);
 			List<AlignmentPath> addedPaths = getAlignmentPaths();			
 			for (AlignmentPath p : addedPaths) {
 				//Convert alignments to original order of files and add them to final
@@ -367,7 +368,7 @@ public class ScoreAligner implements Aligner {
 		}
 		alignment.setGCGCDataConcentration();
 
-		Alignment curAlignment = alignment;
+		SimpleGCGCDataset curAlignment = alignment;
 		return curAlignment;
 	}
 

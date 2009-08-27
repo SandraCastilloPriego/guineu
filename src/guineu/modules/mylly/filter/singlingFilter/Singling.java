@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package guineu.modules.mylly.filter.singlingFilter;
 
 
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.modules.mylly.gcgcaligner.datastruct.Pair;
@@ -34,9 +34,9 @@ public class Singling {
 
 	private boolean filterUnknowns;
 	private double minSimilarity;
-	private Alignment input;
+	private SimpleGCGCDataset input;
 
-	public Alignment actualMap(Alignment input) {
+	public SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
 		this.input = input;
 		try {
 			return call();
@@ -62,8 +62,8 @@ public class Singling {
 
 		//First one will contain the largest peak, second one the peak nearest
 		//to ideal. Those can be the same peak
-		private Map<String, Pair<AlignmentRow, AlignmentRow>> _peaks;
-		private List<AlignmentRow> _unknownsList;
+		private Map<String, Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>> _peaks;
+		private List<SimplePeakListRowGCGC> _unknownsList;
 		private final double _minSimilarity;
 
 		public PeakReducer(boolean containsMainPeaks, boolean filterUnknowns) {
@@ -74,11 +74,11 @@ public class Singling {
 			_containsMainPeaks = containsMainPeaks;
 			_filterUnknowns = filterUnknowns;
 			_minSimilarity = minSimilarity;
-			_peaks = new HashMap<String, Pair<AlignmentRow, AlignmentRow>>();
-			_unknownsList = new ArrayList<AlignmentRow>();
+			_peaks = new HashMap<String, Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>>();
+			_unknownsList = new ArrayList<SimplePeakListRowGCGC>();
 		}
 
-		public void addAlignment(AlignmentRow peak) {
+		public void addAlignment(SimplePeakListRowGCGC peak) {
 			if (peak.getMaxSimilarity() < _minSimilarity) {
 				return;
 			}
@@ -90,9 +90,9 @@ public class Singling {
 				return;
 			}
 
-			Pair<AlignmentRow, AlignmentRow> pair = _peaks.get(peak.getName());
+			Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC> pair = _peaks.get(peak.getName());
 			if (pair == null) {
-				pair = new Pair<AlignmentRow, AlignmentRow>(null, null);
+				pair = new Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>(null, null);
 				_peaks.put(peak.getName(), pair);
 			}
 
@@ -124,38 +124,38 @@ public class Singling {
 
 		}
 
-		public List<AlignmentRow> getAlignmentRows() {
-			ArrayList<AlignmentRow> peaks = _containsMainPeaks ? new ArrayList<AlignmentRow>(2 * _peaks.size()) : new ArrayList<AlignmentRow>(_peaks.size());
+		public List<SimplePeakListRowGCGC> getAlignmentRows() {
+			ArrayList<SimplePeakListRowGCGC> peaks = _containsMainPeaks ? new ArrayList<SimplePeakListRowGCGC>(2 * _peaks.size()) : new ArrayList<SimplePeakListRowGCGC>(_peaks.size());
 
-			for (Map.Entry<String, Pair<AlignmentRow, AlignmentRow>> peak : _peaks.entrySet()) {
-				AlignmentRow first = peak.getValue().getFirst();
+			for (Map.Entry<String, Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>> peak : _peaks.entrySet()) {
+				SimplePeakListRowGCGC first = peak.getValue().getFirst();
 				peaks.add(first);
-				AlignmentRow second = peak.getValue().getSecond();
+				SimplePeakListRowGCGC second = peak.getValue().getSecond();
 
 				if (_containsMainPeaks && !(first.equals(second))) {
 					peaks.add(second);
 				}
 			}
-			for (AlignmentRow row : _unknownsList) {
+			for (SimplePeakListRowGCGC row : _unknownsList) {
 				peaks.add(row);
 			}
 			return peaks;
 		}
 	}
 
-	public Alignment call() throws Exception {
+	public SimpleGCGCDataset call() throws Exception {
 		//we don't want to apply this filter in the peaks with Quant Mass
-		List<AlignmentRow> QuantMassOnes = input.getQuantMassAlignments();
+		List<SimplePeakListRowGCGC> QuantMassOnes = input.getQuantMassAlignments();
 		AlignmentRowFilter filterQuantMass = new AlignmentRowFilter(QuantMassOnes);
 		input = filterQuantMass.actualMap(input); //Filter the quant mass alignments out
 
 		PeakReducer reducer = new PeakReducer(input.containsMainPeaks(), filterUnknowns, minSimilarity);
-		List<AlignmentRow> rows = input.getAlignment();
+		List<SimplePeakListRowGCGC> rows = input.getAlignment();
 
-		for (AlignmentRow row : rows) {
+		for (SimplePeakListRowGCGC row : rows) {
 			reducer.addAlignment(row);
 		}
-		Alignment modified = new Alignment(input.getColumnNames(), input.getParameters(), input.getAligner());
+		SimpleGCGCDataset modified = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
 		modified.addAll(reducer.getAlignmentRows());
 		modified.addAll(QuantMassOnes);
 		return modified;

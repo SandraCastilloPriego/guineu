@@ -17,22 +17,23 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner;
 
-import guineu.data.PeakListRow;
+
+import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
-
-
-
-
 import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.ScoreAligner;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
+import guineu.util.Tables.DataTable;
+import guineu.util.Tables.DataTableModel;
+import guineu.util.Tables.impl.PushableTable;
+import guineu.util.internalframe.DataInternalFrame;
+import java.awt.Dimension;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,58 +80,20 @@ public class ScoreAlignmentTask implements Task {
 	public void run() {
 		status = TaskStatus.PROCESSING;
 		try {
-			Alignment alignment = aligner.align();
-			SimpleDataset dataset = writeDataset(alignment);
-			GuineuCore.getDesktop().AddNewFile(dataset);
+			SimpleGCGCDataset alignment = aligner.align();
+			alignment.setType(DatasetType.GCGCTOF);
+			DataTableModel model = new DatasetGCGCDataModel(alignment);
+            DataTable table = new PushableTable(model);
+            table.formatNumbers(alignment.getType());
+            DataInternalFrame frame = new DataInternalFrame(alignment.getDatasetName(), table.getTable(), new Dimension(800, 800));
+            GuineuCore.getDesktop().addInternalFrame(frame);
 			GuineuCore.getDesktop().AddNewFile(alignment);
-			status = TaskStatus.FINISHED;
-		//alignment.SaveToFile(new File("c:/alignment"), "\t");
+			status = TaskStatus.FINISHED;		
 		} catch (Exception ex) {
 			Logger.getLogger(ScoreAlignmentTask.class.getName()).log(Level.SEVERE, null, ex);
 			errorMessage = "There has been an error doing Score Alignment";
 			status = TaskStatus.ERROR;
 		}
 	}
-
-	private SimpleDataset writeDataset(Alignment alignment) {
-		SimpleDataset datasetOther = new SimpleDataset(alignment.toString());
-		datasetOther.setType(DatasetType.GCGCTOF);
-
-		String[] columnsNames = alignment.getColumnNames();
-		for (String columnName : columnsNames) {
-			datasetOther.AddNameExperiment(columnName);
-		}		
-
-		for (AlignmentRow gcgcRow : alignment.getAlignment()) {
-			datasetOther.AddRow(writeRow(gcgcRow, columnsNames));
-		}
-		return datasetOther;
-	}
-
-	private PeakListRow writeRow(AlignmentRow gcgcRow, String[] columnsNames) {
-		String allNames = "";
-		for (String name : gcgcRow.getNames()) {
-			allNames += name + " || ";
-		}
-
-		PeakListRow row = new SimplePeakListRowGCGC(ID++, gcgcRow.getMeanRT1(), gcgcRow.getMeanRT2(),
-				gcgcRow.getMeanRTI(), gcgcRow.getMaxSimilarity(), gcgcRow.getMeanSimilarity(),
-				gcgcRow.getSimilarityStdDev(), ((double) gcgcRow.nonNullPeakCount()),
-				gcgcRow.getQuantMass(), gcgcRow.getDistValue().distance(), gcgcRow.getName(),
-				allNames, gcgcRow.getSpectrum().toString(), null);
-		int cont = 0;
-		for (GCGCDatum data : gcgcRow) {
-			if (data != null) {
-				if (data.getConcentration() > 0 && (Boolean) parameters.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
-					row.setPeak(columnsNames[cont++], data.getConcentration());
-
-				} else {
-					row.setPeak(columnsNames[cont++], data.getArea());
-				}
-			} else {
-				row.setPeak(columnsNames[cont++], "NA");
-			}
-		}
-		return row;
-	}
+	
 }

@@ -89,7 +89,7 @@ public interface PeakListRow {
 
     public double getDifference();
 
-    public String getSpectrum();
+    public String getSpectrumString();
 
     public int getNumberFixColumns();
 
@@ -100,4 +100,8 @@ public interface PeakListRow {
     public void setPeak(String str, String get);
 
     public void setSelectionMode(boolean selectionMode);
+
+	public String getCAS();
+
+	public void setCAS(String CAS);
 }

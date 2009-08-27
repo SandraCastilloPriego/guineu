@@ -43,6 +43,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
     private String name,  CAS;
     private Spectrum spectrum;
     private boolean useConc = false;
+	private String columnName;
 
     private GCGCDatum() {
     }
@@ -65,12 +66,13 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         this.identified = source.identified;
         this.spectrum = source.spectrum;
         this.useConc = source.useConc;
+		this.columnName = source.columnName;
     }
 
     public GCGCDatum(double rt1, double rt2, double retentionIndex,
             double quantMass, int similarity, double area,
             double concentration, boolean useConc,
-            String CAS, String name,
+            String CAS, String name, String columnName,
             List<? extends Pair<Integer, Integer>> peakList) {
         this.rt1 = rt1;
         this.rt2 = rt2;
@@ -83,6 +85,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         verifyValues();
         this.id = nextId();
         this.CAS = CAS;
+		this.columnName = columnName;
         Matcher m = p.matcher(name);
         if (m.matches()) {
             this.name = UNKOWN_NAME;
@@ -100,8 +103,8 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
     }
 
     public GCGCDatum(double rt1, double rt2, double quantMass,
-            double area, double concentration, boolean useConc, int similarity, String CAS, String name, List<? extends Pair<Integer, Integer>> spectrum) {
-        this(rt1, rt2, DEFAULT_RI, quantMass, similarity, area, concentration, useConc, CAS, name, spectrum);
+            double area, double concentration, boolean useConc, int similarity, String CAS, String name, String columnName, List<? extends Pair<Integer, Integer>> spectrum) {
+        this(rt1, rt2, DEFAULT_RI, quantMass, similarity, area, concentration, useConc, CAS, name, columnName, spectrum);
     }
 
     public GCGCDatum clone() {
@@ -119,6 +122,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         d.spectrum = (spectrum == null) ? null : spectrum.clone();
         d.quantMass = quantMass;
         d.useConc = useConc;
+		d.columnName = columnName;
         return d;
     }
 
@@ -287,7 +291,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 
     synchronized public static GCGCDatum getGAP() {
         if (GAP == null) {
-            GAP = new GCGCDatum(0, 0, NO_QUANT_MASS, 0, 0, new Boolean(false), 0, " ", "GAP", null);
+            GAP = new GCGCDatum(0, 0, NO_QUANT_MASS, 0, 0, new Boolean(false), 0, " ", "GAP", null, null);
         }
         return GAP;
     }
@@ -447,6 +451,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         boolean newIdentified = identified || other.identified;
         String newCAS = CAS;
         String newName = name;
+		String newColumnName = columnName;
         Spectrum newSpectrum;
         if (spectrum == null) {
             newSpectrum = other.spectrum == null ? null : other.spectrum.clone();
@@ -454,7 +459,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
             newSpectrum = spectrum.combineWith(other.spectrum);
         }
         GCGCDatum newDatum = new GCGCDatum(newRT1, newRT2, newRTI,
-                newQuantMass, newSimilarity, newArea, newConcentration, newUseConc, newCAS, newName, null);
+                newQuantMass, newSimilarity, newArea, newConcentration, newUseConc, newCAS, newName, newColumnName, null);
         newDatum.spectrum = newSpectrum;
         newDatum.identified = newIdentified;
         if (useConc) {
@@ -462,4 +467,12 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         }
         return newDatum;
     }
+
+
+	public String getColumnName(){
+		return this.columnName;
+	}
+	public void setColumnName(String columnName){
+		this.columnName = columnName;
+	}
 }

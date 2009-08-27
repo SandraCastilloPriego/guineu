@@ -214,7 +214,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	public String getSpectrum() {
+	public String getSpectrumString() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
@@ -265,5 +265,13 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 				this.peaks.remove(name);
 			}
 		}
+	}
+
+	public String getCAS() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void setCAS(String CAS) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }

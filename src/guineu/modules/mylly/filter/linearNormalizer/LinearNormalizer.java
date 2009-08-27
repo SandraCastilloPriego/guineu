@@ -21,8 +21,8 @@ package guineu.modules.mylly.filter.linearNormalizer;
 
 
 
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import java.util.ArrayList;
@@ -42,15 +42,15 @@ public class LinearNormalizer
 	
 	private final double baseLevel;
 
-	private final AlignmentRow onlyStandard;
-	private final List<AlignmentRow> _standards;
+	private final SimplePeakListRowGCGC onlyStandard;
+	private final List<SimplePeakListRowGCGC> _standards;
 	private final double[] ends;
 	private volatile double _done;
 	private double _total;
-	private Alignment _input;
+	private SimpleGCGCDataset _input;
 
 	
-	public LinearNormalizer(Collection<AlignmentRow> standards, Alignment input)
+	public LinearNormalizer(Collection<SimplePeakListRowGCGC> standards, SimpleGCGCDataset input)
 	{
 		if (standards.size() == 0)
 		{
@@ -63,15 +63,15 @@ public class LinearNormalizer
 		{
 			onlyStandard = null;
 
-			ArrayList<AlignmentRow> tempRows = new ArrayList<AlignmentRow>(standards);
+			ArrayList<SimplePeakListRowGCGC> tempRows = new ArrayList<SimplePeakListRowGCGC>(standards);
 			sort(tempRows);
 
 			_standards = Collections.unmodifiableList(tempRows);
 
 			for (int i = 0; i < tempRows.size(); i++)
 			{
-				double curPoint = tempRows.get(i).getMeanRT1();
-				double nextPoint = (i == tempRows.size() - 1 ? Double.POSITIVE_INFINITY : tempRows.get(i+1).getMeanRT1());
+				double curPoint = tempRows.get(i).getRT1();
+				double nextPoint = (i == tempRows.size() - 1 ? Double.POSITIVE_INFINITY : tempRows.get(i+1).getRT1());
 				double end = (curPoint + nextPoint) / 2;
 				ends[i] = end;
 			}
@@ -79,7 +79,7 @@ public class LinearNormalizer
 		else if (standards.size() == 1)
 		{
 			_standards = null;
-			Iterator<AlignmentRow> i = standards.iterator();
+			Iterator<SimplePeakListRowGCGC> i = standards.iterator();
 			onlyStandard = i.next();
 		}
 		else{throw new IllegalArgumentException("Empty standard list");}
@@ -88,19 +88,19 @@ public class LinearNormalizer
 		_total = input == null ? 0 : input.rowCount(); 
 	}
 	
-	public LinearNormalizer(Collection<AlignmentRow> standards)
+	public LinearNormalizer(Collection<SimplePeakListRowGCGC> standards)
 	{
 		this(standards, null);
 	}
 
-	private void sort(List<AlignmentRow> rows)
+	private void sort(List<SimplePeakListRowGCGC> rows)
 	{
 		Collections.sort(rows, AlignmentSorterFactory.getComparator(AlignmentSorterFactory.SORT_MODE.rt2));
 		Collections.sort(rows, AlignmentSorterFactory.getComparator(AlignmentSorterFactory.SORT_MODE.rt1));
 	}
 
 	
-	protected Alignment actualMap(Alignment input) 
+	protected SimpleGCGCDataset actualMap(SimpleGCGCDataset input)
 	{
 		_input = input;
 		_total = input.rowCount();
@@ -115,9 +115,9 @@ public class LinearNormalizer
 		}
 	}
 	
-	private int findProperIndex(AlignmentRow r)
+	private int findProperIndex(SimplePeakListRowGCGC r)
 	{
-		int index = java.util.Arrays.binarySearch(ends, r.getMeanRT1());
+		int index = java.util.Arrays.binarySearch(ends, r.getRT1());
 		if (index < 0)
 		{
 			index = -(index + 1);
@@ -131,9 +131,9 @@ public class LinearNormalizer
 		return "Linear normalizer";
 	}
 
-	public Alignment call() throws Exception
+	public SimpleGCGCDataset call() throws Exception
 	{
-		Alignment normalized = new Alignment(_input.getColumnNames(), 
+		SimpleGCGCDataset normalized = new SimpleGCGCDataset(_input.getColumnNames(),
 		                                     _input.getParameters(), 
 		                                     _input.getAligner());
 		if (onlyStandard == null) //Multiple standards
@@ -155,12 +155,12 @@ public class LinearNormalizer
 				}
 				coeffs[i] = curCoeffs;
 			}
-			ArrayList<AlignmentRow> rows = new ArrayList<AlignmentRow>(_input.getAlignment());
+			ArrayList<SimplePeakListRowGCGC> rows = new ArrayList<SimplePeakListRowGCGC>(_input.getAlignment());
 			
                         for (int i = 0; i < rows.size(); i++)
 			{
-				AlignmentRow cur = rows.get(i);
-                                if(cur.getQuantMass() < 0){
+				SimplePeakListRowGCGC cur = rows.get(i);
+                                if(cur.getMass() < 0){
                                     int ix = findProperIndex(cur);
                                     rows.set(i, cur.scaleArea(coeffs[ix]));
                                     if (count++ % REPORTING_FREQUENCY == 0)
@@ -180,10 +180,10 @@ public class LinearNormalizer
 			{
 				coeffs[i] = baseLevel / stds[i].getArea();
 			}
-			ArrayList<AlignmentRow> rows = new ArrayList<AlignmentRow>(_input.getAlignment());
+			ArrayList<SimplePeakListRowGCGC> rows = new ArrayList<SimplePeakListRowGCGC>(_input.getAlignment());
 			for (int i = 0; i < rows.size(); i++)
 			{				
-				AlignmentRow scaled = rows.get(i).scaleArea(coeffs);
+				SimplePeakListRowGCGC scaled = rows.get(i).scaleArea(coeffs);
 				rows.set(i, scaled);
 				if (count++ % REPORTING_FREQUENCY == 0)
 				{
