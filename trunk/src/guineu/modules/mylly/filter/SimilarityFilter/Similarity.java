@@ -19,8 +19,8 @@
 */
 package guineu.modules.mylly.filter.SimilarityFilter;
 
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +47,15 @@ public class Similarity
 		}
 	}
 	
-	protected Alignment actualMap(Alignment input) 
+	protected SimpleGCGCDataset actualMap(SimpleGCGCDataset input)
 	{
 		//we don't want to apply this filter in the peaks with Quant Mass
-		List<AlignmentRow> QuantMassOnes = input.getQuantMassAlignments();		
+		List<SimplePeakListRowGCGC> QuantMassOnes = input.getQuantMassAlignments();
 		AlignmentRowFilter filterQuantMass = new AlignmentRowFilter(QuantMassOnes);		
 		input = filterQuantMass.actualMap(input); //Filter the quant mass alignments out
 		
-		List<AlignmentRow> als = new ArrayList<AlignmentRow>();		
-		for (AlignmentRow row : input.getAlignment())
+		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
+		for (SimplePeakListRowGCGC row : input.getAlignment())
 		{			
 			
 			double curVal = 0.0;
@@ -66,7 +66,7 @@ public class Similarity
 				als.add(row);
 			}
 		}
-		Alignment filtered = new Alignment(input.getColumnNames(), input.getParameters(), input.getAligner());
+		SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
 		filtered.addAll(als);
 		filtered.addAll(QuantMassOnes);
 		return filtered;

@@ -26,7 +26,7 @@ import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.datamodels.OtherDataModel;
-import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.main.GuineuCore;
@@ -105,7 +105,7 @@ class CommonMoleculesTask implements Task {
 				}
 			}
 
-			SimpleDatasetOther dataset = new SimpleDatasetOther("Common peaks");
+			SimpleOtherDataset dataset = new SimpleOtherDataset("Common peaks");
 			dataset.AddNameExperiment("m/z");
 			dataset.AddNameExperiment("rt");
 			dataset.AddNameExperiment("Molecule Name");

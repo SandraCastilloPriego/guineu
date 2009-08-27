@@ -390,7 +390,7 @@ public class WriteFile {
 							} else if (p.getName().matches(".*Similarity std dev.*")) {
 								this.setCell(row, cont++, metabolite.getSimilaritySTDDev());
 							} else if (p.getName().matches(".*Spectrum.*")) {
-								this.setCell(row, cont++, metabolite.getSpectrum());
+								this.setCell(row, cont++, metabolite.getSpectrumString());
 							}
 						} catch (Exception ee) {
 						}
@@ -466,7 +466,7 @@ public class WriteFile {
 								} else if (p.getName().matches(".*Similarity std dev.*")) {
 									data[cont++] = String.valueOf(metabolite.getSimilaritySTDDev());
 								} else if (p.getName().matches(".*Spectrum.*")) {
-									data[cont++] = metabolite.getSpectrum();
+									data[cont++] = metabolite.getSpectrumString();
 								}
 							} catch (Exception ee) {
 							}

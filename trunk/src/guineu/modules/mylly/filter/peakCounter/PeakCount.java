@@ -19,7 +19,8 @@
 */
 package guineu.modules.mylly.filter.peakCounter;
 
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+
+import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.filter.NameFilter.FilterFunction;
 
 
@@ -32,7 +33,7 @@ import guineu.modules.mylly.filter.NameFilter.FilterFunction;
  * @author jmjarkko
  *
  */
-public class PeakCount implements FilterFunction<AlignmentRow>
+public class PeakCount implements FilterFunction<SimplePeakListRowGCGC>
 {
 
 	private int _minPeakCount;
@@ -47,12 +48,12 @@ public class PeakCount implements FilterFunction<AlignmentRow>
 		return "Filter alignment by peak count";
 	}
 
-	public boolean include(AlignmentRow obj)
+	public boolean include(SimplePeakListRowGCGC obj)
 	{
 		return obj.nonNullPeakCount() > _minPeakCount;
 	}
 
-	public AlignmentRow map(AlignmentRow obj)
+	public SimplePeakListRowGCGC map(SimplePeakListRowGCGC obj)
 	{
 		if (include(obj))
 		{
@@ -61,7 +62,7 @@ public class PeakCount implements FilterFunction<AlignmentRow>
 		return null;
 	}
 
-	public boolean exclude(AlignmentRow obj)
+	public boolean exclude(SimplePeakListRowGCGC obj)
 	{
 		return !include(obj);
 	}

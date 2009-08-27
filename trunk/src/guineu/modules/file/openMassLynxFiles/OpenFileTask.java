@@ -18,7 +18,7 @@
 package guineu.modules.file.openMassLynxFiles;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.desktop.Desktop;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.taskcontrol.Task;
@@ -83,7 +83,7 @@ public class OpenFileTask implements Task {
                 if (status == TaskStatus.PROCESSING) {
                     LCMSParserMassLynx parser = new LCMSParserMassLynx(fileDir);
                     progress = parser.getProgress();
-                    Dataset dataset = (SimpleDatasetOther) parser.getDataset();
+                    Dataset dataset = (SimpleOtherDataset) parser.getDataset();
                     progress = parser.getProgress();
                     desktop.AddNewFile(dataset);
                     //creates internal frame with the table

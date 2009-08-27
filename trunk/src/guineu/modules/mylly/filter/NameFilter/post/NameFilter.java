@@ -23,7 +23,6 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -33,8 +32,8 @@ import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.List;
 import java.util.logging.Logger;
+import guineu.data.Dataset;
 
 /**
  *
@@ -104,7 +103,7 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-        List<Alignment> AlignmentFiles = desktop.getSelectedGCGCAligmentFiles();    
+        Dataset[] AlignmentFiles =  desktop.getSelectedDataFiles();
 
         
             // prepare a new group of tasks

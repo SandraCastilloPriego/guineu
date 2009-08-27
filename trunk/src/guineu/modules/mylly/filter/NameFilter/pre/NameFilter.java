@@ -22,9 +22,10 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.NameFilterParameters;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -34,8 +35,11 @@ import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import guineu.data.Dataset;
 
 /**
  *
@@ -104,12 +108,23 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
-		List<GCGCData> DataFiles = desktop.getSelectedGCGCDataFiles();
+		Dataset[] datasets = desktop.getSelectedDataFiles();
+		List<GCGCData> newDatasets = new ArrayList<GCGCData>();
+
+		for(int i = 0; i < datasets.length; i++){
+			GCGCDatum[][] datum = ((SimpleGCGCDataset)datasets[i]).toArray();
+			List<GCGCDatum> datumList = new ArrayList<GCGCDatum>();
+			for(GCGCDatum data: datum[0]){
+				datumList.add(data.clone());
+			}		
+			newDatasets.add(new GCGCData(datumList, datasets[i].getDatasetName()));
+		}
+
 
 		// prepare a new group of tasks
 		Task tasks[] = new NamePreFilterTask[1];
 
-		tasks[0] = new NamePreFilterTask(DataFiles, parameters);
+		tasks[0] = new NamePreFilterTask(newDatasets, parameters);
 
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 

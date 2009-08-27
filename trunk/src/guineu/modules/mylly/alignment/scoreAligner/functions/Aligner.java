@@ -19,6 +19,7 @@
 */
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 
 
@@ -31,7 +32,7 @@ import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
  */
 public interface Aligner 
 {	
-	public Alignment align();
+	public SimpleGCGCDataset align();
 	public Aligner setScoreCalculator(ScoreCalculator calc);
 	public String getName();
 	public double getProgress();

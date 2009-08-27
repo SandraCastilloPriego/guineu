@@ -20,8 +20,9 @@
 package guineu.modules.mylly.filter.NameFilter;
 
 
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.SimpleGCGCDataset;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,19 +30,19 @@ import java.util.Set;
 
 public class AlignmentRowFilter
 {
-	FilterFunction<AlignmentRow> f;
-	public AlignmentRowFilter(Collection<AlignmentRow> unwanted)
+	FilterFunction<SimplePeakListRowGCGC> f;
+	public AlignmentRowFilter(Collection<SimplePeakListRowGCGC> unwanted)
 	{
-		final Set<AlignmentRow> unwantedAlignmentRows = new HashSet<AlignmentRow>(unwanted);
-		f = new FilterFunction<AlignmentRow>()
+		final Set<SimplePeakListRowGCGC> unwantedAlignmentRows = new HashSet<SimplePeakListRowGCGC>(unwanted);
+		f = new FilterFunction<SimplePeakListRowGCGC>()
 		{
-			public boolean exclude(AlignmentRow obj)
+			public boolean exclude(SimplePeakListRowGCGC obj)
 			{
 				return unwantedAlignmentRows.contains(obj);
 			}
-			public boolean include(AlignmentRow obj){return !exclude(obj);}
+			public boolean include(SimplePeakListRowGCGC obj){return !exclude(obj);}
 			public String getName(){return AlignmentRowFilter.this.getName();}
-			public AlignmentRow map(AlignmentRow obj)
+			public SimplePeakListRowGCGC map(SimplePeakListRowGCGC obj)
 			{
 				if (include(obj)){return obj;}
 				return null;
@@ -52,15 +53,15 @@ public class AlignmentRowFilter
 	
 	public AlignmentRowFilter()
 	{
-		this(new HashSet<AlignmentRow>());
+		this(new HashSet<SimplePeakListRowGCGC>());
 	}
 	
 
-	public Alignment actualMap(Alignment input)
+	public SimpleGCGCDataset actualMap(SimpleGCGCDataset input)
 	{
-		Alignment newAlignment = new Alignment(input.getColumnNames(), input.getParameters(),input.getAligner());
+		SimpleGCGCDataset newAlignment = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(),input.getAligner());
 
-		for(AlignmentRow row: input.getAlignment()){		
+		for(SimplePeakListRowGCGC row: input.getAlignment()){
 			if(f.include(row)){				
 				newAlignment.addAlignmentRow(row);
 			}

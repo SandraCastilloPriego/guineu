@@ -4,17 +4,10 @@
  */
 package guineu.modules.mylly.filter.NameFilter.post;
 
-import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
-import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentRow;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.NameFilterParameters;
 import guineu.modules.mylly.filter.NameFilter.NamePostFilter;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.Task.TaskStatus;
 import java.io.BufferedReader;
@@ -26,6 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import guineu.data.Dataset;
+import guineu.data.datamodels.DatasetGCGCDataModel;
+import guineu.util.Tables.DataTable;
+import guineu.util.Tables.DataTableModel;
+import guineu.util.Tables.impl.PushableTable;
+import guineu.util.internalframe.DataInternalFrame;
+import java.awt.Dimension;
 
 /**
  *
@@ -35,12 +35,12 @@ public class NamePostFilterTask implements Task {
 
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
-	private List<Alignment> datasets;
+	private Dataset[] datasets;
 	private NameFilterParameters parameters;
 	private int ID = 1;
 
-	public NamePostFilterTask(List<Alignment> datasets, NameFilterParameters parameters) {
-		this.datasets = datasets;		
+	public NamePostFilterTask(Dataset[] datasets, NameFilterParameters parameters) {
+		this.datasets = datasets;
 		this.parameters = parameters;
 	}
 
@@ -70,15 +70,19 @@ public class NamePostFilterTask implements Task {
 			NamePostFilter filter = new NamePostFilter();
 			String names = (String) parameters.getParameterValue(NameFilterParameters.fileNames);
 			filter.generateNewFilter(this.askParameters(names));
-			List<Alignment> newDatasets = new ArrayList<Alignment>();
-			for (Alignment alignDataset : datasets) {				
-				newDatasets.add(filter.actualMap(alignDataset));
+			List<SimpleGCGCDataset> newDatasets = new ArrayList<SimpleGCGCDataset>();
+			for (Dataset alignDataset : datasets) {
+				newDatasets.add(filter.actualMap((SimpleGCGCDataset) alignDataset));
 			}
 
-			for (Alignment dates : newDatasets) {
-				dates.setName(dates.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
-				SimpleDataset dataset = writeDataset(dates);
-				GuineuCore.getDesktop().AddNewFile(dataset);
+			for (SimpleGCGCDataset alignment : newDatasets) {
+				alignment.setName(alignment.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
+				DataTableModel model = new DatasetGCGCDataModel(alignment);
+				DataTable table = new PushableTable(model);
+				table.formatNumbers(alignment.getType());
+				DataInternalFrame frame = new DataInternalFrame(alignment.getDatasetName(), table.getTable(), new Dimension(800, 800));
+				GuineuCore.getDesktop().addInternalFrame(frame);
+				GuineuCore.getDesktop().AddNewFile(alignment);
 			}
 
 			status = TaskStatus.FINISHED;
@@ -86,50 +90,6 @@ public class NamePostFilterTask implements Task {
 			Logger.getLogger(NamePostFilterTask.class.getName()).log(Level.SEVERE, null, ex);
 			status = TaskStatus.ERROR;
 		}
-	}
-
-	private SimpleDataset writeDataset(Alignment alignment) {
-		SimpleDataset datasetOther = new SimpleDataset(alignment.toString());
-		datasetOther.setType(DatasetType.GCGCTOF);
-		ScoreAlignmentParameters alignmentParameters = alignment.getParameters();
-		boolean concentration = (Boolean) alignmentParameters.getParameterValue(ScoreAlignmentParameters.useConcentration);
-
-		String[] columnsNames = alignment.getColumnNames();
-		for (String columnName : columnsNames) {
-			datasetOther.AddNameExperiment(columnName);
-		}
-
-		for (AlignmentRow gcgcRow : alignment.getAlignment()) {
-			datasetOther.AddRow(writeRow(gcgcRow, columnsNames, concentration));
-		}
-		return datasetOther;
-	}
-
-	private PeakListRow writeRow(AlignmentRow gcgcRow, String[] columnsNames, boolean concentration) {
-		String allNames = "";
-		for (String name : gcgcRow.getNames()) {
-			allNames += name + " || ";
-		}
-
-		PeakListRow row = new SimplePeakListRowGCGC(ID++, gcgcRow.getMeanRT1(), gcgcRow.getMeanRT2(),
-				gcgcRow.getMeanRTI(), gcgcRow.getMaxSimilarity(), gcgcRow.getMeanSimilarity(),
-				gcgcRow.getSimilarityStdDev(), ((double) gcgcRow.nonNullPeakCount()),
-				gcgcRow.getQuantMass(), gcgcRow.getDistValue().distance(), gcgcRow.getName(),
-				allNames, gcgcRow.getSpectrum().toString(), null);
-		int cont = 0;
-		for (GCGCDatum data : gcgcRow) {
-			if (data != null) {
-				if (data.getConcentration() > 0 && concentration) {
-					row.setPeak(columnsNames[cont++], data.getConcentration());
-
-				} else {
-					row.setPeak(columnsNames[cont++], data.getArea());
-				}
-			} else {
-				row.setPeak(columnsNames[cont++], "NA");
-			}
-		}
-		return row;
 	}
 
 	public List<String> askParameters(String names) throws FileNotFoundException {

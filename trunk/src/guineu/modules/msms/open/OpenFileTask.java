@@ -22,7 +22,7 @@ import guineu.data.impl.DatasetType;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
 import guineu.data.impl.SimpleDataset;
-import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
@@ -124,7 +124,7 @@ public class OpenFileTask implements Task {
 			if (status != TaskStatus.CANCELED) {
 				SimpleDataset dataset = (SimpleDataset) parser.getDataset();
 
-				SimpleDatasetOther otherDataset = modifyDataset(dataset);
+				SimpleOtherDataset otherDataset = modifyDataset(dataset);
 
 				desktop.AddNewFile(otherDataset);
 
@@ -134,8 +134,8 @@ public class OpenFileTask implements Task {
 		}
 	}
 
-	private SimpleDatasetOther modifyDataset(SimpleDataset dataset) {
-		SimpleDatasetOther datasetOther = new SimpleDatasetOther(dataset.getDatasetName());
+	private SimpleOtherDataset modifyDataset(SimpleDataset dataset) {
+		SimpleOtherDataset datasetOther = new SimpleOtherDataset(dataset.getDatasetName());
 		datasetOther.setType(DatasetType.OTHER);
 		datasetOther.AddNameExperiment("m/z");
 		datasetOther.AddNameExperiment("rt");

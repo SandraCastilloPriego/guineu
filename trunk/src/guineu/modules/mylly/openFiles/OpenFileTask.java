@@ -17,14 +17,12 @@
  */
 package guineu.modules.mylly.openFiles;
 
-import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -43,7 +41,7 @@ public class OpenFileTask implements Task {
 	private File file;
 	private boolean filterClassified;
 
-	OpenFileTask(String fileName, String separator, boolean filterClassified) {		
+	OpenFileTask(String fileName, String separator, boolean filterClassified) {
 		file = new File(fileName);
 		this.separator = separator;
 		this.filterClassified = filterClassified;
@@ -74,10 +72,8 @@ public class OpenFileTask implements Task {
 		GCGCFileReader reader = new GCGCFileReader(separator, filterClassified);
 		try {
 			List<GCGCDatum> data = reader.readGCGCDataFile(file);
-			SimpleDataset dataset = writeDataset(data);
+			SimpleGCGCDataset dataset = writeDataset(data);
 			GuineuCore.getDesktop().AddNewFile(dataset);
-			GCGCData gcgcData = new GCGCData(data, file.getName());
-			GuineuCore.getDesktop().AddNewFile(gcgcData);
 			status = TaskStatus.FINISHED;
 		} catch (IOException ex) {
 			Logger.getLogger(OpenFileTask.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,19 +83,23 @@ public class OpenFileTask implements Task {
 
 	}
 
-	private SimpleDataset writeDataset(List<GCGCDatum> data) {
+	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data) {
 
-		SimpleDataset datasetOther = new SimpleDataset(file.getName());
-		datasetOther.setType(DatasetType.GCGCTOF);
+		SimpleGCGCDataset dataset = new SimpleGCGCDataset(file.getName());
+		dataset.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {
-			PeakListRow row = new SimplePeakListRowGCGC((int)mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
+			SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
 					mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), 0, mol.getName(),
-					null, mol.getSpectrum().toString(), null);
-			datasetOther.AddRow(row);
+					null, mol.getSpectrum().toString(), null, mol.getCAS());
+			
+			GCGCDatum[] peaks = new GCGCDatum[1];
+			peaks[0] = mol;
+			row.setDatum(peaks);
+			dataset.addAlignmentRow(row);
 		}
 
-		return datasetOther;
+		return dataset;
 	}
 }
 

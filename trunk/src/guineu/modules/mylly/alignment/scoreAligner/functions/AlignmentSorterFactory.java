@@ -22,6 +22,7 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 
 
+import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import java.util.Comparator;
 
@@ -45,7 +46,7 @@ public class AlignmentSorterFactory
 		public abstract String getName();
 	}
 	
-	public static Comparator<AlignmentRow> getComparator(final SORT_MODE mode)
+	public static Comparator<SimplePeakListRowGCGC> getComparator(final SORT_MODE mode)
 	{
 		return getComparator(mode, true);
 	}
@@ -56,7 +57,7 @@ public class AlignmentSorterFactory
 	 * @param ascending
 	 * @return
 	 */
-	public static Comparator<AlignmentRow> getComparator(final SORT_MODE mode, final boolean ascending)
+	public static Comparator<SimplePeakListRowGCGC> getComparator(final SORT_MODE mode, final boolean ascending)
 		{
 			switch(mode)
 			{
@@ -80,11 +81,11 @@ public class AlignmentSorterFactory
 			}
 		}
 
-	private static Comparator<AlignmentRow> getNameComparator(final boolean ascending)
+	private static Comparator<SimplePeakListRowGCGC> getNameComparator(final boolean ascending)
 	{
-		return new Comparator<AlignmentRow>()
+		return new Comparator<SimplePeakListRowGCGC>()
 		{
-			public int compare(AlignmentRow o1, AlignmentRow o2)
+			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
 			{
 				int comparison = 0;
 				//This if...else if -pair causes unknown peaks to appear 
@@ -108,11 +109,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<AlignmentRow> getPeakCountComparator(final boolean ascending)
+	private static Comparator<SimplePeakListRowGCGC> getPeakCountComparator(final boolean ascending)
 	{
-		return new Comparator<AlignmentRow>()
+		return new Comparator<SimplePeakListRowGCGC>()
 		{
-			public int compare(AlignmentRow o1, AlignmentRow o2)
+			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
 			{
 				int comp = o1.nonNullPeakCount() - o2.nonNullPeakCount();
 				return ascending ? comp : -comp;
@@ -120,11 +121,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<AlignmentRow> getDoubleValComparator(final boolean ascending, final SORT_MODE mode)
+	private static Comparator<SimplePeakListRowGCGC> getDoubleValComparator(final boolean ascending, final SORT_MODE mode)
 	{
-		return new Comparator<AlignmentRow>()
+		return new Comparator<SimplePeakListRowGCGC>()
 		{
-			public int compare(AlignmentRow o1, AlignmentRow o2)
+			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
 			{
 				int comparison = 0;
 				double val1 = 0.0;
@@ -132,20 +133,20 @@ public class AlignmentSorterFactory
 				switch (mode)
 				{
 				case rt1:
-					val1 = o1.getMeanRT1();
-					val2 = o2.getMeanRT1();
+					val1 = o1.getRT1();
+					val2 = o2.getRT1();
 					break;
 				case rt2:
-					val1 = o1.getMeanRT2();
-					val2 = o2.getMeanRT2();
+					val1 = o1.getRT2();
+					val2 = o2.getRT2();
 					break;
 				case rti:
-					val1 = o1.getMeanRTI();
-					val2 = o2.getMeanRTI();
+					val1 = o1.getRTI();
+					val2 = o2.getRTI();
 					break;
 				case quantMass:
-					val1 = o1.getQuantMass();
-					val2 = o2.getQuantMass();
+					val1 = o1.getMass();
+					val2 = o2.getMass();
 					break;
 				case maxSimilarity:
 					val1 = o1.getMaxSimilarity();
@@ -156,8 +157,8 @@ public class AlignmentSorterFactory
 					val2 = o2.getMeanSimilarity();
 					break;
 				case stdSimilarity:
-					val1 = o1.getSimilarityStdDev();
-					val2 = o2.getSimilarityStdDev();
+					val1 = o1.getSimilaritySTDDev();
+					val2 = o2.getSimilaritySTDDev();
 				}
 				if (val1 < val2){comparison = -1;}
 				if (val1 > val2){comparison = 1;}
@@ -166,11 +167,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<AlignmentRow> distToIdealComparator(final boolean ascending)
+	private static Comparator<SimplePeakListRowGCGC> distToIdealComparator(final boolean ascending)
 	{
-		return new Comparator<AlignmentRow>()
+		return new Comparator<SimplePeakListRowGCGC>()
 		{
-			public int compare(AlignmentRow o1, AlignmentRow o2)
+			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
 			{
 				DistValue val1 = o1.getDistValue();
 				DistValue val2 = o2.getDistValue();
@@ -179,11 +180,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<AlignmentRow> nullComparator()
+	private static Comparator<SimplePeakListRowGCGC> nullComparator()
 	{
-		return new Comparator<AlignmentRow>()
+		return new Comparator<SimplePeakListRowGCGC>()
 		{
-			public int compare(AlignmentRow o1, AlignmentRow o2)
+			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
 			{
 				return 0;
 			}

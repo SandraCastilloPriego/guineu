@@ -22,13 +22,13 @@ import guineu.data.Dataset;
 import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.impl.DatasetType;
 import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveDatasetFile.SaveFile;
-import guineu.modules.mylly.alignment.scoreAligner.functions.Alignment;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.util.GUIUtils;
 import guineu.util.Tables.DataTable;
@@ -62,10 +62,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 	public static final String DATA_FILES_LABEL = "Dataset Files";
 	private DragOrderedJList DatasetFiles;
-	//private Vector<Dataset> DatasetFilesModel = new Vector<Dataset>();
 	private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
-	private Hashtable<String, GCGCData> GCGCDataAling = new Hashtable<String, GCGCData>();
-    private Hashtable<String, Alignment> GCGCAlignment = new Hashtable<String, Alignment>();
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
@@ -158,11 +155,13 @@ public class ItemSelector extends JPanel implements ActionListener,
 		for (Dataset file : selectedFiles) {
 			if (file != null) {
 				DataTableModel model = null;
-				if (file.getType() == DatasetType.LCMS || file.getType() == DatasetType.GCGCTOF) {
+				if (file.getType() == DatasetType.LCMS) {
 					model = new DatasetDataModel(file);
 				} else if (file.getType() == DatasetType.EXPERIMENTINFO) {
 					model = new ExperimentDataModel(file);
-				} else {
+				} else if(file.getType() == DatasetType.GCGCTOF){
+					model = new DatasetGCGCDataModel(file);
+				}else {
 					model = new OtherDataModel(file);
 				}
 				DataTable table = new PushableTable(model);
@@ -215,39 +214,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		return res;
 
-	}
-
-	public List<GCGCData> getSelectedGCGCDataFiles() {
-		Object o[] = DatasetFiles.getSelectedValues();
-
-		List<GCGCData> res= new ArrayList<GCGCData>();
-
-		for (int i = 0; i < o.length; i++) {
-			for (Dataset dataset : DatasetFilesModel) {
-				if (dataset.getDatasetName().compareTo((String) o[i]) == 0) {
-					res.add(this.GCGCDataAling.get(dataset.getDatasetName()));
-				}
-			}
-		}
-
-		return res;
-	}
-
-    public List<Alignment> getSelectedGCGCAlignmentFiles() {
-		Object o[] = DatasetFiles.getSelectedValues();
-
-		List<Alignment> res= new ArrayList<Alignment>();
-
-		for (int i = 0; i < o.length; i++) {
-			for (Dataset dataset : DatasetFilesModel) {
-				if (dataset.getDatasetName().compareTo((String) o[i]) == 0) {
-					res.add(this.GCGCAlignment.get(dataset.getDatasetName()));
-				}
-			}
-		}
-
-		return res;
-	}
+	}	
 
 	/**
 	 * Sets the active raw data item in the list
@@ -309,19 +276,9 @@ public class ItemSelector extends JPanel implements ActionListener,
 			}
 		}
 		this.DatasetFilesModel.add(dataset);
-		//DatasetFilesModel.addElement(dataset);
 		DatasetNamesModel.addElement(dataset.getDatasetName());
 		this.DatasetFiles.revalidate();
 		this.DatasetFiles.repaint();
-	}
-
-
-	public void addNewFile(GCGCData dataToAlign){
-		this.GCGCDataAling.put(dataToAlign.getName(), dataToAlign);
-	}
-
-    public void addNewFile(Alignment dataToAlign){
-		this.GCGCAlignment.put(dataToAlign.toString(), dataToAlign);
-	}
-
+	}	
+   
 }
