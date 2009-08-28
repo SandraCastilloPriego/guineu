@@ -69,7 +69,7 @@ public class NamePostFilter {
 		for (SimplePeakListRowGCGC row : input.getAlignment())
 		{
 			if(curNameFilter.include(row.getName())){
-				als.add(row);
+				als.add((SimplePeakListRowGCGC)row.clone());
 			}
 			
 		}

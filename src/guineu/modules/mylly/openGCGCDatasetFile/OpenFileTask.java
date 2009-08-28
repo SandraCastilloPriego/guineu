@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.openGCGCDatasetFile;
+package guineu.modules.mylly.openGCGCDatasetFile;
 
 import guineu.data.parser.impl.GCGCParserXLS;
 import guineu.data.datamodels.DatasetDataModel;

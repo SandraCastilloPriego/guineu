@@ -17,7 +17,7 @@
  */
 
 
-package guineu.modules.file.openGCGCDatasetFile;
+package guineu.modules.mylly.openGCGCDatasetFile;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
