@@ -38,7 +38,7 @@ public enum RegExp {
     MAXSIM(".*Max sim.*"),
     MEANSIM(".*Mean sim.*"),
     SIMSTD(".*Similarity std dev.*"),
-    SPECTRUM(".*Spectrum.*");
+    SPECTRUM(".*Spectrum.*|.*Spectra.*");
     private final String columnName;
 
     RegExp(String columnName) {

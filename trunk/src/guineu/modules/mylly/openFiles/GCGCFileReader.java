@@ -17,6 +17,7 @@
  */
 package guineu.modules.mylly.openFiles;
 
+import com.csvreader.CsvReader;
 import guineu.modules.mylly.gcgcaligner.datastruct.ComparablePair;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatumWithConcentration;
@@ -76,15 +77,20 @@ public class GCGCFileReader {
 			throw e2;
 		}
 
+         CsvReader reader = new CsvReader(fr);
+
 		//First read the header-row
 		{
+
+            reader.readHeaders();
+
 			String headerStr;
-			String headerRow[];
-			do {
+			String headerRow[] = reader.getHeaders();
+			/*do {
 				headerStr = br.readLine();
 			} while ("".equals(headerStr.trim()));//skip blank lines
 
-			headerRow = Pattern.compile("\t+").split(headerStr, 0);
+			headerRow = Pattern.compile(_separator).split(headerStr, 0);*/
 			for (int i = 0; i < headerRow.length; i++) {
 				String str = headerRow[i];
 				if (str.equals("R.T. (s)")) {
@@ -116,7 +122,9 @@ public class GCGCFileReader {
 			String splitRow[];
 			peaks = new ArrayList<GCGCDatum>();
 
-			while ((line = br.readLine()) != null) {
+			//while ((line = br.readLine()) != null) {
+            while(reader.readRecord()){
+                splitRow = reader.getValues();
 				boolean foundArea = false;
 				boolean foundRT1 = false;
 				boolean foundRT2 = false;
@@ -144,7 +152,7 @@ public class GCGCFileReader {
 				name = "Not Found";
 				CAS = "";
 
-				splitRow = Pattern.compile(_separator).split(line, 0);
+				//splitRow = Pattern.compile(_separator).split(line, 0);
 				for (int i = 0; i < splitRow.length; i++) {
 					String curStr = splitRow[i];
 					if (!(_filterClassified && i == ClassificationsPos) &&
