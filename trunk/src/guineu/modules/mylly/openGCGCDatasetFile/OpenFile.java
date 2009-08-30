@@ -48,7 +48,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();         
-        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC-Tof Local File..",
+        desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Aligned Dataset..",
                 "TODO write description", KeyEvent.VK_G, this, null);
     }
     
