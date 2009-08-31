@@ -28,7 +28,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -36,16 +35,21 @@ import java.util.regex.Pattern;
  */
 public class GCGCFileReader {
 
-	private String _separator;
+	private Character _separator;
 	private boolean _filterClassified;
 	private boolean _findSpectrum;
 	private boolean _findConcentration;
 
-	public GCGCFileReader(String separator, boolean filterClassified) {
-		_separator = separator == null ? "" : separator;
+	public GCGCFileReader(String separator, boolean filterClassified) {		
+		if(separator.equals("\\t")){
+			_separator = '\t';
+		}else{
+			_separator = separator.toCharArray()[0];
+		}		
 		_filterClassified = filterClassified;
 		_findSpectrum = true;
 		_findConcentration = false;
+
 
 	}
 
@@ -77,7 +81,7 @@ public class GCGCFileReader {
 			throw e2;
 		}
 
-         CsvReader reader = new CsvReader(fr);
+        CsvReader reader = new CsvReader(fr,_separator);
 
 		//First read the header-row
 		{
