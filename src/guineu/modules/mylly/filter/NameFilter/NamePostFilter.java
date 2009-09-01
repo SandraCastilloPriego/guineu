@@ -78,10 +78,5 @@ public class NamePostFilter {
 		filtered.addAll(QuantMassOnes);
 		return filtered;		
 	}	
-	
-
-	public boolean isConfigurable()
-	{
-		return true;
-	}
+		
 }
