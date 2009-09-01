@@ -21,7 +21,7 @@ package guineu.modules.file.openMassLynxFiles;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import java.io.BufferedReader;
@@ -37,13 +37,13 @@ import java.util.regex.Pattern;
 public class LCMSParserMassLynx implements Parser {
 
 	private String datasetPath;
-	private SimpleDatasetOther dataset;
+	private SimpleOtherDataset dataset;
 	private float progress;
 
 	public LCMSParserMassLynx(String datasetPath) {
 		progress = 0.1f;
 		this.datasetPath = datasetPath;
-		this.dataset = new SimpleDatasetOther(this.getDatasetName());
+		this.dataset = new SimpleOtherDataset(this.getDatasetName());
 		this.dataset.setType(DatasetType.OTHER);
 		progress = 0.3f;
 		this.dataset.setType(null);		

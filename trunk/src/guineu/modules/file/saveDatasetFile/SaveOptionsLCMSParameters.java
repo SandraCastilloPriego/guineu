@@ -35,7 +35,7 @@ public class SaveOptionsLCMSParameters extends SimpleParameterSet {
             "Average M/Z", new Boolean(true));
     public static final Parameter rt = new SimpleParameter(
             ParameterType.BOOLEAN, "Average RT",
-            "Average RT", new Boolean(true));
+            "Average RT", new Boolean(true));	
     public static final Parameter name = new SimpleParameter(
             ParameterType.BOOLEAN, "Lipid Name",
             "Lipid Name", new Boolean(true));

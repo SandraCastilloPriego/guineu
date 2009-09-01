@@ -100,7 +100,7 @@ public class WriteFile {
 			w.endRecord();
 			w.close();
 		} catch (Exception exception) {
-		//System.out.println("InOracle.java---> WriteCommaSeparatedFileLCMS() " + exception);
+			//System.out.println("InOracle.java---> WriteCommaSeparatedFileLCMS() " + exception);
 		}
 	}
 
@@ -122,9 +122,9 @@ public class WriteFile {
 				SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 				c = 0;
 				for (String experimentName : dataset.getNameExperiments()) {
-					if(lipid.getPeak(experimentName) == null){
+					if (lipid.getPeak(experimentName) == null) {
 						data[c++] = "";
-					}else{
+					} else {
 						data[c++] = String.valueOf(lipid.getPeak(experimentName));
 					}
 				}
@@ -133,7 +133,7 @@ public class WriteFile {
 			w.endRecord();
 			w.close();
 		} catch (Exception exception) {
-		//System.out.println("InOracle.java---> WriteCommaSeparatedFileLCMS() " + exception);
+			//System.out.println("InOracle.java---> WriteCommaSeparatedFileLCMS() " + exception);
 		}
 	}
 
@@ -219,8 +219,8 @@ public class WriteFile {
 			wb.write(fileOut);
 			fileOut.close();
 		} catch (Exception exception) {
-		//exception.printStackTrace();
-		// System.out.println(path);            
+			//exception.printStackTrace();
+			// System.out.println(path);
 		}
 	}
 
@@ -252,7 +252,7 @@ public class WriteFile {
 			for (String experimentName : dataset.getNameExperiments()) {
 				this.setCell(row, cont++, experimentName);
 
-			}			
+			}
 			for (int i = 0; i < dataset.getNumberRows(); i++) {
 				SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 
@@ -262,9 +262,9 @@ public class WriteFile {
 				}
 				int c = 0;
 				for (String experimentName : dataset.getNameExperiments()) {
-					if(lipid.getPeak(experimentName) == null){
+					if (lipid.getPeak(experimentName) == null) {
 						this.setCell(row, c++, "");
-					}else{
+					} else {
 						this.setCell(row, c++, lipid.getPeak(experimentName));
 					}
 				}
@@ -377,6 +377,8 @@ public class WriteFile {
 								this.setCell(row, cont++, metabolite.getDifference());
 							} else if (p.getName().matches(".*Num Found.*")) {
 								this.setCell(row, cont++, metabolite.getNumFound());
+							} else if (p.getName().matches(".*CAS.*")) {
+								this.setCell(row, cont++, metabolite.getCAS());
 							} else if (p.getName().matches(".*Name.*")) {
 								this.setCell(row, cont++, metabolite.getName());
 							} else if (p.getName().matches(".*All names.*")) {
@@ -398,7 +400,11 @@ public class WriteFile {
 				}
 				c = fieldsNumber;
 				for (String experimentName : dataset.getNameExperiments()) {
-					this.setCell(row, c++, metabolite.getPeak(experimentName));
+					try {
+						this.setCell(row, c++, metabolite.getPeak(experimentName));
+					} catch (Exception e) {
+						this.setCell(row, c, "NA");
+					}
 				}
 			}
 			//Write the output to a file
@@ -451,6 +457,8 @@ public class WriteFile {
 									data[cont++] = String.valueOf(metabolite.getMass());
 								} else if (p.getName().matches(".*Difference to ideal peak.*")) {
 									data[cont++] = String.valueOf(metabolite.getDifference());
+								} else if (p.getName().matches(".*CAS.*")) {
+									data[cont++] = metabolite.getCAS();
 								} else if (p.getName().matches(".*Num Found.*")) {
 									data[cont++] = String.valueOf(metabolite.getNumFound());
 								} else if (p.getName().matches(".*Metabolite Name.*")) {
@@ -474,7 +482,11 @@ public class WriteFile {
 					}
 					c = fieldsNumber;
 					for (String experimentName : dataset.getNameExperiments()) {
-						data[c++] = String.valueOf(metabolite.getPeak(experimentName));
+						try {
+							data[c++] = String.valueOf(metabolite.getPeak(experimentName));
+						} catch (Exception e) {
+							data[c] = "NA";
+						}
 					}
 					w.writeRecord(data);
 				}

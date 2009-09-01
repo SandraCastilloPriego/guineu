@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.datamodels.DatasetGCGCDataModel;
+import guineu.data.impl.DatasetType;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
@@ -77,6 +78,7 @@ public class NamePostFilterTask implements Task {
 
 			for (SimpleGCGCDataset alignment : newDatasets) {
 				alignment.setName(alignment.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
+				alignment.setType(DatasetType.GCGCTOF);
 				DataTableModel model = new DatasetGCGCDataModel(alignment);
 				DataTable table = new PushableTable(model);
 				table.formatNumbers(alignment.getType());

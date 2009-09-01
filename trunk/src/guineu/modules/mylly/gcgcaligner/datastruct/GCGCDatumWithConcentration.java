@@ -41,7 +41,7 @@ public class GCGCDatumWithConcentration extends GCGCDatum {
 			String columnName,
 			List<? extends Pair<Integer, Integer>> peakList,
 			double concentration) {
-		super(rt1, rt2, retentionIndex, quantMass, similarity, area, concentration, useConc, CAS, name, columnName,peakList);
+		super(rt1, rt2, retentionIndex, quantMass, similarity, area, concentration, useConc, CAS, name, columnName, peakList);
 		conc = concentration;
 	}
 
@@ -59,10 +59,6 @@ public class GCGCDatumWithConcentration extends GCGCDatum {
 	}
 
 	public String toFileString() {
-		if (this == getGAP()) {
-			return "NA\tNA";
-		} else {
-			return getArea() + "\t" + conc;
-		}
+		return getArea() + "\t" + conc;
 	}
 }

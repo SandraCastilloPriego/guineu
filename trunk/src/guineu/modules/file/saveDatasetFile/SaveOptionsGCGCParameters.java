@@ -40,6 +40,9 @@ public class SaveOptionsGCGCParameters extends SimpleParameterSet {
     public static final Parameter rti = new SimpleParameter(
             ParameterType.BOOLEAN, "RTI",
             "RTI", new Boolean(false));
+	public static final Parameter CAS = new SimpleParameter(
+            ParameterType.BOOLEAN, "CAS Number",
+            "CAS Number", new Boolean(true));
     public static final Parameter numFound = new SimpleParameter(
             ParameterType.BOOLEAN, "Num Found",
             "Num Found", new Boolean(true));
@@ -72,6 +75,6 @@ public class SaveOptionsGCGCParameters extends SimpleParameterSet {
             "Spectrum", new Boolean(true));
     
     public SaveOptionsGCGCParameters() {
-        super(new Parameter[]{id, Mass, rt1, rt2, rti, numFound, difference, name, allNames, pubchemID, maxSimilarity, meanSimilarity, SimilaritystdDev, spectrum});
+        super(new Parameter[]{id, Mass, rt1, rt2, rti, CAS, numFound, difference, name, allNames, pubchemID, maxSimilarity, meanSimilarity, SimilaritystdDev, spectrum});
     }
 }

@@ -47,7 +47,8 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 
 	public void initModule() {
 		parameters = new NameFilterParameters();
-		this.desktop = GuineuCore.getDesktop();		
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuSeparator(GuineuMenu.MYLLY);
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Postprocessor Filter..",
 				"TODO write description", KeyEvent.VK_O, this, null);
 

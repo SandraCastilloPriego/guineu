@@ -79,7 +79,6 @@ public class SimpleGCGCDataset implements Dataset{
 
 	public SimpleGCGCDataset(String datasetName) {
 		this.names = new Vector<String>();
-		this.names.addElement(datasetName);
 		alignment = new ArrayList<SimplePeakListRowGCGC>();
 		id = 0;
 		this.name = datasetName;
@@ -123,7 +122,7 @@ public class SimpleGCGCDataset implements Dataset{
 		GCGCDatum tempArray[][] = new GCGCDatum[rowCount()][];
 		GCGCDatum returnedArray[][] = new GCGCDatum[colCount()][rowCount()];
 		for (int i = 0; i < rowCount(); i++) {
-			tempArray[i] = alignment.get(i).getRow();
+			tempArray[i] = alignment.get(i).getRow().toArray(new GCGCDatum[0]);
 		}
 		for (int i = 0; i < rowCount(); i++) {
 			for (int j = 0; j < colCount(); j++) {
@@ -278,7 +277,7 @@ public class SimpleGCGCDataset implements Dataset{
 					" colIx = " + colIx + " valid range [0," + colCount() +
 					"]");
 		}
-		return alignment.get(rowIx).getRow()[colIx];
+		return alignment.get(rowIx).getRow().get(colIx);
 	}
 
 	public int colCount() {
@@ -367,6 +366,10 @@ public class SimpleGCGCDataset implements Dataset{
 	}
 
 	public Vector<PeakListRow> getRows() {
-		return (Vector<PeakListRow>) this.alignment.iterator();
+		Vector<PeakListRow> rows = new Vector<PeakListRow>();
+		for(PeakListRow row: this.alignment){
+			rows.addElement(row);
+		}
+		return rows;
 	}
 }

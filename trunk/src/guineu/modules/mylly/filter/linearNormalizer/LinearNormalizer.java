@@ -141,7 +141,7 @@ public class LinearNormalizer
 			GCGCDatum[][] stds = new GCGCDatum[_standards.size()][];
 			for (int i = 0; i < _standards.size(); i++)
 			{
-				stds[i] = _standards.get(i).getRow();
+				stds[i] = _standards.get(i).getRow().toArray(new GCGCDatum[0]);
 			}
 			double[][] coeffs = new double[stds.length][];
 			int count = 0;
@@ -174,7 +174,7 @@ public class LinearNormalizer
 		else //Only one standard
 		{
 			int count = 0;
-			GCGCDatum[] stds = onlyStandard.getRow();
+			GCGCDatum[] stds = onlyStandard.getRow().toArray(new GCGCDatum[0]);
 			double[] coeffs = new double[stds.length];
 			for (int i = 0; i < stds.length; i++)
 			{

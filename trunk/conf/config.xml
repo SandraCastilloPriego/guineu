@@ -7,7 +7,6 @@
     <module class="guineu.modules.database.openDatasetDB.OpenFileDB"/>  
     <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>    
     <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
-    <module class="guineu.modules.file.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.file.openExperimentsData.OpenFile"/>  
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
@@ -51,6 +50,7 @@
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
     <module class="guineu.modules.statistics.standardVariation.standardVariation"/> 
     <module class="guineu.modules.msms.open.OpenFile"/>
+    <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"/>
     <module class="guineu.modules.mylly.filter.alkaneRTCorrector.AlkaneRTICorrectorFilter"/>	

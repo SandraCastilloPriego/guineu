@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
-import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -65,7 +65,7 @@ public class TransposeFilterTask implements Task {
 
     public void run() {
         try {
-            SimpleDatasetOther newDataset = new SimpleDatasetOther(dataset.getDatasetName() + "- transposed");
+            SimpleOtherDataset newDataset = new SimpleOtherDataset(dataset.getDatasetName() + "- transposed");
             newDataset.AddNameExperiment("Name");
             status = TaskStatus.PROCESSING;
            

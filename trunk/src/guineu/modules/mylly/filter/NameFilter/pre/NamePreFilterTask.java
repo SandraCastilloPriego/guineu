@@ -96,6 +96,7 @@ public class NamePreFilterTask implements Task {
 	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data, String name) {
 
 		SimpleGCGCDataset dataset = new SimpleGCGCDataset(name);
+		dataset.AddNameExperiment(name);
 		dataset.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {

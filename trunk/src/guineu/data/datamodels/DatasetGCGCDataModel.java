@@ -76,6 +76,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 	public Object getValueAt(final int row, final int column) {
 		try {
 			//GCGC-Tof files
+		
 			switch (column) {
 				case 0:
 					return this.dataset.getRow(row).isSelected();
@@ -110,7 +111,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 				case 15:
 					return this.dataset.getRow(row).getSpectrumString();
 			}
-			return this.dataset.getRow(row).getPeak(column - this.fixNumberColumns, this.dataset.getNameExperiments());
+			return this.dataset.getRow(row).getPeak(this.dataset.getNameExperiments().get(column - this.fixNumberColumns));
 		} catch (Exception e) {
 			return null;
 		}
@@ -180,7 +181,6 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 			intValue = ((Integer) aValue).intValue();
 			doubleValue = intValue;
 		}
-
 		//GCGC-Tof files
 		switch (column) {
 			case 0:
