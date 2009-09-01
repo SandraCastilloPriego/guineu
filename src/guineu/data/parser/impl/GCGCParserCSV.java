@@ -22,6 +22,7 @@ import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import java.io.FileReader;
 import java.util.regex.Matcher;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 public class GCGCParserCSV implements Parser {
 
     private String datasetPath;
-    private SimpleDataset dataset;
+    private SimpleGCGCDataset dataset;
     private int rowsNumber;
     private int rowsReaded;
 
@@ -42,7 +43,7 @@ public class GCGCParserCSV implements Parser {
         this.rowsNumber = 0;
         this.rowsReaded = 0;
         this.datasetPath = datasetPath;
-        this.dataset = new SimpleDataset(this.getDatasetName());
+        this.dataset = new SimpleGCGCDataset(this.getDatasetName());
         this.dataset.setType(DatasetType.GCGCTOF);
         countNumberRows();
     }
@@ -68,13 +69,12 @@ public class GCGCParserCSV implements Parser {
 
             reader.readHeaders();
             String[] header = reader.getHeaders();
+			setExperimentsName(header);
 
             while (reader.readRecord()) {
                 getData(reader.getValues(), header);
                 rowsReaded++;
-            }
-
-            setExperimentsName(header);
+            }          
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,12 +94,14 @@ public class GCGCParserCSV implements Parser {
                     metabolite.setRT2(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(RegExp.RTI.getREgExp())) {
                     metabolite.setRTI(Double.valueOf(sdata[i]));
+				}else if (header[i].matches(RegExp.CAS.getREgExp())) {
+                    metabolite.setCAS(sdata[i]);
                 } else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
                     metabolite.setNumFound(Double.valueOf(sdata[i]).doubleValue());
                 } else if (header[i].matches(RegExp.MAXSIM.getREgExp())) {
                     metabolite.setMaxSimilarity(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(RegExp.MEANSIM.getREgExp())) {
-                    metabolite.setMaxSimilarity(Double.valueOf(sdata[i]));
+                    metabolite.setMeanSimilarity(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(RegExp.SIMSTD.getREgExp())) {
                     metabolite.setSimilaritySTDDev(Double.valueOf(sdata[i]));
                 } else if (header[i].matches(RegExp.NAME.getREgExp())) {
@@ -130,9 +132,10 @@ public class GCGCParserCSV implements Parser {
                 }
             }
             metabolite.setSelectionMode(false);
-            this.dataset.AddRow(metabolite);
+            this.dataset.addAlignmentRow(metabolite);
 
         } catch (Exception exception) {
+			exception.printStackTrace();
         }
     }
 

@@ -19,7 +19,9 @@ package guineu.modules.mylly.openGCGCDatasetFile;
 
 import guineu.data.parser.impl.GCGCParserXLS;
 import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.GCGCParserCSV;
 import guineu.desktop.Desktop;
@@ -88,11 +90,11 @@ public class OpenFileTask implements Task {
         status = TaskStatus.PROCESSING;
         try {
             parser.fillData();
-            SimpleDataset dataset = (SimpleDataset) parser.getDataset();
+            SimpleGCGCDataset dataset =  (SimpleGCGCDataset) parser.getDataset();
             desktop.AddNewFile(dataset);
 
             //creates internal frame with the table
-            DataTableModel model = new DatasetDataModel(dataset);
+            DataTableModel model = new DatasetGCGCDataModel(dataset);
             DataTable table = new PushableTable(model);
             table.formatNumbers(dataset.getType());
             DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));

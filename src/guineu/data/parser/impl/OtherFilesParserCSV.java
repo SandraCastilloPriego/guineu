@@ -21,7 +21,7 @@ import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDatasetOther;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import java.io.FileReader;
@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 public class OtherFilesParserCSV implements Parser {
 
     private String datasetPath;
-    private SimpleDatasetOther dataset;
+    private SimpleOtherDataset dataset;
     private int rowsNumber;
     private int rowsReaded;
     Lipidclass LipidClassLib;
@@ -44,7 +44,7 @@ public class OtherFilesParserCSV implements Parser {
         this.rowsNumber = 0;
         this.rowsReaded = 0;
         this.datasetPath = datasetPath;
-        this.dataset = new SimpleDatasetOther(this.getDatasetName());
+        this.dataset = new SimpleOtherDataset(this.getDatasetName());
         this.dataset.setType(DatasetType.OTHER);
 
         this.dataset.setType(null);

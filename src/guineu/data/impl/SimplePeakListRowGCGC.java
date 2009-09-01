@@ -48,18 +48,23 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 			return comparison;
 		}
 	};
+
+	private static synchronized long getNextId() {
+		return nextId++;
+	}
+	private static long nextId = 1;
 	private int ID,  numberFixColumns;
-	private double RT1,  RT2,  RTI,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  numFound,  mass,  difference;
+	private double RT1,  RT2,  RTI,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
 	private String name,  allNames,  spectra,  pubChemID;
 	private boolean control,  selection;
 	private String CAS;
 	private Spectrum spectrum;
-	private GCGCDatum row[];
+	private List<GCGCDatum> row;
 	private String[] names;
 	private String CASnumbers[];
 	private DistValue _distValue;
 	private boolean modified;
-	private int nonNullPeaks = 0;
+	private double numFound = 0;
 
 	public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
 			double maxSimilarity, double meanSimilarity, double similaritySTDDev,
@@ -80,13 +85,16 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		this.spectra = spectra;
 		this.pubChemID = pubChemID;
 		this.control = true;
-		this.numberFixColumns = 15;
+		this.numberFixColumns = 16;
 		this.CAS = CAS;
 	}
 
 	public SimplePeakListRowGCGC() {
 		this.ID = -1;
 		this.control = true;
+		this.numberFixColumns = 16;
+		this.control = true;
+		this.row = new ArrayList<GCGCDatum>();
 	}
 
 	public int getID() {
@@ -118,9 +126,9 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public Double getPeak(String ExperimentName) {
-		for (GCGCDatum datum : this.row) {			
-			if (datum.getColumnName().compareTo(ExperimentName) ==0) {
-				if (datum.useConcentration()&& datum.getConcentration()!= 0.0) {
+		for (GCGCDatum datum : this.row) {
+			if (datum.getColumnName().compareTo(ExperimentName) == 0) {
+				if (datum.useConcentration() && datum.getConcentration() != 0.0) {
 					return datum.getConcentration();
 				} else {
 					return datum.getArea();
@@ -131,15 +139,30 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public void setPeak(String experimentName, Double value) {
-		for (GCGCDatum datum : this.row) {
-			if (datum.getName().matches(experimentName)) {
-				if (datum.useConcentration()) {
-					datum.setConcentration(value);
-				} else {
-					datum.setArea(value);
+		boolean isFound = false;
+
+		for (int i = 0; i < this.row.size(); i++) {
+			GCGCDatum datum = this.row.get(i);
+			if (datum != null) {
+				if (datum.getColumnName() != null && datum.getColumnName().matches(experimentName)) {
+					if (datum.useConcentration()) {
+						datum.setConcentration(value);
+					} else {
+						datum.setArea(value);
+					}
+					isFound = true;
+					break;
 				}
 			}
 		}
+		if (!isFound) {			
+			GCGCDatum datum2 = new GCGCDatum(this.RT1, this.RT2, this.mass,
+					value, value, true, (int) this.maxSimilarity, CAS, name, experimentName, spectrum.getPeakList());
+
+			this.row.add(datum2);
+		}
+
+
 	}
 
 	public boolean getControl() {
@@ -151,7 +174,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public int getNumberPeaks() {
-		return this.row.length;
+		return this.row.size();
 	}
 
 	public void setName(String Name) {
@@ -166,13 +189,15 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 				this.allNames, this.spectra, this.pubChemID, this.CAS);
 
 		((SimplePeakListRowGCGC) newPeakListRow).modified = modified;
-		((SimplePeakListRowGCGC) newPeakListRow).nonNullPeaks = nonNullPeaks;
+		((SimplePeakListRowGCGC) newPeakListRow).numFound = numFound;
 		((SimplePeakListRowGCGC) newPeakListRow).names = names == null ? null : names.clone();
 		((SimplePeakListRowGCGC) newPeakListRow).spectrum = spectrum == null ? null : spectrum.clone();
-		((SimplePeakListRowGCGC) newPeakListRow).row = row == null ? null : row.clone();
+		List<GCGCDatum> clonedRow = new ArrayList<GCGCDatum>();
+		for (GCGCDatum datum : row) {
+			clonedRow.add(datum.clone());
+		}
+		((SimplePeakListRowGCGC) newPeakListRow).row = clonedRow == null ? null : clonedRow;
 		((SimplePeakListRowGCGC) newPeakListRow)._distValue = _distValue;
-		((SimplePeakListRowGCGC) newPeakListRow).row = this.row.clone();
-
 		return newPeakListRow;
 
 	}
@@ -298,14 +323,14 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public void removePeaks() {
-		this.row = new GCGCDatum[1];
+		this.row.removeAll(row);
 	}
 
 	public Double[] getPeaks() {
-		Double[] aPeaks = new Double[this.row.length];
+		Double[] aPeaks = new Double[this.row.size()];
 		int cont = 0;
 		for (GCGCDatum datum : this.row) {
-			if (datum.useConcentration() && datum.getConcentration()!= 0.0) {
+			if (datum.useConcentration() && datum.getConcentration() != 0.0) {
 				aPeaks[cont++] = datum.getConcentration();
 			} else {
 				aPeaks[cont++] = datum.getArea();
@@ -342,7 +367,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		for (GCGCDatum datum : this.row) {
 			for (String experimentName : group) {
 				if (datum.getName().compareTo(experimentName) == 0) {
-					datum = null;
+					this.row.remove(datum);
 				}
 			}
 		}
@@ -350,6 +375,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public SimplePeakListRowGCGC(AlignmentPath p) {
+		this.ID = (int) SimplePeakListRowGCGC.getNextId();
 		this.RT1 = p.getRT1();
 		this.RT2 = p.getRT2();
 		this.RTI = p.getRTI();
@@ -357,7 +383,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		this.meanSimilarity = p.getMeanSimilarity();
 		this.similaritySTDDev = p.getSimilarityStdDev();
 		this.maxSimilarity = p.getMaxSimilarity();
-		row = new GCGCDatum[p.length()];
+		row = new ArrayList<GCGCDatum>();
 		CAS = p.getCAS();
 		if (CAS == null) {
 			CAS = "0-00-0";
@@ -366,9 +392,9 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 
 		for (int i = 0; i < p.length(); i++) {
 			GCGCDatum d = p.getPeak(i);
-			if (d != null && d != GCGCDatum.getGAP()) {
-				row[i] = d;
-				nonNullPeaks++;
+			if (d != null) {
+				row.add(d);
+				numFound++;
 				String curName = (d.isIdentified()) ? d.getName() : null;
 				String curCAS = d.getCAS();
 				if (curCAS == null) {
@@ -384,8 +410,6 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 					}
 				}
 
-			} else {
-				row[i] = GCGCDatum.getGAP();
 			}
 		}
 		names = new String[nameFrequencies.size()];
@@ -431,36 +455,12 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		return names;
 	}
 
-	public SimplePeakListRowGCGC reArrange(int newIndices[]) {
-		if (newIndices == null) {
-			throw new IllegalArgumentException("Index array was null!");
-		}
-		if (newIndices.length != row.length) {
-			throw new IllegalArgumentException("New index arrays length (" +
-					newIndices.length + ") was not " + row.length + ".");
-		}
-		SimplePeakListRowGCGC newRow = (SimplePeakListRowGCGC) clone();
-		for (int i = 0; i < newIndices.length; i++) {
-			int newIx = newIndices[i];
-			if (newIx < 0) {
-				throw new IllegalArgumentException("New index was less than 0 (" +
-						newIx + ")");
-			} else if (newIx >= newIndices.length) {
-				throw new IllegalArgumentException("New index was too large (" +
-						newIx + ")");
-			} else {
-				newRow.row[newIx] = row[i];
-			}
-		}
-		return newRow;
-	}
-
-	public GCGCDatum[] getRow() {
-		return (row == null) ? new GCGCDatum[0] : row.clone();
+	public List<GCGCDatum> getRow() {
+		return row;
 	}
 
 	public GCGCDatum getDatum(int ix) {
-		return row[ix];
+		return row.get(ix);
 	}
 
 	public int compareTo(SimplePeakListRowGCGC o) {
@@ -480,7 +480,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public int nonNullPeakCount() {
-		return nonNullPeaks;
+		return (int) numFound;
 	}
 
 	/**
@@ -506,7 +506,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public int length() {
-		return row == null ? 0 : row.length;
+		return row == null ? 0 : row.size();
 	}
 
 	public Spectrum getSpectrum() {
@@ -525,14 +525,17 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 
 	public SimplePeakListRowGCGC scaleArea(double[] scalings) {
 		SimplePeakListRowGCGC c = (SimplePeakListRowGCGC) clone();
-		for (int i = 0; i < row.length; i++) {
-			c.row[i] = row[i].setArea(row[i].getArea() * scalings[i]);
+		for (int i = 0; i < row.size(); i++) {
+			row.get(i).setArea(row.get(i).getArea() * scalings[i]);
 		}
 		return c;
 	}
 
-	public void setDatum(GCGCDatum[] rows){
-		this.row = rows;
+	public void setDatum(GCGCDatum[] rows) {
+		this.row = new ArrayList<GCGCDatum>();
+		for (GCGCDatum datum : rows) {
+			this.row.add(datum);
+		}
 	}
 
 	/**
@@ -541,13 +544,13 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	public Iterator<GCGCDatum> iterator() {
 		class Iter implements Iterator<GCGCDatum> {
 
-			private GCGCDatum ownArray[];
+			private List<GCGCDatum> ownArray;
 			private int index;
 			private boolean iterationFinished;
 
-			public Iter(GCGCDatum[] row) {
+			public Iter(List<GCGCDatum> row) {
 				ownArray = row;
-				if (row == null || row.length == 0) {
+				if (row == null || row.size() == 0) {
 					iterationFinished = true;
 				} else {
 					iterationFinished = false;
@@ -569,8 +572,8 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 				if (iterationFinished) {
 					throw new NoSuchElementException();
 				} else {
-					GCGCDatum returned = ownArray[index++];
-					if (index >= ownArray.length) {
+					GCGCDatum returned = ownArray.get(index++);
+					if (index >= ownArray.size()) {
 						iterationFinished = true;
 					}
 					return returned;

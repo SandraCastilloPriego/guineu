@@ -38,7 +38,6 @@ import guineu.data.Dataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -104,7 +103,7 @@ public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, Act
 	}
 
 	public String toString() {
-		return "Name Filter";
+		return "Alkane RTI Corrector Filter";
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {

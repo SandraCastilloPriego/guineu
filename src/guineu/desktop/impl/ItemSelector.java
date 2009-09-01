@@ -29,7 +29,6 @@ import guineu.main.GuineuCore;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveDatasetFile.SaveFile;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.util.GUIUtils;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -44,7 +43,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -180,7 +178,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 		for (Dataset file : selectedFiles) {
 			if (file != null) {
 				this.DatasetFilesModel.remove(file);
-				//DatasetFilesModel.removeElement(file);
 				DatasetNamesModel.removeElement(file.getDatasetName());
 			}
 		}
@@ -189,7 +186,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 	public void removeData(Dataset file) {
 		if (file != null) {
 			this.DatasetFilesModel.remove(file);
-			//DatasetFilesModel.removeElement(file);
 			DatasetNamesModel.removeElement(file.getDatasetName());
 		}
 

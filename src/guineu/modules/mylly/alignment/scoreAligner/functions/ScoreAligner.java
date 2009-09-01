@@ -362,7 +362,7 @@ public class ScoreAligner implements Aligner {
 			for (AlignmentPath p : addedPaths) {
 				//Convert alignments to original order of files and add them to final
 				//Alignment data structure
-				alignment.addAlignmentRow(p.convertToAlignmentRow().reArrange(originalOrder));
+				alignment.addAlignmentRow(p.convertToAlignmentRow());
 
 			}
 		}

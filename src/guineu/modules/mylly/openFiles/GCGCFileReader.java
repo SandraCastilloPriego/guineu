@@ -45,7 +45,7 @@ public class GCGCFileReader {
 			_separator = '\t';
 		}else{
 			_separator = separator.toCharArray()[0];
-		}		
+		}
 		_filterClassified = filterClassified;
 		_findSpectrum = true;
 		_findConcentration = false;
@@ -86,15 +86,9 @@ public class GCGCFileReader {
 		//First read the header-row
 		{
 
-            reader.readHeaders();
-
-			String headerStr;
+            reader.readHeaders();			
 			String headerRow[] = reader.getHeaders();
-			/*do {
-				headerStr = br.readLine();
-			} while ("".equals(headerStr.trim()));//skip blank lines
-
-			headerRow = Pattern.compile(_separator).split(headerStr, 0);*/
+			
 			for (int i = 0; i < headerRow.length; i++) {
 				String str = headerRow[i];
 				if (str.equals("R.T. (s)")) {
@@ -121,12 +115,10 @@ public class GCGCFileReader {
 			}
 		}
 		// Then go through the file row at a time
-		{
-			String line;
+		{			
 			String splitRow[];
 			peaks = new ArrayList<GCGCDatum>();
-
-			//while ((line = br.readLine()) != null) {
+			
             while(reader.readRecord()){
                 splitRow = reader.getValues();
 				boolean foundArea = false;
@@ -156,7 +148,6 @@ public class GCGCFileReader {
 				name = "Not Found";
 				CAS = "";
 
-				//splitRow = Pattern.compile(_separator).split(line, 0);
 				for (int i = 0; i < splitRow.length; i++) {
 					String curStr = splitRow[i];
 					if (!(_filterClassified && i == ClassificationsPos) &&

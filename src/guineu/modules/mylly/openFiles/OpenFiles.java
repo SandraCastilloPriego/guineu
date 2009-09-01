@@ -49,7 +49,7 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Files..",
 				"TODO write description", KeyEvent.VK_G, this, null);
-
+		parameters = new OpenGCGCFileParameters();
 	}
 
 	public void taskStarted(Task task) {
@@ -70,8 +70,7 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {
-		parameters = new OpenGCGCFileParameters();
+	public void actionPerformed(ActionEvent e) {		
 		try {
 			setupParameters(parameters);
 		} catch (Exception exception) {

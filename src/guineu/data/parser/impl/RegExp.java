@@ -22,8 +22,8 @@ public enum RegExp {
     ID(".*ID"),
     MZ(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*"),
     RT(".*Average RT.*|.*Average retention time.*|.*retention time*"),
-    NAME(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*"),
-    ALLNAMES(".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*"),
+    NAME(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|"),
+    ALLNAMES(".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*"),
     CLASS(".*Class.*"),
     NFOUND(".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*"),
     STANDARD(".*Standard.*"),
@@ -35,10 +35,11 @@ public enum RegExp {
     RTI(".*RTI.*"),
     DIFFERENCE(".*Difference.*"),
     PUBCHEM(".*Pubchem.*"),
-    MAXSIM(".*Max sim.*"),
-    MEANSIM(".*Mean sim.*"),
+    MAXSIM(".*Max sim.*|.*Max Similarity.*"),
+    MEANSIM(".*Mean sim.*|.*Mean Sim.*"),
     SIMSTD(".*Similarity std dev.*"),
-    SPECTRUM(".*Spectrum.*|.*Spectra.*");
+    SPECTRUM(".*Spectrum.*|.*Spectra.*"),
+	CAS(".*CAS.*");
     private final String columnName;
 
     RegExp(String columnName) {

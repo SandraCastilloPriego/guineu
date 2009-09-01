@@ -20,7 +20,7 @@ package guineu.data.parser.impl;
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import java.io.IOException;
 import java.util.Vector;
@@ -36,14 +36,14 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 	private String DatasetPath;
 	private HSSFWorkbook book;
 	private Vector<String> head;
-	SimpleDataset dataset;
+	SimpleGCGCDataset dataset;
 	private int numberRows,  rowsReaded;
 
 	public GCGCParserXLS(String DatasetPath) {
 		this.numberRows = 0;
 		this.rowsReaded = 0;
 		this.DatasetPath = DatasetPath;
-		this.dataset = new SimpleDataset(this.getDatasetName());
+		this.dataset = new SimpleGCGCDataset(this.getDatasetName());
 		this.dataset.setType(DatasetType.GCGCTOF);
 		head = new Vector<String>();
 	}
@@ -73,12 +73,13 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 				this.head.addElement(cell.toString());
 			}
 			numberRows = this.getNumberRows(0, sheet);
-
+			this.setExperimentsName();
+			
 			for (int i = 1; i < numberRows + 1; i++) {
 				this.read_data(sheet, i);
 				this.rowsReaded++;
 			}
-			this.setExperimentsName();
+
 
 		} catch (IOException ex) {
 			Logger.getLogger(GCGCParserXLS.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,13 +95,16 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 			HSSFRow row = sheet.getRow(Index);
 			SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
 			for (int e = 0; e < head.size(); e++) {
+				System.out.println("1");
 				if (head.elementAt(e).matches(RegExp.MASS.getREgExp())) {
 					metabolite.setMass(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.RT1.getREgExp())) {
 					metabolite.setRT1(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.RT2.getREgExp())) {
 					metabolite.setRT2(this.setDateInToStruct(row, e));
-				} else if (head.elementAt(e).matches(RegExp.RTI.getREgExp())) {
+				} else if (head.elementAt(e).matches(RegExp.CAS.getREgExp())) {
+                    metabolite.setCAS(this.setStringDateInToStruct(row, e));
+                } else if (head.elementAt(e).matches(RegExp.RTI.getREgExp())) {
 					metabolite.setRTI(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.NFOUND.getREgExp())) {
 					metabolite.setNumFound(this.setDateInToStruct(row, e));
@@ -121,16 +125,19 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 				} else if (head.elementAt(e).matches(RegExp.SPECTRUM.getREgExp())) {
 					metabolite.setSpectrum(this.setStringDateInToStruct(row, e));
 				} else {
+					System.out.println("2");
 					try {
 						Double concentration = new Double(this.setDateInToStruct(row, e));
 						metabolite.setPeak(head.elementAt(e), concentration);
 					} catch (Exception ee) {
+						System.out.println("3");
 						metabolite.setPeak(head.elementAt(e), 0.0);
 					}
 				}
 			}
-			this.dataset.AddRow(metabolite);
-
+			System.out.println("4");
+			this.dataset.addAlignmentRow(metabolite);
+System.out.println("5");
 		} catch (Exception exception) {
 			System.out.println("ParserMetGCGC.java ---> read_data() " + exception);
 
