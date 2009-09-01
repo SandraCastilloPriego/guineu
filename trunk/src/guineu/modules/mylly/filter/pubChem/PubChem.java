@@ -22,7 +22,6 @@ package guineu.modules.mylly.filter.pubChem;
 import com.csvreader.CsvReader;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
 
 import java.io.BufferedReader;
 import java.io.File;
