@@ -15,14 +15,14 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter.post;
+package guineu.modules.mylly.filter.pubChem;
 
-import guineu.modules.mylly.filter.NameFilter.*;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -32,46 +32,51 @@ import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.data.impl.SimpleGCGCDataset;
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import java.util.ArrayList;
 
 /**
  *
  * @author scsandra
  */
-public class NameFilter implements GuineuModule, TaskListener, ActionListener {
+public class PubChemFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private NameFilterParameters parameters;
+	private PubChemParameters parameters;
 
 	public void initModule() {
-		parameters = new NameFilterParameters();
-		this.desktop = GuineuCore.getDesktop();	
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Postprocessor Filter..",
-				"TODO write description", KeyEvent.VK_O, this, null);
+		parameters = new PubChemParameters();
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuSeparator(GuineuMenu.MYLLY);
+		desktop.addMenuItem(GuineuMenu.MYLLY, "PubChem ID Filter..",
+				"TODO write description", KeyEvent.VK_A, this, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Name Postprocessor Filter");
+		logger.info("PubChem ID Filter");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Name Postprocessor Filter " );
+			logger.info("Finished PubChem ID Filter ");
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Name Postprocessor Filtering .. " ;
+			String msg = "Error while PubChem ID Filtering .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {
 		try {
 			setupParameters(parameters);
 		} catch (Exception exception) {
@@ -81,7 +86,7 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(NameFilterParameters) currentParameters);
+				(PubChemParameters) currentParameters);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
@@ -94,31 +99,30 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		 parameters = (NameFilterParameters) parameters;
+		parameters = (PubChemParameters) parameters;
 	}
 
 	public String toString() {
-		return "Name Postprocessor Filter";
+		return "PubChem ID Filter";
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-        Dataset[] AlignmentFiles =  desktop.getSelectedDataFiles();
+		Dataset[] datasets = desktop.getSelectedDataFiles();
 
-        
-            // prepare a new group of tasks
-            Task tasks[] = new NamePostFilterTask[1];
 
-            tasks[0] = new NamePostFilterTask(AlignmentFiles,parameters);
+		// prepare a new group of tasks
+		Task tasks[] = new PubChemrFilterTask[datasets.length];
+		for (int i = 0; i < datasets.length; i++) {
+			tasks[i] = new PubChemrFilterTask(datasets[i], parameters);
+		}
+		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		// start the group
+		newGroup.start();
 
-            // start the group
-            newGroup.start();
+		return newGroup;
 
-            return newGroup;
-       
+
 	}
-
-
 }
