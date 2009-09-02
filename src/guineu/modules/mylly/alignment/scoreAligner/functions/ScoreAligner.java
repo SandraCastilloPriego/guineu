@@ -358,11 +358,12 @@ public class ScoreAligner implements Aligner {
 				peaksTotal += peakList.get(i).size();
 			}
 			alignment = new SimpleGCGCDataset(names, params, this);
-			List<AlignmentPath> addedPaths = getAlignmentPaths();			
+			List<AlignmentPath> addedPaths = getAlignmentPaths();
+			int ID = 1;
 			for (AlignmentPath p : addedPaths) {
 				//Convert alignments to original order of files and add them to final
 				//Alignment data structure
-				alignment.addAlignmentRow(p.convertToAlignmentRow());
+				alignment.addAlignmentRow(p.convertToAlignmentRow(ID++));
 
 			}
 		}

@@ -73,8 +73,8 @@ public class NameFilterTask implements Task {
 				SimpleGCGCDataset dataset = null;
 				if (alignment.getNumberCols() == 1) {
 					NameFilterModule filter = new NameFilterModule();
-					String names = (String) parameters.getParameterValue(NameFilterParameters.fileNames);
-					filter.generateNewFilter(this.askParameters(names));
+					String name = (String) parameters.getParameterValue(NameFilterParameters.fileNames);
+					filter.generateNewFilter(this.askParameters(name));
 					GCGCDatum[][] datum = ((SimpleGCGCDataset) alignment).toArray();
 					List<GCGCDatum> datumList = new ArrayList<GCGCDatum>();
 					for (GCGCDatum data : datum[0]) {

@@ -57,37 +57,11 @@ public class Spectrum implements Cloneable {
 	 * @param peaks first one of each pair should contain the mass and second the intensity
 	 */
 	public Spectrum(List<? extends Pair<Integer, Integer>> peaks) {
-//		myPeaks = new ArrayList<Pair<Double, Double>>(peaks);
-//		java.util.Collections.sort(myPeaks, getIntensityComparator());
 
 		Pair<int[], int[]> temp = parseMassesAndIntensities(peaks);
 		_masses = temp.getFirst();
 		_intensities = temp.getSecond();
 		this._sortMode = SortingMode.REVERSEINTENSITY;
-
-//		if (peaks.size() == 0)
-//		{
-//			throw new IllegalArgumentException("Peaklist was of length 0");
-//		}
-//		ArrayList<ComparablePair<Integer, Integer>> tempPeaks = new ArrayList<ComparablePair<Integer, Integer>>(peaks);
-//		java.util.Collections.sort(tempPeaks, reverseIntensityComp);
-//		
-//		
-////		java.util.Collections.sort(tempPeaks, java.util.Collections.reverseOrder());
-//		_masses = new int[tempPeaks.size()];
-//		_intensities = new int[tempPeaks.size()];
-//		
-//		for (int i = 0; i < tempPeaks.size(); i++)
-//		{
-//			_masses[i] = tempPeaks.get(i).getFirst();
-//			_intensities[i] = tempPeaks.get(i).getSecond();
-//		}
-//		double maxIntensity = peakIntensities[0];
-	//Scale numbers to lie on [0..1]
-//		for (int i = 0; i < peakIntensities.length; i++)
-//		{
-//			peakIntensities[i] /= maxIntensity;
-//		}
 	}
 
 	protected <T extends Pair<Integer, Integer>> Pair<int[], int[]> parseMassesAndIntensities(List<T> peaks) {
@@ -155,13 +129,15 @@ public class Spectrum implements Cloneable {
 		return peakIntensities().clone();
 	}
 
+	@Override
 	public Spectrum clone() {
 		Spectrum s = new Spectrum();
-		s._intensities = getMasses();
-		s._masses = getIntensities();
+		s._intensities = getIntensities();
+		s._masses = getMasses();
 		return s;
 	}
 
+	@Override
 	public String toString() {
 		List<? extends Pair<Integer, Integer>> peaks = getPeakList();
 		java.util.Collections.sort(peaks, intensityComp);
@@ -173,8 +149,7 @@ public class Spectrum implements Cloneable {
 			peakIntensities[i] = peaks.get(i).getSecond();
 		}
 
-//		int[] peakMasses = peakMasses();
-//		int[] peakIntensities = peakIntensities();
+
 		if (peakIntensities == null || peakIntensities.length == 0) {
 			return "EMPTY";
 		} else {
