@@ -94,9 +94,10 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 		try {
 			HSSFRow row = sheet.getRow(Index);
 			SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
-			for (int e = 0; e < head.size(); e++) {
-				System.out.println("1");
-				if (head.elementAt(e).matches(RegExp.MASS.getREgExp())) {
+			for (int e = 0; e < head.size(); e++) {			
+				if (head.elementAt(e).matches(RegExp.ID.getREgExp())) {
+					metabolite.setID((int)this.setDateInToStruct(row, e));
+				} else if (head.elementAt(e).matches(RegExp.MASS.getREgExp())) {
 					metabolite.setMass(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.RT1.getREgExp())) {
 					metabolite.setRT1(this.setDateInToStruct(row, e));
@@ -124,20 +125,17 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 					metabolite.setSimilaritySTDDev(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.SPECTRUM.getREgExp())) {
 					metabolite.setSpectrum(this.setStringDateInToStruct(row, e));
-				} else {
-					System.out.println("2");
+				} else {					
 					try {
 						Double concentration = new Double(this.setDateInToStruct(row, e));
 						metabolite.setPeak(head.elementAt(e), concentration);
 					} catch (Exception ee) {
-						System.out.println("3");
 						metabolite.setPeak(head.elementAt(e), 0.0);
 					}
 				}
 			}
-			System.out.println("4");
+			
 			this.dataset.addAlignmentRow(metabolite);
-System.out.println("5");
 		} catch (Exception exception) {
 			System.out.println("ParserMetGCGC.java ---> read_data() " + exception);
 

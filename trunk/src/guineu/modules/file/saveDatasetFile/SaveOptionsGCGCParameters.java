@@ -39,7 +39,7 @@ public class SaveOptionsGCGCParameters extends SimpleParameterSet {
             "RT2", new Boolean(true));
     public static final Parameter rti = new SimpleParameter(
             ParameterType.BOOLEAN, "RTI",
-            "RTI", new Boolean(false));
+            "RTI", new Boolean(true));
 	public static final Parameter CAS = new SimpleParameter(
             ParameterType.BOOLEAN, "CAS Number",
             "CAS Number", new Boolean(true));
@@ -48,7 +48,7 @@ public class SaveOptionsGCGCParameters extends SimpleParameterSet {
             "Num Found", new Boolean(true));
      public static final Parameter difference = new SimpleParameter(
             ParameterType.BOOLEAN, "Difference to ideal peak",
-            "Difference to ideal peak", new Boolean(false));    
+            "Difference to ideal peak", new Boolean(true));
     public static final Parameter maxSimilarity = new SimpleParameter(
             ParameterType.BOOLEAN, "Max Similarity",
             "Max Similarity", new Boolean(true));
@@ -66,7 +66,7 @@ public class SaveOptionsGCGCParameters extends SimpleParameterSet {
             "Metabolite all Names", new Boolean(true));
     public static final Parameter pubchemID = new SimpleParameter(
             ParameterType.BOOLEAN, "Pubchem ID",
-            "Pubchem ID", new Boolean(false));
+            "Pubchem ID", new Boolean(true));
     public static final Parameter Mass = new SimpleParameter(
             ParameterType.BOOLEAN, "Mass",
             "Mass", new Boolean(true));    

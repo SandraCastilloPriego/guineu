@@ -122,13 +122,13 @@ public class GCGCParserCSV implements Parser {
                     } catch (Exception e) {
                         if (sdata[i].matches("DETECTED")) {
                             metabolite.setPeak(header[i], 1.0);
-                        } else {
+                        } else {							
                             metabolite.setPeak(header[i], 0.0);
                         }
                     }
                 }
                 if (metabolite.getName() == null || metabolite.getName().isEmpty()) {
-                    metabolite.setName("unknown");
+                    metabolite.setName("Unknown");
                 }
             }
             metabolite.setSelectionMode(false);
@@ -153,6 +153,7 @@ public class GCGCParserCSV implements Parser {
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
                     this.dataset.AddNameExperiment(header[i]);
+					//System.out.println(header[i]);
                 } 
             }
            

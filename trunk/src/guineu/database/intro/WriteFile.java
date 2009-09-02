@@ -363,7 +363,7 @@ public class WriteFile {
 				for (Parameter p : parameters.getParameters()) {
 					if ((Boolean) parameters.getParameterValue(p)) {
 						try {
-							if (p.getName().matches(".*ID.*")) {
+							if (p.getName().matches("^ID.*")) {
 								this.setCell(row, cont++, metabolite.getID());
 							} else if (p.getName().matches(".*RT1.*")) {
 								this.setCell(row, cont++, metabolite.getRT1());
@@ -445,7 +445,7 @@ public class WriteFile {
 					for (Parameter p : parameters.getParameters()) {
 						if ((Boolean) parameters.getParameterValue(p)) {
 							try {
-								if (p.getName().matches(".*ID.*")) {
+								if (p.getName().matches("^ID.*")) {
 									data[cont++] = String.valueOf(metabolite.getID());
 								} else if (p.getName().matches(".*RT1.*")) {
 									data[cont++] = String.valueOf(metabolite.getRT1());
