@@ -239,18 +239,18 @@ public class AlkaneRTICorrector
 					break;
 				}
 			}
-			GCGCDatum scaledPeak;
+			GCGCDatum scaledPeak = current.clone();
 			if (curPair.getSecond().equals(current))
 			{
 				/**
 				 * If we've found the actual alkane, correct the name
 				 * just in case it is wrong.
 				 */
-				scaledPeak = current.setName(curPair.getFirst().getName());
+				scaledPeak.setName(curPair.getFirst().getName());
 			}
 			else
 			{
-				scaledPeak = current.setRTI(current.getRTI() * slopes[i]);
+				scaledPeak.setRTI(current.getRTI() * slopes[i]);
 			}
 			iter.set(scaledPeak);
 		}

@@ -67,7 +67,7 @@ public class SimpleGCGCDataset implements Dataset{
 		this.params = parameters;
 		this.aligner = aligner;
 		id = getNextId();
-		name =  "Alignment " + id;
+		name =  "Alignment" + id;
 	}
 
 	public SimpleGCGCDataset(SimpleGCGCDataset other) {

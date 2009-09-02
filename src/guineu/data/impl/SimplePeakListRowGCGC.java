@@ -54,7 +54,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 	private static long nextId = 1;
 	private int ID,  numberFixColumns;
-	private double RT1,  RT2,  RTI,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
+	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
 	private String name,  allNames,  spectra,  pubChemID;
 	private boolean control,  selection;
 	private String CAS;
@@ -91,8 +91,6 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 
 	public SimplePeakListRowGCGC() {
 		this.ID = -1;
-		this.control = true;
-		this.numberFixColumns = 16;
 		this.control = true;
 		this.row = new ArrayList<GCGCDatum>();
 	}
@@ -156,8 +154,8 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 			}
 		}
 		if (!isFound) {			
-			GCGCDatum datum2 = new GCGCDatum(this.RT1, this.RT2, this.mass,
-					value, value, true, (int) this.maxSimilarity, CAS, name, experimentName, spectrum.getPeakList());
+			GCGCDatum datum2 = new GCGCDatum(this.RT1, this.RT2, this.RTI,
+					value, value, true, 0, CAS, name, experimentName, null);
 
 			this.row.add(datum2);
 		}

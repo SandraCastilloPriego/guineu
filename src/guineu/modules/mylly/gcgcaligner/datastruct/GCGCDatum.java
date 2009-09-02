@@ -68,6 +68,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		this.columnName = source.columnName;
 	}
 
+
 	public GCGCDatum(double rt1, double rt2, double retentionIndex,
 			double quantMass, int similarity, double area,
 			double concentration, boolean useConc,
@@ -123,18 +124,6 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		return d;
 	}
 
-	/**
-	 * Creates a copy of given GCGCDatum. Differs from clone by giving
-	 * each copy a new id.
-	 * @param from
-	 * @return
-	 */
-	private static GCGCDatum copyOf(GCGCDatum from) {
-		GCGCDatum instance = from.clone();
-		instance.id = nextId();
-		return instance;
-	}
-
 	private void verifyValues() {
 		StringBuilder sb = null;
 		boolean failureFound = false;
@@ -165,33 +154,24 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		return rt1;
 	}
 
-	public GCGCDatum setRT1(double newRT1) {
-		verifyNewVal(newRT1, "rt1");
-		GCGCDatum newInst = copyOf(this);
-		newInst.rt1 = newRT1;
-		return newInst;
+	public void setRT1(double newRT1) {
+		this.rt1 = newRT1;
 	}
 
 	public double getRT2() {
 		return rt2;
 	}
 
-	public GCGCDatum setRT2(double newRT2) {
-		verifyNewVal(newRT2, "rt2");
-		GCGCDatum newInst = copyOf(this);
-		newInst.rt2 = newRT2;
-		return newInst;
+	public void setRT2(double newRT2) {
+		this.rt2 = newRT2;
 	}
 
 	public double getRTI() {
 		return rti;
 	}
 
-	public GCGCDatum setRTI(double newRTI) {
-		verifyNewVal(newRTI, "rti");
-		GCGCDatum newInst = copyOf(this);
-		newInst.rti = newRTI;
-		return newInst;
+	public void setRTI(double newRTI) {
+		this.rti = newRTI;
 	}
 
 	public double getArea() {
@@ -222,11 +202,8 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		return similarity;
 	}
 
-	public GCGCDatum setSimilarity(int newSimilarity) {
-		verifyNewVal(newSimilarity, "similarity");
-		GCGCDatum newInst = copyOf(this);
-		newInst.similarity = newSimilarity;
-		return newInst;
+	public void setSimilarity(int newSimilarity) {
+		this.similarity = newSimilarity;
 	}
 
 	public boolean isIdentified() {
@@ -237,20 +214,16 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		return name;
 	}
 
-	public GCGCDatum setName(String newName) {
-		GCGCDatum newInst = copyOf(this);
-		newInst.name = newName;
-		return newInst;
+	public void setName(String newName) {
+		this.name = newName;
 	}
 
 	public String getCAS() {
 		return CAS;
 	}
 
-	public GCGCDatum setCAS(String newCAS) {
-		GCGCDatum newInst = copyOf(this);
-		newInst.CAS = newCAS;
-		return newInst;
+	public void setCAS(String newCAS) {
+		this.CAS = newCAS;
 	}
 
 	public Spectrum getSpectrum() {
