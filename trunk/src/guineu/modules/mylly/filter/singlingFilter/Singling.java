@@ -153,7 +153,7 @@ public class Singling {
 		List<SimplePeakListRowGCGC> rows = input.getAlignment();
 
 		for (SimplePeakListRowGCGC row : rows) {
-			reducer.addAlignment(row);
+			reducer.addAlignment((SimplePeakListRowGCGC) row.clone());
 		}
 		SimpleGCGCDataset modified = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
 		modified.addAll(reducer.getAlignmentRows());

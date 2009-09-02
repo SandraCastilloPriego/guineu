@@ -30,6 +30,8 @@ public class SimilarityParameters extends SimpleParameterSet {
 
 	private static Object[] similarity = {"maximum similarity", "mean similarity"};
 
+	private static Object[] actionDone = {"Remove", "Rename"};
+
 	public static final Parameter suffix = new SimpleParameter(
             ParameterType.STRING, "Suffix: ",
             "Suffix", null, "-Similarity Filter", null);
@@ -38,6 +40,10 @@ public class SimilarityParameters extends SimpleParameterSet {
             ParameterType.STRING , "Similarity used: ",
             "Similarity used", "", similarity);
 
+	public static final Parameter action = new SimpleParameter(
+            ParameterType.STRING , "Action: ",
+            "Action", "", actionDone);
+
    	public static final Parameter minSimilarity = new SimpleParameter(
 			ParameterType.DOUBLE, "Minimun similarity required:",
 			"Minimun similarity required", "", new Double(0.0),
@@ -45,6 +51,6 @@ public class SimilarityParameters extends SimpleParameterSet {
 	
 	
 	public SimilarityParameters() {
-		super(new Parameter[]{suffix, type, minSimilarity});
+		super(new Parameter[]{suffix, type, action, minSimilarity});
 	}
 }

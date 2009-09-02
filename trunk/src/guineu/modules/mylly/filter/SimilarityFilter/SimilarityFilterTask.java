@@ -73,11 +73,17 @@ public class SimilarityFilterTask implements Task {
 		try {
 			double minValue = (Double)parameters.getParameterValue(SimilarityParameters.minSimilarity);
 			String typeSimilarity = (String)parameters.getParameterValue(SimilarityParameters.type);
-			int mode = 0;
+			String mode = Similarity.MEAN_SIMILARITY;
 			if(typeSimilarity.matches("maximum similarity")){
-				mode = 1;
+				mode = Similarity.MAX_SIMILARITY;
 			}
-			Similarity filter = new Similarity(minValue, mode);
+
+			String typeAction = (String)parameters.getParameterValue(SimilarityParameters.action);
+			String action = Similarity.REMOVE;
+			if(typeAction.matches("Rename")){
+				action = Similarity.RENAME;
+			}
+			Similarity filter = new Similarity(minValue, action, mode);
 			SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
 			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
 			newAlignment.setType(DatasetType.GCGCTOF);
