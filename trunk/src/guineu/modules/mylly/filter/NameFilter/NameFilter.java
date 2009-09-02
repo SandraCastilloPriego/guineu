@@ -15,17 +15,14 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter.pre;
+package guineu.modules.mylly.filter.NameFilter;
 
+import guineu.modules.mylly.filter.NameFilter.*;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.modules.mylly.filter.NameFilter.NameFilterParameters;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -35,9 +32,6 @@ import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 
@@ -53,31 +47,31 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 
 	public void initModule() {
 		parameters = new NameFilterParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Preprocessor Filter..",
-				"TODO write description", KeyEvent.VK_N, this, null);
+		this.desktop = GuineuCore.getDesktop();	
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
+				"TODO write description", KeyEvent.VK_O, this, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Name Preprocessor Filter");
+		logger.info("Running Name Filter");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Name Preprocessor Filter ");
+			logger.info("Finished Name Filter " );
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Name Preprocessor Filtering .. ";
+			String msg = "Error while Name Filtering .. " ;
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {		
 		try {
 			setupParameters(parameters);
 		} catch (Exception exception) {
@@ -100,7 +94,7 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		parameters = (NameFilterParameters) parameters;
+		 parameters = (NameFilterParameters) parameters;
 	}
 
 	public String toString() {
@@ -108,31 +102,23 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
-		Dataset[] datasets = desktop.getSelectedDataFiles();
-		List<GCGCData> newDatasets = new ArrayList<GCGCData>();
 
-		for(int i = 0; i < datasets.length; i++){
-			GCGCDatum[][] datum = ((SimpleGCGCDataset)datasets[i]).toArray();
-			List<GCGCDatum> datumList = new ArrayList<GCGCDatum>();
-			for(GCGCDatum data: datum[0]){
-				datumList.add(data.clone());
-			}		
-			newDatasets.add(new GCGCData(datumList, datasets[i].getDatasetName()));
-		}
+        Dataset[] AlignmentFiles =  desktop.getSelectedDataFiles();
 
+        
+            // prepare a new group of tasks
+            Task tasks[] = new NameFilterTask[1];
 
-		// prepare a new group of tasks
-		Task tasks[] = new NamePreFilterTask[1];
+            tasks[0] = new NameFilterTask(AlignmentFiles,parameters);
 
-		tasks[0] = new NamePreFilterTask(newDatasets, parameters);
+            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+            // start the group
+            newGroup.start();
 
-		// start the group
-		newGroup.start();
-
-		return newGroup;
-
-
+            return newGroup;
+       
 	}
+
+
 }

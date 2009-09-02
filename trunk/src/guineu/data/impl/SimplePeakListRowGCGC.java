@@ -49,10 +49,10 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		}
 	};
 
-	private static synchronized long getNextId() {
+	private long getNextId() {
 		return nextId++;
 	}
-	private static long nextId = 1;
+	private long nextId = 1;
 	private int ID,  numberFixColumns;
 	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
 	private String name,  allNames,  spectra,  pubChemID;
@@ -373,7 +373,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public SimplePeakListRowGCGC(AlignmentPath p) {
-		this.ID = (int) SimplePeakListRowGCGC.getNextId();
+		this.ID = (int)this.getNextId();
 		this.RT1 = p.getRT1();
 		this.RT2 = p.getRT2();
 		this.RTI = p.getRTI();
