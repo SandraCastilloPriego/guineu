@@ -264,6 +264,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		return sb.toString();
 	}
 
+	@Override
 	public String toString() {		
 		StringBuilder sb = new StringBuilder(name);
 		sb.append(" RT(").append(rt1).append(',').append(rt2).append(')');
