@@ -47,7 +47,6 @@ public class PubChemFilter implements GuineuModule, TaskListener, ActionListener
 	public void initModule() {
 		parameters = new PubChemParameters();
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuSeparator(GuineuMenu.MYLLY);
 		desktop.addMenuItem(GuineuMenu.MYLLY, "PubChem ID Filter..",
 				"TODO write description", KeyEvent.VK_P, this, null);
 
