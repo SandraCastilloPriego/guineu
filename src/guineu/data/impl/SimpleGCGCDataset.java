@@ -264,7 +264,7 @@ public class SimpleGCGCDataset implements Dataset{
 		for (int i = 0; i < alignment.size(); i++) {
 			SimplePeakListRowGCGC alignmentRow = alignment.get(i);
 			if (alignmentRow.getMass() > -1) {
-				QuantMassList.add(alignmentRow);
+				QuantMassList.add((SimplePeakListRowGCGC)alignmentRow.clone());
 			}
 		}
 		return QuantMassList;

@@ -104,7 +104,7 @@ public class PeakCountFilterTask implements Task {
 
 		for (SimplePeakListRowGCGC row : input.getAlignment()) {
 			if (filter.include(row)) {
-				filteredAlignment.addAlignmentRow(row);
+				filteredAlignment.addAlignmentRow((SimplePeakListRowGCGC) row.clone());
 			}
 		}
 
