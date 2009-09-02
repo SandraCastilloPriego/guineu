@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.NameFilter;
 
-import guineu.modules.mylly.filter.NameFilter.*;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;

@@ -255,8 +255,9 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
 		return peaks.length;
 	}
 
-	public SimplePeakListRowGCGC convertToAlignmentRow() {
+	public SimplePeakListRowGCGC convertToAlignmentRow(int ID) {
 		SimplePeakListRowGCGC row = new SimplePeakListRowGCGC(this);
+		row.setID(ID);
 		return row;
 	}
 

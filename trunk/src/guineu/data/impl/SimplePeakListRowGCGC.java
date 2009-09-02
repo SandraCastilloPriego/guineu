@@ -48,11 +48,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 			return comparison;
 		}
 	};
-
-	private long getNextId() {
-		return nextId++;
-	}
-	private long nextId = 1;
+	
 	private int ID,  numberFixColumns;
 	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
 	private String name,  allNames,  spectra,  pubChemID;
@@ -373,7 +369,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public SimplePeakListRowGCGC(AlignmentPath p) {
-		this.ID = (int)this.getNextId();
+		this.ID = 0;
 		this.RT1 = p.getRT1();
 		this.RT2 = p.getRT2();
 		this.RTI = p.getRTI();
@@ -393,7 +389,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 			if (d != null) {
 				row.add(d);
 				numFound++;
-				String curName = (d.isIdentified()) ? d.getName() : null;
+				String curName = (d.isIdentified()) ? d.getName() : null;				
 				String curCAS = d.getCAS();
 				if (curCAS == null) {
 					curCAS = "0-00-0";

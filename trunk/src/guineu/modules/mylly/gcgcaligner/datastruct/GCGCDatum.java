@@ -89,8 +89,9 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		Matcher m = p.matcher(name);
 		if (m.matches()) {
 			this.name = UNKOWN_NAME;
+			identified = false;
 		} else {
-			this.name = name.intern();
+			this.name = name;
 			identified = true;
 		}
 		if (peakList != null) {
@@ -105,6 +106,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		this(rt1, rt2, DEFAULT_RI, quantMass, similarity, area, concentration, useConc, CAS, name, columnName, spectrum);
 	}
 
+	@Override
 	public GCGCDatum clone() {
 		GCGCDatum d = new GCGCDatum();
 		d.rt1 = rt1;
@@ -117,10 +119,10 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		d.CAS = CAS;
 		d.name = name;
 		d.id = id;
-		d.spectrum = (spectrum == null) ? null : spectrum.clone();
-		d.quantMass = quantMass;
+		d.spectrum = (spectrum == null) ? null : spectrum.clone();	
 		d.useConc = useConc;
 		d.columnName = columnName;
+		d.identified = identified;
 		return d;
 	}
 
@@ -142,13 +144,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		if (failureFound) {
 			throw new IllegalArgumentException(sb.toString());
 		}
-	}
-
-	private void verifyNewVal(double val, String name) {
-		if (val < 0) {
-			throw new IllegalArgumentException("New value for " + name + " was negative! (" + val + ")");
-		}
-	}
+	}	
 
 	public double getRT1() {
 		return rt1;
