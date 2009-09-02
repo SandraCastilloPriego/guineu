@@ -66,7 +66,7 @@ class MainMenu extends JMenuBar implements ActionListener {
 		msmsMenu.setMnemonic(KeyEvent.VK_M);
 		add(msmsMenu);
 
-		myllyMenu = new JMenu("Mylly");
+		myllyMenu = new JMenu("GCGC-Tof Files");
 		myllyMenu.setMnemonic(KeyEvent.VK_Y);
 		add(myllyMenu);
 
