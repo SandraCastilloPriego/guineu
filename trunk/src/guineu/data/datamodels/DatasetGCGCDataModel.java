@@ -142,7 +142,6 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 	}
 
 	@Override
-	@SuppressWarnings("fallthrough")
 	public void setValueAt(Object aValue, int row, int column) {
 
 		double doubleValue = 0;

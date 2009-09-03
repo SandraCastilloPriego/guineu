@@ -17,7 +17,7 @@
  */
 package guineu.modules.statistics.Ttest;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.util.logging.Logger;
@@ -30,12 +30,12 @@ import javax.swing.JDialog;
 public class TtestDataDialog extends JDialog {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private SimpleDataset dataset;
+    private Dataset dataset;
     private TtestDataModel group1,  group2,  from;
     private ExitCode exit = ExitCode.UNKNOWN;
 
     /** Creates new form TtestDataDialog */
-    public TtestDataDialog(SimpleDataset dataset) {
+    public TtestDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please select a experiment groups to do the t-test...", true);
 

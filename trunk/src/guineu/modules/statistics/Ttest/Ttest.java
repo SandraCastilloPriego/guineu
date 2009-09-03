@@ -19,7 +19,6 @@ package guineu.modules.statistics.Ttest;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleDataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -42,7 +41,7 @@ public class Ttest implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private SimpleDataset dataset;
+    private Dataset dataset;
     private String[] group1,  group2;
 
     public void initModule() {
@@ -83,7 +82,7 @@ public class Ttest implements GuineuModule, TaskListener, ActionListener {
     public ExitCode setupParameters() {
         try {
             Dataset[] datasets = desktop.getSelectedDataFiles();
-            dataset = (SimpleDataset) datasets[0];
+            dataset = datasets[0];
             TtestDataDialog dialog = new TtestDataDialog(dataset);
             dialog.setVisible(true);
             group1 = dialog.getGroup1();

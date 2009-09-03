@@ -37,11 +37,7 @@ public class Spectrum implements Cloneable {
 		REVERSEMASS, REVERSEINTENSITY
 	}
 	final private static Spectrum nullSpectrum = new Spectrum();
-//	{
-//		nullSpectrum._intensities = new int[0];
-//		nullSpectrum._masses = new int[0];
-//		nullSpectrum._sortMode = SortingMode.REVERSEINTENSITY;
-//	}
+
 	//First comes the fragment mass, then intensity
 	protected int _intensities[];
 	protected int _masses[];
@@ -122,18 +118,18 @@ public class Spectrum implements Cloneable {
 	}
 
 	public int[] getMasses() {
-		return peakMasses().clone();
+		return peakMasses();
 	}
 
 	public int[] getIntensities() {
-		return peakIntensities().clone();
+		return peakIntensities();
 	}
 
 	@Override
 	public Spectrum clone() {
 		Spectrum s = new Spectrum();
-		s._intensities = getIntensities();
-		s._masses = getMasses();
+		s._intensities = getIntensities().clone();
+		s._masses = getMasses().clone();
 		return s;
 	}
 

@@ -6,7 +6,7 @@
 
 package guineu.modules.statistics.standardVariation;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.Dataset;
 import guineu.modules.statistics.Ttest.*;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
@@ -19,12 +19,12 @@ import javax.swing.JDialog;
  */
 public class standardVariationDataDialog extends JDialog {
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private SimpleDataset dataset;
+    private Dataset dataset;
     private TtestDataModel group1, group2, from;
     private ExitCode exit = ExitCode.UNKNOWN;
     
     /** Creates new form TtestDataDialog */
-    public standardVariationDataDialog(SimpleDataset dataset) {
+    public standardVariationDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
 				"Please select a experiment groups to do the t-test...", true);
 

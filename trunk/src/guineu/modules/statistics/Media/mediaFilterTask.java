@@ -21,10 +21,15 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetGCGCDataModel;
+import guineu.data.impl.DatasetType;
+import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
+import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
@@ -36,96 +41,112 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  */
 public class mediaFilterTask implements Task {
 
-    private Dataset[] datasets;
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress;
-    private Lipidclass lipidClass;
+	private Dataset[] datasets;
+	private TaskStatus status = TaskStatus.WAITING;
+	private String errorMessage;
+	private Desktop desktop;
+	private double progress;
+	private Lipidclass lipidClass;
 
-    public mediaFilterTask(Dataset[] datasets, Desktop desktop) {
-        this.datasets = datasets;
-        this.desktop = desktop;
-        this.lipidClass = new Lipidclass();
-    }
+	public mediaFilterTask(Dataset[] datasets, Desktop desktop) {
+		this.datasets = datasets;
+		this.desktop = desktop;
+		this.lipidClass = new Lipidclass();
+	}
 
-    public String getTaskDescription() {
-        return "std Dev scores... ";
-    }
+	public String getTaskDescription() {
+		return "std Dev scores... ";
+	}
 
-    public double getFinishedPercentage() {
-        return progress;
-    }
+	public double getFinishedPercentage() {
+		return progress;
+	}
 
-    public TaskStatus getStatus() {
-        return status;
-    }
+	public TaskStatus getStatus() {
+		return status;
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
+	public void cancel() {
+		status = TaskStatus.CANCELED;
+	}
 
-    public void run() {
-        try {
-            this.median();
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
-        }
-    }
+	public void run() {
+		try {
+			this.median();
+		} catch (Exception e) {
+			status = TaskStatus.ERROR;
+			errorMessage = e.toString();
+			return;
+		}
+	}
 
-    public void median() {
-        status = TaskStatus.PROCESSING;
-        try {
-            progress = 0.0f;
-            for(Dataset dataset : datasets){
-                double[] median = this.getSTDDev((SimpleDataset)dataset);
-                SimpleDataset newDataset = new SimpleDataset("Median - " + dataset.getDatasetName());
-                newDataset.setType(dataset.getType());                
-                newDataset.AddNameExperiment("Median");
-                int cont = 0;
+	public void median() {
+		status = TaskStatus.PROCESSING;
+		try {
+			progress = 0.0f;
+			for (Dataset dataset : datasets) {
+				double[] median = this.getSTDDev(dataset);
+				DataTableModel model = null;
+				Dataset newDataset = null;
+				if (dataset.getType() == DatasetType.LCMS) {
+					newDataset = new SimpleDataset("Median - " + dataset.getDatasetName());
+					newDataset.setType(dataset.getType());
+					newDataset.AddNameExperiment("Median");
+					int cont = 0;
 
-                for (PeakListRow row : ((SimpleDataset)dataset).getRows()) {
-                    PeakListRow newRow = row.clone();
-                    newRow.removePeaks();
-                    newRow.setPeak("Median", median[cont++]);
-                    newDataset.AddRow(newRow);
-                }
+					for (PeakListRow row : dataset.getRows()) {
+						PeakListRow newRow = row.clone();
+						newRow.removePeaks();
+						newRow.setPeak("Median", median[cont++]);
+						((SimpleDataset)newDataset).AddRow(newRow);
+					}
 
-                DatasetDataModel model = new DatasetDataModel(newDataset);
+					model = new DatasetDataModel(newDataset);
+				}else if(dataset.getType() == DatasetType.GCGCTOF){
+					newDataset = new SimpleGCGCDataset("Median - " + dataset.getDatasetName());
+					newDataset.setType(dataset.getType());
+					newDataset.AddNameExperiment("Median");
+					int cont = 0;
 
-                DataTable table = new PushableTable(model);
-                table.formatNumbers(11);
-                DataInternalFrame frame = new DataInternalFrame("Median" + dataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
-                desktop.addInternalFrame(frame);
-                desktop.AddNewFile(newDataset);
-                frame.setVisible(true);
-            }
-            progress = 1f;
+					for (PeakListRow row : dataset.getRows()) {
+						PeakListRow newRow = row.clone();
+						((SimplePeakListRowGCGC) newRow).removePeaks();
+						newRow.setPeak("Median", median[cont++]);
+						((SimpleGCGCDataset)newDataset).addAlignmentRow((SimplePeakListRowGCGC) newRow);
+					}
 
-        } catch (Exception ex) {
-        }
-        status = TaskStatus.FINISHED;
-    }
+					model = new DatasetGCGCDataModel(newDataset);
+				}
+				DataTable table = new PushableTable(model);
+				table.formatNumbers(dataset.getType());
+				DataInternalFrame frame = new DataInternalFrame("Median" + dataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
+				desktop.addInternalFrame(frame);
+				desktop.AddNewFile(newDataset);
+				frame.setVisible(true);
+			}
+			progress = 1f;
 
-    public double[] getSTDDev(SimpleDataset dataset) {
-        DescriptiveStatistics stats = new DescriptiveStatistics();
-        double[] median = new double[dataset.getNumberRows()];
-        int numRows = 0;
-        for (PeakListRow peak : dataset.getRows()) {
-            stats.clear();
-            for(String nameExperiment : dataset.getNameExperiments()){
-                stats.addValue((Double)peak.getPeak(nameExperiment));
-            }
-            double[] values = stats.getSortedValues();
-            median[numRows++] = values[values.length/2];
-        }
-        return median;
-    }
-    
+		} catch (Exception ex) {
+		}
+		status = TaskStatus.FINISHED;
+	}
+
+	public double[] getSTDDev(Dataset dataset) {
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		double[] median = new double[dataset.getNumberRows()];
+		int numRows = 0;
+		for (PeakListRow peak : dataset.getRows()) {
+			stats.clear();
+			for (String nameExperiment : dataset.getNameExperiments()) {
+				stats.addValue((Double) peak.getPeak(nameExperiment));
+			}
+			double[] values = stats.getSortedValues();
+			median[numRows++] = values[values.length / 2];
+		}
+		return median;
+	}
 }
