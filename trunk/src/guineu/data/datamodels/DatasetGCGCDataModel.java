@@ -76,7 +76,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 	public Object getValueAt(final int row, final int column) {
 		try {
 			//GCGC-Tof files
-		
+
 			switch (column) {
 				case 0:
 					return this.dataset.getRow(row).isSelected();
@@ -103,12 +103,14 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 				case 11:
 					return this.dataset.getRow(row).getAllNames();
 				case 12:
-					return this.dataset.getRow(row).getPubChemID();
+					return this.dataset.getRow(row).getMolClass();
 				case 13:
-					return this.dataset.getRow(row).getMass();
+					return this.dataset.getRow(row).getPubChemID();
 				case 14:
-					return this.dataset.getRow(row).getDifference();
+					return this.dataset.getRow(row).getMass();
 				case 15:
+					return this.dataset.getRow(row).getDifference();
+				case 16:
 					return this.dataset.getRow(row).getSpectrumString();
 			}
 			return this.dataset.getRow(row).getPeak(this.dataset.getNameExperiments().get(column - this.fixNumberColumns));
@@ -120,9 +122,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 	@Override
 	public String getColumnName(int columnIndex) {
 		if (columnIndex < this.fixNumberColumns) {
-			if (this.dataset.getType() == DatasetType.LCMS) {
-				return LCMSColumnName.values()[columnIndex].getColumnName();
-			} else if (this.dataset.getType() == DatasetType.GCGCTOF) {
+			if (this.dataset.getType() == DatasetType.GCGCTOF) {
 				return GCGCColumnName.values()[columnIndex].getColumnName();
 			} else {
 				return this.dataset.getNameExperiments().elementAt(columnIndex - this.fixNumberColumns);
@@ -219,15 +219,18 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setAllNames((String) aValue);
 				break;
 			case 12:
-				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setPubChemID((String) aValue);
+				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setClass((String) aValue);
 				break;
 			case 13:
-				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMass(doubleValue);
+				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setPubChemID((String) aValue);
 				break;
 			case 14:
-				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setDifference(doubleValue);
+				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setMass(doubleValue);
 				break;
 			case 15:
+				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setDifference(doubleValue);
+				break;
+			case 16:
 				((SimplePeakListRowGCGC) this.dataset.getRow(row)).setSpectrum((String) aValue);
 				break;
 			default:

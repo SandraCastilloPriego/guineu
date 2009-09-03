@@ -69,7 +69,7 @@ public class SimplePeakListRowOther implements PeakListRow {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public int getLipidClass() {
+    public String getMolClass() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

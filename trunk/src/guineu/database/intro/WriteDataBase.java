@@ -142,7 +142,7 @@ public class WriteDataBase {
 							" VALUES ( '" + Double.valueOf(lipid.getMZ()).floatValue() +
 							"', '" + Double.valueOf(lipid.getRT()).floatValue() +
 							"', '" + lipid.getName() +
-							"', '" + (int) lipid.getLipidClass() +
+							"', '" + Integer.valueOf(lipid.getMolClass()) +
 							"', '" + (int) lipid.getNumFound() +
 							"', '" + lipid.getStandard() +
 							"', '" + excel_id +

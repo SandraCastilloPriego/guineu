@@ -131,7 +131,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 						str = this.replace(str, "GPEth", "GPEtn");
 					}
 					lipid.setName(str);
-					lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
+					lipid.setLipidClass(String.valueOf(this.LipidClassLib.get_class(lipid.getName())));
 				} else if (title.matches(RegExp.CLASS.getREgExp())) {
 				} else if (title.matches(RegExp.NFOUND.getREgExp())) {
 					if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
@@ -177,7 +177,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 				if (lipid.getName() == null) {
 					lipid.setName("unknown");
 				}
-				lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
+				lipid.setLipidClass(String.valueOf(this.LipidClassLib.get_class(lipid.getName())));
 			} catch (Exception exception) {
 				//exception.printStackTrace();
 			}

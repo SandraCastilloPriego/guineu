@@ -48,7 +48,7 @@
     <module class="guineu.modules.statistics.Ttest.Ttest"/>  
     <!-- <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
-    <module class="guineu.modules.statistics.standardVariation.standardVariation"/> 
+    <!-- <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->
     <module class="guineu.modules.msms.open.OpenFile"/>
     <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>

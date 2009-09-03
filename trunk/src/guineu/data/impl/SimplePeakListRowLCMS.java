@@ -29,21 +29,21 @@ import java.util.Vector;
  */
 public class SimplePeakListRowLCMS implements PeakListRow {
 
-	private String FAComposition,  allNames,  Name;
+	private String FAComposition,  allNames,  Name, lipidClass ="";
 	private double averageMZ,  averageRT,  numFound;
-	private int standard,  lipidClass,  ID,  aligment,  numFixColumns;
+	private int standard, ID,  aligment,  numFixColumns;
 	private boolean control,  selection;
 	private Hashtable<String, Double> peaks;
 
 	public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound,
-			int standard, int lipidClass, String Name, String identity, String FAComposition) {
+			int standard, String lipidClass, String Name, String identity, String FAComposition) {
 		this.ID = ID;
 		this.FAComposition = FAComposition;
 		this.averageMZ = averageMZ;
 		this.averageRT = averageRT;
 		this.numFound = numFound;
 		this.standard = standard;
-		this.lipidClass = lipidClass;
+		this.lipidClass = String.valueOf(lipidClass);
 		this.Name = Name;
 		this.allNames = identity;
 		this.peaks = new Hashtable<String, Double>();
@@ -90,7 +90,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		return this.standard;
 	}
 
-	public int getLipidClass() {
+	public String getMolClass() {
 		return this.lipidClass;
 	}
 
@@ -118,7 +118,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.standard = standard;
 	}
 
-	public void setLipidClass(int lipidClass) {
+	public void setLipidClass(String lipidClass) {
 		this.lipidClass = lipidClass;
 	}
 

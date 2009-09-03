@@ -32,6 +32,7 @@ public enum GCGCColumnName {
     SIMSTD ("Similarity std dev"),
     NAME ("Metabolite name"),
     ALLNAMES ("Metabolite all names"),
+	CLASS ("Class"),
     PUBCHEM ("Pubchem ID"),
     MASS ("Mass"),
     DIFFERENCE ("Difference"),

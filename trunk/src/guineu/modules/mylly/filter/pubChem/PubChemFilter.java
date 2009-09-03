@@ -106,9 +106,9 @@ public class PubChemFilter implements GuineuModule, TaskListener, ActionListener
 
 
 		// prepare a new group of tasks
-		Task tasks[] = new PubChemrFilterTask[datasets.length];
+		Task tasks[] = new PubChemFilterTask[datasets.length];
 		for (int i = 0; i < datasets.length; i++) {
-			tasks[i] = new PubChemrFilterTask(datasets[i], parameters);
+			tasks[i] = new PubChemFilterTask(datasets[i], parameters);
 		}
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
