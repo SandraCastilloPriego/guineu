@@ -51,7 +51,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	
 	private int ID,  numberFixColumns;
 	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
-	private String name,  allNames,  spectra,  pubChemID;
+	private String name,  allNames,  spectra,  pubChemID, molClass;
 	private boolean control,  selection;
 	private String CAS;
 	private Spectrum spectrum;
@@ -175,6 +175,10 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		this.name = Name;
 	}
 
+	public void setClass(String molClass){
+		this.molClass = molClass;
+	}
+
 	@Override
 	public PeakListRow clone() {
 		PeakListRow newPeakListRow = new SimplePeakListRowGCGC(this.ID, this.RT1, this.RT2, this.RTI,
@@ -296,8 +300,8 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	public int getLipidClass() {
-		throw new UnsupportedOperationException("Not supported yet.");
+	public String getMolClass() {
+		return this.molClass;
 	}
 
 	public String getFAComposition() {

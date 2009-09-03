@@ -35,7 +35,7 @@ public interface PeakListRow {
 
     public int getStandard();
 
-    public int getLipidClass();
+    public String getMolClass();
 
     public String getFAComposition();
 

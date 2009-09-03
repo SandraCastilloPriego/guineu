@@ -19,12 +19,9 @@ package guineu.modules.mylly.filter.pubChem;
 
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import java.io.File;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
@@ -39,14 +36,14 @@ import java.awt.Dimension;
  *
  * @author scsandra
  */
-public class PubChemrFilterTask implements Task {
+public class PubChemFilterTask implements Task {
 
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private Dataset dataset;
 	private PubChemParameters parameters;
 
-	public PubChemrFilterTask(Dataset dataset, PubChemParameters parameters) {
+	public PubChemFilterTask(Dataset dataset, PubChemParameters parameters) {
 		this.dataset = dataset;
 		this.parameters = parameters;
 	}
@@ -91,7 +88,7 @@ public class PubChemrFilterTask implements Task {
 
 			status = TaskStatus.FINISHED;
 		} catch (Exception ex) {
-			Logger.getLogger(PubChemrFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(PubChemFilterTask.class.getName()).log(Level.SEVERE, null, ex);
 			status = TaskStatus.ERROR;
 		}
 	}

@@ -470,7 +470,7 @@ public class DBask implements DataBase {
 				peakListRow.setMZ(r.getFloat("AVERAGE_MZ"));
 				peakListRow.setRT(r.getFloat("AVERAGE_RT"));
 				peakListRow.setNumFound(r.getInt("N_FOUND"));
-				peakListRow.setLipidClass(r.getInt("LIPID_CLASS"));
+				peakListRow.setLipidClass(String.valueOf(r.getInt("LIPID_CLASS")));
 				peakListRow.setAllNames(r.getString("IDENTITY"));
 				peakListRow.setStandard(r.getInt("STD"));
 				peakListRow.setName(r.getString("LIPID_NAME"));

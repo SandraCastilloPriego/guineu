@@ -77,7 +77,7 @@ public class WriteFile {
 							} else if (p.getName().matches(".*All Names.*")) {
 								data[cont++] = lipid.getAllNames();
 							} else if (p.getName().matches(".*Lipid Class.*")) {
-								data[cont++] = String.valueOf(lipid.getLipidClass());
+								data[cont++] = String.valueOf(lipid.getMolClass());
 							} else if (p.getName().matches(".*Num Found.*")) {
 								data[cont++] = String.valueOf(lipid.getNumFound());
 							} else if (p.getName().matches(".*Standard.*")) {
@@ -195,7 +195,7 @@ public class WriteFile {
 							} else if (p.getName().matches(".*All Names.*")) {
 								this.setCell(row, cont++, lipid.getAllNames());
 							} else if (p.getName().matches(".*Lipid Class.*")) {
-								this.setCell(row, cont++, lipid.getLipidClass());
+								this.setCell(row, cont++, lipid.getMolClass());
 							} else if (p.getName().matches(".*Num Found.*")) {
 								this.setCell(row, cont++, lipid.getNumFound());
 							} else if (p.getName().matches(".*Standard.*")) {
