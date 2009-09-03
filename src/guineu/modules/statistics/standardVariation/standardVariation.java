@@ -20,7 +20,7 @@ package guineu.modules.statistics.standardVariation;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.Dataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -44,7 +44,7 @@ public class standardVariation implements GuineuModule, TaskListener, ActionList
  
 
     private Desktop desktop;
-    private SimpleDataset dataset;
+    private Dataset dataset;
     private String[] group1, group2;
     
     public void initModule() {
@@ -87,7 +87,7 @@ public class standardVariation implements GuineuModule, TaskListener, ActionList
     public ExitCode setupParameters() {
         try{
             Dataset[] datasets = desktop.getSelectedDataFiles();
-            dataset = (SimpleDataset) datasets[0];
+            dataset =  datasets[0];
             standardVariationDataDialog dialog = new standardVariationDataDialog(dataset);
             dialog.setVisible(true);
             group1 = dialog.getGroup1();

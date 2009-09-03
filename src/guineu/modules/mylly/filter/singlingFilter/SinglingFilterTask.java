@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.singlingFilter;
 
-import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
 import guineu.main.GuineuCore;
@@ -41,7 +40,6 @@ public class SinglingFilterTask implements Task {
 	private String errorMessage;
 	private SimpleGCGCDataset dataset;
 	private SinglingParameters parameters;
-	private int ID = 1;
 
 	public SinglingFilterTask(SimpleGCGCDataset dataset, SinglingParameters parameters) {
 		this.dataset = dataset;
@@ -77,16 +75,19 @@ public class SinglingFilterTask implements Task {
 
 			Singling filter = new Singling(minSimilarity, unknownPeaks);
 			SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SinglingParameters.suffix));
-			newAlignment.setType(DatasetType.GCGCTOF);
-			DataTableModel model = new DatasetGCGCDataModel(newAlignment);
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(newAlignment.getType());
-            DataInternalFrame frame = new DataInternalFrame(newAlignment.getDatasetName(), table.getTable(), new Dimension(800, 800));
+			if (newAlignment != null) {
+				newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SinglingParameters.suffix));
+				newAlignment.setType(DatasetType.GCGCTOF);
+				DataTableModel model = new DatasetGCGCDataModel(newAlignment);
+				DataTable table = new PushableTable(model);
+				table.formatNumbers(newAlignment.getType());
+				DataInternalFrame frame = new DataInternalFrame(newAlignment.getDatasetName(), table.getTable(), new Dimension(800, 800));
 
-            GuineuCore.getDesktop().addInternalFrame(frame);
-			GuineuCore.getDesktop().AddNewFile(newAlignment);
-
+				GuineuCore.getDesktop().addInternalFrame(frame);
+				GuineuCore.getDesktop().AddNewFile(newAlignment);
+			}else{
+				System.out.println("The result is null");
+			}
 
 			status = TaskStatus.FINISHED;
 		} catch (Exception ex) {
@@ -94,6 +95,4 @@ public class SinglingFilterTask implements Task {
 			status = TaskStatus.ERROR;
 		}
 	}
-
-	
 }

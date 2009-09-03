@@ -44,7 +44,7 @@ public class ScoreAligner implements Aligner {
 	private int peaksDone;
 	private volatile boolean aligningDone;
 	private volatile Thread[] threads;
-	private List<List<GCGCDatum>> peakList;
+	private volatile List<List<GCGCDatum>> peakList;
 	private final List<GCGCData> originalPeakList;
 	private int originalOrder[];
 	private String names[];

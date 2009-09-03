@@ -17,6 +17,7 @@
  */
 package guineu.util.Tables.impl;
 
+import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
 import java.util.Comparator;
 
 /**
@@ -51,6 +52,12 @@ public class TableComparator implements Comparator<Object> {
             } else if (o1.getClass().toString().matches(".*String.*")) {
                 s1 = (String) o1;
                 s2 = (String) o2;
+				if(s1.equals(GCGCDatum.UNKOWN_NAME)){
+					return -1;
+				}
+				if(s2.equals(GCGCDatum.UNKOWN_NAME)){
+					return 1;
+				}
                 if (s1 != null && s2 != null) {
                     result = s1.compareTo(s2);
                 }
