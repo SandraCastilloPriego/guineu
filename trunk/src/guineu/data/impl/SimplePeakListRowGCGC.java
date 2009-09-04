@@ -508,7 +508,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public Spectrum getSpectrum() {
-		return spectrum.clone();
+		return spectrum;
 	}
 
 	public SimplePeakListRowGCGC setDistValue(DistValue val) {

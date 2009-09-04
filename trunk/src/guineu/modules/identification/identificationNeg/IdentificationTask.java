@@ -172,7 +172,7 @@ public class IdentificationTask implements Task {
             SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) dataset.getRow(Index);
             lipid.setName(LipidName);
             int lipidClass = this.LipidClassLib.get_class(lipid.getName());
-            lipid.setLipidClass(lipidClass);
+            lipid.setLipidClass(String.valueOf(lipidClass));
             if (table != null) {
                 table.setValueAt(LipidName, Index, 4);
                 table.setValueAt(new Integer(lipidClass), Index, 5);
