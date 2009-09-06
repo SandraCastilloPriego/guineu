@@ -24,6 +24,7 @@ import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.gcgcaligner.datastruct.ComparablePair;
 import guineu.modules.mylly.gcgcaligner.datastruct.Spectrum;
+import guineu.modules.mylly.gcgcaligner.datastruct.Spectrum.SortingMode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -67,8 +68,8 @@ public class ClassIdentification {
 
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 
-		for (SimplePeakListRowGCGC row : input.getAlignment()) {			
-				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC) row.clone();
+		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC)row.clone();
 				this.setRules(clonedRow);				
 				als.add(clonedRow);
 		}
@@ -79,6 +80,7 @@ public class ClassIdentification {
 
 	private void setRules(SimplePeakListRowGCGC clonedRow) {
 		Spectrum spectra = clonedRow.getSpectrum();
+        spectra.sort(SortingMode.INTENSITY);
 		List<ComparablePair<Integer, Integer>> spectrumRow = spectra.getPeakList();
 		for(String[] rule: this.rules){
 			Rules r = new Rules( clonedRow, spectrumRow,  rule[1]);
