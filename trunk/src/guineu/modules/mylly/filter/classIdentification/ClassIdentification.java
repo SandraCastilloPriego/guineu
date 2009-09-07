@@ -39,7 +39,11 @@ import java.util.List;
  */
 public class ClassIdentification {
 
-	List<String[]> rules;
+	private List<String[]> rules;
+	private double numberRowProcessed = 0;
+
+	private SimpleGCGCDataset input;
+
 
 	public ClassIdentification() {
 		this.rules = new ArrayList<String[]>();
@@ -47,6 +51,10 @@ public class ClassIdentification {
 
 	public String getName() {
 		return "Class Identification";
+	}
+
+	public double getProgress(){		
+		return (double)(numberRowProcessed / (double) input.getAlignment().size());
 	}
 
 	public void createCorrector(File rulesFile) throws IOException {
@@ -65,13 +73,14 @@ public class ClassIdentification {
 
 	public SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
 		//we don't want to apply this filter in the peaks with Quant Mass		
-
+		this.input = input;
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 
 		for (SimplePeakListRowGCGC row : input.getAlignment()) {
 				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC)row.clone();
 				this.setRules(clonedRow);				
 				als.add(clonedRow);
+				this.numberRowProcessed++;
 		}
 		SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
 		filtered.addAll(als);
@@ -85,7 +94,14 @@ public class ClassIdentification {
 		for(String[] rule: this.rules){
 			Rules r = new Rules( clonedRow, spectrumRow,  rule[1]);
 			if(r.getResult()){
-				clonedRow.setClass(rule[0]);
+				String rowClass = clonedRow.getMolClass();
+				if(rowClass != null && !rowClass.isEmpty()){
+					rowClass += " \\\\ ";
+					rowClass += rule[0];
+				}else{
+					rowClass = rule[0];
+				}
+				clonedRow.setClass(rowClass);
 			}
 		}
 	}
