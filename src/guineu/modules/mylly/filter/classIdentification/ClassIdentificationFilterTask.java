@@ -42,18 +42,20 @@ public class ClassIdentificationFilterTask implements Task {
 	private String errorMessage;
 	private Dataset dataset;
 	private ClassIdentificationParameters parameters;
+	private ClassIdentification filter;
 
 	public ClassIdentificationFilterTask(Dataset dataset, ClassIdentificationParameters parameters) {
 		this.dataset = dataset;
 		this.parameters = parameters;
+		filter = new ClassIdentification();
 	}
 
 	public String getTaskDescription() {
 		return "Filtering files with Class Identification Filter... ";
 	}
 
-	public double getFinishedPercentage() {
-		return 1f;
+	public double getFinishedPercentage() {		
+		return filter.getProgress();
 	}
 
 	public TaskStatus getStatus() {
@@ -73,7 +75,6 @@ public class ClassIdentificationFilterTask implements Task {
 		try {
 
 			String name = (String) parameters.getParameterValue(ClassIdentificationParameters.fileNames);
-			ClassIdentification filter = new ClassIdentification();
 			filter.createCorrector(new File(name));
 			SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
 			alignment.setName(alignment.getDatasetName() + (String) parameters.getParameterValue(ClassIdentificationParameters.suffix));
