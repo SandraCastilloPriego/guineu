@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameFilter;
+package guineu.modules.mylly.filter.calculateDeviations;
 
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
@@ -38,40 +38,39 @@ import guineu.data.Dataset;
  *
  * @author scsandra
  */
-public class NameFilter implements GuineuModule, TaskListener, ActionListener {
+public class CalculateDeviations implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private NameFilterParameters parameters;
+	private CalculateDeviationsParameters parameters;
 
 	public void initModule() {
-		parameters = new NameFilterParameters();
+		parameters = new CalculateDeviationsParameters();
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuSeparator(GuineuMenu.MYLLY);
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
-				"TODO write description", KeyEvent.VK_O, this, null);
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Calculate Deviations ..",
+				"TODO write description", KeyEvent.VK_D, this, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Name Filter");
+		logger.info("Running Calculate Deviations");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Name Filter " );
+			logger.info("Finished Calculate Deviations ");
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Name Filtering .. " ;
+			String msg = "Error while Calculate Deviations .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {
 		try {
 			setupParameters(parameters);
 		} catch (Exception exception) {
@@ -81,7 +80,7 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(NameFilterParameters) currentParameters);
+				(CalculateDeviationsParameters) currentParameters);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
@@ -94,31 +93,29 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		 parameters = (NameFilterParameters) parameters;
+		parameters = (CalculateDeviationsParameters) parameters;
 	}
 
 	public String toString() {
-		return "Name Filter";
+		return "Calculate Deviations";
 	}
 
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-        Dataset[] AlignmentFiles =  desktop.getSelectedDataFiles();
+		Dataset[] AlignmentFiles = desktop.getSelectedDataFiles();
 
-        
-            // prepare a new group of tasks
-            Task tasks[] = new NameFilterTask[1];
 
-            tasks[0] = new NameFilterTask(AlignmentFiles,parameters);
+		// prepare a new group of tasks
+		Task tasks[] = new CalculateDeviationsTask[AlignmentFiles.length];
+		for (int i = 0; i < AlignmentFiles.length; i++) {
+			tasks[i] = new CalculateDeviationsTask(AlignmentFiles[i], parameters);
+		}
+		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		// start the group
+		newGroup.start();
 
-            // start the group
-            newGroup.start();
+		return newGroup;
 
-            return newGroup;
-       
 	}
-
-
 }

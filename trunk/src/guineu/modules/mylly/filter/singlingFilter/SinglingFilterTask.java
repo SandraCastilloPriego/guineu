@@ -39,11 +39,15 @@ public class SinglingFilterTask implements Task {
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private SimpleGCGCDataset dataset;
-	private SinglingParameters parameters;
+	private double minSimilarity;
+	private boolean unknownPeaks;
+	private String suffix;
 
 	public SinglingFilterTask(SimpleGCGCDataset dataset, SinglingParameters parameters) {
 		this.dataset = dataset;
-		this.parameters = parameters;
+		minSimilarity = (Double) parameters.getParameterValue(SinglingParameters.similarity);
+		unknownPeaks = (Boolean) parameters.getParameterValue(SinglingParameters.unknownPeaks);
+		suffix = (String) parameters.getParameterValue(SinglingParameters.suffix);
 	}
 
 	public String getTaskDescription() {
@@ -70,13 +74,10 @@ public class SinglingFilterTask implements Task {
 		status = TaskStatus.PROCESSING;
 		try {
 
-			double minSimilarity = (Double) parameters.getParameterValue(SinglingParameters.similarity);
-			boolean unknownPeaks = (Boolean) parameters.getParameterValue(SinglingParameters.unknownPeaks);
-
 			Singling filter = new Singling(minSimilarity, unknownPeaks);
 			SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
 			if (newAlignment != null) {
-				newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SinglingParameters.suffix));
+				newAlignment.setDatasetName(newAlignment.toString() + suffix);
 				newAlignment.setType(DatasetType.GCGCTOF);
 				DataTableModel model = new DatasetGCGCDataModel(newAlignment);
 				DataTable table = new PushableTable(model);
@@ -85,7 +86,7 @@ public class SinglingFilterTask implements Task {
 
 				GuineuCore.getDesktop().addInternalFrame(frame);
 				GuineuCore.getDesktop().AddNewFile(newAlignment);
-			}else{
+			} else {
 				System.out.println("The result is null");
 			}
 

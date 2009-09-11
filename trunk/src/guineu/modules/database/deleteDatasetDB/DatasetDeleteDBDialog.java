@@ -159,7 +159,8 @@ public class DatasetDeleteDBDialog extends JDialog implements ActionListener {
                     }
                 }
             }            
-            table.repaint();
+           // table.repaint();
+			table.revalidate();
         }catch(Exception e){
             e.printStackTrace();
            JOptionPane.showMessageDialog(null, "To find dataset failed", "Error",JOptionPane.ERROR_MESSAGE); 

@@ -48,14 +48,13 @@ public class PubChem {
 		return "Filter by peak name";
 	}
 
-	public void createCorrector(File alkanesFile) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(alkanesFile));
+	public void createCorrector(File pubChemFile) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(pubChemFile));
 		CsvReader reader = new CsvReader(br);
 
 		while (reader.readRecord()) {
 			String data[] = reader.getValues();
-			try {
-			//	System.out.print("data:" +data[3]);
+			try {		
 				this.pubchemNames.put(data[3], data);
 			} catch (Exception e) {
 			}

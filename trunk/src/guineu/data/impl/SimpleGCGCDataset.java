@@ -43,19 +43,14 @@ import java.util.Vector;
  */
 public class SimpleGCGCDataset implements Dataset{
 
-	private static long nextId = 1;
 	private List<SimplePeakListRowGCGC> alignment;
 	private Vector<String> names;
 	private AlignmentSorterFactory.SORT_MODE lastSortMode;
 	private ScoreAlignmentParameters params;
-	private Aligner aligner;
-	private final long id;
+	private Aligner aligner;	
 	private String name;
 	private DatasetType type;
-
-	private static synchronized long getNextId() {
-		return nextId++;
-	}
+	
 
 	public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
 		this.names = new Vector<String>();
@@ -65,22 +60,14 @@ public class SimpleGCGCDataset implements Dataset{
 		alignment = new ArrayList<SimplePeakListRowGCGC>();
 		lastSortMode = SORT_MODE.none;
 		this.params = parameters;
-		this.aligner = aligner;
-		id = getNextId();
-		name =  "Alignment" + id;
-	}
-
-	public SimpleGCGCDataset(SimpleGCGCDataset other) {
-		this((String[])other.names.toArray(new String[0]), other.params, other.aligner);
-		alignment.addAll(other.alignment);
-		this.lastSortMode = other.lastSortMode;
-
-	}
+		this.aligner = aligner;	
+		name =  "Alignment";
+	}	
 
 	public SimpleGCGCDataset(String datasetName) {
 		this.names = new Vector<String>();
 		alignment = new ArrayList<SimplePeakListRowGCGC>();
-		id = 0;
+		lastSortMode = SORT_MODE.none;	
 		this.name = datasetName;
 	}
 
@@ -115,7 +102,7 @@ public class SimpleGCGCDataset implements Dataset{
 	 * @return a list containing the AlignmentRows in this Alignment
 	 */
 	public List<SimplePeakListRowGCGC> getAlignment() {
-		return new ArrayList<SimplePeakListRowGCGC>(alignment);
+		return alignment;
 	}
 
 	public GCGCDatum[][] toArray() {
@@ -201,43 +188,43 @@ public class SimpleGCGCDataset implements Dataset{
 		out.write(separator);
 		out.write("Spectrum");
 		out.write('\n');
-		for (SimplePeakListRowGCGC row : alignment) {
+		for (SimplePeakListRowGCGC newRow : alignment) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(formatter.format(row.getRT1())).append(separator);
-			sb.append(formatter.format(row.getRT2())).append(separator);
-			sb.append(formatter.format(row.getRTI())).append(separator);
-			sb.append(formatter.format(row.getMass())).append(separator);
-			sb.append(row.nonNullPeakCount()).append(separator);
+			sb.append(formatter.format(newRow.getRT1())).append(separator);
+			sb.append(formatter.format(newRow.getRT2())).append(separator);
+			sb.append(formatter.format(newRow.getRTI())).append(separator);
+			sb.append(formatter.format(newRow.getMass())).append(separator);
+			sb.append(newRow.nonNullPeakCount()).append(separator);
 			if (containsMainPeaks) {
-				if (!row.getDistValue().isNull()) {
-					sb.append(formatter.format(row.getDistValue().distance()));
+				if (newRow.getDifference() != 0) {
+					sb.append(formatter.format(newRow.getDistValue().distance()));
 				} else {
 				}
 				sb.append(separator);
 			}
-			String CAS = row.getCAS();
+			String CAS = newRow.getCAS();
 			sb.append(CAS).append(separator);
 			//Now write the names
-			String name = row.getName();
-			sb.append(name).append(separator);
-			if (row.getNames().length > 0) {
+			String newName = newRow.getName();
+			sb.append(newName).append(separator);
+			if (newRow.getNames().length > 0) {
 				sb.append('"');
-				for (int i = 0; i < row.getNames().length; i++) {
-					sb.append(row.getNames()[i]);
-					if (i != row.getNames().length - 1) {
+				for (int i = 0; i < newRow.getNames().length; i++) {
+					sb.append(newRow.getNames()[i]);
+					if (i != newRow.getNames().length - 1) {
 						sb.append(" || ");
 					}
 				}
 				sb.append('"');
 			} else {
-				sb.append(row.getName());
+				sb.append(newRow.getName());
 			}
 			sb.append(separator);
 
-			sb.append(formatter.format(row.getMaxSimilarity())).append(separator);
-			sb.append(formatter.format(row.getMeanSimilarity())).append(separator);
-			sb.append(formatter.format(row.getSimilaritySTDDev())).append(separator);
-			for (GCGCDatum d : row) {
+			sb.append(formatter.format(newRow.getMaxSimilarity())).append(separator);
+			sb.append(formatter.format(newRow.getMeanSimilarity())).append(separator);
+			sb.append(formatter.format(newRow.getSimilaritySTDDev())).append(separator);
+			for (GCGCDatum d : newRow) {
 				if (d != null) {
 					if (d.getConcentration() > 0 && (Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
 						sb.append(formatter.format(d.getConcentration()));
@@ -250,8 +237,8 @@ public class SimpleGCGCDataset implements Dataset{
 				}
 				sb.append(separator);
 			}
-			if (row.getSpectrumString() != null) {
-				sb.append(row.getSpectrumString().toString());
+			if (newRow.getSpectrumString() != null) {
+				sb.append(newRow.getSpectrumString().toString());
 			}
 			out.write(sb.toString());
 			out.write('\n');
@@ -264,7 +251,7 @@ public class SimpleGCGCDataset implements Dataset{
 		for (int i = 0; i < alignment.size(); i++) {
 			SimplePeakListRowGCGC alignmentRow = alignment.get(i);
 			if (alignmentRow.getMass() > -1) {
-				QuantMassList.add((SimplePeakListRowGCGC)alignmentRow.clone());
+				QuantMassList.add((SimplePeakListRowGCGC)alignmentRow);
 			}
 		}
 		return QuantMassList;
@@ -298,28 +285,12 @@ public class SimpleGCGCDataset implements Dataset{
 
 	public void addAll(Collection<? extends SimplePeakListRowGCGC> rows) {
 		for (SimplePeakListRowGCGC r : rows) {
-			addAlignmentRow(r);
+			 alignment.add(r);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return (int) ((id % 0xFFFFFFFFL) + Integer.MIN_VALUE);
-	}
-
-	public boolean equals(Object o) {
-		if (o instanceof SimpleGCGCDataset) {
-			return ((SimpleGCGCDataset) o).id == id;
-		}
-		return false;
 	}
 
 	public String toString() {
 		return name;
-	}
-
-	public void setName(String name){
-		this.name = name;
 	}
 
 	public String getDatasetName() {

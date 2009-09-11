@@ -36,7 +36,7 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>, Iterable<GCGCDatum>, Cloneable, PeakListRow {
+public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>, Iterable<GCGCDatum>, PeakListRow {
 
 	private final static Comparator<Entry<String[], Integer>> comp = new Comparator<Entry<String[], Integer>>() {
 
@@ -48,10 +48,9 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 			return comparison;
 		}
 	};
-	
 	private int ID,  numberFixColumns;
 	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
-	private String name,  allNames,  spectra,  pubChemID, molClass;
+	private String name,  allNames,  spectra,  pubChemID,  molClass;
 	private boolean control,  selection;
 	private String CAS;
 	private Spectrum spectrum;
@@ -59,7 +58,6 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	private String[] names;
 	private String CASnumbers[];
 	private DistValue _distValue;
-	private boolean modified;
 	private double numFound = 0;
 
 	public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
@@ -83,6 +81,10 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		this.control = true;
 		this.numberFixColumns = 16;
 		this.CAS = CAS;
+	}
+
+	public boolean useConcentrations() {
+		return this.row.get(0).useConcentration();
 	}
 
 	public SimplePeakListRowGCGC() {
@@ -149,8 +151,8 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 				}
 			}
 		}
-		if (!isFound) {			
-			GCGCDatum datum2 = new GCGCDatum(this.RT1, this.RT2, this.RTI,
+		if (!isFound) {
+			GCGCDatum datum2 = new GCGCDatum(0, this.RT1, this.RT2, this.RTI,
 					value, value, true, 0, CAS, name, experimentName, null);
 
 			this.row.add(datum2);
@@ -175,18 +177,16 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		this.name = Name;
 	}
 
-	public void setClass(String molClass){
+	public void setClass(String molClass) {
 		this.molClass = molClass;
 	}
 
 	@Override
 	public PeakListRow clone() {
-		PeakListRow newPeakListRow = new SimplePeakListRowGCGC(this.ID, this.RT1, this.RT2, this.RTI,
-				this.maxSimilarity, this.meanSimilarity, this.similaritySTDDev,
-				this.numFound, this.mass, this.difference, this.name,
-				this.allNames, this.spectra, this.pubChemID, this.CAS);
+		PeakListRow newPeakListRow = new SimplePeakListRowGCGC(ID, RT1, RT2, RTI,
+				maxSimilarity, meanSimilarity, similaritySTDDev,
+				numFound, mass, difference, name, allNames, spectra, pubChemID, CAS);
 
-		((SimplePeakListRowGCGC) newPeakListRow).modified = modified;
 		((SimplePeakListRowGCGC) newPeakListRow).numFound = numFound;
 		((SimplePeakListRowGCGC) newPeakListRow).names = names == null ? null : names.clone();
 		((SimplePeakListRowGCGC) newPeakListRow).spectrum = spectrum == null ? null : spectrum.clone();
@@ -194,8 +194,8 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		for (GCGCDatum datum : row) {
 			clonedRow.add(datum.clone());
 		}
-		((SimplePeakListRowGCGC) newPeakListRow).row = clonedRow == null ? null : clonedRow;
-		((SimplePeakListRowGCGC) newPeakListRow)._distValue = _distValue;
+		((SimplePeakListRowGCGC) newPeakListRow).row = clonedRow;
+		((SimplePeakListRowGCGC) newPeakListRow).setDistValue(_distValue);
 		return newPeakListRow;
 
 	}
@@ -393,7 +393,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 			if (d != null) {
 				row.add(d);
 				numFound++;
-				String curName = (d.isIdentified()) ? d.getName() : null;				
+				String curName = (d.isIdentified()) ? d.getName() : null;
 				String curCAS = d.getCAS();
 				if (curCAS == null) {
 					curCAS = "0-00-0";
@@ -511,22 +511,21 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		return spectrum;
 	}
 
-	public SimplePeakListRowGCGC setDistValue(DistValue val) {
-		SimplePeakListRowGCGC c = (SimplePeakListRowGCGC) clone();
-		c._distValue = val;
-		return c;
+	public void setDistValue(DistValue val) {
+		_distValue = val;
+		this.difference = val.distance();
 	}
 
 	public DistValue getDistValue() {
 		return _distValue;
 	}
 
-	public SimplePeakListRowGCGC scaleArea(double[] scalings) {
-		SimplePeakListRowGCGC c = (SimplePeakListRowGCGC) clone();
-		for (int i = 0; i < row.size(); i++) {
-			row.get(i).setArea(row.get(i).getArea() * scalings[i]);
+	public void scaleArea(double[] scalings) {		
+		if (!this.useConcentrations()) {
+			for (int i = 0; i < row.size(); i++) {
+				this.row.get(i).setArea(row.get(i).getArea() * scalings[i]);
+			}
 		}
-		return c;
 	}
 
 	public void setDatum(GCGCDatum[] rows) {

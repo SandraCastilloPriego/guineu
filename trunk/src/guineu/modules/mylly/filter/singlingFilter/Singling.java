@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.mylly.filter.singlingFilter;
 
-
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
@@ -91,7 +90,7 @@ public class Singling {
 			}
 
 			Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC> pair = _peaks.get(peak.getName());
-			if (pair == null) {
+			if (!_peaks.containsKey(peak.getName())) {
 				pair = new Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>(null, null);
 				_peaks.put(peak.getName(), pair);
 			}
@@ -150,14 +149,17 @@ public class Singling {
 		input = filterQuantMass.actualMap(input); //Filter the quant mass alignments out
 
 		PeakReducer reducer = new PeakReducer(input.containsMainPeaks(), filterUnknowns, minSimilarity);
-		List<SimplePeakListRowGCGC> rows = input.getAlignment();
-
-		for (SimplePeakListRowGCGC row : rows) {
-			reducer.addAlignment((SimplePeakListRowGCGC) row.clone());
+		
+		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+			SimplePeakListRowGCGC newRow = (SimplePeakListRowGCGC) row.clone();
+			reducer.addAlignment(newRow);
 		}
 		SimpleGCGCDataset modified = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
+		
 		modified.addAll(reducer.getAlignmentRows());
-		modified.addAll(QuantMassOnes);
+		for(SimplePeakListRowGCGC row : QuantMassOnes){
+			modified.addAlignmentRow((SimplePeakListRowGCGC)row.clone());
+		}
 		return modified;
 	}
 }

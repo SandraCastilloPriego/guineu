@@ -76,7 +76,7 @@ public class PubChemFilterTask implements Task {
 			PubChem filter = new PubChem();
 			filter.createCorrector(new File(name));
 			SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-			alignment.setName(alignment.getDatasetName() + (String) parameters.getParameterValue(PubChemParameters.suffix));
+			alignment.setDatasetName(alignment.getDatasetName() + (String) parameters.getParameterValue(PubChemParameters.suffix));
 			alignment.setType(DatasetType.GCGCTOF);
 			DataTableModel model = new DatasetGCGCDataModel(alignment);
 			DataTable table = new PushableTable(model);

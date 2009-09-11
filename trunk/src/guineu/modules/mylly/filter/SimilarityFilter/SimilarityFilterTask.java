@@ -85,7 +85,7 @@ public class SimilarityFilterTask implements Task {
 			}
 			Similarity filter = new Similarity(minValue, action, mode);
 			SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
+			newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
 			newAlignment.setType(DatasetType.GCGCTOF);
 			DataTableModel model = new DatasetGCGCDataModel(newAlignment);
             DataTable table = new PushableTable(model);
