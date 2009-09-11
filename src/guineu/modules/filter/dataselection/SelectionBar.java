@@ -219,7 +219,8 @@ public class SelectionBar extends javax.swing.JPanel {
         for(int i = 0; i < table.getRowCount(); i++){
             table.setValueAt(new Boolean(false), i, 0);
         }
-        table.repaint();
+       // table.repaint();
+		table.revalidate();
 }//GEN-LAST:event_jButtonNoneActionPerformed
 
     private void jButtonSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelectActionPerformed
@@ -231,7 +232,8 @@ public class SelectionBar extends javax.swing.JPanel {
         for(int i = 0; i < table.getRowCount(); i++){
             table.setValueAt(new Boolean(true), i, 0);
         }
-        table.repaint();
+      //  table.repaint();
+		table.revalidate();
 }//GEN-LAST:event_jButtonAllActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

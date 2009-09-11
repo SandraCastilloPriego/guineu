@@ -18,6 +18,7 @@
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.QuantMassScoreCalc;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
@@ -363,7 +364,7 @@ public class ScoreAligner implements Aligner {
 			for (AlignmentPath p : addedPaths) {
 				//Convert alignments to original order of files and add them to final
 				//Alignment data structure
-				alignment.addAlignmentRow(p.convertToAlignmentRow(ID++));
+				alignment.addAlignmentRow((SimplePeakListRowGCGC)p.convertToAlignmentRow(ID++).clone());
 
 			}
 		}

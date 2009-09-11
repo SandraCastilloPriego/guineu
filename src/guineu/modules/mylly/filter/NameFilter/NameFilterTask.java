@@ -91,7 +91,7 @@ public class NameFilterTask implements Task {
 
 
 					dataset = filter.actualMap((SimpleGCGCDataset) alignment);
-					dataset.setName(dataset.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
+					dataset.setDatasetName(dataset.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
 					dataset.setType(DatasetType.GCGCTOF);
 					DataTableModel model = new DatasetGCGCDataModel(dataset);
 					DataTable table = new PushableTable(model);

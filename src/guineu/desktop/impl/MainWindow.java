@@ -24,8 +24,6 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.util.components.TaskProgressWindow;
 import java.awt.BorderLayout;
@@ -38,7 +36,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;

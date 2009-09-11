@@ -24,8 +24,7 @@ import java.util.regex.Pattern;
  * @author jmjarkko
  */
 public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
-
-	private static long nextId = Long.MIN_VALUE;
+	
 	public final static String UNKOWN_NAME = "Unknown";
 	public final static double NO_QUANT_MASS = -1.0;
 	private final static double DEFAULT_RI = 0.0;
@@ -37,7 +36,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 	private double rti;
 	private double quantMass;
 	private int similarity;
-	private long id;
+	private int id;
 	private boolean identified;
 	private String name,  CAS;
 	private Spectrum spectrum;
@@ -47,9 +46,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 	public GCGCDatum() {
 	}
 
-	private static synchronized long nextId() {
-		return ++nextId;
-	}
+	
 
 	public GCGCDatum(GCGCDatum source) {
 		this.rt1 = source.rt1;
@@ -69,11 +66,12 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 	}
 
 
-	public GCGCDatum(double rt1, double rt2, double retentionIndex,
+	public GCGCDatum(int id, double rt1, double rt2, double retentionIndex,
 			double quantMass, int similarity, double area,
 			double concentration, boolean useConc,
 			String CAS, String name, String columnName,
 			List<? extends Pair<Integer, Integer>> peakList) {
+		this.id = id;
 		this.rt1 = rt1;
 		this.rt2 = rt2;
 		this.area = area;
@@ -82,8 +80,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		this.similarity = similarity;
 		this.rti = retentionIndex;
 		this.useConc = useConc;
-		verifyValues();
-		this.id = nextId();
+		verifyValues();		
 		this.CAS = CAS;
 		this.columnName = columnName;
 		Matcher m = p.matcher(name);
@@ -101,9 +98,9 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		}
 	}
 
-	public GCGCDatum(double rt1, double rt2, double quantMass,
+	public GCGCDatum(int id, double rt1, double rt2, double quantMass,
 			double area, double concentration, boolean useConc, int similarity, String CAS, String name, String columnName, List<? extends Pair<Integer, Integer>> spectrum) {
-		this(rt1, rt2, DEFAULT_RI, quantMass, similarity, area, concentration, useConc, CAS, name, columnName, spectrum);
+		this(id, rt1, rt2, DEFAULT_RI, quantMass, similarity, area, concentration, useConc, CAS, name, columnName, spectrum);
 	}
 
 	@Override
@@ -368,7 +365,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		return names;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -395,7 +392,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 		} else {
 			newSpectrum = spectrum.combineWith(other.spectrum);
 		}
-		GCGCDatum newDatum = new GCGCDatum(newRT1, newRT2, newRTI,
+		GCGCDatum newDatum = new GCGCDatum(id, newRT1, newRT2, newRTI,
 				newQuantMass, newSimilarity, newArea, newConcentration, newUseConc, newCAS, newName, newColumnName, null);
 		newDatum.spectrum = newSpectrum;
 		newDatum.identified = newIdentified;

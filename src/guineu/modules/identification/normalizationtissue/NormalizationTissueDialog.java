@@ -25,88 +25,88 @@ import javax.swing.table.DefaultTableModel;
  */
 public class NormalizationTissueDialog extends javax.swing.JDialog implements ActionListener {
 
-    private StandardUmol standards;
-    ExitCode exit = ExitCode.UNKNOWN;
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    Vector<String> experimentNames;
+	private StandardUmol standards;
+	ExitCode exit = ExitCode.UNKNOWN;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+	Vector<String> experimentNames;
 
-    /** Creates new form NormalizationDialog */
-    public NormalizationTissueDialog(StandardUmol standards, Vector<String> experimentNames) {
-        super(GuineuCore.getDesktop().getMainFrame(),
-                "Please fill the standards...", true);
-        this.setSize(764, 435);
-        this.standards = standards;
-        this.experimentNames = experimentNames;
-        initComponents();
-        this.jButtonClose.addActionListener(this);
-        this.jButtonNormalize.addActionListener(this);
-        fillStandardsTextFields();
-        logger.finest("Displaying Normalization Serum dialog");
-    }
+	/** Creates new form NormalizationDialog */
+	public NormalizationTissueDialog(StandardUmol standards, Vector<String> experimentNames) {
+		super(GuineuCore.getDesktop().getMainFrame(),
+				"Please fill the standards...", true);
+		this.setSize(764, 435);
+		this.standards = standards;
+		this.experimentNames = experimentNames;
+		initComponents();
+		this.jButtonClose.addActionListener(this);
+		this.jButtonNormalize.addActionListener(this);
+		fillStandardsTextFields();
+		logger.finest("Displaying Normalization Serum dialog");
+	}
 
-    public void fillStandardsTextFields() {
-        try {
-            this.jTextFieldCer.setText(String.valueOf(standards.Cer));
-            this.jTextFieldGPCho.setText(String.valueOf(standards.GPCho));
-            this.jTextFieldGPEtn.setText(String.valueOf(standards.GPEtn));
-            this.jTextFieldLysoGPCho.setText(String.valueOf(standards.LysoGPCho));
-            this.jTextFieldTAG.setText(String.valueOf(standards.TAG));
-            this.jTextFieldother.setText(standards.other);
-            this.jTextFieldOtherValue.setText(String.valueOf(standards.otherValue));
-            this.jTextFieldother1.setText(standards.other1);
-            this.jTextFieldOtherValue1.setText(String.valueOf(standards.otherValue1));
+	public void fillStandardsTextFields() {
+		try {
+			this.jTextFieldCer.setText(String.valueOf(standards.Cer));
+			this.jTextFieldGPCho.setText(String.valueOf(standards.GPCho));
+			this.jTextFieldGPEtn.setText(String.valueOf(standards.GPEtn));
+			this.jTextFieldLysoGPCho.setText(String.valueOf(standards.LysoGPCho));
+			this.jTextFieldTAG.setText(String.valueOf(standards.TAG));
+			this.jTextFieldother.setText(standards.other);
+			this.jTextFieldOtherValue.setText(String.valueOf(standards.otherValue));
+			this.jTextFieldother1.setText(standards.other1);
+			this.jTextFieldOtherValue1.setText(String.valueOf(standards.otherValue1));
 
-            DefaultTableModel d = (DefaultTableModel) this.jTable.getModel();
-            int cont = 0;
-            for (String name : experimentNames) {
-              
-                try {
-                    Object[] row = new Object[2];                    
-                    row[0] = name;
-                    if (standards.Weights.containsKey(name)) {
-                        row[1] = (Double)standards.Weights.get(name);
-                    }                    
-                    d.addRow(row);
-                   
-                    this.jTable.setEditingRow(cont++);
-                    
-                } catch (Exception e) {
-                }
-            }
-            this.jTable.repaint();
-        } catch (Exception e) {
+			DefaultTableModel d = (DefaultTableModel) this.jTable.getModel();
+			int cont = 0;
+			for (String name : experimentNames) {
 
-        }
-    }
+				try {
+					Object[] row = new Object[2];
+					row[0] = name;
+					if (standards.Weights.containsKey(name)) {
+						row[1] = (Double) standards.Weights.get(name);
+					}
+					d.addRow(row);
 
-    public boolean fillStandards() {
-        try {
-            this.standards.Cer = Double.valueOf(this.jTextFieldCer.getText());
-            this.standards.GPCho = Double.valueOf(this.jTextFieldGPCho.getText());
-            this.standards.GPEtn = Double.valueOf(this.jTextFieldGPEtn.getText());
-            this.standards.LysoGPCho = Double.valueOf(this.jTextFieldLysoGPCho.getText());
-            this.standards.TAG = Double.valueOf(this.jTextFieldTAG.getText());
-            this.standards.other = this.jTextFieldother.getText();
-            this.standards.otherValue = Double.valueOf(this.jTextFieldOtherValue.getText());
-            this.standards.other1 = this.jTextFieldother1.getText();
-            this.standards.otherValue1 = Double.valueOf(this.jTextFieldOtherValue1.getText());
-            
-            for(int i = 0; i < this.jTable.getRowCount(); i++){
-                this.standards.Weights.put((String)this.jTable.getValueAt(i, 0), (Double)this.jTable.getValueAt(i, 1));
-            }
-            
-            return true;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
+					this.jTable.setEditingRow(cont++);
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+				} catch (Exception e) {
+				}
+			}
+			//this.jTable.repaint();
+			this.jTable.revalidate();
+		} catch (Exception e) {
+		}
+	}
+
+	public boolean fillStandards() {
+		try {
+			this.standards.Cer = Double.valueOf(this.jTextFieldCer.getText());
+			this.standards.GPCho = Double.valueOf(this.jTextFieldGPCho.getText());
+			this.standards.GPEtn = Double.valueOf(this.jTextFieldGPEtn.getText());
+			this.standards.LysoGPCho = Double.valueOf(this.jTextFieldLysoGPCho.getText());
+			this.standards.TAG = Double.valueOf(this.jTextFieldTAG.getText());
+			this.standards.other = this.jTextFieldother.getText();
+			this.standards.otherValue = Double.valueOf(this.jTextFieldOtherValue.getText());
+			this.standards.other1 = this.jTextFieldother1.getText();
+			this.standards.otherValue1 = Double.valueOf(this.jTextFieldOtherValue1.getText());
+
+			for (int i = 0; i < this.jTable.getRowCount(); i++) {
+				this.standards.Weights.put((String) this.jTable.getValueAt(i, 0), (Double) this.jTable.getValueAt(i, 1));
+			}
+
+			return true;
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
+
+	/** This method is called from within the constructor to
+	 * initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is
+	 * always regenerated by the Form Editor.
+	 */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -267,11 +267,11 @@ public class NormalizationTissueDialog extends javax.swing.JDialog implements Ac
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       this.readWeithgs();
+		this.readWeithgs();
     }//GEN-LAST:event_jButton1ActionPerformed
-    public ExitCode getExitCode() {
-        return exit;
-    }
+	public ExitCode getExitCode() {
+		return exit;
+	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonClose;
@@ -298,57 +298,56 @@ public class NormalizationTissueDialog extends javax.swing.JDialog implements Ac
     private javax.swing.JTextField jTextFieldother;
     private javax.swing.JTextField jTextFieldother1;
     // End of variables declaration//GEN-END:variables
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.jButtonNormalize) {
-            exit = ExitCode.OK;
-            fillStandards();
-            dispose();
-        } else if (e.getSource() == this.jButtonClose) {
-            exit = ExitCode.CANCEL;
-            dispose();
-        }
-    }
 
-    public void reset() {
-        try {
-            this.jTextFieldCer.setText("0.0");
-            this.jTextFieldGPCho.setText("0.0");
-            this.jTextFieldGPEtn.setText("0.0");
-            this.jTextFieldLysoGPCho.setText("0.0");
-            this.jTextFieldTAG.setText("0.0");
-            this.jTextFieldother.setText("");
-            this.jTextFieldOtherValue.setText("0.0");
-            this.jTextFieldother1.setText("");
-            this.jTextFieldOtherValue1.setText("0.0");
-        } catch (Exception e) {
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == this.jButtonNormalize) {
+			exit = ExitCode.OK;
+			fillStandards();
+			dispose();
+		} else if (e.getSource() == this.jButtonClose) {
+			exit = ExitCode.CANCEL;
+			dispose();
+		}
+	}
 
-        }
-    }
-    
-    public void readWeithgs(){
-            FileReader fr = null;
-            
-        try {
-            fr = new FileReader(new File("list.csv"));
-            BufferedReader br = new BufferedReader(fr);     
-            String line;           
-            while ((line = (br.readLine())) != null) {
-                if (!line.isEmpty()) {
-                    String[] w = line.split(",");
-                    for(int i = 0; i < this.jTable.getRowCount(); i++){
+	public void reset() {
+		try {
+			this.jTextFieldCer.setText("0.0");
+			this.jTextFieldGPCho.setText("0.0");
+			this.jTextFieldGPEtn.setText("0.0");
+			this.jTextFieldLysoGPCho.setText("0.0");
+			this.jTextFieldTAG.setText("0.0");
+			this.jTextFieldother.setText("");
+			this.jTextFieldOtherValue.setText("0.0");
+			this.jTextFieldother1.setText("");
+			this.jTextFieldOtherValue1.setText("0.0");
+		} catch (Exception e) {
+		}
+	}
+
+	public void readWeithgs() {
+		FileReader fr = null;
+
+		try {
+			fr = new FileReader(new File("list.csv"));
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while ((line = (br.readLine())) != null) {
+				if (!line.isEmpty()) {
+					String[] w = line.split(",");
+					for (int i = 0; i < this.jTable.getRowCount(); i++) {
 						w[0] = w[0]./*replaceAll("_", "").*/toLowerCase();
-                        if(this.jTable.getValueAt(i, 0).toString()/*.replace("_", "")*/.toLowerCase().matches(".*"+w[0]+".*")){
-                            this.jTable.setValueAt(Double.valueOf(w[1]), i, 1);
-                            break;
-                        }
-                    }
-                }
-            }
-            fr.close();
-            br.close();
-        } catch (IOException ex) {
-            Logger.getLogger(NormalizationTissueDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
+						if (this.jTable.getValueAt(i, 0).toString()/*.replace("_", "")*/.toLowerCase().matches(".*" + w[0] + ".*")) {
+							this.jTable.setValueAt(Double.valueOf(w[1]), i, 1);
+							break;
+						}
+					}
+				}
+			}
+			fr.close();
+			br.close();
+		} catch (IOException ex) {
+			Logger.getLogger(NormalizationTissueDialog.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
 }

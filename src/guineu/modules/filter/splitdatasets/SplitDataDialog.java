@@ -307,7 +307,7 @@ public class SplitDataDialog extends JDialog {
             }
 
             this.jTablefrom.revalidate();
-            this.jTablefrom.repaint();
+           // this.jTablefrom.repaint();
             this.jTablegroup2.revalidate();
         } catch (Exception e) {
         }
@@ -330,7 +330,7 @@ public class SplitDataDialog extends JDialog {
             }
 
             this.jTablefrom.revalidate();
-            this.jTablefrom.repaint();
+           // this.jTablefrom.repaint();
             this.jTablegroup2.revalidate();
         } catch (Exception e) {
         }
@@ -353,7 +353,7 @@ public class SplitDataDialog extends JDialog {
             }
 
             this.jTablefrom.revalidate();
-            this.jTablefrom.repaint();
+           // this.jTablefrom.repaint();
             this.jTablegroup1.revalidate();
         } catch (Exception e) {
         }
@@ -376,7 +376,7 @@ public class SplitDataDialog extends JDialog {
             }
 
             this.jTablefrom.revalidate();
-            this.jTablefrom.repaint();
+           // this.jTablefrom.repaint();
             this.jTablegroup1.revalidate();
         } catch (Exception e) {
         }

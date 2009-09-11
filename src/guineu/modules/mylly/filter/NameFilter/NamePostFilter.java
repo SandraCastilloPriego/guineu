@@ -75,7 +75,9 @@ public class NamePostFilter {
 		}
 		SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
 		filtered.addAll(als);
-		filtered.addAll(QuantMassOnes);
+		for(SimplePeakListRowGCGC row : QuantMassOnes){
+			filtered.addAlignmentRow((SimplePeakListRowGCGC)row.clone());
+		}
 		return filtered;		
 	}	
 		

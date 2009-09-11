@@ -15,7 +15,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.mylly.gcgcaligner.datastruct;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,8 +28,6 @@ public class GCGCData implements Iterable<GCGCDatum>, Cloneable {
 	private static long nextId = Long.MIN_VALUE;
 	private List<GCGCDatum> data; //This one is unmodifiable
 	private String name,  CAS;
-	private int hashcode;
-	private boolean hashcodeCalculated = false;
 	private long id;
 
 	private synchronized static long getId() {
@@ -43,19 +40,24 @@ public class GCGCData implements Iterable<GCGCDatum>, Cloneable {
 		this.id = getId();
 	}
 
-	/**
-	 * Does not perform a deep copy as GCGCDatum is supposed to
-	 * be immutable.
-	 */
+	private GCGCData() {
+		this.data = new ArrayList<GCGCDatum>();
+	}
+
+	@Override
 	public GCGCData clone() {
 		try {
-			GCGCData clone = (GCGCData) super.clone();
-			clone.data = new ArrayList<GCGCDatum>();
-			clone.data.addAll(data);
-			return clone;
-		} catch (CloneNotSupportedException e) {
+			GCGCData cloned = new GCGCData();
+			cloned.CAS = CAS;
+			cloned.name = name;
+			cloned.id = getId();
+			for (GCGCDatum datum : data) {
+				cloned.data.add(datum.clone());
+			}
+			return cloned;
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw new InternalError("Clone not supported");
+			return null;
 		}
 	}
 
@@ -73,14 +75,6 @@ public class GCGCData implements Iterable<GCGCDatum>, Cloneable {
 			return other.id == id;
 		}
 		return false;
-	}
-
-	public int hashCode() {
-		if (!hashcodeCalculated) {
-			hashcode = name.hashCode() + 31 * data.hashCode();
-			hashcodeCalculated = true;
-		}
-		return hashcode;
 	}
 
 	public String toString() {
@@ -116,6 +110,5 @@ public class GCGCData implements Iterable<GCGCDatum>, Cloneable {
 			array[ix++] = d;
 		}
 		return array;
-	}	
-	
+	}
 }

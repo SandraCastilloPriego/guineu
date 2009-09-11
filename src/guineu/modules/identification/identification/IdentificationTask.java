@@ -179,7 +179,8 @@ public class IdentificationTask implements Task {
                 table.setValueAt(String.valueOf(lipidClass), Index, 5);
                 table.setValueAt(new Boolean(false), Index, 0);   
                 ((DataTable)table).setColumnSize();
-                table.repaint();
+               // table.repaint();
+				table.revalidate();
                
             }
 

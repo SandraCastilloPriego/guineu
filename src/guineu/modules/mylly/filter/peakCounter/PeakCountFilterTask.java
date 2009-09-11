@@ -76,7 +76,7 @@ public class PeakCountFilterTask implements Task {
 			peakCount--;
 			PeakCount filter = new PeakCount(peakCount);
 			SimpleGCGCDataset newAlignment = this.actualMap(dataset, filter);
-			newAlignment.setName(newAlignment.toString() + (String) parameters.getParameterValue(PeakCountParameters.suffix));
+			newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(PeakCountParameters.suffix));
 			newAlignment.setType(DatasetType.GCGCTOF);
 			DataTableModel model = new DatasetGCGCDataModel(newAlignment);
 			DataTable table = new PushableTable(model);

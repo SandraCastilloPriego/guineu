@@ -243,7 +243,7 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
                     TableColumn column = colModel.getColumn(i);
                     column.setHeaderValue(getColumnName(column.getModelIndex()));
                 }
-                table.getTableHeader().repaint();
+              //  table.getTableHeader().repaint();
 
                 Vector<Object> vt = new Vector<Object>();
                 Vector<Object[]> realvt = new Vector<Object[]>();
@@ -271,7 +271,7 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
                 }
 
                 table.tableChanged(new TableModelEvent(ExperimentDataModel.this));
-                table.repaint();
+               // table.repaint();
             }
         }
     }

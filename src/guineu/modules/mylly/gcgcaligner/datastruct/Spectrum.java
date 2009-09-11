@@ -48,6 +48,12 @@ public class Spectrum implements Cloneable {
         _masses = new int[0];
     }
 
+	 public Spectrum(String spectrum) {
+
+       // _intensities = new int[size];
+      //  _masses = new int[size];
+    }
+
     /**
      *
      * @param peaks first one of each pair should contain the mass and second the intensity

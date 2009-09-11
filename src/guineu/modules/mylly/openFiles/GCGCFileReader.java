@@ -118,7 +118,7 @@ public class GCGCFileReader {
 		{			
 			String splitRow[];
 			peaks = new ArrayList<GCGCDatum>();
-			
+			int cont = 0;
             while(reader.readRecord()){
                 splitRow = reader.getValues();
 				boolean foundArea = false;
@@ -147,7 +147,7 @@ public class GCGCFileReader {
 				quantMass = GCGCDatum.NO_QUANT_MASS;
 				name = "Not Found";
 				CAS = "";
-
+				
 				for (int i = 0; i < splitRow.length; i++) {
 					String curStr = splitRow[i];
 					if (!(_filterClassified && i == ClassificationsPos) &&
@@ -226,15 +226,15 @@ public class GCGCFileReader {
 						if (!"Not Found".equals(name)) {
 							GCGCDatum currentRow;
 							if (foundConc) {
-								currentRow = new GCGCDatumWithConcentration(rt1, rt2, retentionIndex,
+								currentRow = new GCGCDatumWithConcentration(cont++, rt1, rt2, retentionIndex,
 										quantMass, similarity, area, CAS, name, useConc, file.getName(),
 										spectrum, conc);
 							} else if (foundRetentionIndex) {
-								currentRow = new GCGCDatum(rt1, rt2, retentionIndex,
+								currentRow = new GCGCDatum(cont++, rt1, rt2, retentionIndex,
 										quantMass, similarity, area, conc, useConc,
 										CAS, name, file.getName(), spectrum);
 							} else {
-								currentRow = new GCGCDatum(rt1, rt2, quantMass,
+								currentRow = new GCGCDatum(cont++, rt1, rt2, quantMass,
 										area, conc, useConc, similarity, CAS, name, file.getName(), spectrum);
 							}
 							peaks.add(currentRow);

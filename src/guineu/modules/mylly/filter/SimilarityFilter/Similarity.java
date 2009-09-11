@@ -19,7 +19,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.mylly.filter.SimilarityFilter;
 
-import guineu.data.PeakListRow;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
@@ -47,10 +46,10 @@ public class Similarity {
 		//we don't want to apply this filter in the peaks with Quant Mass
 		List<SimplePeakListRowGCGC> QuantMassOnes = input.getQuantMassAlignments();
 		AlignmentRowFilter filterQuantMass = new AlignmentRowFilter(QuantMassOnes);
-		input = filterQuantMass.actualMap(input); //Filter the quant mass alignments out
+		SimpleGCGCDataset datasetNoMass = filterQuantMass.actualMap(input); //Filter the quant mass alignments out
 
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
-		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+		for (SimplePeakListRowGCGC row : datasetNoMass.getAlignment()) {
 			SimplePeakListRowGCGC newRow = (SimplePeakListRowGCGC) row.clone();
 			double curVal = 0.0;
 			if (MAX_SIMILARITY.equals(mode)) {
@@ -70,9 +69,11 @@ public class Similarity {
 				als.add(newRow);
 			}
 		}
-		SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
+		SimpleGCGCDataset filtered = new SimpleGCGCDataset(datasetNoMass.getColumnNames(), datasetNoMass.getParameters(), datasetNoMass.getAligner());
 		filtered.addAll(als);
-		filtered.addAll(QuantMassOnes);
+		for(SimplePeakListRowGCGC row : QuantMassOnes){
+			filtered.addAlignmentRow((SimplePeakListRowGCGC)row.clone());
+		}
 		return filtered;
 	}
 

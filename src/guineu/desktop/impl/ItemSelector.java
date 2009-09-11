@@ -108,11 +108,11 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 	// Implementation of action listener interface
 	public void actionPerformed(ActionEvent e) {
-
+		Runtime.getRuntime().freeMemory();
 		String command = e.getActionCommand();
 
 		if (command.equals("CHANGE_NAME")) {
-			Dataset[] selectedFiles = getSelectedDatasets();
+			//Dataset[] selectedFiles = getSelectedDatasets();
 		/**TO FINISH **/
 		}
 
@@ -260,7 +260,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 		// Update the highlighting of peak list list in case raw data list
 		// selection has changed and vice versa.
 		if (src == DatasetFiles) {
-			DatasetFiles.repaint();
+			DatasetFiles.revalidate();
 		}
 
 	}
@@ -273,8 +273,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 		}
 		this.DatasetFilesModel.add(dataset);
 		DatasetNamesModel.addElement(dataset.getDatasetName());
-		this.DatasetFiles.revalidate();
-		this.DatasetFiles.repaint();
+		this.DatasetFiles.revalidate();		
 	}	
    
 }

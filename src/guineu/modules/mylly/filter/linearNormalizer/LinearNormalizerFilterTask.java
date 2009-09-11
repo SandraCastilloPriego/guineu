@@ -19,10 +19,8 @@ package guineu.modules.mylly.filter.linearNormalizer;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.data.impl.SimpleGCGCDataset;
@@ -46,7 +44,6 @@ public class LinearNormalizerFilterTask implements Task {
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private SimpleGCGCDataset dataset;
-	private int ID = 1;
 
 	public LinearNormalizerFilterTask(SimpleGCGCDataset dataset) {
 		this.dataset = dataset;
@@ -81,13 +78,17 @@ public class LinearNormalizerFilterTask implements Task {
 			for (PeakListRow row : gcgcDataset.getRows()) {
 				if (row.isSelected()) {
 					int id = row.getID();
-					id--;
-					standards.add(dataset.getAlignment().get(id));
+					for (PeakListRow row2 : gcgcDataset.getRows()) {
+						if (row2.getID() == id) {
+							standards.add((SimplePeakListRowGCGC) row2);
+							break;
+						}
+					}
 				}
 			}
 			LinearNormalizer filter = new LinearNormalizer(standards);
 			SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-			newAlignment.setName(newAlignment.toString() + "-Normalized");
+			newAlignment.setDatasetName(newAlignment.toString() + "-Normalized");
 			newAlignment.setType(DatasetType.GCGCTOF);
 			DataTableModel model = new DatasetGCGCDataModel(newAlignment);
 			DataTable table = new PushableTable(model);

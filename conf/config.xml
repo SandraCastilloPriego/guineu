@@ -53,8 +53,9 @@
     <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"/>
-    <module class="guineu.modules.mylly.filter.alkaneRTCorrector.AlkaneRTICorrectorFilter"/>	
+    <!-- <module class="guineu.modules.mylly.filter.alkaneRTCorrector.AlkaneRTICorrectorFilter"/> -->	
     <module class="guineu.modules.mylly.filter.NameFilter.NameFilter"/>
+    <module class="guineu.modules.mylly.filter.calculateDeviations.CalculateDeviations"/>
     <module class="guineu.modules.mylly.filter.pubChem.PubChemFilter"/>  
     <module class="guineu.modules.mylly.filter.classIdentification.ClassIdentificationFilter"/>  
     <module class="guineu.modules.mylly.filter.peakCounter.PeakCountFilter"/>	
