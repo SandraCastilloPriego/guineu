@@ -49,7 +49,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		}
 	};
 	private int ID,  numberFixColumns;
-	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference;
+	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity,  meanSimilarity,  similaritySTDDev,  mass,  difference = 0;
 	private String name,  allNames,  spectra,  pubChemID,  molClass;
 	private boolean control,  selection;
 	private String CAS;
@@ -521,7 +521,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public void scaleArea(double[] scalings) {		
-		if (!this.useConcentrations()) {
+		if (!this.useConcentrations() || this.mass == -1) {
 			for (int i = 0; i < row.size(); i++) {
 				this.row.get(i).setArea(row.get(i).getArea() * scalings[i]);
 			}
