@@ -20,7 +20,6 @@ package guineu.modules.filter.dataselection;
 
 
 
-import guineu.data.Dataset;
 import guineu.desktop.Desktop;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.internalframe.DataInternalFrame;
@@ -135,11 +134,10 @@ public class SelectionBar extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
         );
 
         jButton1.setText("X");
-        jButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -162,14 +160,14 @@ public class SelectionBar extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jButtonDeleteRows)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButtonDeleteRows)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -186,7 +184,7 @@ public class SelectionBar extends javax.swing.JPanel {
                         .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jPanel1, 0, 154, Short.MAX_VALUE)
+                .addComponent(jPanel1, 0, 158, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
         );
         jPanel4Layout.setVerticalGroup(
@@ -247,14 +245,8 @@ public class SelectionBar extends javax.swing.JPanel {
 
     private void jTextField1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseClicked
         if(selectedTable == null || selectedTable != ((DataInternalFrame)desktop.getSelectedFrame()).getTable()){
-            selectedTable = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-            this.jComboBox1.removeAllItems();
-            for(int i = 0; i < selectedTable.getColumnCount(); i++){
-                this.jComboBox1.addItem(selectedTable.getColumnName(i));
-            }
-            this.jComboBox1.revalidate();
+            selectedTable = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();           
         }
-
     }//GEN-LAST:event_jTextField1MouseClicked
 
     private void jButtonDeleteRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteRowsActionPerformed
@@ -276,18 +268,32 @@ public class SelectionBar extends javax.swing.JPanel {
 }//GEN-LAST:event_jButtonInvertActionPerformed
    
     
-    private void select(){        
-        int index = this.jComboBox1.getSelectedIndex();
+    private void select(){       
         for(int i = 0; i < selectedTable.getRowCount(); i++){
-            if(index == 6){ 
+           for(int e = 0; e < selectedTable.getColumnCount(); e++){
                 try{
-                    if(selectedTable.getValueAt(i, index).toString().matches(Double.valueOf(this.jTextField1.getText()).toString())){
-                        selectedTable.setValueAt(new Boolean(true), i, 0);
-                    }    
-                }catch(Exception e){                    
+					String stringClass = selectedTable.getValueAt(i, e).getClass().toString();
+					String compareValue = this.jTextField1.getText();
+					if(stringClass.contains("Double")){
+						double value = Double.valueOf(stringClass).doubleValue();
+						double compared = Double.valueOf(compareValue).doubleValue();
+						if(value == compared){
+							selectedTable.setValueAt(new Boolean(true), i, 0);
+						}
+					}else if(stringClass.contains("String")){
+						if(stringClass.contains(compareValue)){
+							selectedTable.setValueAt(new Boolean(true), i, 0);
+						}
+					}else if(stringClass.contains("Integer")){
+						int value = Integer.valueOf(stringClass).intValue();
+						int compared = Integer.valueOf(compareValue).intValue();
+						if(value == compared){
+							selectedTable.setValueAt(new Boolean(true), i, 0);
+						}
+					}
+                    
+                }catch(Exception exception){
                 }
-            }else if(selectedTable.getValueAt(i, index).toString().matches(".*"+this.jTextField1.getText()+".*")){
-                selectedTable.setValueAt(new Boolean(true), i, 0);
             }
         }
         selectedTable.repaint();
