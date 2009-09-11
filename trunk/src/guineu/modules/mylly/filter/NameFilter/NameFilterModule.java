@@ -19,8 +19,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.mylly.filter.NameFilter;
 
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCData;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

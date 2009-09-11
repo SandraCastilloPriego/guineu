@@ -18,9 +18,9 @@
 package guineu.modules.mylly.openFiles;
 
 import com.csvreader.CsvReader;
-import guineu.modules.mylly.gcgcaligner.datastruct.ComparablePair;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatumWithConcentration;
+import guineu.modules.mylly.datastruct.ComparablePair;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatumWithConcentration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -118,7 +118,7 @@ public class GCGCFileReader {
 		{			
 			String splitRow[];
 			peaks = new ArrayList<GCGCDatum>();
-			int cont = 0;
+			int cont = 1;
             while(reader.readRecord()){
                 splitRow = reader.getValues();
 				boolean foundArea = false;

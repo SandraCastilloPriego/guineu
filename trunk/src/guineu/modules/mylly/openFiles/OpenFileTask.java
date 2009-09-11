@@ -20,7 +20,7 @@ package guineu.modules.mylly.openFiles;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;
 import java.io.File;

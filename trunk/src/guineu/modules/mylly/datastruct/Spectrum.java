@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with MYLLY; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package guineu.modules.mylly.gcgcaligner.datastruct;
+package guineu.modules.mylly.datastruct;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author jmjarkko
@@ -49,10 +51,40 @@ public class Spectrum implements Cloneable {
     }
 
 	 public Spectrum(String spectrum) {
+		int[][] data = this.get_spectrum(spectrum);
+		 _intensities = new int[data.length];
+         _masses = new int[data.length];
 
-       // _intensities = new int[size];
-      //  _masses = new int[size];
+		for(int i = 0; i < data.length; i++){
+			_intensities[i] = data[i][0];
+			_masses[i] = data[i][1];
+		}
+       
     }
+
+	 public int[][] get_spectrum(String spectrum) {
+
+		if (spectrum == null) {
+			return null;
+		}
+		int[][] num = new int[spectrum.split(",").length][];
+
+		for (int i = 0; i < num.length; i++) {
+			num[i] = new int[2];
+		}
+		Pattern sp = Pattern.compile("\\d\\d?\\d?\\d?");
+		Matcher matcher = sp.matcher(spectrum);
+		int i = 0;
+		while (matcher.find()) {
+			num[i][0] = Integer.parseInt(spectrum.substring(matcher.start(), matcher.end()));
+			matcher.find();
+			num[i][1] = Integer.parseInt(spectrum.substring(matcher.start(), matcher.end()));
+			i++;
+		}
+
+		return num;
+	}
+
 
     /**
      *

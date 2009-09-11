@@ -22,7 +22,7 @@ package guineu.modules.mylly.filter.SimilarityFilter;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.ArrayList;
 import java.util.List;
 

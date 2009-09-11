@@ -21,10 +21,10 @@ package guineu.modules.mylly.filter.alkaneRTCorrector;
 
 
 
-import guineu.modules.mylly.gcgcaligner.datastruct.ComparablePair;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.datastruct.Pair;
+import guineu.modules.mylly.datastruct.ComparablePair;
+import guineu.modules.mylly.datastruct.GCGCData;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;
