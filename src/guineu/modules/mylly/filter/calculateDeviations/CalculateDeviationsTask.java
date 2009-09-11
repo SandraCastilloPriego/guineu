@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.modules.mylly.gcgcaligner.datastruct.Pair;
+import guineu.modules.mylly.datastruct.Pair;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

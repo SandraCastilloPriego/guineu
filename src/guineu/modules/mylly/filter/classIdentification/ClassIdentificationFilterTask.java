@@ -77,7 +77,7 @@ public class ClassIdentificationFilterTask implements Task {
 			String name = (String) parameters.getParameterValue(ClassIdentificationParameters.fileNames);
 			filter.createCorrector(new File(name));
 			SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-			alignment.setName(alignment.getDatasetName() + (String) parameters.getParameterValue(ClassIdentificationParameters.suffix));
+			alignment.setDatasetName(alignment.getDatasetName() + (String) parameters.getParameterValue(ClassIdentificationParameters.suffix));
 			alignment.setType(DatasetType.GCGCTOF);
 			DataTableModel model = new DatasetGCGCDataModel(alignment);
 			DataTable table = new PushableTable(model);

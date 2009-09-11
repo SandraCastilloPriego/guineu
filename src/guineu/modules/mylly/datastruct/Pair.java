@@ -17,7 +17,7 @@
     along with MYLLY; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-package guineu.modules.mylly.gcgcaligner.datastruct;
+package guineu.modules.mylly.datastruct;
 
 /**
  * None of the methods are synchronized so use with that in mind.

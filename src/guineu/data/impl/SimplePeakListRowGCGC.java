@@ -20,8 +20,8 @@ package guineu.data.impl;
 import guineu.data.PeakListRow;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentPath;
 import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.datastruct.Spectrum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.Spectrum;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -511,16 +511,22 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		return spectrum;
 	}
 
+	public void setSpectra(Spectrum spectrum) {
+		this.spectrum = spectrum;
+	}
+
 	public void setDistValue(DistValue val) {
 		_distValue = val;
-		this.difference = val.distance();
+		if (val != null) {
+			this.difference = val.distance();
+		}
 	}
 
 	public DistValue getDistValue() {
 		return _distValue;
 	}
 
-	public void scaleArea(double[] scalings) {		
+	public void scaleArea(double[] scalings) {
 		if (!this.useConcentrations() || this.mass == -1) {
 			for (int i = 0; i < row.size(); i++) {
 				this.row.get(i).setArea(row.get(i).getArea() * scalings[i]);

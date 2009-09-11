@@ -21,8 +21,8 @@ package guineu.modules.mylly.alignment.scoreAligner.scorer;
 
 
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.datastruct.Peak;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.Peak;
 
 
 

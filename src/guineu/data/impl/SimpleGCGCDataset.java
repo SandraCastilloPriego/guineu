@@ -23,7 +23,7 @@ package guineu.data.impl;
 import guineu.modules.mylly.alignment.scoreAligner.functions.*;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory.SORT_MODE;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

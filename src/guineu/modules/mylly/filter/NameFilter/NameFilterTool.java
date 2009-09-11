@@ -20,7 +20,7 @@
 package guineu.modules.mylly.filter.NameFilter;
 
 
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

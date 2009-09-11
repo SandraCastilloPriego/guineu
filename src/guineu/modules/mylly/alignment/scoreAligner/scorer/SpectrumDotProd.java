@@ -20,9 +20,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package guineu.modules.mylly.alignment.scoreAligner.scorer;
 
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.datastruct.Peak;
-import guineu.modules.mylly.gcgcaligner.datastruct.Spectrum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.Peak;
+import guineu.modules.mylly.datastruct.Spectrum;
 
 /**
  * @author jmjarkko

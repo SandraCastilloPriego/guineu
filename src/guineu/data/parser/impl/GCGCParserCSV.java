@@ -24,6 +24,7 @@ import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,6 +117,7 @@ public class GCGCParserCSV implements Parser {
                     metabolite.setPubChemID(sdata[i]);
                 } else if (header[i].matches(RegExp.SPECTRUM.getREgExp())) {
                     metabolite.setSpectrum(sdata[i]);
+					metabolite.setSpectra(this.getSpectrum(sdata[i]));
                 } else {
                     try {
                         metabolite.setPeak(header[i], Double.valueOf(sdata[i]));
@@ -143,7 +145,12 @@ public class GCGCParserCSV implements Parser {
         return this.dataset;
     }
 
-    private void setExperimentsName(String[] header) {
+	private Spectrum getSpectrum(String string) {
+		Spectrum newSpectrum = new Spectrum(string);
+		return newSpectrum;
+	}
+
+	private void setExperimentsName(String[] header) {
         try {
             
             String regExpression = "";
@@ -153,7 +160,6 @@ public class GCGCParserCSV implements Parser {
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
                     this.dataset.AddNameExperiment(header[i]);
-					//System.out.println(header[i]);
                 } 
             }
            

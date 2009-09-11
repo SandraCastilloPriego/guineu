@@ -22,7 +22,7 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCData;
+import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleGCGCDataset;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.ArrayList;
 
 /**

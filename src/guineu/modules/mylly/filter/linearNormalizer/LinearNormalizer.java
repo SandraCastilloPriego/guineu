@@ -22,7 +22,7 @@ package guineu.modules.mylly.filter.linearNormalizer;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

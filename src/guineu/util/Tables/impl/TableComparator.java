@@ -17,7 +17,7 @@
  */
 package guineu.util.Tables.impl;
 
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.Comparator;
 
 /**

@@ -18,11 +18,11 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
-import guineu.modules.mylly.gcgcaligner.datastruct.ConsensusSpectrum;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatum;
-import guineu.modules.mylly.gcgcaligner.datastruct.GCGCDatumWithConcentration;
-import guineu.modules.mylly.gcgcaligner.datastruct.Peak;
-import guineu.modules.mylly.gcgcaligner.datastruct.Spectrum;
+import guineu.modules.mylly.datastruct.ConsensusSpectrum;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.GCGCDatumWithConcentration;
+import guineu.modules.mylly.datastruct.Peak;
+import guineu.modules.mylly.datastruct.Spectrum;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -22,6 +22,7 @@ import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -125,6 +126,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 					metabolite.setSimilaritySTDDev(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.SPECTRUM.getREgExp())) {
 					metabolite.setSpectrum(this.setStringDateInToStruct(row, e));
+					metabolite.setSpectra(this.getSpectrum(this.setStringDateInToStruct(row, e)));
 				} else {					
 					try {
 						Double concentration = new Double(this.setDateInToStruct(row, e));
@@ -140,6 +142,12 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 			System.out.println("ParserMetGCGC.java ---> read_data() " + exception);
 
 		}
+	}
+
+
+	private Spectrum getSpectrum(String string) {
+		Spectrum newSpectrum = new Spectrum(string);
+		return newSpectrum;
 	}
 
 	private double setDateInToStruct(HSSFRow row, int Index) {
