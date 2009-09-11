@@ -325,7 +325,7 @@ public class SimpleGCGCDataset implements Dataset{
 	}
 
 	public void removeRow(PeakListRow row) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		this.alignment.remove(row);
 	}
 
 	public void AddNameExperiment(String nameExperiment) {
