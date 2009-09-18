@@ -79,26 +79,32 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 				case 1:
 					return this.dataset.getRow(row).getID();
 				case 2:
-					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getMZ();
+					return ((SimplePeakListRowLCMS) this.dataset.getRow(row)).getMZ();
 				case 3:
-					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getRT();
+					return ((SimplePeakListRowLCMS) this.dataset.getRow(row)).getRT();
 				case 4:
 					return this.dataset.getRow(row).getName();
 				case 5:
 					return this.dataset.getRow(row).getAllNames();
 				case 6:
-					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getMolClass();
+					return this.dataset.getRow(row).getPubChemID();
 				case 7:
-					return this.dataset.getRow(row).getNumFound();
+					return this.dataset.getRow(row).getVTTID();
 				case 8:
-					if (((SimplePeakListRowLCMS)this.dataset.getRow(row)).getStandard() == 1) {
+					return this.dataset.getRow(row).getAllVTTID();
+				case 9:
+					return ((SimplePeakListRowLCMS) this.dataset.getRow(row)).getMolClass();
+				case 10:
+					return this.dataset.getRow(row).getNumFound();
+				case 11:
+					if (((SimplePeakListRowLCMS) this.dataset.getRow(row)).getStandard() == 1) {
 						return new Boolean(true);
 					} else {
 						return new Boolean(false);
 					}
-				case 9:
-					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getFAComposition();
-				case 10:
+				case 12:
+					return ((SimplePeakListRowLCMS) this.dataset.getRow(row)).getFAComposition();
+				case 13:
 					return this.dataset.getRow(row).getNumberAlignment();
 			}
 			return this.dataset.getRow(row).getPeak(column - this.fixNumberColumns, this.dataset.getNameExperiments());
@@ -191,22 +197,31 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setAllNames((String) aValue);
 				break;
 			case 6:
-				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setLipidClass((String)aValue);
+				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setPubChemID((String) aValue);
 				break;
 			case 7:
-				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setNumFound(doubleValue);
+				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setVTTD((String) aValue);
 				break;
 			case 8:
+				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setAllVTTD((String) aValue);
+				break;
+			case 9:
+				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setLipidClass((String) aValue);
+				break;
+			case 10:
+				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setNumFound(doubleValue);
+				break;
+			case 11:
 				if ((Boolean) aValue) {
 					((SimplePeakListRowLCMS) this.dataset.getRow(row)).setStandard(1);
 				} else {
 					((SimplePeakListRowLCMS) this.dataset.getRow(row)).setStandard(0);
 				}
 				break;
-			case 9:
+			case 12:
 				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setFAComposition((String) aValue);
 				break;
-			case 10:
+			case 13:
 				((SimplePeakListRowLCMS) this.dataset.getRow(row)).setNumberAligment(intValue);
 				break;
 			default:

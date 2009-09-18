@@ -291,5 +291,25 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	public List<GCGCDatum> getRow() {
 		return null;
 	}
+
+	public String getVTTID() {
+		return this.VTTid;
+	}
+
+	public void setVTTD(String VTTID) {
+		this.VTTid = VTTID;
+	}
+
+	public String getAllVTTID() {
+		return this.VTTAllIDs;
+	}
+
+	public void setAllVTTD(String AllVTTIDs) {
+		this.VTTAllIDs = AllVTTIDs;
+	}
+
+	public void setPubChemID(String pubchemID) {
+		this.pubchemID = pubchemID;
+	}
 	
 }

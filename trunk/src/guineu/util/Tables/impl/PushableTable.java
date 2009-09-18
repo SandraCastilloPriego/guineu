@@ -48,7 +48,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -173,32 +172,8 @@ public class PushableTable implements DataTable, ActionListener {
 		system = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 
-	// Columns position and size
-	//this.setColumnSize();
 	}
 
-	public void setColumnSize() {
-		if (this.model.getType() == DatasetType.GCGCTOF) {
-			// move the column "Spectrum" to the end of the table
-			table.moveColumn(13, table.getColumnCount() - 1);
-			//columns size
-			this.setColumnSize(8, 170, table);
-			this.setColumnSize(9, 170, table);
-		} else if (this.model.getType() == DatasetType.LCMS) {
-			//table listener
-			// table.getSelectionModel().addListSelectionListener(new RowListener());
-			//columns size
-			this.setColumnSize(4, 150, table);
-
-		}
-
-	}
-
-	private void setColumnSize(int col, int size, JTable table) {
-		TableColumn column = null;
-		column = table.getColumnModel().getColumn(col);
-		column.setPreferredWidth(size);
-	}
 
 	public void formatNumbers(DatasetType type) {
 		NumberFormat format = NumberFormat.getNumberInstance();

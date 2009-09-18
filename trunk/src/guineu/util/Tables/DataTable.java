@@ -35,6 +35,5 @@ public interface DataTable {
     public void formatNumbers(DatasetType type);
 
     public void formatNumbers(int column);
-
-    public void setColumnSize();
+    
 }
