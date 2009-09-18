@@ -20,7 +20,7 @@ package guineu.modules.statistics.UPGMAClustering;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.desktop.impl.DesktopParameters;
@@ -46,7 +46,7 @@ public class UPGMA implements GuineuModule, TaskListener, ActionListener {
  
 
     private Desktop desktop;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
     private String[] group1, group2;
     
     public void initModule() {
@@ -89,7 +89,7 @@ public class UPGMA implements GuineuModule, TaskListener, ActionListener {
     public ExitCode setupParameters() {
         try{
             Dataset[] datasets = desktop.getSelectedDataFiles();
-            dataset = (SimpleDataset) datasets[0];
+            dataset = (SimpleLCMSDataset) datasets[0];
             UPGMADataDialog dialog = new UPGMADataDialog(dataset);
             dialog.setVisible(true);
             group1 = dialog.getGroup1();

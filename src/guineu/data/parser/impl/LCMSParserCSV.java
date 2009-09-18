@@ -20,7 +20,7 @@ package guineu.data.parser.impl;
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.parser.Parser;
 import java.io.FileReader;
@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class LCMSParserCSV implements Parser {
 
     private String datasetPath;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
     private int rowsNumber;
     private int rowsReaded;
     Lipidclass LipidClassLib;
@@ -43,7 +43,7 @@ public class LCMSParserCSV implements Parser {
         this.rowsNumber = 0;
         this.rowsReaded = 0;
         this.datasetPath = datasetPath;
-        this.dataset = new SimpleDataset(this.getDatasetName());
+        this.dataset = new SimpleLCMSDataset(this.getDatasetName());
         this.dataset.setType(DatasetType.LCMS);
         this.LipidClassLib = new Lipidclass();
         countNumberRows(); 

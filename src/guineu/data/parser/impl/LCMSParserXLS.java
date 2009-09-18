@@ -19,7 +19,7 @@ package guineu.data.parser.impl;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import java.io.IOException;
 import java.util.Iterator;
@@ -34,7 +34,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 public class LCMSParserXLS extends ParserXLS implements Parser {
 
 	private String DatasetName;
-	private SimpleDataset dataset;
+	private SimpleLCMSDataset dataset;
 	private Vector<String> head;
 	private Lipidclass LipidClassLib;
 	private HSSFWorkbook book;
@@ -46,7 +46,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 		this.rowsReaded = 0;
 		this.DatasetName = DatasetName;
 		this.sheetName = sheetName;
-		this.dataset = new SimpleDataset(this.getDatasetName());
+		this.dataset = new SimpleLCMSDataset(this.getDatasetName());
 		this.head = new Vector<String>();
 		this.LipidClassLib = new Lipidclass();
 	}

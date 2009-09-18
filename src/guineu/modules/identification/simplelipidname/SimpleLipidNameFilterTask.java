@@ -19,7 +19,7 @@ package guineu.modules.identification.simplelipidname;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 
@@ -33,10 +33,10 @@ public class SimpleLipidNameFilterTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private double progress = 0.0f;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
 
     public SimpleLipidNameFilterTask(Dataset dataset, Desktop desktop) {
-        this.dataset = (SimpleDataset) dataset;
+        this.dataset = (SimpleLCMSDataset) dataset;
         this.desktop = desktop;
 
     }

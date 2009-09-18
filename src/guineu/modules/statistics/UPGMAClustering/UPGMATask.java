@@ -21,7 +21,7 @@ package guineu.modules.statistics.UPGMAClustering;
 
 
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import java.util.Vector;
@@ -38,10 +38,10 @@ public class UPGMATask implements Task {
     private Desktop desktop;
     private double progress = 0.0f;
     private String[] group1;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
    // private Vector<node> nodes;
     
-    public UPGMATask(String[] group1, SimpleDataset dataset, Desktop desktop){
+    public UPGMATask(String[] group1, SimpleLCMSDataset dataset, Desktop desktop){
         this.group1 = group1;       
         this.dataset = dataset;
         this.desktop = desktop;

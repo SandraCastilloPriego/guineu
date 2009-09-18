@@ -36,7 +36,7 @@ import java.util.Vector;
  *
  * @author SCSANDRA
  */
-public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>, Iterable<GCGCDatum>, PeakListRow {
+public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListRow {
 
 	private final static Comparator<Entry<String[], Integer>> comp = new Comparator<Entry<String[], Integer>>() {
 
@@ -289,15 +289,15 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public double getMZ() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return -1;
 	}
 
 	public double getRT() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return -1;
 	}
 
 	public int getStandard() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return -1;
 	}
 
 	public String getMolClass() {
@@ -305,19 +305,19 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public String getFAComposition() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	public String getIdentity() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	public int getNumberAlignment() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return -1;
 	}
 
 	public void setNumberAligment(int aligment) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		
 	}
 
 	public void removePeaks() {
@@ -358,7 +358,7 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 	}
 
 	public void setPeak(String str, String get) {
-		throw new UnsupportedOperationException("Not supported yet.");
+
 	}
 
 	public void removeNoSamplePeaks(String[] group) {
@@ -461,16 +461,16 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		return row.get(ix);
 	}
 
-	public int compareTo(SimplePeakListRowGCGC o) {
+	public int compareTo(PeakListRow o) {
 		int comparison = 0;
-		if (this.RT1 < o.RT1) {
+		if (this.RT1 < o.getRT1()) {
 			comparison = -1;
-		} else if (this.RT1 > o.RT1) {
+		} else if (this.RT1 > o.getRT1()) {
 			comparison = 1;
 		} else {
-			if (this.RT2 < o.RT2) {
+			if (this.RT2 < o.getRT2()) {
 				comparison = -1;
-			} else if (this.RT2 > o.RT2) {
+			} else if (this.RT2 > o.getRT2()) {
 				comparison = 1;
 			}
 		}
@@ -592,4 +592,5 @@ public class SimplePeakListRowGCGC implements Comparable<SimplePeakListRowGCGC>,
 		}
 		return new Iter(row);
 	}
+	
 }

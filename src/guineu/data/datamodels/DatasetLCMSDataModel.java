@@ -20,21 +20,21 @@ package guineu.data.datamodels;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.table.AbstractTableModel;
 
-public class DatasetDataModel extends AbstractTableModel implements DataTableModel {
+public class DatasetLCMSDataModel extends AbstractTableModel implements DataTableModel {
 
-	private SimpleDataset dataset;
+	private SimpleLCMSDataset dataset;
 	protected SortingDirection isSortAsc = SortingDirection.Ascending;
 	protected int sortCol = 0;
 	private int fixNumberColumns = 0;
 
-	public DatasetDataModel(Dataset dataset) {
-		this.dataset = (SimpleDataset) dataset;
+	public DatasetLCMSDataModel(Dataset dataset) {
+		this.dataset = (SimpleLCMSDataset) dataset;
 		fixNumberColumns = LCMSColumnName.values().length;
 		this.writeData();
 	}
@@ -79,25 +79,25 @@ public class DatasetDataModel extends AbstractTableModel implements DataTableMod
 				case 1:
 					return this.dataset.getRow(row).getID();
 				case 2:
-					return this.dataset.getRow(row).getMZ();
+					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getMZ();
 				case 3:
-					return this.dataset.getRow(row).getRT();
+					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getRT();
 				case 4:
 					return this.dataset.getRow(row).getName();
 				case 5:
 					return this.dataset.getRow(row).getAllNames();
 				case 6:
-					return this.dataset.getRow(row).getMolClass();
+					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getMolClass();
 				case 7:
 					return this.dataset.getRow(row).getNumFound();
 				case 8:
-					if (this.dataset.getRow(row).getStandard() == 1) {
+					if (((SimplePeakListRowLCMS)this.dataset.getRow(row)).getStandard() == 1) {
 						return new Boolean(true);
 					} else {
 						return new Boolean(false);
 					}
 				case 9:
-					return this.dataset.getRow(row).getFAComposition();
+					return ((SimplePeakListRowLCMS)this.dataset.getRow(row)).getFAComposition();
 				case 10:
 					return this.dataset.getRow(row).getNumberAlignment();
 			}

@@ -19,17 +19,15 @@ package guineu.modules.statistics.standardVariation;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
+import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
 import java.util.Vector;
@@ -81,7 +79,7 @@ public class standarVariationTask implements Task {
 			Dataset newDataset = this.StandardVariation(group1);
 			DataTableModel model = null;
 			if (newDataset.getType() == DatasetType.LCMS) {
-				model = new DatasetDataModel(newDataset);
+				model = new DatasetLCMSDataModel(newDataset);
 			} else if (newDataset.getType() == DatasetType.GCGCTOF) {
 				model = new DatasetGCGCDataModel(newDataset);
 			}
@@ -102,7 +100,7 @@ public class standarVariationTask implements Task {
 			progress = 0.5f;
 			newDataset = this.StandardVariation(group2);
 			if (newDataset.getType() == DatasetType.LCMS) {
-				model = new DatasetDataModel(newDataset);
+				model = new DatasetLCMSDataModel(newDataset);
 			} else if (newDataset.getType() == DatasetType.GCGCTOF) {
 				model = new DatasetGCGCDataModel(newDataset);
 			}
@@ -123,40 +121,21 @@ public class standarVariationTask implements Task {
 	}
 
 	public Dataset StandardVariation(String[] group) {
-		Dataset newDataset = null;
-		if (this.dataset.getType() == DatasetType.LCMS) {
-			newDataset = new SimpleDataset(this.dataset.getDatasetName() + " - Standard Variation");
-			for (String experimentName : group) {
-				newDataset.AddNameExperiment(experimentName);
+		Dataset newDataset = FileUtils.getDataset(dataset, "Standard Variation -");
+		for (String experimentName : group) {
+			newDataset.AddNameExperiment(experimentName);
+		}
+
+		StandardUmol std = new StandardUmol(group);
+		for (PeakListRow peakRow : this.dataset.getRows()) {
+			if (peakRow.getStandard() == 1) {
+				std.setStandard(peakRow, peakRow.getName());
 			}
-			StandardUmol std = new StandardUmol(group);
-			for (PeakListRow mol : this.dataset.getRows()) {
-				if (mol.getStandard() == 1) {
-					std.setStandard(mol, mol.getName());
-				}
-			}
-			std.run();
-			Vector<PeakListRow> mols = std.getMols();
-			for (PeakListRow mol : mols) {
-				((SimpleDataset) newDataset).AddRow(mol);
-			}
-		} else if (this.dataset.getType() == DatasetType.GCGCTOF) {
-			newDataset = new SimpleGCGCDataset(this.dataset.getDatasetName() + " - Standard Variation");
-			newDataset.setType(DatasetType.GCGCTOF);
-			for (String experimentName : group) {
-				newDataset.AddNameExperiment(experimentName);
-			}
-			StandardUmol std = new StandardUmol(group);
-			for (PeakListRow mol : this.dataset.getRows()) {
-				if (mol.getStandard() == 1) {
-					std.setStandard(mol, mol.getName());
-				}
-			}
-			std.run();
-			Vector<PeakListRow> mols = std.getMols();
-			for (PeakListRow mol : mols) {
-				((SimpleGCGCDataset) newDataset).addAlignmentRow((SimplePeakListRowGCGC) mol);
-			}
+		}
+		std.run();
+		Vector<PeakListRow> mols = std.getMols();
+		for (PeakListRow mol : mols) {
+			newDataset.AddRow(mol);
 		}
 		return newDataset;
 	}

@@ -22,12 +22,10 @@ import java.util.logging.Logger;
 
 
 import guineu.data.Dataset;
-import guineu.data.Parameter;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetDataModel;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.data.impl.SimpleOtherDataset;
-import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
@@ -92,7 +90,8 @@ class CommonMoleculesTask implements Task {
 
 			for (Dataset dataset : peakLists) {
 				for (PeakListRow row : dataset.getRows()) {
-					lipid mol = new lipid(row.getName(), row.getMZ(), row.getRT());
+					SimplePeakListRowLCMS Row = (SimplePeakListRowLCMS)row;
+					lipid mol = new lipid(Row.getName(), Row.getMZ(), Row.getRT());
 					lipid mol2 = isRepeat(mol);
 					if (mol2 != null) {
 						mol2.addDatasetName(dataset.getDatasetName());

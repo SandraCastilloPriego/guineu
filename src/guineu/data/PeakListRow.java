@@ -17,6 +17,9 @@
  */
 package guineu.data;
 
+import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -104,4 +107,10 @@ public interface PeakListRow {
 	public String getCAS();
 
 	public void setCAS(String CAS);
+
+	public int nonNullPeakCount();
+
+	public DistValue getDistValue();
+
+	public List<GCGCDatum> getRow();
 }

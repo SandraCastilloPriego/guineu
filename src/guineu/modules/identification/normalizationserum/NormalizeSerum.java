@@ -17,7 +17,7 @@
  */
 package guineu.modules.identification.normalizationserum;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task.TaskStatus;
 import java.util.Vector;
@@ -28,11 +28,11 @@ import java.util.Vector;
  */
 public class NormalizeSerum {
 
-	private SimpleDataset dataset;
+	private SimpleLCMSDataset dataset;
 	private double cont = 0;
 	private StandardUmol stdMol;
 
-	public NormalizeSerum(SimpleDataset dataset, StandardUmol stdMol) {
+	public NormalizeSerum(SimpleLCMSDataset dataset, StandardUmol stdMol) {
 		this.dataset = dataset;
 		this.stdMol = stdMol;
 	}
@@ -54,7 +54,7 @@ public class NormalizeSerum {
 		this.fillStd(".*" + this.stdMol.other1 + ".*", this.stdMol.vOtherValue1);
 	}
 
-	public SimpleDataset getDataset() {
+	public SimpleLCMSDataset getDataset() {
 		return dataset;
 	}
 

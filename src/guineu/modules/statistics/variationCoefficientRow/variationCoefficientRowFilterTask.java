@@ -19,17 +19,12 @@ package guineu.modules.statistics.variationCoefficientRow;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.datamodels.DatasetDataModel;
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
+import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -89,37 +84,14 @@ public class variationCoefficientRowFilterTask implements Task {
 		double steps = 1f / datasets.length;
 		for (Dataset dataset : datasets) {
 			DataTableModel model = null;
-			Dataset newDataset = null;
-			if (dataset.getType() == DatasetType.LCMS) {
-				newDataset = ((SimpleDataset) dataset).clone();
-				newDataset.setDatasetName("Var Coefficient - " + dataset.getDatasetName());
-				newDataset.AddNameExperiment("Coefficient of variation");
-				for (PeakListRow lipid : newDataset.getRows()) {
-					double stdDev = this.getSTDDev(lipid);
-					lipid.setPeak("Coefficient of variation", stdDev);
-				}
-				progress += steps;
-				model = new DatasetDataModel(newDataset);
-			}else if (dataset.getType() == DatasetType.GCGCTOF) {
-				newDataset =  new SimpleGCGCDataset("Var Coefficient - " + dataset.getDatasetName());
-				newDataset.setType(DatasetType.GCGCTOF);
-				for(String ColumnName: dataset.getNameExperiments()){
-					newDataset.AddNameExperiment(ColumnName);
-				}
-				newDataset.AddNameExperiment("Coefficient of variation");
-
-				for(PeakListRow row: dataset.getRows()){
-					((SimpleGCGCDataset)newDataset).addAlignmentRow((SimplePeakListRowGCGC) row);
-				}
-
-				for (PeakListRow lipid : newDataset.getRows()) {
-					double stdDev = this.getSTDDev(lipid);
-					lipid.setPeak("Coefficient of variation", stdDev);
-				}
-				progress += steps;
-				model = new DatasetGCGCDataModel(newDataset);
-
+			Dataset newDataset = FileUtils.cloneDataset(dataset, "Var Coefficient - ");
+			newDataset.AddNameExperiment("Coefficient of variation");
+			for (PeakListRow lipid : newDataset.getRows()) {
+				double stdDev = this.CoefficientOfVariation(lipid);
+				lipid.setPeak("Coefficient of variation", stdDev);
 			}
+			progress += steps;
+			model = FileUtils.getTableModel(newDataset);
 
 			progress = 0.5f;
 			DataTable table = new PushableTable(model);
@@ -127,24 +99,17 @@ public class variationCoefficientRowFilterTask implements Task {
 			DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName() + " - Coefficient of Variation", table.getTable(), new Dimension(450, 450));
 			desktop.addInternalFrame(frame);
 			desktop.AddNewFile(newDataset);
-			frame.setVisible(true);		
+			frame.setVisible(true);
 		}
 		progress = 1f;
 
 	}
 
-	public double getSTDDev(PeakListRow row) {
+	public double CoefficientOfVariation(PeakListRow row) {
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		for (Object peak : row.getPeaks()) {
 			stats.addValue((Double) peak);
 		}
 		return stats.getStandardDeviation() / stats.getMean();
-	}
-
-	public class data {
-
-		String Name;
-		Double stdDev;
-		int NumMol;
-	}
+	}	
 }

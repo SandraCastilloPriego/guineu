@@ -19,7 +19,7 @@ package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -34,11 +34,11 @@ public class UnitsChangeFilterTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private double progress = 0.0f;
-    private SimpleDataset dataset;
+    private Dataset dataset;
     private UnitsChangeFilterParameters parameters;
 
     public UnitsChangeFilterTask(Dataset simpleDataset, Desktop desktop, SimpleParameterSet parameters) {
-        this.dataset = (SimpleDataset) simpleDataset;
+        this.dataset =  simpleDataset;
         this.desktop = desktop;
         this.parameters = (UnitsChangeFilterParameters) parameters;
     }

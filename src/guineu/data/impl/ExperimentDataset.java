@@ -30,10 +30,22 @@ public class ExperimentDataset implements Dataset {
     String datasetName;
     Vector<Bexperiments> experiments;
     DatasetType type = DatasetType.EXPERIMENTINFO;
+	Vector <String> columnNames;
 
     public ExperimentDataset(String datasetName) {
         this.datasetName = datasetName;
         this.experiments = new Vector<Bexperiments>();
+		columnNames = new Vector<String>();
+		columnNames.add("Name");
+        columnNames.add("Type");
+        columnNames.add("Project");
+        columnNames.add("Person");
+        columnNames.add("Replicate");
+        columnNames.add("Amount");
+        columnNames.add("Unit");
+        columnNames.add("Method");
+        columnNames.add("Sample");
+        columnNames.add("Date");
     }
 
     public void addExperiment(Bexperiments experiment) {
@@ -57,46 +69,50 @@ public class ExperimentDataset implements Dataset {
     }
 
     public Iterable<String> getNameExperiments() {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return columnNames;
     }
 
     public int getNumberCols() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return columnNames.size();
     }
 
     public int getNumberRows() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return experiments.size();
     }
 
     public PeakListRow getRow(int row) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public void setType(DatasetType type) {
         this.type = type;
     }
-
-    public int getNumberFixColumns() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setNumberFixColumns(int columnNum) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+ 
     public void removeRow(PeakListRow row) {
-         throw new UnsupportedOperationException("Not supported yet.");
+         
     }
 
     public void AddNameExperiment(String nameExperiment) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.columnNames.add(nameExperiment);
     }
 
     public Vector<PeakListRow> getRows() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public void AddNameExperiment(String nameExperiment, int position) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       this.columnNames.set(position, nameExperiment);
     }
+
+	public Dataset clone() {
+		Dataset newDataset = new ExperimentDataset(datasetName);
+		for(Bexperiments row: experiments){
+			((ExperimentDataset)newDataset).addExperiment(row.clone());
+		}
+		return newDataset;
+	}
+
+	public void AddRow(PeakListRow peakListRow) {
+		
+	}
 }

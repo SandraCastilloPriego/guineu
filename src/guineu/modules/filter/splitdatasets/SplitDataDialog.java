@@ -17,7 +17,7 @@
  */
 package guineu.modules.filter.splitdatasets;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.util.logging.Logger;
@@ -30,12 +30,12 @@ import javax.swing.JDialog;
 public class SplitDataDialog extends JDialog {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private SimpleDataset dataset;
+    private Dataset dataset;
     private SplitDataModel group1,  group2,  from;
     private ExitCode exit = ExitCode.UNKNOWN;
 
     /** Creates new form TtestDataDialog */
-    public SplitDataDialog(SimpleDataset dataset) {
+    public SplitDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please select a experiment groups to do the split filter...", true);
 

@@ -19,7 +19,7 @@ package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -82,7 +82,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
     public ExitCode setupParameters() {
         try {
             Dataset[] datasets = desktop.getSelectedDataFiles();
-            NormalizationTissueDialog dialog = new NormalizationTissueDialog(standards, ((SimpleDataset)datasets[0]).getNameExperiments());
+            NormalizationTissueDialog dialog = new NormalizationTissueDialog(standards, ((SimpleLCMSDataset)datasets[0]).getNameExperiments());
             dialog.setVisible(true);
             return dialog.getExitCode();
         } catch (Exception exception) {

@@ -83,35 +83,38 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 				case 1:
 					return this.dataset.getRow(row).getID();
 				case 2:
-					return this.dataset.getRow(row).getRT1();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getRT1();
 				case 3:
-					return this.dataset.getRow(row).getRT2();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getRT2();
 				case 4:
-					return this.dataset.getRow(row).getRTI();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getRTI();
 				case 5:
 					return this.dataset.getRow(row).getNumFound();
 				case 6:
-					return this.dataset.getRow(row).getCAS();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getCAS();
 				case 7:
-					return this.dataset.getRow(row).getMaxSimilarity();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getMaxSimilarity();
 				case 8:
-					return this.dataset.getRow(row).getMeanSimilarity();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getMeanSimilarity();
 				case 9:
-					return this.dataset.getRow(row).getSimilaritySTDDev();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getSimilaritySTDDev();
 				case 10:
 					return this.dataset.getRow(row).getName();
 				case 11:
 					return this.dataset.getRow(row).getAllNames();
 				case 12:
-					return this.dataset.getRow(row).getMolClass();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getMolClass();
 				case 13:
 					return this.dataset.getRow(row).getPubChemID();
 				case 14:
-					return this.dataset.getRow(row).getMass();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getMass();
 				case 15:
-					return this.dataset.getRow(row).getDifference();
+					if (((SimplePeakListRowGCGC) this.dataset.getRow(row)).getDifference() < 0) {
+						return 0.0;
+					}
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getDifference();
 				case 16:
-					return this.dataset.getRow(row).getSpectrumString();
+					return ((SimplePeakListRowGCGC) this.dataset.getRow(row)).getSpectrumString();
 			}
 			return this.dataset.getRow(row).getPeak(this.dataset.getNameExperiments().get(column - this.fixNumberColumns));
 		} catch (Exception e) {

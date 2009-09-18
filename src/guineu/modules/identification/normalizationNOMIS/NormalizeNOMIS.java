@@ -20,7 +20,7 @@
 package guineu.modules.identification.normalizationNOMIS;
 
 import flanagan.math.Matrix;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import java.util.Vector;
 
 
@@ -29,11 +29,11 @@ import java.util.Vector;
  * @author scsandra
  */
 public class NormalizeNOMIS {
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
     private double cont;
     private StandardUmol stdMol;
     
-    public NormalizeNOMIS(SimpleDataset dataset, StandardUmol stdMol){
+    public NormalizeNOMIS(SimpleLCMSDataset dataset, StandardUmol stdMol){
         this.dataset = dataset;
         this.stdMol = stdMol;
     }
@@ -64,7 +64,7 @@ public class NormalizeNOMIS {
         this.stdMol.calculeM();
     }
 
-    public SimpleDataset getDataset() {
+    public SimpleLCMSDataset getDataset() {
         return dataset;
     }
     

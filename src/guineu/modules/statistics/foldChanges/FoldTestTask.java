@@ -19,10 +19,10 @@ package guineu.modules.statistics.foldChanges;
 
 import guineu.data.PeakListRow;
 import guineu.data.Dataset;
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.desktop.Desktop;
@@ -30,6 +30,7 @@ import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
+import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
 import org.apache.commons.math.MathException;
@@ -83,41 +84,23 @@ public class FoldTestTask implements Task {
 			for (int i = 0; i < dataset.getNumberRows(); i++) {
 				t[i] = this.Foldtest(i);
 			}
-			DataTableModel model = null;
-			Dataset newDataset = null;
-			if (dataset.getType() == DatasetType.LCMS) {
-				newDataset = new SimpleDataset("Fold Test - " + dataset.getDatasetName());
-				progress = 0.3f;
-				newDataset.AddNameExperiment("Fold test");
-				int cont = 0;
-				for (PeakListRow row : dataset.getRows()) {
-					PeakListRow newRow = row.clone();
-					newRow.removePeaks();
-					newRow.setPeak("Fold test", t[cont++]);
-					((SimpleDataset) newDataset).AddRow(newRow);
-				}
-				model = new DatasetDataModel(newDataset);
-			} else if (dataset.getType() == DatasetType.GCGCTOF) {
-				newDataset = new SimpleGCGCDataset("Fold Test - " + dataset.getDatasetName());
-				newDataset.setType(DatasetType.GCGCTOF);
-				progress = 0.3f;
-				newDataset.AddNameExperiment("Fold test");
-				int cont = 0;
-				for (PeakListRow row : dataset.getRows()) {
-					PeakListRow newRow = row.clone();
-					((SimplePeakListRowGCGC) newRow).removePeaks();
-					newRow.setPeak("Fold test", t[cont++]);
-					((SimpleGCGCDataset) newDataset).addAlignmentRow((SimplePeakListRowGCGC) newRow);
-				}
-				model = new DatasetGCGCDataModel((SimpleGCGCDataset) newDataset);
+
+			Dataset newDataset = FileUtils.getDataset(dataset, "Fold Test - ");
+			progress = 0.3f;
+			newDataset.AddNameExperiment("Fold test");
+			int cont = 0;
+			for (PeakListRow row : dataset.getRows()) {
+				PeakListRow newRow = row.clone();
+				newRow.removePeaks();
+				newRow.setPeak("Fold test", t[cont++]);
+				newDataset.AddRow(newRow);
 			}
-
-
-
+			DataTableModel model = FileUtils.getTableModel(newDataset);
+			
 			progress = 0.5f;
 			DataTable table = new PushableTable(model);
 			table.formatNumbers(dataset.getType());
-			DataInternalFrame frame = new DataInternalFrame("Fold Changes Test", table.getTable(), new Dimension(450, 450));
+			DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
 			desktop.addInternalFrame(frame);
 			desktop.AddNewFile(newDataset);
 			frame.setVisible(true);

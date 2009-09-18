@@ -20,8 +20,8 @@ package guineu.modules.filter.Alignment;
 
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
@@ -81,11 +81,11 @@ public class AlignmentDatasetsTask implements Task{
        status = TaskStatus.PROCESSING;
         comb.run();       
        
-        SimpleDataset dataset = comb.getDataset();
+        SimpleLCMSDataset dataset = comb.getDataset();
         desktop.AddNewFile(dataset);
                         
         //creates internal frame with the table
-        DataTableModel model = new DatasetDataModel(dataset);                       
+        DataTableModel model = new DatasetLCMSDataModel(dataset);
         DataTable table = new PushableTable(model);
         table.formatNumbers(dataset.getType());
         DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800,800));

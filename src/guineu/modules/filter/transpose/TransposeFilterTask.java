@@ -20,8 +20,9 @@ package guineu.modules.filter.transpose;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -36,10 +37,10 @@ public class TransposeFilterTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private double progress = 0.0f;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
 
     public TransposeFilterTask(Dataset dataset, Desktop desktop) {
-        this.dataset = (SimpleDataset) dataset;
+        this.dataset = (SimpleLCMSDataset) dataset;
         this.desktop = desktop;
     }
 
@@ -69,7 +70,8 @@ public class TransposeFilterTask implements Task {
             newDataset.AddNameExperiment("Name");
             status = TaskStatus.PROCESSING;
            
-            for (PeakListRow row : dataset.getRows()) {
+            for (PeakListRow Row : dataset.getRows()) {
+				SimplePeakListRowLCMS row = (SimplePeakListRowLCMS)Row;
                 int cont = 0;
                 int l = row.getName().length();
                 while(newDataset.containtName(row.getName())) {

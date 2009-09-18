@@ -18,9 +18,11 @@
 package guineu.data;
 
 import guineu.data.impl.DatasetType;
-import java.util.Vector;
+import java.util.List;
 
 public interface Dataset {
+
+	public Dataset clone();
 
 	public String getDatasetName();
 
@@ -44,5 +46,7 @@ public interface Dataset {
 
 	public void AddNameExperiment(String nameExperiment, int position);
 
-	public Vector<PeakListRow> getRows();
+	public List<PeakListRow> getRows();
+
+	public void AddRow(PeakListRow peakListRow);
 }

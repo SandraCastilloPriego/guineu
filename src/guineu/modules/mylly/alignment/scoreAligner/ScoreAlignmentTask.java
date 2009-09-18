@@ -18,7 +18,7 @@
 package guineu.modules.mylly.alignment.scoreAligner;
 
 
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimplePeakListRowGCGC;

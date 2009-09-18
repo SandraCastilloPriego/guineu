@@ -37,7 +37,7 @@ public class SimpleOtherDataset implements Dataset {
         this.datasetName = datasetName;
         this.PeakList = new Vector<PeakListRow>();
         this.nameExperiments = new Vector<String>();
-        type = DatasetType.LCMS;
+        type = DatasetType.OTHER;
     }
 
     public String getDatasetName() {
@@ -124,15 +124,7 @@ public class SimpleOtherDataset implements Dataset {
         newDataset.setType(this.type);
         return newDataset;
     }
-
-    public int getNumberFixColumns() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setNumberFixColumns(int columnNum) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+  
     public void removeRow(PeakListRow row) {
         try {
             this.PeakList.removeElement(row);

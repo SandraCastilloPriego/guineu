@@ -28,8 +28,9 @@ import com.Ostermiller.util.CSVParser;
 import guineu.data.Dataset;
 import guineu.data.Parameter;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task;
 
 /**
@@ -38,7 +39,7 @@ import guineu.taskcontrol.Task;
 class CustomDBSearchTask implements Task {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private SimpleDataset peakList;
+	private SimpleLCMSDataset peakList;
 	private TaskStatus status;
 	private String errorMessage;
 	private String[][] databaseValues;
@@ -52,7 +53,7 @@ class CustomDBSearchTask implements Task {
 
 	CustomDBSearchTask(Dataset peakList, CustomDBSearchParameters parameters) {
 		status = TaskStatus.WAITING;
-		this.peakList = (SimpleDataset) peakList;
+		this.peakList = (SimpleLCMSDataset) peakList;
 
 		dataBaseFile = (String) parameters.getParameterValue(CustomDBSearchParameters.dataBaseFile);
 		fieldSeparator = (String) parameters.getParameterValue(CustomDBSearchParameters.fieldSeparator);
@@ -94,7 +95,7 @@ class CustomDBSearchTask implements Task {
 	 */
 	public void run() {
 
-		status = TaskStatus.PROCESSING;		
+		status = TaskStatus.PROCESSING;
 		File dbFile = new File(dataBaseFile);
 
 		try {
@@ -150,8 +151,8 @@ class CustomDBSearchTask implements Task {
 			}
 		}
 
-		for (PeakListRow peakRow : peakList.getRows()) {
-
+		for (PeakListRow peakrow : peakList.getRows()) {
+			SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) peakrow;
 			boolean mzOK = (Math.abs(peakRow.getMZ() - lineMZ) < mzTolerance);
 			boolean rtOK = (Math.abs(peakRow.getRT() - lineRT) < rtTolerance);
 

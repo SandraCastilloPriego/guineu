@@ -17,9 +17,11 @@
  */
 package guineu.database.intro;
 
+import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.database.ask.DBask;
@@ -49,7 +51,7 @@ public class WriteDataBase {
 	 * @param lmcs_known
 	 * @param excel_id
 	 */
-	public void tableEXPERIMENT(Connection conn, SimpleDataset dataset, int DatasetId) {
+	public void tableEXPERIMENT(Connection conn, Dataset dataset, int DatasetId) {
 		try {
 			Statement statement = conn.createStatement();
 			ResultSet r = null;
@@ -128,9 +130,8 @@ public class WriteDataBase {
 	 * @param st
 	 * @param excel_id
 	 * @return
-	 */
-	@SuppressWarnings("empty-statement")
-	public int[] tableMOL_LCMS(Connection conn, SimpleDataset lcms_known, int excel_id) {
+	 */	
+	public int[] tableMOL_LCMS(Connection conn, SimpleLCMSDataset lcms_known, int excel_id) {
 		try {
 			int[] mol_ID = new int[lcms_known.getNumberRows()];
 			Statement statement = conn.createStatement();
@@ -138,7 +139,7 @@ public class WriteDataBase {
 				SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) lcms_known.getRow(i);
 				try {
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
-							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, IDENTITY, DATASET_ID)" +
+							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, IDENTITY)" +
 							" VALUES ( '" + Double.valueOf(lipid.getMZ()).floatValue() +
 							"', '" + Double.valueOf(lipid.getRT()).floatValue() +
 							"', '" + lipid.getName() +
@@ -146,8 +147,7 @@ public class WriteDataBase {
 							"', '" + (int) lipid.getNumFound() +
 							"', '" + lipid.getStandard() +
 							"', '" + excel_id +
-							"', '" + lipid.getAllNames() +
-							"', '" + lipid.getID() + "') ");
+							"', '" + lipid.getAllNames() + "') ");
 					ResultSet r = statement.executeQuery("SELECT * FROM MOL_LCMS ORDER BY ID desc");
 					if (r.next()) {
 						mol_ID[i] = r.getInt(1);
@@ -174,7 +174,7 @@ public class WriteDataBase {
 	 * @param st
 	 * @param mol_ID
 	 */
-	public void tableMEASUREMENT(Connection conn, SimpleDataset Molecules, int[] mol_ID, int excel_id) {
+	public void tableMEASUREMENT(Connection conn, Dataset Molecules, int[] mol_ID, int excel_id) {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
@@ -218,7 +218,7 @@ public class WriteDataBase {
 		}
 	}
 
-	public int[] tableMOL_GCGCTof(Connection conn, SimpleDataset dataset, int exp_id) {
+	public int[] tableMOL_GCGCTof(Connection conn, SimpleGCGCDataset dataset, int exp_id) {
 		//intro table MOL_GCGCTOF
 		Statement st = null;
 		int[] mol_ID = new int[dataset.getNumberRows() + 1];
@@ -281,7 +281,7 @@ public class WriteDataBase {
 		return mol_ID;
 	}
 
-	public void tableSPECTRUM(Connection conn, SimpleDataset mol, Statement st, int[] mol_ID) {
+	public void tableSPECTRUM(Connection conn, SimpleGCGCDataset mol, Statement st, int[] mol_ID) {
 		try {
 			st = conn.createStatement();
 			for (int i = 0; i < mol.getNumberRows(); i++) {

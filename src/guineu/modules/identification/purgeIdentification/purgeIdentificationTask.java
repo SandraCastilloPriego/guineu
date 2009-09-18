@@ -21,8 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.parser.impl.Lipidclass;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
@@ -42,13 +41,13 @@ public class purgeIdentificationTask implements Task {
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private Desktop desktop;
-	private SimpleDataset dataset;
+	private Dataset dataset;
 	private double count;
 	private int NRows;
 	Lipidclass LipidClassLib;
 
 	public purgeIdentificationTask(Dataset dataset, Desktop desktop) {
-		this.dataset = (SimpleDataset) dataset;
+		this.dataset =  dataset;
 		this.desktop = desktop;
 		this.LipidClassLib = new Lipidclass();
 	}
@@ -76,9 +75,9 @@ public class purgeIdentificationTask implements Task {
 	public void run() {
 		try {
 			status = TaskStatus.PROCESSING;
-			SimpleDataset newDataset = dataset.clone();
+			Dataset newDataset = dataset.clone();
 			for (int i = 0; i < newDataset.getNumberRows(); i++) {
-				PeakListRow lipid = newDataset.getRow(i);
+				PeakListRow lipid =  newDataset.getRow(i);
 				if (lipid == null) {
 					continue;
 				}
@@ -88,7 +87,7 @@ public class purgeIdentificationTask implements Task {
 			desktop.AddNewFile(newDataset);
 
 			//creates internal frame with the table
-			DataTableModel model = new DatasetDataModel(newDataset);
+			DataTableModel model = new DatasetLCMSDataModel(newDataset);
 			DataTable table = new PushableTable(model);
 			DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
 

@@ -21,7 +21,7 @@ package guineu.data.parser.impl;
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.database.ask.DBask;
 import guineu.database.ask.DataBase;
 import java.util.Vector;
@@ -33,7 +33,7 @@ import java.util.Vector;
  */
 public class LCMSParserDataBase implements Parser{
     private DataBase db;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
     private int datasetID;
     private String datasetName;    
     private float progress = 0.0f;
@@ -41,7 +41,7 @@ public class LCMSParserDataBase implements Parser{
     public LCMSParserDataBase(int datasetID){
         db = new DBask();
         this.datasetID = datasetID; 
-        this.dataset = new SimpleDataset(db.getDatasetName(datasetID));        
+        this.dataset = new SimpleLCMSDataset(db.getDatasetName(datasetID));
     }
     
     public void fillData(){         

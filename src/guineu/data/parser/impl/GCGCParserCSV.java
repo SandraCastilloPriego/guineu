@@ -21,7 +21,7 @@ import com.csvreader.CsvReader;
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.Spectrum;
