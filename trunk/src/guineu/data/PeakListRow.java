@@ -19,6 +19,7 @@ package guineu.data;
 
 import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
 import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.Spectrum;
 import java.util.List;
 import java.util.Vector;
 
@@ -35,6 +36,8 @@ public interface PeakListRow {
     public double getRT();
 
     public double getNumFound();
+
+	public Spectrum getSpectrum();
 
     public int getStandard();
 
