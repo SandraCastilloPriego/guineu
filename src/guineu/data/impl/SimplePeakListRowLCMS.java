@@ -20,6 +20,7 @@ package guineu.data.impl;
 import guineu.data.PeakListRow;
 import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
 import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.modules.mylly.datastruct.Spectrum;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -310,6 +311,10 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
 	public void setPubChemID(String pubchemID) {
 		this.pubchemID = pubchemID;
+	}
+
+	public Spectrum getSpectrum() {
+		return null;
 	}
 	
 }

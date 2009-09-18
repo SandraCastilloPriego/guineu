@@ -22,9 +22,8 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowLCMS;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.database.ask.DBask;
+import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -36,8 +35,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -56,7 +53,12 @@ public class WriteDataBase {
 			Statement statement = conn.createStatement();
 			ResultSet r = null;
 			for (String sampleName : dataset.getNameExperiments()) {
-				String sampleNameExp = sampleName.substring(0, sampleName.indexOf(" "));
+				String sampleNameExp;
+				try {
+					sampleNameExp = sampleName.substring(0, sampleName.indexOf(" "));
+				} catch (Exception e) {
+					sampleNameExp = sampleName;
+				}
 				if (sampleName != null) {
 					r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleNameExp + "'");
 					if (r.next()) {
@@ -138,7 +140,7 @@ public class WriteDataBase {
 			Statement statement = conn.createStatement();
 			for (int i = 0; i < lcms_known.getNumberRows(); i++) {
 				PeakListRow lipid = lcms_known.getRow(i);
-				try {				
+				try {
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
 							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, " +
 							"FA_COMPOSITION,PUBCHEM_ID, VTTID, VTTALLIDS,ALL_NAMES)" +
@@ -232,37 +234,14 @@ public class WriteDataBase {
 		Statement st = null;
 		int[] mol_ID = new int[dataset.getNumberRows() + 1];
 		for (int i = 0; i < dataset.getNumberRows(); i++) {
-			SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
+			PeakListRow metabolite = dataset.getRow(i);
 			try {
 				int result = 0;
-				/*String name = "nan";
-				if(metabolite.getMolName()!= null){
-				name = metabolite.getMolName().toUpperCase();
-				}
-				if(name.indexOf("UNKNOWN") < 0){
-				if(metabolite.getMolName() != null){
-				result = this.pubchem_connect(metabolite.getMolName());
-				}
-				String [] met_name = this.get_metname(metabolite.getAllNames());
-				if(met_name != null){
-				for(int o = 0; o < met_name.length; o++){
-				if(met_name[o]!= null && met_name[o].toUpperCase().indexOf("UNKNOWN") < 0){
-				result = this.pubchem_connect(met_name[o]);
-				if(result != 0)
-				break;
-				}else{
-				break;
-				}
-				}
-				}
-				}else{
-				result = 0;
-				}*/
 				st = conn.createStatement();
 				st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, " +
 						"N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, " +
 						"METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, " +
-						"EPID, MASS, DIFFERENCE, SPECTRUM) VALUES ('" + (float) metabolite.getRT1() +
+						"EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES ('" + (float) metabolite.getRT1() +
 						"', '" + (float) metabolite.getRT2() +
 						"', '" + (float) metabolite.getRTI() +
 						"', '" + metabolite.getNumFound() +
@@ -275,16 +254,18 @@ public class WriteDataBase {
 						"', '" + (int) exp_id +
 						"', '" + (float) metabolite.getMass() +
 						"', '" + (float) metabolite.getDifference() +
-						"', '" + metabolite.getSpectrum() + "') ");
+						"', '" + metabolite.getSpectrumString() +
+						"', '" + metabolite.getCAS() +
+						"', '" + metabolite.getMolClass() + "') ");
 				ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");
 				r.next();
 				mol_ID[i] = r.getInt(1);
 				r.close();
 				st.close();
 			} catch (SQLException se) {
-				/*System.out.println("We got an exception while preparing a statement:" +
-				"Probably bad SQL.");
-				se.printStackTrace();	 */
+				System.out.println("We got an exception while preparing a statement:" +
+						"Probably bad SQL.");
+				se.printStackTrace();
 			}
 		}
 		return mol_ID;
@@ -294,12 +275,13 @@ public class WriteDataBase {
 		try {
 			st = conn.createStatement();
 			for (int i = 0; i < mol.getNumberRows(); i++) {
-				SimplePeakListRowGCGC peak = (SimplePeakListRowGCGC) mol.getRow(i);
-				double[][] spectrum = this.get_spectrum(peak.getSpectrumString());
+				PeakListRow peak = mol.getRow(i);
+				Spectrum spectrum = peak.getSpectrum();
+
 				if (spectrum == null) {
 					break;
 				}
-				for (int e = 0; e < spectrum.length; e++) {
+				for (int e = 0; e < spectrum.length(); e++) {
 					try {
 						if (e == 0) {
 							ResultSet r = st.executeQuery("SELECT * FROM SPECTRUMS WHERE MOL_ID = '" + mol_ID[i] + "'");
@@ -308,50 +290,16 @@ public class WriteDataBase {
 							}
 							r.close();
 						}
-						st.executeUpdate("INSERT INTO SPECTRUMS (MOL_ID, MASS, INTENSITY) VALUES ( '" + (float) mol_ID[i] + "', '" + (float) spectrum[e][0] + "', '" + (float) spectrum[e][1] + "') ");
+						st.executeUpdate("INSERT INTO SPECTRUMS (MOL_ID, MASS, INTENSITY) VALUES ( '" + (float) mol_ID[i] + "', '" + (float) spectrum.getPeakList().get(e).getFirst() + "', '" + (float) spectrum.getPeakList().get(e).getSecond() + "') ");
 					} catch (SQLException se) {
-						// System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
-						// se.printStackTrace();
+						System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
+						se.printStackTrace();
 					}
 				}
 			}
 		} catch (SQLException ex) {
-			// Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
 		}
-	}
-
-	/**
-	 * return array [][] double:
-	 * From -> [12:3,45:2,23:5 ..]
-	 * return -> double[0][0] = 12
-	 * 			 double[0][1] = 3
-	 * 			 double[1][0] = 45
-	 * 			 double[1][1] = 2
-	 * 				...
-	 * @param spectrum String with the spectrum of one metabolite
-	 * @return array [][] double with the numbers from the spectrum string
-	 */
-	public double[][] get_spectrum(String spectrum) {
-
-		if (spectrum == null) {
-			return null;
-		}
-		double[][] num = new double[spectrum.split(",").length][];
-
-		for (int i = 0; i < num.length; i++) {
-			num[i] = new double[2];
-		}
-		Pattern sp = Pattern.compile("\\d\\d?\\d?\\d?");
-		Matcher matcher = sp.matcher(spectrum);
-		int i = 0;
-		while (matcher.find()) {
-			num[i][0] = Double.parseDouble(spectrum.substring(matcher.start(), matcher.end()));
-			matcher.find();
-			num[i][1] = Double.parseDouble(spectrum.substring(matcher.start(), matcher.end()));
-			i++;
-		}
-
-		return num;
 	}
 
 	/**
@@ -359,7 +307,7 @@ public class WriteDataBase {
 	 * Argument search is the name of the metabolite
 	 * Return int = 2334333 (Pubchem ID)
 	 */
-	public int pubchem_connect(String search) {
+	public static int pubchem_connect(String search) {
 		//System.out.println(search);
 		try {
 			System.setProperty("http.proxyHost", "rohto.vtt.fi");
