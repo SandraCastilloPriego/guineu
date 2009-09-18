@@ -88,6 +88,8 @@ public interface PeakListRow {
 
     public String getPubChemID();
 
+	public void setPubChemID(String pubchemID);
+
     public double getMass();
 
     public double getDifference();
@@ -113,4 +115,12 @@ public interface PeakListRow {
 	public DistValue getDistValue();
 
 	public List<GCGCDatum> getRow();
+
+	public String getVTTID();
+
+	public void setVTTD(String VTTID);
+
+	public String getAllVTTID();
+
+	public void setAllVTTD(String AllVTTID);
 }

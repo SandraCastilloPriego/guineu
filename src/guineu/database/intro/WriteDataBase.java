@@ -139,7 +139,8 @@ public class WriteDataBase {
 				SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) lcms_known.getRow(i);
 				try {
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
-							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, IDENTITY)" +
+							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, " +
+							"FA_COMPOSITION,PUBCHEM_ID, VTTID, VTTALLIDS,ALL_NAMES)" +
 							" VALUES ( '" + Double.valueOf(lipid.getMZ()).floatValue() +
 							"', '" + Double.valueOf(lipid.getRT()).floatValue() +
 							"', '" + lipid.getName() +
@@ -147,6 +148,10 @@ public class WriteDataBase {
 							"', '" + (int) lipid.getNumFound() +
 							"', '" + lipid.getStandard() +
 							"', '" + excel_id +
+							"', '" + lipid.getFAComposition() +
+							"', '" + lipid.getPubChemID() +
+							"', '" + lipid.getVTTID() +
+							"', '" + lipid.getAllVTTID() +
 							"', '" + lipid.getAllNames() + "') ");
 					ResultSet r = statement.executeQuery("SELECT * FROM MOL_LCMS ORDER BY ID desc");
 					if (r.next()) {

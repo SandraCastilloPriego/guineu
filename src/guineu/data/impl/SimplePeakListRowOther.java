@@ -242,4 +242,24 @@ public class SimplePeakListRowOther implements PeakListRow {
 	public List<GCGCDatum> getRow() {
 		return null;
 	}
+
+	public String getVTTID() {
+		return null;
+	}
+
+	public void setVTTD(String VTTID) {
+		
+	}
+
+	public String getAllVTTID() {
+		return null;
+	}
+
+	public void setAllVTTD(String AllVTTID) {
+
+	}
+
+	public void setPubChemID(String pubchemID) {
+		
+	}
 }

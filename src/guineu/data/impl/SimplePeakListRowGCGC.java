@@ -592,5 +592,21 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 		}
 		return new Iter(row);
 	}
+
+	public String getVTTID() {
+		return null;
+	}
+
+	public void setVTTD(String VTTID) {
+
+	}
+
+	public String getAllVTTID() {
+		return null;
+	}
+
+	public void setAllVTTD(String AllVTTID) {
+		
+	}
 	
 }
