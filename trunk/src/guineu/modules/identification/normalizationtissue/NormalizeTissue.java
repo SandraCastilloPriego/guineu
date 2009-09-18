@@ -14,7 +14,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.identification.normalizationtissue;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task.TaskStatus;
 import java.util.Vector;
@@ -25,11 +25,11 @@ import java.util.Vector;
  */
 public class NormalizeTissue {
 
-	private SimpleDataset dataset;
+	private SimpleLCMSDataset dataset;
 	private double cont;
 	private StandardUmol stdMol;
 
-	public NormalizeTissue(SimpleDataset dataset, StandardUmol stdMol) {
+	public NormalizeTissue(SimpleLCMSDataset dataset, StandardUmol stdMol) {
 		this.dataset = dataset;
 		this.stdMol = stdMol;
 	}
@@ -55,7 +55,7 @@ public class NormalizeTissue {
 		this.fillStd(".*" + this.stdMol.other1 + ".*", this.stdMol.vOtherValue1);
 	}
 
-	public SimpleDataset getDataset() {
+	public SimpleLCMSDataset getDataset() {
 		return dataset;
 	}
 

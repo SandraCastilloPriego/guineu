@@ -17,7 +17,7 @@
  */
 package guineu.database.ask;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -456,7 +456,7 @@ public class DBask implements DataBase {
 		}
 	}
 
-	public synchronized void getLCMSRows(int DatasetID, SimpleDataset dataset) {
+	public synchronized void getLCMSRows(int DatasetID, SimpleLCMSDataset dataset) {
 		Statement st = null;
 
 		try {

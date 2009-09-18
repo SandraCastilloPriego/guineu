@@ -17,19 +17,16 @@
  */
 package guineu.modules.filter.splitdatasets;
 
+import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.datamodels.DatasetDataModel;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
+import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
+import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math.stat.descriptive.StatisticalSummary;
-import org.apache.commons.math.stat.inference.TTestImpl;
 
 /**
  *
@@ -42,9 +39,9 @@ public class SplitTask implements Task {
 	private Desktop desktop;
 	private double progress = 0.0f;
 	private String[] group1,  group2;
-	private SimpleDataset dataset;
+	private Dataset dataset;
 
-	public SplitTask(String[] group1, String[] group2, SimpleDataset dataset, Desktop desktop) {
+	public SplitTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop) {
 		this.group1 = group1;
 		this.group2 = group2;
 		this.dataset = dataset;
@@ -74,14 +71,10 @@ public class SplitTask implements Task {
 
 	public void run() {
 		try {
-			status = TaskStatus.PROCESSING;
-			double[] t = new double[dataset.getNumberRows()];
-
+			status = TaskStatus.PROCESSING;			
 			progress = 0.5f;
-			SimpleDataset DatasetSplit1 = new SimpleDataset("Split dataset 1 - " + dataset.getDatasetName());
-			SimpleDataset DatasetSplit2 = new SimpleDataset("Split dataset 2 - " + dataset.getDatasetName());
-			DatasetSplit1.setType(this.dataset.getType());
-			DatasetSplit2.setType(this.dataset.getType());
+			Dataset DatasetSplit1 = FileUtils.getDataset(dataset, "Split dataset 1 - ");
+			Dataset DatasetSplit2 = FileUtils.getDataset(dataset, "Split dataset 2 - ");		
 
 			for (String name : group1) {
 				DatasetSplit1.AddNameExperiment(name);
@@ -111,12 +104,11 @@ public class SplitTask implements Task {
 		}
 	}
 
-	public void createNewDataset(SimpleDataset newDataset) {
-		DatasetDataModel model = new DatasetDataModel(newDataset);
-
+	public void createNewDataset(Dataset newDataset) {
+		DataTableModel model = FileUtils.getTableModel(newDataset);
 		DataTable table = new PushableTable(model);
-		table.formatNumbers(11);
-		DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
+		table.formatNumbers(newDataset.getType());
+		DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
 		desktop.addInternalFrame(frame);
 		desktop.AddNewFile(newDataset);
 		frame.setVisible(true);

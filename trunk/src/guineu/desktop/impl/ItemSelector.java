@@ -21,9 +21,9 @@ import guineu.data.Dataset;
 
 import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.data.datamodels.OtherDataModel;
@@ -154,7 +154,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 			if (file != null) {
 				DataTableModel model = null;
 				if (file.getType() == DatasetType.LCMS) {
-					model = new DatasetDataModel(file);
+					model = new DatasetLCMSDataModel(file);
 				} else if (file.getType() == DatasetType.EXPERIMENTINFO) {
 					model = new ExperimentDataModel(file);
 				} else if(file.getType() == DatasetType.GCGCTOF){
@@ -215,7 +215,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 	/**
 	 * Sets the active raw data item in the list
 	 */
-	public void setActiveRawData(SimpleDataset rawData) {
+	public void setActiveRawData(SimpleLCMSDataset rawData) {
 		DatasetFiles.setSelectedValue(rawData, true);
 	}
 

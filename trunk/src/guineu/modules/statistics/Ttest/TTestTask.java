@@ -18,18 +18,13 @@
 package guineu.modules.statistics.Ttest;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
 import guineu.data.Dataset;
-import guineu.data.datamodels.DatasetDataModel;
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
+import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
 import org.apache.commons.math.MathException;
@@ -87,39 +82,22 @@ public class TTestTask implements Task {
 			}
 
 			progress = 0.5f;
-			DataTableModel model = null;
-			Dataset newDataset = null;
-			if (dataset.getType() == DatasetType.LCMS) {
-				newDataset = new SimpleDataset("T_Test - " + dataset.getDatasetName());
-				newDataset.setType(this.dataset.getType());
-				newDataset.AddNameExperiment("Ttest");
-				int cont = 0;
 
-				for (PeakListRow row : dataset.getRows()) {
-					PeakListRow newRow = row.clone();
-					newRow.removePeaks();
-					newRow.setPeak("Ttest", t[cont++]);
-					((SimpleDataset)newDataset).AddRow(newRow);
-				}
-				model = new DatasetDataModel(newDataset);
-			} else if (dataset.getType() == DatasetType.GCGCTOF) {
-				newDataset = new SimpleGCGCDataset("T_Test - " + dataset.getDatasetName());
-				newDataset.setType(this.dataset.getType());
-				newDataset.AddNameExperiment("Ttest");
-				int cont = 0;
+			Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
+			newDataset.AddNameExperiment("Ttest");
+			int cont = 0;
 
-				for (PeakListRow row : dataset.getRows()) {
-					PeakListRow newRow = row.clone();
-					((SimplePeakListRowGCGC) newRow).removePeaks();
-					newRow.setPeak("Ttest", t[cont++]);
-					((SimpleGCGCDataset)newDataset).addAlignmentRow((SimplePeakListRowGCGC) newRow);
-				}
-				model = new DatasetGCGCDataModel(newDataset);
+			for (PeakListRow row : dataset.getRows()) {
+				PeakListRow newRow = row.clone();
+				newRow.removePeaks();
+				newRow.setPeak("Ttest", t[cont++]);
+				newDataset.AddRow(newRow);
 			}
+			DataTableModel model = FileUtils.getTableModel(newDataset);
 
 			DataTable table = new PushableTable(model);
 			table.formatNumbers(dataset.getType());
-			DataInternalFrame frame = new DataInternalFrame("T-Test" + dataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
+			DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
 			desktop.addInternalFrame(frame);
 			desktop.AddNewFile(newDataset);
 			frame.setVisible(true);

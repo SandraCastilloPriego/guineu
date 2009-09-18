@@ -22,7 +22,7 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 
 
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.PeakListRow;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.Comparator;
 
@@ -46,7 +46,7 @@ public class AlignmentSorterFactory
 		public abstract String getName();
 	}
 	
-	public static Comparator<SimplePeakListRowGCGC> getComparator(final SORT_MODE mode)
+	public static Comparator<PeakListRow> getComparator(final SORT_MODE mode)
 	{
 		return getComparator(mode, true);
 	}
@@ -57,7 +57,7 @@ public class AlignmentSorterFactory
 	 * @param ascending
 	 * @return
 	 */
-	public static Comparator<SimplePeakListRowGCGC> getComparator(final SORT_MODE mode, final boolean ascending)
+	public static Comparator<PeakListRow> getComparator(final SORT_MODE mode, final boolean ascending)
 		{
 			switch(mode)
 			{
@@ -81,11 +81,11 @@ public class AlignmentSorterFactory
 			}
 		}
 
-	private static Comparator<SimplePeakListRowGCGC> getNameComparator(final boolean ascending)
+	private static Comparator<PeakListRow> getNameComparator(final boolean ascending)
 	{
-		return new Comparator<SimplePeakListRowGCGC>()
+		return new Comparator<PeakListRow>()
 		{
-			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
+			public int compare(PeakListRow o1, PeakListRow o2)
 			{
 				int comparison = 0;
 				//This if...else if -pair causes unknown peaks to appear 
@@ -109,11 +109,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<SimplePeakListRowGCGC> getPeakCountComparator(final boolean ascending)
+	private static Comparator<PeakListRow> getPeakCountComparator(final boolean ascending)
 	{
-		return new Comparator<SimplePeakListRowGCGC>()
+		return new Comparator<PeakListRow>()
 		{
-			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
+			public int compare(PeakListRow o1, PeakListRow o2)
 			{
 				int comp = o1.nonNullPeakCount() - o2.nonNullPeakCount();
 				return ascending ? comp : -comp;
@@ -121,11 +121,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<SimplePeakListRowGCGC> getDoubleValComparator(final boolean ascending, final SORT_MODE mode)
+	private static Comparator<PeakListRow> getDoubleValComparator(final boolean ascending, final SORT_MODE mode)
 	{
-		return new Comparator<SimplePeakListRowGCGC>()
+		return new Comparator<PeakListRow>()
 		{
-			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
+			public int compare(PeakListRow o1, PeakListRow o2)
 			{
 				int comparison = 0;
 				double val1 = 0.0;
@@ -167,11 +167,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<SimplePeakListRowGCGC> distToIdealComparator(final boolean ascending)
+	private static Comparator<PeakListRow> distToIdealComparator(final boolean ascending)
 	{
-		return new Comparator<SimplePeakListRowGCGC>()
+		return new Comparator<PeakListRow>()
 		{
-			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
+			public int compare(PeakListRow o1, PeakListRow o2)
 			{
 				DistValue val1 = o1.getDistValue();
 				DistValue val2 = o2.getDistValue();
@@ -180,11 +180,11 @@ public class AlignmentSorterFactory
 		};
 	}
 	
-	private static Comparator<SimplePeakListRowGCGC> nullComparator()
+	private static Comparator<PeakListRow> nullComparator()
 	{
-		return new Comparator<SimplePeakListRowGCGC>()
+		return new Comparator<PeakListRow>()
 		{
-			public int compare(SimplePeakListRowGCGC o1, SimplePeakListRowGCGC o2)
+			public int compare(PeakListRow o1, PeakListRow o2)
 			{
 				return 0;
 			}

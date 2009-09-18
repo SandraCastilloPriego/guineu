@@ -19,22 +19,24 @@ package guineu.data.impl;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
  *
  * @author SCSANDRA
  */
-public class SimpleDataset implements Dataset {
+public class SimpleLCMSDataset implements Dataset {
 
     String datasetName;
-    Vector<PeakListRow> PeakList;
+    List<PeakListRow> peakList;
     Vector<String> nameExperiments;
     DatasetType type;
   
-    public SimpleDataset(String datasetName) {
+    public SimpleLCMSDataset(String datasetName) {
         this.datasetName = datasetName;
-        this.PeakList = new Vector<PeakListRow>();
+        this.peakList = new ArrayList<PeakListRow>();
         this.nameExperiments = new Vector<String>();
         type = DatasetType.LCMS;
     }
@@ -48,7 +50,7 @@ public class SimpleDataset implements Dataset {
     }
 
     public void AddRow(PeakListRow peakListRow) {
-        this.PeakList.addElement(peakListRow);
+        this.peakList.add(peakListRow);
     }
 
     public void AddNameExperiment(String nameExperiment) {
@@ -56,15 +58,15 @@ public class SimpleDataset implements Dataset {
     }
 
     public PeakListRow getRow(int i) {
-        return this.PeakList.elementAt(i);
+        return this.peakList.get(i);
     }
 
-    public Vector<PeakListRow> getRows() {
-        return this.PeakList;
+    public List<PeakListRow> getRows() {
+        return this.peakList;
     }
 
     public int getNumberRows() {
-        return this.PeakList.size();
+        return this.peakList.size();
     }
 
     public int getNumberCols() {
@@ -88,12 +90,12 @@ public class SimpleDataset implements Dataset {
     }
 
     @Override
-    public SimpleDataset clone() {
-        SimpleDataset newDataset = new SimpleDataset(this.datasetName);
+    public SimpleLCMSDataset clone() {
+        SimpleLCMSDataset newDataset = new SimpleLCMSDataset(this.datasetName);
         for (String experimentName : this.nameExperiments) {
             newDataset.AddNameExperiment(experimentName);
         }
-        for (PeakListRow peakListRow : this.PeakList) {
+        for (PeakListRow peakListRow : this.peakList) {
             newDataset.AddRow(peakListRow.clone());
         }
         newDataset.setType(this.type);
@@ -103,7 +105,7 @@ public class SimpleDataset implements Dataset {
     
     public void removeRow(PeakListRow row) {
         try {
-            this.PeakList.removeElement(row);
+            this.peakList.remove(row);
         } catch (Exception e) {
             System.out.println("No row found");
         }

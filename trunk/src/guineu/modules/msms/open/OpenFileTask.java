@@ -21,8 +21,9 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
@@ -43,7 +44,7 @@ public class OpenFileTask implements Task {
 	private Desktop desktop;
 	private Parser parser;
 
-	public OpenFileTask(Desktop desktop,OpenMSMSFileParameters parameters) {
+	public OpenFileTask(Desktop desktop, OpenMSMSFileParameters parameters) {
 		this.parameters = parameters;
 		this.desktop = desktop;
 	}
@@ -85,7 +86,7 @@ public class OpenFileTask implements Task {
 	}
 
 	public void openFile() {
-		String fileDir = (String)parameters.getParameterValue(OpenMSMSFileParameters.parameters);
+		String fileDir = (String) parameters.getParameterValue(OpenMSMSFileParameters.parameters);
 
 		if (fileDir.matches(".*xls")) {
 			try {
@@ -122,7 +123,7 @@ public class OpenFileTask implements Task {
 	public void open(Parser parser) {
 		try {
 			if (status != TaskStatus.CANCELED) {
-				SimpleDataset dataset = (SimpleDataset) parser.getDataset();
+				SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
 
 				SimpleOtherDataset otherDataset = modifyDataset(dataset);
 
@@ -134,35 +135,37 @@ public class OpenFileTask implements Task {
 		}
 	}
 
-	private SimpleOtherDataset modifyDataset(SimpleDataset dataset) {
+	private SimpleOtherDataset modifyDataset(SimpleLCMSDataset dataset) {
 		SimpleOtherDataset datasetOther = new SimpleOtherDataset(dataset.getDatasetName());
 		datasetOther.setType(DatasetType.OTHER);
 		datasetOther.AddNameExperiment("m/z");
 		datasetOther.AddNameExperiment("rt");
-		double margin = (Double)parameters.getParameterValue(OpenMSMSFileParameters.rtTolerance);
+		double margin = (Double) parameters.getParameterValue(OpenMSMSFileParameters.rtTolerance);
 		int i = 1;
 		int maxim = 1;
 		double rtAverage = 0;
 		try {
-			for (PeakListRow row : dataset.getRows()) {
+			for (PeakListRow peakRow : dataset.getRows()) {
+				SimplePeakListRowLCMS row = (SimplePeakListRowLCMS) peakRow;
 				if (row.getID() != -2) {
 					PeakListRow newRow = new SimplePeakListRowOther();
 					newRow.setPeak("fragment" + i, String.valueOf(row.getMZ()));
 					i++;
 					row.setID(-2);
 					rtAverage = row.getRT();
-					for (PeakListRow row2 : dataset.getRows()) {
+					for (PeakListRow peakRow2 : dataset.getRows()) {
+						SimplePeakListRowLCMS row2 = (SimplePeakListRowLCMS) peakRow2;
 						if (row2.getID() != -2) {
 							if (row.getRT() < row2.getRT() + margin && row.getRT() > row2.getRT() - margin) {
 								newRow.setPeak("fragment" + i, String.valueOf(row2.getMZ()));
 								i++;
 								row2.setID(-2);
 								rtAverage += row2.getRT();
-								rtAverage /=2;
+								rtAverage /= 2;
 							}
 						}
 					}
-					rtAverage /=60;
+					rtAverage /= 60;
 					newRow = orderRow(newRow);
 					newRow.setPeak("rt", String.valueOf(rtAverage));
 					datasetOther.AddRow(newRow);
@@ -186,12 +189,12 @@ public class OpenFileTask implements Task {
 		PeakListRow newOrderRow = new SimplePeakListRowOther();
 		Object[] peaks = newRow.getPeaks();
 		Double[] newPeaks = new Double[peaks.length];
-		for(int i = 0; i < peaks.length; i++){
+		for (int i = 0; i < peaks.length; i++) {
 			newPeaks[i] = Double.valueOf(peaks[i].toString());
 		}
-		Arrays.sort(newPeaks,Collections.reverseOrder());
-		for(int i = 1; i <= newPeaks.length; i++){
-			newOrderRow.setPeak("fragment"+i, String.valueOf(newPeaks[i-1]));
+		Arrays.sort(newPeaks, Collections.reverseOrder());
+		for (int i = 1; i <= newPeaks.length; i++) {
+			newOrderRow.setPeak("fragment" + i, String.valueOf(newPeaks[i - 1]));
 		}
 		return newOrderRow;
 	}

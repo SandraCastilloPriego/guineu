@@ -20,7 +20,8 @@ package guineu.database.intro;
 import guineu.data.Dataset;
 import guineu.data.impl.Bexperiments;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;
@@ -69,7 +70,7 @@ public class InOracle implements InDataBase {
 	 * @param author
 	 * @throws java.io.IOException
 	 */
-	public void lcms(Connection conn, SimpleDataset LipidMol, String type, String author, String DatasetName, String parameters, String study) throws IOException {
+	public void lcms(Connection conn, SimpleLCMSDataset LipidMol, String type, String author, String DatasetName, String parameters, String study) throws IOException {
 		WriteDataBase writer = new WriteDataBase();
 		String excel_name = DatasetName;
 		if (excel_name == null) {
@@ -97,7 +98,7 @@ public class InOracle implements InDataBase {
 	 * @param type
 	 * @param author
 	 */
-	public void gcgctof(Connection conn, SimpleDataset mol, String type, String author, String DatasetName, String study) throws IOException {
+	public void gcgctof(Connection conn, SimpleGCGCDataset mol, String type, String author, String DatasetName, String study) throws IOException {
 		try {
 			WriteDataBase writer = new WriteDataBase();
 			Statement st = null;

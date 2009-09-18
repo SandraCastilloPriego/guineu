@@ -29,9 +29,9 @@ import com.softwareag.tamino.db.api.response.TResponse;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.parser.impl.Lipidclass;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
@@ -51,7 +51,7 @@ public class IdentificationTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
     private List<MZmineData> lines;
     private JTable table;
     private float count;
@@ -59,7 +59,7 @@ public class IdentificationTask implements Task {
     Lipidclass LipidClassLib;
 
     public IdentificationTask(JTable table, Dataset dataset, Desktop desktop) {
-        this.dataset = (SimpleDataset) dataset;
+        this.dataset = (SimpleLCMSDataset) dataset;
         this.desktop = desktop;
         this.table = table;
         this.lines = new ArrayList<MZmineData>();
@@ -90,7 +90,7 @@ public class IdentificationTask implements Task {
         try {
             status = TaskStatus.PROCESSING;
             for (int i = 0; i < dataset.getNumberRows(); i++) {
-                PeakListRow lipid = dataset.getRow(i);
+                SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) dataset.getRow(i);
                 MZmineData MZdata = new MZmineData();
                 MZdata.MZ = lipid.getMZ();
                 MZdata.RT = lipid.getRT();
@@ -103,7 +103,7 @@ public class IdentificationTask implements Task {
                 this.lines.add(MZdata);
             }
             this.findOtherDates();
-            DataTableModel model = new DatasetDataModel(dataset);
+            DataTableModel model = new DatasetLCMSDataModel(dataset);
             this.table.setModel(model);
 
             status = TaskStatus.FINISHED;

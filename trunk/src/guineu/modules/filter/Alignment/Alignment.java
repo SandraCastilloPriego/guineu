@@ -2,7 +2,7 @@ package guineu.modules.filter.Alignment;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.modules.filter.Alignment.data.AlignmentStruct;
 import guineu.modules.filter.Alignment.data.AlignStructMol;
 
@@ -15,7 +15,7 @@ import org.apache.commons.math.stat.regression.SimpleRegression;
 public class Alignment {
 
     private Dataset[] datasets;
-    private SimpleDataset result;
+    private SimpleLCMSDataset result;
     private String[] type;
     private float progress;
     private Vector<RegressionStruct> vRegressionStruct;
@@ -28,11 +28,11 @@ public class Alignment {
         this.AParameters = AParameters;
 
         this.vRegressionStruct = new Vector<RegressionStruct>();
-        this.result = new SimpleDataset(getFrameName());
+        this.result = new SimpleLCMSDataset(getFrameName());
 
         //intro all experiments into the new dataset result      
         for (int i = 0; i < datasets.length; i++) {
-            for (String experimentName : ((SimpleDataset) datasets[i]).getNameExperiments()) {
+            for (String experimentName : ((SimpleLCMSDataset) datasets[i]).getNameExperiments()) {
                 result.AddNameExperiment(experimentName);
             }
         }
@@ -64,7 +64,7 @@ public class Alignment {
      */
     public void MolNamesCorrection() {
         for (Dataset dataset : datasets) {
-            for (PeakListRow row : ((SimpleDataset) dataset).getRows()) {
+            for (PeakListRow row : ((SimpleLCMSDataset) dataset).getRows()) {
                 String lipidn = row.getName();
                 lipidn = lipidn.split(" ")[0];
                 row.setName(lipidn);
@@ -72,7 +72,7 @@ public class Alignment {
         }
     }
 
-    public SimpleDataset getDataset() {
+    public SimpleLCMSDataset getDataset() {
         return this.result;
     }
 
@@ -173,14 +173,14 @@ public class Alignment {
      */
     private Vector<AlignStructMol> NewDatasets(int Index1, int Index2, String type) {
         try {
-            Vector<AlignStructMol> v = new Vector<AlignStructMol>();
+         /*   Vector<AlignStructMol> v = new Vector<AlignStructMol>();
             int cont = 0;
-            for (PeakListRow row : ((SimpleDataset) this.datasets[Index1]).getRows()) {
+            for (PeakListRow row : ((SimpleLCMSDataset) this.datasets[Index1]).getRows()) {
                 String name1 = row.getName();
 
                 if (name1.matches(type)) {
                     int cont2 = 0;
-                    for (PeakListRow row2 : ((SimpleDataset) this.datasets[Index2]).getRows()) {
+                    for (PeakListRow row2 : ((SimpleLCMSDataset) this.datasets[Index2]).getRows()) {
                         String name2 = row2.getName();
                         if (name1.compareTo(name2) == 0) {
                             boolean STD = false;
@@ -192,7 +192,7 @@ public class Alignment {
                     }
                 } else if (name1.matches(".*unknown.*") && this.getGroup(row).matches(type)) {
                     int cont2 = 0;
-                    for (PeakListRow row2 : ((SimpleDataset) this.datasets[Index2]).getRows()) {
+                    for (PeakListRow row2 : ((SimpleLCMSDataset) this.datasets[Index2]).getRows()) {
                         if (row2.getName().matches(".*unknown.*") && this.isPossibleLipid(row.getRT(), row.getMZ(), row2.getRT(), row.getMZ()) && this.getGroup(row2).matches(type)) {
                             // System.out.println(lipid1.getMZ() +" - " + lipid2.getMZ());
                             boolean STD = false;
@@ -205,7 +205,8 @@ public class Alignment {
                 }
                 cont++;
             }
-            return v;
+            return v;*/
+			return null;
 
         } catch (Exception exception) {
             System.out.println("Alignment.java--> NewDatasets() " + exception);
@@ -290,7 +291,7 @@ public class Alignment {
      */
     private double getPickAverage(int Index, int lipidID) {
         double average = 0;
-        PeakListRow smol2 = ((SimpleDataset) this.datasets[Index]).getRow(lipidID);
+        PeakListRow smol2 = ((SimpleLCMSDataset) this.datasets[Index]).getRow(lipidID);
         for (Object p : smol2.getPeaks()) {
             average += (Double)p;
         }
@@ -358,7 +359,7 @@ public class Alignment {
             SimpleRegression regression = new SimpleRegression();
             for (int j = 0; j < solution.v.size(); j++) {
                 if (solution.v.elementAt(j).Aligned) {
-                    regression.addData(solution.v.elementAt(j).lipid1.getRT(), solution.v.elementAt(j).lipid2.getRT());
+                 //   regression.addData(solution.v.elementAt(j).lipid1.getRT(), solution.v.elementAt(j).lipid2.getRT());
                 }
             }
             RStruct.intercept = regression.getIntercept();
@@ -389,7 +390,7 @@ public class Alignment {
                 if (RStruct.ID1 == lipid.IDDataset1 && RStruct.ID2 == lipid.IDDataset2 ||
                         RStruct.ID1 == lipid.IDDataset2 && RStruct.ID2 == lipid.IDDataset1) {
                     if (RStruct.control) {
-                        return Math.abs(lipid.lipid2.getRT() - ((lipid.lipid1.getRT() * RStruct.slope) + RStruct.intercept));
+                      //  return Math.abs(lipid.lipid2.getRT() - ((lipid.lipid1.getRT() * RStruct.slope) + RStruct.intercept));
                     } else {
                         return -2;
                     }
@@ -416,14 +417,14 @@ public class Alignment {
                     if (lipid1.Aligned) {
                         AlignmentStruct chrom2 = this.getVector(chrom, ID2, i);
 
-                        lipid2 = this.getLipid(lipid1.lipid1.getName(), lipid1.lipid2.getRT(), chrom2.v);
-                        if (lipid2 != null) {
+                      //  lipid2 = this.getLipid(lipid1.lipid1.getName(), lipid1.lipid2.getRT(), chrom2.v);
+                    /*    if (lipid2 != null) {
 
                             AlignmentStruct chrom3 = this.getVector(chrom, ID1, i);
 
                             this.fixAlignment(chrom3.v, lipid1, lipid2);
 
-                        }
+                        }*/
                     }
                 }
 
@@ -438,19 +439,19 @@ public class Alignment {
         Vector<AlignStructMol> v2 = new Vector<AlignStructMol>();
         for (int i = 0; i < chrom3.size(); i++) {
             if (chrom3.elementAt(i).lipid1.getName().compareTo(lipid1.lipid1.getName()) == 0) {
-                if (chrom3.elementAt(i).lipid1.getRT() == lipid1.lipid1.getRT() || chrom3.elementAt(i).lipid2.getRT() == lipid1.lipid1.getRT()) {
-                    v2.addElement(chrom3.elementAt(i));
-                }
+              //  if (chrom3.elementAt(i).lipid1.getRT() == lipid1.lipid1.getRT() || chrom3.elementAt(i).lipid2.getRT() == lipid1.lipid1.getRT()) {
+             //       v2.addElement(chrom3.elementAt(i));
+             //   }
             }
         }
 
         for (int i = 0; i < v2.size(); i++) {
             AlignStructMol lipid3 = v2.elementAt(i);
-            if (lipid3 != lipid1 && (lipid3.lipid1.getRT() == lipid2.lipid1.getRT() || lipid3.lipid1.getRT() == lipid2.lipid2.getRT() || lipid3.lipid2.getRT() == lipid2.lipid1.getRT() || lipid3.lipid2.getRT() == lipid2.lipid2.getRT())) {
+       /*  //   if (lipid3 != lipid1 && (lipid3.lipid1.getRT() == lipid2.lipid1.getRT() || lipid3.lipid1.getRT() == lipid2.lipid2.getRT() || lipid3.lipid2.getRT() == lipid2.lipid1.getRT() || lipid3.lipid2.getRT() == lipid2.lipid2.getRT())) {
             //System.out.println(lipid1.name +" RT 1: "+ lipid1.RT1 +" - " +lipid1.RT2 + " RT 2: "+ lipid2.RT1  +" - " +lipid2.RT2 + " RT 3: "+ lipid3.RT1 +" - " +lipid3.RT2);       
 
 
-            } else {
+         //   } else {
                 //System.out.println(lipid1.name +" RT 1: "+ lipid1.RT1 +" - " +lipid1.RT2 + " RT 2: "+ lipid2.RT1  +" - " +lipid2.RT2 + " RT 3: "+ lipid3.RT1 +" - " +lipid3.RT2);       
                 if ((lipid1.score < 4 && lipid1.score > 0) &&
                         (lipid2.score < 4 && lipid2.score > 0)) {
@@ -463,12 +464,12 @@ public class Alignment {
 
                 if (lipid1.score > 4) {
                     lipid1.Aligned = false;
-                    if (lipid1.lipid1.getRT() == lipid2.lipid1.getRT() || lipid1.lipid2.getRT() == lipid2.lipid2.getRT() || lipid1.lipid2.getRT() == lipid2.lipid1.getRT() || lipid1.lipid1.getRT() == lipid2.lipid2.getRT()) {
-                        lipid2.Aligned = false;
-                    }
-                    if (lipid1.lipid1.getRT() == lipid3.lipid1.getRT() || lipid1.lipid2.getRT() == lipid3.lipid1.getRT() || lipid1.lipid2.getRT() == lipid3.lipid1.getRT() || lipid1.lipid1.getRT() == lipid3.lipid2.getRT()) {
-                        lipid3.Aligned = false;
-                    }
+                  //  if (lipid1.lipid1.getRT() == lipid2.lipid1.getRT() || lipid1.lipid2.getRT() == lipid2.lipid2.getRT() || lipid1.lipid2.getRT() == lipid2.lipid1.getRT() || lipid1.lipid1.getRT() == lipid2.lipid2.getRT()) {
+                 //       lipid2.Aligned = false;
+                 //   }
+                 //   if (lipid1.lipid1.getRT() == lipid3.lipid1.getRT() || lipid1.lipid2.getRT() == lipid3.lipid1.getRT() || lipid1.lipid2.getRT() == lipid3.lipid1.getRT() || lipid1.lipid1.getRT() == lipid3.lipid2.getRT()) {
+                  //      lipid3.Aligned = false;
+                  //  }
                 }
 
                 if (lipid2.score > 4) {
@@ -490,7 +491,7 @@ public class Alignment {
                         lipid2.Aligned = false;
                     }
                 }
-            }
+           // }*/
         }
     }
 
@@ -512,9 +513,9 @@ public class Alignment {
         for (int i = 0; i < v.size(); i++) {
             AlignStructMol lipid = v.elementAt(i);
             if (lipid.lipid1.getName().compareTo(name) == 0) {
-                if (RT2 == lipid.lipid2.getRT() || RT2 == lipid.lipid1.getRT()) {
+              /*  if (RT2 == lipid.lipid2.getRT() || RT2 == lipid.lipid1.getRT()) {
                     v2.addElement(lipid);
-                }
+                }*/
             }
 
             if (lipid.Aligned) {
@@ -527,11 +528,11 @@ public class Alignment {
 
         int Index = 100;
         for (int i = 0; i < v2.size(); i++) {
-            double y = v2.elementAt(i).lipid2.getRT();
+          /*  double y = v2.elementAt(i).lipid2.getRT();
             double newY = (v2.elementAt(i).lipid1.getRT() * slope) + intercept;
             if (Math.abs(y - newY) < Index) {
                 Index = i;
-            }
+            }*/
         }
 
         for (int i = 0; i < v2.size(); i++) {
@@ -566,19 +567,19 @@ public class Alignment {
 
     private void setUnknownLipids(AlignmentStruct datasetAlignedStruct, int simpleDataset, int simpleDataset2, RegressionStruct regStruct) {
         Vector<AlignStructMol> v = new Vector<AlignStructMol>();
-        for (PeakListRow smol : ((SimpleDataset) this.datasets[simpleDataset]).getRows()) {
-            for (PeakListRow smol2 : ((SimpleDataset) this.datasets[simpleDataset2]).getRows()) {
+        for (PeakListRow smol : ((SimpleLCMSDataset) this.datasets[simpleDataset]).getRows()) {
+            for (PeakListRow smol2 : ((SimpleLCMSDataset) this.datasets[simpleDataset2]).getRows()) {
                 String type2 = this.getGroup(smol2);
                 if (type2 != null && regStruct.type.matches(type2)) {
                     continue;
                 }
-                if (smol.getName().matches(".*unknown.*") && smol2.getName().matches(".*unknown.*") && regStruct.isAligned(smol.getRT(), smol2.getRT())) {
+            /*    if (smol.getName().matches(".*unknown.*") && smol2.getName().matches(".*unknown.*") && regStruct.isAligned(smol.getRT(), smol2.getRT())) {
                     AlignStructMol mol = new AlignStructMol(simpleDataset, simpleDataset2, smol, smol2, false, true, this.getPickAverage(simpleDataset, smol.getID()), this.getPickAverage(simpleDataset2, smol2.getID()));
                     if (isSameMZ(smol.getMZ(), smol2.getMZ())) {
                         //System.out.println(((SimpleLipid) lipid).getMZ() + " - " + lipid2.getMZ() + " -> " + mol.picksScore);
                         v.addElement(mol);
                     }
-                }
+                }*/
             }
         }
         this.deleteRepeatsAlignments(v);
@@ -605,7 +606,7 @@ public class Alignment {
                     if (i != j) {
                         AlignStructMol Alignment2 = v.elementAt(j);
                         if (Alignment2.Aligned) {
-                            if (Alignment1.lipid1.getRT() == Alignment2.lipid1.getRT() || Alignment1.lipid2.getRT() == Alignment2.lipid2.getRT()) {
+                          /*  if (Alignment1.lipid1.getRT() == Alignment2.lipid1.getRT() || Alignment1.lipid2.getRT() == Alignment2.lipid2.getRT()) {
                                 //System.out.println(lipid1.RT1 +" - "+ lipid1.RT2 + ": " + lipid1.Aligned + " / " + lipid2.RT1 +" - "+ lipid2.RT2 + ": " + lipid2.Aligned);
                                 if (Alignment1.picksScore < Alignment2.picksScore) {
                                     Alignment2.Aligned = false;
@@ -613,7 +614,7 @@ public class Alignment {
                                     Alignment1.Aligned = false;
                                 }
 
-                            }
+                            }*/
                         }
                     }
                 }
@@ -623,7 +624,7 @@ public class Alignment {
 
     public String getGroup(PeakListRow lipid1) {
 
-        if (lipid1.getRT() < 300) {
+      /*  if (lipid1.getRT() < 300) {
             return "Lyso";
         }
         if (lipid1.getRT() >= 300 && lipid1.getRT() < 410) {
@@ -631,7 +632,7 @@ public class Alignment {
         }
         if (lipid1.getRT() >= 410) {
             return "TAG";
-        }
+        }*/
         return " ---- ";
     }
 

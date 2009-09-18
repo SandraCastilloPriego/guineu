@@ -19,8 +19,11 @@ package guineu.data.impl;
 
 
 import guineu.data.PeakListRow;
+import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -53,28 +56,13 @@ public class SimplePeakListRowOther implements PeakListRow {
         return peakListRow;
     }
 
-    public double getMZ() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getRT() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+   
     public double getNumFound() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public int getStandard() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public String getMolClass() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return -1;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public String getPeak(String ExperimentName) {
@@ -82,23 +70,15 @@ public class SimplePeakListRowOther implements PeakListRow {
     }
 
     public void setName(String Name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     public void setAllNames(String allNames) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       
     }
 
     public void setPeak(String name, String value) {
         this.peaks.put(name, value);
-    }
-
-    public String getFAComposition() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setFAComposition(String FAComposition) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getID() {
@@ -122,57 +102,22 @@ public class SimplePeakListRowOther implements PeakListRow {
     }
 
     public int getNumberAlignment() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return -1;
     }
 
     public void setNumberAligment(int aligment) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       
     }
 
-    public double getRT1() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getRT2() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getRTI() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getMaxSimilarity() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getMeanSimilarity() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getSimilaritySTDDev() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+   
     public String getAllNames() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public String getPubChemID() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
-
-    public double getMass() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public double getDifference() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public String getSpectrumString() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+   
     public void removePeaks() {
         this.peaks = new Hashtable<String, String>();
     }
@@ -191,7 +136,7 @@ public class SimplePeakListRowOther implements PeakListRow {
     }
 
     public void setPeak(String name, Double value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     public Object getPeak(int col, Vector<String> sampleNames) {
@@ -199,11 +144,11 @@ public class SimplePeakListRowOther implements PeakListRow {
     }
 
     public int getNumberFixColumns() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return -1;
     }
 
     public void setNumberFixColumns(int columnNum) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     public boolean isSelected() {
@@ -222,11 +167,79 @@ public class SimplePeakListRowOther implements PeakListRow {
 		}
 	}
 
+	public double getMZ() {
+		return -1;
+	}
+
+	public double getRT() {
+		return -1;
+	}
+
+	public int getStandard() {
+		return -1;
+	}
+
+	public String getMolClass() {
+		return null;
+	}
+
+	public String getFAComposition() {
+		return null;
+	}
+
+	public double getRT1() {
+		return -1;
+	}
+
+	public double getRT2() {
+		return -1;
+	}
+
+	public double getRTI() {
+		return -1;
+	}
+
+	public double getMaxSimilarity() {
+		return -1;
+	}
+
+	public double getMeanSimilarity() {
+		return -1;
+	}
+
+	public double getSimilaritySTDDev() {
+		return -1;
+	}
+
+	public double getMass() {
+		return -1;
+	}
+
+	public double getDifference() {
+		return -1;
+	}
+
+	public String getSpectrumString() {
+		return null;
+	}
+
 	public String getCAS() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	public void setCAS(String CAS) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		
+	}
+
+	public int nonNullPeakCount() {
+		return -1;
+	}
+
+	public DistValue getDistValue() {
+		return null;
+	}
+
+	public List<GCGCDatum> getRow() {
+		return null;
 	}
 }

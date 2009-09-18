@@ -19,9 +19,6 @@ package guineu.modules.filter.relatedpeaks;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
-import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 
@@ -35,10 +32,10 @@ public class RelatedPeaksTask implements Task {
 	private String errorMessage;
 	private Desktop desktop;
 	private double progress = 0.0f;
-	private SimpleDataset dataset;
+	private Dataset dataset;
 
 	public RelatedPeaksTask(Dataset dataset, Desktop desktop) {
-		this.dataset = (SimpleDataset) dataset;
+		this.dataset = dataset;
 		this.desktop = desktop;
 
 	}
@@ -67,32 +64,32 @@ public class RelatedPeaksTask implements Task {
 		try {
 			int cont = 0;
 			status = TaskStatus.PROCESSING;
-			if (dataset.getType() == DatasetType.LCMS) {
-				for (PeakListRow row : dataset.getRows()) {
-					for (PeakListRow row2 : dataset.getRows()) {
-						if (row.getAllNames() != null || row2.getAllNames() != null) {
-							continue;
-						}
-						if (!row.getName().matches(".*TG.*|.*ChoE.*|.*unknown.*") || !row2.getName().matches(".*TG.*|.*ChoE.*|.*unknown.*")) {
-							continue;
-						}
-						double mzDiff = row2.getMZ() - row.getMZ();
-						if (mzDiff < 5.1 && mzDiff > 4.90) {
-							double rtDiff = row.getRT() - row2.getRT();
-							if (Math.abs(rtDiff)< 2) {
-								//if (this.getMean(row) < this.getMean(row2)) {
-								if(this.isAdduct(row2, row)){
-									row2.setAllNames("Group" + cont + "Adduct of: " + row.getName());
-									row.setAllNames("Group" + cont++);
-								}
+
+			for (PeakListRow row : dataset.getRows()) {
+				for (PeakListRow row2 : dataset.getRows()) {
+					if (row.getAllNames() != null || row2.getAllNames() != null) {
+						continue;
+					}
+					if (!row.getName().matches(".*TG.*|.*ChoE.*|.*unknown.*") || !row2.getName().matches(".*TG.*|.*ChoE.*|.*unknown.*")) {
+						continue;
+					}
+					double mzDiff = row2.getMZ() - row.getMZ();
+					if (mzDiff < 5.1 && mzDiff > 4.90) {
+						double rtDiff = row.getRT() - row2.getRT();
+						if (Math.abs(rtDiff) < 2) {
+							//if (this.getMean(row) < this.getMean(row2)) {
+							if (this.isAdduct(row2, row)) {
+								row2.setAllNames("Group" + cont + "Adduct of: " + row.getName());
+								row.setAllNames("Group" + cont++);
 							}
 						}
 					}
-				/*if (!this.isGoodCandidate(row.getName()) || !row.getAllNames().matches(".*Deuterium.*") || !this.isRepeated(row)) {
-				((SimplePeakListRowLCMS) row).setAllNames("");
-				}*/
 				}
+			/*if (!this.isGoodCandidate(row.getName()) || !row.getAllNames().matches(".*Deuterium.*") || !this.isRepeated(row)) {
+			((SimplePeakListRowLCMS) row).setAllNames("");
+			}*/
 			}
+
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;
@@ -101,11 +98,13 @@ public class RelatedPeaksTask implements Task {
 		}
 	}
 
-	private boolean isAdduct(PeakListRow row,PeakListRow row2){
+	private boolean isAdduct(PeakListRow row, PeakListRow row2) {
 		Double[] peaksRow1 = (Double[]) row.getPeaks();
 		Double[] peaksRow2 = (Double[]) row2.getPeaks();
-		for(int i = 0; i < row.getNumberPeaks(); i++){
-			if(peaksRow1[i] > peaksRow2[i]) return false;
+		for (int i = 0; i < row.getNumberPeaks(); i++) {
+			if (peaksRow1[i] > peaksRow2[i]) {
+				return false;
+			}
 		}
 		return true;
 	}

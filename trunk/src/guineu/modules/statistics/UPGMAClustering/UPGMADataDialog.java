@@ -6,7 +6,7 @@
 
 package guineu.modules.statistics.UPGMAClustering;
 
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.util.logging.Logger;
@@ -18,12 +18,12 @@ import javax.swing.JDialog;
  */
 public class UPGMADataDialog extends JDialog {
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private SimpleDataset dataset;
+    private SimpleLCMSDataset dataset;
     private UPGMADataModel group1, group2;
     private ExitCode exit = ExitCode.UNKNOWN;
     
     /** Creates new form TtestDataDialog */
-    public UPGMADataDialog(SimpleDataset dataset) {
+    public UPGMADataDialog(SimpleLCMSDataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
 				"Please select a experiment groups to do the t-test...", true);
 

@@ -17,10 +17,10 @@
  */
 package guineu.modules.file.openLCMSDatasetFile;
 
-import guineu.data.datamodels.DatasetDataModel;
+import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -122,11 +122,11 @@ public class OpenFileTask implements Task {
 	public void open(Parser parser) {
 		try {
 			if (status != TaskStatus.CANCELED) {
-				SimpleDataset dataset = (SimpleDataset) parser.getDataset();
+				SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
 				desktop.AddNewFile(dataset);
 
 				//creates internal frame with the table
-				DataTableModel model = new DatasetDataModel(dataset);
+				DataTableModel model = new DatasetLCMSDataModel(dataset);
 				DataTable table = new PushableTable(model);
 				table.formatNumbers(dataset.getType());
 				DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));

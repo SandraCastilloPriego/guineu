@@ -19,7 +19,7 @@ package guineu.modules.mylly.filter.alkaneRTCorrector;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleDataset;
+import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;

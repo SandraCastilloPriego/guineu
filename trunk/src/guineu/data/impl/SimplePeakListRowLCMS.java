@@ -18,8 +18,11 @@
 package guineu.data.impl;
 
 import guineu.data.PeakListRow;
+import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -33,7 +36,9 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	private double averageMZ,  averageRT,  numFound;
 	private int standard, ID,  aligment,  numFixColumns;
 	private boolean control,  selection;
+	private String VTTid, VTTAllIDs;
 	private Hashtable<String, Double> peaks;
+	private String pubchemID;
 
 	public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound,
 			int standard, String lipidClass, String Name, String identity, String FAComposition) {
@@ -174,50 +179,14 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.aligment = aligment;
 	}
 
-	public double getRT1() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public double getRT2() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public double getRTI() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public double getMaxSimilarity() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public double getMeanSimilarity() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public double getSimilaritySTDDev() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
 	public String getAllNames() {
 		return this.allNames;
 	}
 
 	public String getPubChemID() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return this.pubchemID;
 	}
-
-	public double getMass() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public double getDifference() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public String getSpectrumString() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
+	
 	public void removePeaks() {
 		this.peaks = new Hashtable<String, Double>();
 	}
@@ -267,11 +236,60 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		}
 	}
 
+	public double getRT1() {
+		return -1;
+	}
+
+	public double getRT2() {
+		return -1;
+	}
+
+	public double getRTI() {
+		return -1;
+	}
+
+	public double getMaxSimilarity() {
+		return -1;
+	}
+
+	public double getMeanSimilarity() {
+		return -1;
+	}
+
+	public double getSimilaritySTDDev() {
+		return -1;
+	}
+
+	public double getMass() {
+		return -1;
+	}
+
+	public double getDifference() {
+		return -1;
+	}
+
+	public String getSpectrumString() {
+		return null;
+	}
+
 	public String getCAS() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	public void setCAS(String CAS) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		
 	}
+
+	public int nonNullPeakCount() {
+		return -1;
+	}
+
+	public DistValue getDistValue() {
+		return null;
+	}
+
+	public List<GCGCDatum> getRow() {
+		return null;
+	}
+	
 }

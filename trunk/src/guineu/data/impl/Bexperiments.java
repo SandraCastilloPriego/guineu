@@ -42,5 +42,18 @@ public class Bexperiments {
             this.EDATE = moreData[3];
             state = true;
         }
+
     }
+
+	public Bexperiments clone(){
+		String[] data = new String[7];
+		data[0] = this.Name;
+		data[1] = this.TYPE;
+		data[2] = this.PROJECT;
+		data[3] = this.REPLICATE;
+		data[4] = this.PERSON;
+		data[5] = this.Amount;
+		data[6] = this.Unit;
+		return new Bexperiments(data);
+	}
 }
