@@ -130,14 +130,15 @@ public class WriteDataBase {
 	 * @param st
 	 * @param excel_id
 	 * @return
-	 */	
+	 */
 	public int[] tableMOL_LCMS(Connection conn, SimpleLCMSDataset lcms_known, int excel_id) {
+
 		try {
 			int[] mol_ID = new int[lcms_known.getNumberRows()];
 			Statement statement = conn.createStatement();
 			for (int i = 0; i < lcms_known.getNumberRows(); i++) {
-				SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) lcms_known.getRow(i);
-				try {
+				PeakListRow lipid = lcms_known.getRow(i);
+				try {				
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
 							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, " +
 							"FA_COMPOSITION,PUBCHEM_ID, VTTID, VTTALLIDS,ALL_NAMES)" +
@@ -154,6 +155,7 @@ public class WriteDataBase {
 							"', '" + lipid.getAllVTTID() +
 							"', '" + lipid.getAllNames() + "') ");
 					ResultSet r = statement.executeQuery("SELECT * FROM MOL_LCMS ORDER BY ID desc");
+
 					if (r.next()) {
 						mol_ID[i] = r.getInt(1);
 					}
@@ -161,10 +163,12 @@ public class WriteDataBase {
 					System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
 					se.printStackTrace();
 				}
+
 			}
 			statement.close();
 			return mol_ID;
 		} catch (SQLException ex) {
+
 			ex.printStackTrace();
 			Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
 			return null;

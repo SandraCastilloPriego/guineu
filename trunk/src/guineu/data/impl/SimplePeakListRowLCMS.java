@@ -32,7 +32,7 @@ import java.util.Vector;
  */
 public class SimplePeakListRowLCMS implements PeakListRow {
 
-	private String FAComposition,  allNames,  Name, lipidClass ="";
+	private String FAComposition,  allNames,  Name, lipidClass ="0";
 	private double averageMZ,  averageRT,  numFound;
 	private int standard, ID,  aligment,  numFixColumns;
 	private boolean control,  selection;
