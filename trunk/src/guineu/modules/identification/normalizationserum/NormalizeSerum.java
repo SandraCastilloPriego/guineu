@@ -72,7 +72,7 @@ public class NormalizeSerum {
 
 	private String getLipidName(int row) {
 		if (dataset.getRow(row) != null) {
-			String olipid = dataset.getRow(row).getName();
+			String olipid = (String)dataset.getRow(row).getVar("getName");
 			if (olipid.matches(".*unknown.*")) {
 				olipid = this.getUnknownName(row);
 			}

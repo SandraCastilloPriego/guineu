@@ -1,10 +1,22 @@
 /*
-Copyright 2007-2008 VTT Biotechnology
-
-This file is part of GUINEU.
-
+ * Copyright 2007-2008 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.openLCMSDatasetFile;
+
+package guineu.modules.file.openExperimentsData;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -20,7 +32,6 @@ import javax.swing.JOptionPane;
 import com.sun.java.ExampleFileFilter;
 import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
-import guineu.util.dialogs.ExitCode;
 
 /**
  * File open dialog
@@ -28,32 +39,31 @@ import guineu.util.dialogs.ExitCode;
 public class DatasetOpenDialog extends JDialog implements ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+
 	private JFileChooser fileChooser;
-	private File[] datasetFile;
-	private ExitCode exit = ExitCode.UNKNOWN;
+	private File datasetFile;
 
 	public DatasetOpenDialog(File lastpath) {
 
 		super(GuineuCore.getDesktop().getMainFrame(),
-				"Please select a dataset file to open...", true);
+				"Please select a experiment file to open...", true);
 
-		logger.finest("Displaying dataset open dialog");
+		logger.finest("Displaying experiment open dialog");
 
-		fileChooser = new JFileChooser();		
-		if (lastpath != null) {
+		fileChooser = new JFileChooser();		             
+                if (lastpath != null) {
 			fileChooser.setCurrentDirectory(lastpath);
 		}
-		fileChooser.setMultiSelectionEnabled(true);
+		fileChooser.setMultiSelectionEnabled(false);
 		fileChooser.addActionListener(this);
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-		ExampleFileFilter csv = new ExampleFileFilter();
-		csv.addExtension("csv");
-		csv.addExtension("xls");
-		csv.setDescription("Excel and Comma Separated Files");
-		fileChooser.addChoosableFileFilter(csv);
-		fileChooser.setFileFilter(csv);
-
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);		
+              
+                ExampleFileFilter xls = new ExampleFileFilter();
+		xls.addExtension("xls");
+		xls.setDescription("Excel Files");
+		fileChooser.addChoosableFileFilter(xls);                
+		fileChooser.setFileFilter(xls);
+                
 		add(fileChooser, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
@@ -68,31 +78,24 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
 		// check if user clicked "Open"
 
-		if (command.equals("ApproveSelection")) {
+		if (command.equals("ApproveSelection")) {			
 			try {
-				datasetFile = fileChooser.getSelectedFiles();
-				DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-				deskParameters.setLastOpenProjectPath(datasetFile[0].getPath());
-				exit = ExitCode.OK;
+                                datasetFile = fileChooser.getSelectedFile();
+                                DesktopParameters deskParameters = (DesktopParameters) GuineuCore
+                                                    .getDesktop().getParameterSet();
+                                deskParameters.setLastOpenProjectPath(datasetFile.getPath()); 
 			} catch (Throwable e) {
 				JOptionPane.showMessageDialog(this,
-						"Could not open dataset file", "Dataset opening error",
+						"Could not open experiment file", "Dataset opening error",
 						JOptionPane.ERROR_MESSAGE);
-				logger.fine("Could not open dataset file." + e.getMessage());
-				exit = ExitCode.CANCEL;
+				logger.fine("Could not open experiment file." + e.getMessage());
 			}
-		} else {
-			exit = ExitCode.CANCEL;
 		}
 		// discard this dialog
 		dispose();
 	}
 
-	public File[] getCurrentDirectory() {
-		return this.datasetFile;
-	}
-
-	public ExitCode getExitCode() {
-		return exit;
+	public String getCurrentDirectory() {
+		return this.datasetFile.toString();
 	}
 }

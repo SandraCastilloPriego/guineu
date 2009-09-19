@@ -113,7 +113,7 @@ public class LinearNormalizer {
 		{
 			GCGCDatum[][] stds = new GCGCDatum[_standards.size()][];
 			for (int i = 0; i < _standards.size(); i++) {
-				stds[i] = (GCGCDatum[]) _standards.get(i).getRow().toArray(new GCGCDatum[0]);
+				stds[i] = (GCGCDatum[]) _standards.get(i).getDatumArray().toArray(new GCGCDatum[0]);
 			}
 			double[][] coeffs = new double[stds.length][];
 			for (int i = 0; i < stds.length; i++) {
@@ -136,7 +136,7 @@ public class LinearNormalizer {
 			normalized.addAll(rows);
 		} else //Only one standard
 		{
-			List<GCGCDatum> stds = onlyStandard.getRow();
+			List<GCGCDatum> stds = onlyStandard.getDatumArray();
 			double[] coeffs = new double[stds.size()];
 			for (int i = 0; i < stds.size(); i++) {
 				coeffs[i] = baseLevel / stds.get(i).getArea();

@@ -23,15 +23,12 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.table.AbstractTableModel;
 
 public class OtherDataModel extends AbstractTableModel implements DataTableModel {
 
     private int numColumns;
     private SimpleOtherDataset dataset;
-    protected SortingDirection isSortAsc = SortingDirection.Ascending;
-    protected int sortCol = 0;
 
     public OtherDataModel(Dataset dataset) {
         this.dataset = (SimpleOtherDataset) dataset;
@@ -86,10 +83,12 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
 
     @Override
     public void setValueAt(Object aValue, int row, int column) {
+         SimplePeakListRowOther peakRow = (SimplePeakListRowOther) this.dataset.getRow(row);
+
         if (column == 0) {
-            this.dataset.getRow(row).setSelectionMode((Boolean) aValue);
+            peakRow.setSelectionMode((Boolean) aValue);
         } else {
-            ((SimplePeakListRowOther) this.dataset.getRow(row)).setPeak(this.dataset.getNameExperiments().elementAt(column - this.getFixColumns()), aValue.toString());
+            peakRow.setPeak(this.dataset.getNameExperiments().elementAt(column - this.getFixColumns()), aValue.toString());
         }
         fireTableCellUpdated(row, column);
     }
@@ -98,23 +97,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
     public boolean isCellEditable(int row, int column) {
         return true;
     }
-
-    public SortingDirection getSortDirection() {
-        return isSortAsc;
-    }
-
-    public int getSortCol() {
-        return sortCol;
-    }
-
-    public void setSortDirection(SortingDirection direction) {
-        this.isSortAsc = direction;
-    }
-
-    public void setSortCol(int column) {
-        this.sortCol = column;
-    }   
-
+   
     public DatasetType getType() {
         return this.dataset.getType();
     }

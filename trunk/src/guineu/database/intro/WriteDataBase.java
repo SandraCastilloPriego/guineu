@@ -22,6 +22,8 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.database.ask.DBask;
 import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.BufferedReader;
@@ -139,7 +141,7 @@ public class WriteDataBase {
 			int[] mol_ID = new int[lcms_known.getNumberRows()];
 			Statement statement = conn.createStatement();
 			for (int i = 0; i < lcms_known.getNumberRows(); i++) {
-				PeakListRow lipid = lcms_known.getRow(i);
+				SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) lcms_known.getRow(i);
 				try {
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
 							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, " +
@@ -234,7 +236,7 @@ public class WriteDataBase {
 		Statement st = null;
 		int[] mol_ID = new int[dataset.getNumberRows() + 1];
 		for (int i = 0; i < dataset.getNumberRows(); i++) {
-			PeakListRow metabolite = dataset.getRow(i);
+			SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
 			try {
 				int result = 0;
 				st = conn.createStatement();
@@ -275,7 +277,7 @@ public class WriteDataBase {
 		try {
 			st = conn.createStatement();
 			for (int i = 0; i < mol.getNumberRows(); i++) {
-				PeakListRow peak = mol.getRow(i);
+				SimplePeakListRowGCGC peak = (SimplePeakListRowGCGC) mol.getRow(i);
 				Spectrum spectrum = peak.getSpectrum();
 
 				if (spectrum == null) {

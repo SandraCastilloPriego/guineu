@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package guineu.modules.mylly.filter.classIdentification;
 
 import com.csvreader.CsvReader;
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.ComparablePair;
@@ -76,7 +77,7 @@ public class ClassIdentification {
 		this.input = input;
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 
-		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+		for (PeakListRow row : input.getAlignment()) {
 				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC)row.clone();
 				this.setRules(clonedRow);				
 				als.add(clonedRow);
@@ -101,7 +102,7 @@ public class ClassIdentification {
 				}else{
 					rowClass = rule[0];
 				}
-				clonedRow.setClass(rowClass);
+				clonedRow.setMolClass(rowClass);
 			}
 		}
 	}

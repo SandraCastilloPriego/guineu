@@ -128,8 +128,8 @@ public class standarVariationTask implements Task {
 
 		StandardUmol std = new StandardUmol(group);
 		for (PeakListRow peakRow : this.dataset.getRows()) {
-			if (peakRow.getStandard() == 1) {
-				std.setStandard(peakRow, peakRow.getName());
+			if ((Integer)peakRow.getVar("getStandard") == 1) {
+				std.setStandard(peakRow, (String)peakRow.getVar("getName"));
 			}
 		}
 		std.run();

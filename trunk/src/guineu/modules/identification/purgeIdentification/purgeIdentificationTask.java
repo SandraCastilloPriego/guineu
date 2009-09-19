@@ -104,35 +104,35 @@ public class purgeIdentificationTask implements Task {
 	public void getName(PeakListRow lipid) {
 
 		try {
-			if (lipid.getName().matches(".*Cer.*")) {
-				if (lipid.getRT() > 430 || lipid.getMZ() < 340 || !lipid.getName().matches(".*d18:1.*")) {
+			if (((String)lipid.getVar("getName")).matches(".*Cer.*")) {
+				if ((Double)lipid.getVar("getRT") > 430 || (Double)lipid.getVar("getMZ") < 340 || !((String)lipid.getVar("getName")).matches(".*d18:1.*")) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}
-			} else if (lipid.getName().matches(".*Lyso.*")) {
-				if (lipid.getRT() > 300 || lipid.getMZ() > 650) {
+			} else if (((String)lipid.getVar("getName")).matches(".*Lyso.*")) {
+				if ((Double)lipid.getVar("getRT") > 300 || (Double)lipid.getVar("getMZ") > 650) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				} else {
 					Pattern carbons = Pattern.compile("\\d\\d?");
-					Matcher matcher = carbons.matcher(lipid.getName());
+					Matcher matcher = carbons.matcher(((String)lipid.getVar("getName")));
 					if (matcher.find()) {
-						double num = Double.valueOf(lipid.getName().substring(matcher.start(), matcher.end()));
+						double num = Double.valueOf(((String)lipid.getVar("getName")).substring(matcher.start(), matcher.end()));
 						if (num < 12 || num > 24) {
 							this.getFirstName(lipid);
 							this.getName(lipid);
 						}
 					}
 				}
-			} else if (lipid.getName().matches(".*PC.*") || lipid.getName().matches(".*PE.*")) {
-				if (lipid.getRT() < 300 || lipid.getRT() > 420 || lipid.getMZ() < 550) {
+			} else if (((String)lipid.getVar("getName")).matches(".*PC.*") || ((String)lipid.getVar("getName")).matches(".*PE.*")) {
+				if ((Double)lipid.getVar("getRT") < 300 || (Double)lipid.getVar("getRT") > 420 || (Double)lipid.getVar("getMZ") < 550) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				} else {
 					Pattern carbons = Pattern.compile("\\d\\d?");
-					Matcher matcher = carbons.matcher(lipid.getName());
+					Matcher matcher = carbons.matcher(((String)lipid.getVar("getName")));
 					if (matcher.find()) {
-						double num = Double.valueOf(lipid.getName().substring(matcher.start(), matcher.end()));
+						double num = Double.valueOf(((String)lipid.getVar("getName")).substring(matcher.start(), matcher.end()));
 						if (num < 30) {
 							this.getFirstName(lipid);
 							this.getName(lipid);
@@ -140,8 +140,8 @@ public class purgeIdentificationTask implements Task {
 					}
 				}
 
-			} else if (lipid.getName().matches(".*PS.*") || lipid.getName().matches(".*PI.*")) {
-				lipid.setName("unknown");
+			} else if (((String)lipid.getVar("getName")).matches(".*PS.*") || ((String)lipid.getVar("getName")).matches(".*PI.*")) {
+				lipid.setVar("setName", "unknown");
 				/*if (lipid.getRT() < 300 || lipid.getRT() > 420 || lipid.getMZ() < 550) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
@@ -156,19 +156,19 @@ public class purgeIdentificationTask implements Task {
 						}
 					}
 				}*/
-			} else if (lipid.getName().matches(".*MG.*")) {
+			} else if (((String)lipid.getVar("getName")).matches(".*MG.*")) {
 				/* if (lipid.getRT() > 300 || lipid.getMZ() > 500) {
 				this.getFirstName(lipid);
 				this.getName(lipid);
 				}*/
-				lipid.setName("unknown");
-			} else if (lipid.getName().matches(".*SM.*")) {
-				if (lipid.getRT() > 420 || lipid.getRT() < 330 || !lipid.getName().matches(".*d18:1.*")) {
+				lipid.setVar("setName", "unknown");
+			} else if (((String)lipid.getVar("getName")).matches(".*SM.*")) {
+				if ((Double)lipid.getVar("getRT") > 420 || (Double)lipid.getVar("getRT") < 330 || !((String)lipid.getVar("getName")).matches(".*d18:1.*")) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}
-			} else if (lipid.getName().matches(".*PA.*") || lipid.getName().matches(".*PG.*")) {
-				lipid.setName("unknown");
+			} else if (((String)lipid.getVar("getName")).matches(".*PA.*") || ((String)lipid.getVar("getName")).matches(".*PG.*")) {
+				lipid.setVar("setName", "unknown");
 			/* if (lipid.getRT() > 410 || lipid.getMZ() < 550) {
 			this.getFirstName(lipid);
 			this.getName(lipid);
@@ -183,15 +183,15 @@ public class purgeIdentificationTask implements Task {
 			}
 			}
 			}*/
-			} else if (lipid.getName().matches(".*DG.*")) {
-				if (lipid.getRT() > 410 || lipid.getMZ() < 350|| lipid.getName().matches(".*e.*")) {
+			} else if (((String)lipid.getVar("getName")).matches(".*DG.*")) {
+				if ((Double)lipid.getVar("getRT") > 410 || (Double)lipid.getVar("getMZ") < 350|| ((String)lipid.getVar("getName")).matches(".*e.*")) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				} else {
 					Pattern carbons = Pattern.compile("\\d\\d?");
-					Matcher matcher = carbons.matcher(lipid.getName());
+					Matcher matcher = carbons.matcher(((String)lipid.getVar("getName")));
 					if (matcher.find()) {
-						double num = Double.valueOf(lipid.getName().substring(matcher.start(), matcher.end()));
+						double num = Double.valueOf(((String)lipid.getVar("getName")).substring(matcher.start(), matcher.end()));
 						if (num > 40) {
 							this.getFirstName(lipid);
 							this.getName(lipid);
@@ -199,53 +199,53 @@ public class purgeIdentificationTask implements Task {
 					}
 				}
 
-			} else if (lipid.getName().matches(".*TG.*")) {
-				if (lipid.getRT() < 410) {
+			} else if (((String)lipid.getVar("getName")).matches(".*TG.*")) {
+				if ((Double)lipid.getVar("getRT") < 410) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				} else {
 					Pattern carbons = Pattern.compile("\\d\\d?");
-					Matcher matcher = carbons.matcher(lipid.getName());
+					Matcher matcher = carbons.matcher(((String)lipid.getVar("getName")));
 					if (matcher.find()) {
-						double num = Double.valueOf(lipid.getName().substring(matcher.start(), matcher.end()));
+						double num = Double.valueOf(((String)lipid.getVar("getName")).substring(matcher.start(), matcher.end()));
 						if (num < 42 || num > 60) {
 							this.getFirstName(lipid);
 							this.getName(lipid);
 						}
 					}
 				}
-			} else if (lipid.getName().matches(".*ChoE.*")) {
-				if (lipid.getRT() > 350 || lipid.getMZ() < 550) {
+			} else if (((String)lipid.getVar("getName")).matches(".*ChoE.*")) {
+				if ((Double)lipid.getVar("getRT") > 350 || (Double)lipid.getVar("getMZ") < 550) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}
-			} else if (lipid.getName().matches(".*CL.*")) {
-				if (lipid.getRT() < 410 || lipid.getMZ() < 1000) {
+			} else if (((String)lipid.getVar("getName")).matches(".*CL.*")) {
+				if ((Double)lipid.getVar("getRT") < 410 || (Double)lipid.getVar("getMZ") < 1000) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}
-			} else if (lipid.getName().matches(".*FA.*")) {
-				if (lipid.getRT() > 300 || lipid.getMZ() > 550) {
+			} else if (((String)lipid.getVar("getName")).matches(".*FA.*")) {
+				if ((Double)lipid.getVar("getRT") > 300 || (Double)lipid.getVar("getMZ") > 550) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}
-			} else if (lipid.getName().matches(".*unknown.*")) {
-				if (lipid.getAllNames().length() > 7) {
+			} else if (((String)lipid.getVar("getName")).matches(".*unknown.*")) {
+				if (((String)lipid.getVar("getAllNames")).length() > 7) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}
 			}
 
-			if (lipid.getName().matches(".*ee.*")) {
-				if (lipid.getAllNames().length() > 7) {
+			if (((String)lipid.getVar("getName")).matches(".*ee.*")) {
+				if (((String)lipid.getVar("getAllNames")).length() > 7) {
 					this.getFirstName(lipid);
 					this.getName(lipid);
 				}else{
-					lipid.setName("unknown");
+					lipid.setVar("setName", "unknown");
 				}
 			}
 		} catch (Exception e) {
-			lipid.setName("unknown");
+			lipid.setVar("setName", "unknown");
 			// System.out.println("getName ->  " + e.getMessage());
 			return;
 		}
@@ -255,35 +255,35 @@ public class purgeIdentificationTask implements Task {
 
 		String[] lipidNames = null;
 		try {
-			lipidNames = lipid.getAllNames().split(" // ");
+			lipidNames = ((String)lipid.getVar("getAllNames")).split(" // ");
 		} catch (Exception e) {
-			lipid.setName("unknown");
+			lipid.setVar("setName", "unknown");
 		// System.out.println("e ->  " + e.getMessage());
 		}
 		if (lipidNames == null || lipidNames.length < 2) {
 			try {
-				if (lipid.getAllNames().length() > 7) {
-					lipid.setName(lipid.getAllNames());
-					lipid.setAllNames("");
+				if (((String)lipid.getVar("getAllNames")).length() > 7) {
+					lipid.setVar("setName", (String)lipid.getVar("getAllNames"));
+					lipid.setVar("setAllNames", "");
 				} else {
-					lipid.setName("unknown");
+					lipid.setVar("setName", "unknown");
 				}
 			} catch (Exception ee) {
-				lipid.setName("unknown");
+				lipid.setVar("setName", "unknown");
 			// System.out.println("ee ->  " + ee.getMessage());
 			}
 		} else {
 			if (lipidNames[0].length() > 7) {
-				lipid.setName(lipidNames[0]);
+				lipid.setVar("setName", lipidNames[0]);
 			}
 			if (lipidNames.length > 1) {
 				String newName = "";
 				for (int i = 1; i < lipidNames.length; i++) {
 					newName += lipidNames[i] + " // ";
 				}
-				lipid.setAllNames(newName);
+				lipid.setVar("setAllNames", newName);
 			} else {
-				lipid.setAllNames("");
+				lipid.setVar("setAllNames", "");
 			}
 		}
 	}

@@ -18,14 +18,14 @@
 package guineu.data.impl;
 
 import guineu.data.PeakListRow;
-import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
-import guineu.modules.mylly.datastruct.GCGCDatum;
-import guineu.modules.mylly.datastruct.Spectrum;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -68,7 +68,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		PeakListRow peakListRow = new SimplePeakListRowLCMS(this.ID, this.averageMZ, this.averageRT,
 				this.numFound, this.standard, this.lipidClass, this.Name, this.allNames,
 				this.FAComposition);
-		peakListRow.setNumberAligment(aligment);
+		peakListRow.setVar("setNumberAligment", aligment);
 		String str;
 		Set<String> set = peaks.keySet();
 
@@ -235,63 +235,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 				this.peaks.remove(name);
 			}
 		}
-	}
-
-	public double getRT1() {
-		return -1;
-	}
-
-	public double getRT2() {
-		return -1;
-	}
-
-	public double getRTI() {
-		return -1;
-	}
-
-	public double getMaxSimilarity() {
-		return -1;
-	}
-
-	public double getMeanSimilarity() {
-		return -1;
-	}
-
-	public double getSimilaritySTDDev() {
-		return -1;
-	}
-
-	public double getMass() {
-		return -1;
-	}
-
-	public double getDifference() {
-		return -1;
-	}
-
-	public String getSpectrumString() {
-		return null;
-	}
-
-	public String getCAS() {
-		return null;
-	}
-
-	public void setCAS(String CAS) {
-		
-	}
-
-	public int nonNullPeakCount() {
-		return -1;
-	}
-
-	public DistValue getDistValue() {
-		return null;
-	}
-
-	public List<GCGCDatum> getRow() {
-		return null;
-	}
+	}	
 
 	public String getVTTID() {
 		return this.VTTid;
@@ -313,8 +257,44 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.pubchemID = pubchemID;
 	}
 
-	public Spectrum getSpectrum() {
-		return null;
-	}
 	
+     public Object getVar(String varName) {
+        try {
+            Method m = this.getClass().getMethod(varName, new Class[]{});
+            return m.invoke(this);
+
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public void setVar(String varName, Object value) {
+        try {
+            Method m = this.getClass().getMethod(varName, new Class[]{});
+            Object[] parameters = new Object[1];
+            parameters[0] = value;
+            m.invoke(this, parameters);
+
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

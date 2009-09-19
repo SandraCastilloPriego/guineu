@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.mylly.filter.singlingFilter;
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
@@ -150,7 +151,7 @@ public class Singling {
 
 		PeakReducer reducer = new PeakReducer(input.containsMainPeaks(), filterUnknowns, minSimilarity);
 		
-		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+		for (PeakListRow row : input.getAlignment()) {
 			SimplePeakListRowGCGC newRow = (SimplePeakListRowGCGC) row.clone();
 			reducer.addAlignment(newRow);
 		}

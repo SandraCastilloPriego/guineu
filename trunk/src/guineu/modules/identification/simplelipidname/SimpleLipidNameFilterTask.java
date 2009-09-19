@@ -65,7 +65,7 @@ public class SimpleLipidNameFilterTask implements Task {
         try {
             status = TaskStatus.PROCESSING;
             for (PeakListRow lipid : dataset.getRows()) {
-                String lipidn = (String) lipid.getName();
+                String lipidn = (String) lipid.getVar("getName");
                 lipidn = lipidn.replaceFirst("^GPCho", "PC");
                 lipidn = lipidn.replaceFirst("^LysoGPCho", "LysoPC");
                 lipidn = lipidn.replaceFirst("^LysoGPEtn", "LysoPE");
@@ -85,7 +85,7 @@ public class SimpleLipidNameFilterTask implements Task {
                 if (lipidn.indexOf(" - ") > 0) {
                     lipidn = lipidn.substring(0, lipidn.indexOf(" - "));
                 }
-                lipid.setName(lipidn);
+                lipid.setVar("setName", lipidn);
             }
             status = TaskStatus.FINISHED;
         } catch (Exception e) {

@@ -63,13 +63,13 @@ public class Alignment {
      * "GPGro(40:8e)"
      */
     public void MolNamesCorrection() {
-        for (Dataset dataset : datasets) {
+      /*  for (Dataset dataset : datasets) {
             for (PeakListRow row : ((SimpleLCMSDataset) dataset).getRows()) {
                 String lipidn = row.getName();
                 lipidn = lipidn.split(" ")[0];
                 row.setName(lipidn);
             }
-        }
+        }*/
     }
 
     public SimpleLCMSDataset getDataset() {
@@ -382,7 +382,7 @@ public class Alignment {
     }
 
     private double getScore(AlignStructMol lipid) {
-        for (int i = 0; i < this.vRegressionStruct.size(); i++) {
+      /*  for (int i = 0; i < this.vRegressionStruct.size(); i++) {
             RegressionStruct RStruct = this.vRegressionStruct.elementAt(i);
             Pattern pat = Pattern.compile(RStruct.type);
             Matcher matcher = pat.matcher(lipid.lipid1.getName());
@@ -397,7 +397,7 @@ public class Alignment {
                 }
 
             }
-        }
+        }*/
         return -1;
     }
 
@@ -414,8 +414,8 @@ public class Alignment {
                 for (int l = 0; l < chrom1.v.size(); l++) {
 
                     lipid1 = chrom1.v.elementAt(l);
-                    if (lipid1.Aligned) {
-                        AlignmentStruct chrom2 = this.getVector(chrom, ID2, i);
+                  //  if (lipid1.Aligned) {
+                      //  AlignmentStruct chrom2 = this.getVector(chrom, ID2, i);
 
                       //  lipid2 = this.getLipid(lipid1.lipid1.getName(), lipid1.lipid2.getRT(), chrom2.v);
                     /*    if (lipid2 != null) {
@@ -425,7 +425,7 @@ public class Alignment {
                             this.fixAlignment(chrom3.v, lipid1, lipid2);
 
                         }*/
-                    }
+                  //  }
                 }
 
             }
@@ -436,7 +436,7 @@ public class Alignment {
 
     public void fixAlignment(Vector<AlignStructMol> chrom3, AlignStructMol lipid1, AlignStructMol lipid2) {
 
-        Vector<AlignStructMol> v2 = new Vector<AlignStructMol>();
+      /*  Vector<AlignStructMol> v2 = new Vector<AlignStructMol>();
         for (int i = 0; i < chrom3.size(); i++) {
             if (chrom3.elementAt(i).lipid1.getName().compareTo(lipid1.lipid1.getName()) == 0) {
               //  if (chrom3.elementAt(i).lipid1.getRT() == lipid1.lipid1.getRT() || chrom3.elementAt(i).lipid2.getRT() == lipid1.lipid1.getRT()) {
@@ -492,10 +492,10 @@ public class Alignment {
                     }
                 }
            // }*/
-        }
+       // }
     }
 
-    public AlignmentStruct getVector(Vector<AlignmentStruct> chrom, int ID, int nonVector) {
+  /*  public AlignmentStruct getVector(Vector<AlignmentStruct> chrom, int ID, int nonVector) {
         for (int sv = 0; sv < chrom.size(); sv++) {
             if (sv != nonVector) {
                 if (chrom.elementAt(sv).ID1 == ID || chrom.elementAt(sv).ID2 == ID) {
@@ -516,14 +516,14 @@ public class Alignment {
               /*  if (RT2 == lipid.lipid2.getRT() || RT2 == lipid.lipid1.getRT()) {
                     v2.addElement(lipid);
                 }*/
-            }
+        //    }
 
-            if (lipid.Aligned) {
+      //      if (lipid.Aligned) {
             //    regression.addData(lipid.lipid1.getRT(), lipid.lipid2.getRT());
-            }
-        }
+      //      }
+      //  }
 
-        double intercept = regression.getIntercept();
+     /*   double intercept = regression.getIntercept();
         double slope = regression.getSlope();
 
         int Index = 100;
@@ -533,7 +533,7 @@ public class Alignment {
             if (Math.abs(y - newY) < Index) {
                 Index = i;
             }*/
-        }
+     /*   }
 
         for (int i = 0; i < v2.size(); i++) {
             if (i != Index) {
@@ -545,16 +545,16 @@ public class Alignment {
         } else {
             return null;
         }
-    }
+    }*/
 
-    private void addUnknownLipids(Vector<AlignmentStruct> bestSolutions, String type) {
+  /*  private void addUnknownLipids(Vector<AlignmentStruct> bestSolutions, String type) {
         for (AlignmentStruct datasetAlignedStruct : bestSolutions) {
             RegressionStruct regStruct = this.getRegressionStruct(datasetAlignedStruct.ID1, datasetAlignedStruct.ID2, type);
             if (regStruct != null) {
                 this.setUnknownLipids(datasetAlignedStruct, datasetAlignedStruct.ID1, datasetAlignedStruct.ID2, regStruct);
             }
         }
-    }
+    }*/
 
     private RegressionStruct getRegressionStruct(int ID1, int ID2, String type) {
         for (RegressionStruct struct : this.vRegressionStruct) {

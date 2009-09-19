@@ -5,7 +5,6 @@ import guineu.data.impl.Bexperiments;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.ExperimentDataset;
 import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -275,19 +274,12 @@ public class ExperimentDataModel extends AbstractTableModel implements DataTable
             }
         }
     }
-
-    public SortingDirection getSortDirection() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+  
 
     public int getSortCol() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public void setSortDirection(SortingDirection direction) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+   
     public void setSortCol(int column) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

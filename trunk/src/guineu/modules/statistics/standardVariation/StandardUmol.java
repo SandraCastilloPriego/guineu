@@ -54,7 +54,7 @@ public class StandardUmol {
             for (String stdName2 : standardsNames) {
                 if (!stdName.matches(stdName2)) {
                     PeakListRow newRow = new SimplePeakListRowLCMS();
-                    newRow.setName(stdName + " - " + stdName2);
+                    newRow.setVar("setName", stdName + " - " + stdName2);
                     PeakListRow row1 = this.standards.get(stdName);
                     PeakListRow row2 = this.standards.get(stdName2);
 

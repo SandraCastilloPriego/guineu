@@ -67,20 +67,20 @@ public class RelatedPeaksTask implements Task {
 
 			for (PeakListRow row : dataset.getRows()) {
 				for (PeakListRow row2 : dataset.getRows()) {
-					if (row.getAllNames() != null || row2.getAllNames() != null) {
+					if (row.getVar("getAllNames") != null || row2.getVar("getAllNames") != null) {
 						continue;
 					}
-					if (!row.getName().matches(".*TG.*|.*ChoE.*|.*unknown.*") || !row2.getName().matches(".*TG.*|.*ChoE.*|.*unknown.*")) {
+					if (!((String)row.getVar("getName")).matches(".*TG.*|.*ChoE.*|.*unknown.*") || !((String)row2.getVar("getName")).matches(".*TG.*|.*ChoE.*|.*unknown.*")) {
 						continue;
 					}
-					double mzDiff = row2.getMZ() - row.getMZ();
+					double mzDiff = (Double)row2.getVar("getMZ") - (Double)row.getVar("getMZ");
 					if (mzDiff < 5.1 && mzDiff > 4.90) {
-						double rtDiff = row.getRT() - row2.getRT();
+						double rtDiff = (Double)row.getVar("getRT") - (Double)row2.getVar("getRT");
 						if (Math.abs(rtDiff) < 2) {
 							//if (this.getMean(row) < this.getMean(row2)) {
 							if (this.isAdduct(row2, row)) {
-								row2.setAllNames("Group" + cont + "Adduct of: " + row.getName());
-								row.setAllNames("Group" + cont++);
+								row2.setVar("setAllNames", "Group" + cont + "Adduct of: " + row.getVar("getName"));
+								row.setVar("setAllNames", "Group" + cont++);
 							}
 						}
 					}
