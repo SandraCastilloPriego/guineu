@@ -17,10 +17,6 @@
  */
 package guineu.data;
 
-import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
-import guineu.modules.mylly.datastruct.GCGCDatum;
-import guineu.modules.mylly.datastruct.Spectrum;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -30,24 +26,6 @@ import java.util.Vector;
 public interface PeakListRow {
 
     public int getID();
-
-    public double getMZ();
-
-    public double getRT();
-
-    public double getNumFound();
-
-	public Spectrum getSpectrum();
-
-    public int getStandard();
-
-    public String getMolClass();
-
-    public String getFAComposition();
-
-    public String getName();
-
-	public void removeNoSamplePeaks(String[] group);
 
     public void setID(int i);
 
@@ -61,69 +39,17 @@ public interface PeakListRow {
 
     public void removePeaks();
 
-    public boolean getControl();
+    public void removeNoSamplePeaks(String[] group);
 
     public int getNumberPeaks();
 
-    public int getNumberAlignment();
-
-    public void setName(String Name);
-
-    public void setNumberAligment(int aligment);
-
-    public void setAllNames(String Names);
-
     public PeakListRow clone();
-
-    public double getRT1();
-
-    public double getRT2();
-
-    public double getRTI();
-
-    public double getMaxSimilarity();
-
-    public double getMeanSimilarity();
-
-    public double getSimilaritySTDDev();
-
-    public String getAllNames();
-
-    public String getPubChemID();
-
-	public void setPubChemID(String pubchemID);
-
-    public double getMass();
-
-    public double getDifference();
-
-    public String getSpectrumString();
-
-    public int getNumberFixColumns();
-
-    public void setNumberFixColumns(int columnNum);
 
     public boolean isSelected();
 
     public void setPeak(String str, String get);
 
-    public void setSelectionMode(boolean selectionMode);
+    public Object getVar(String varName);
 
-	public String getCAS();
-
-	public void setCAS(String CAS);
-
-	public int nonNullPeakCount();
-
-	public DistValue getDistValue();
-
-	public List<GCGCDatum> getRow();
-
-	public String getVTTID();
-
-	public void setVTTD(String VTTID);
-
-	public String getAllVTTID();
-
-	public void setAllVTTD(String AllVTTID);
+    public void setVar(String varName, Object value);
 }
