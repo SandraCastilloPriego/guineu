@@ -17,16 +17,15 @@
  */
 package guineu.data.impl;
 
-
 import guineu.data.PeakListRow;
-import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
-import guineu.modules.mylly.datastruct.GCGCDatum;
-import guineu.modules.mylly.datastruct.Spectrum;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,7 +34,7 @@ import java.util.Vector;
 public class SimplePeakListRowOther implements PeakListRow {
 
     private int ID;
-    private boolean control, selection;
+    private boolean selection;
     private Hashtable<String, String> peaks;
 
     public SimplePeakListRowOther() {
@@ -57,25 +56,8 @@ public class SimplePeakListRowOther implements PeakListRow {
         return peakListRow;
     }
 
-   
-    public double getNumFound() {
-        return -1;
-    }
-
-    public String getName() {
-        return null;
-    }
-
     public String getPeak(String ExperimentName) {
         return this.peaks.get(ExperimentName);
-    }
-
-    public void setName(String Name) {
-        
-    }
-
-    public void setAllNames(String allNames) {
-       
     }
 
     public void setPeak(String name, String value) {
@@ -90,35 +72,10 @@ public class SimplePeakListRowOther implements PeakListRow {
         this.ID = ID;
     }
 
-    public void setControl(boolean control) {
-        this.control = control;
-    }
-
-    public boolean getControl() {
-        return this.control;
-    }
-
     public int getNumberPeaks() {
         return this.peaks.size();
     }
 
-    public int getNumberAlignment() {
-        return -1;
-    }
-
-    public void setNumberAligment(int aligment) {
-       
-    }
-
-   
-    public String getAllNames() {
-        return null;
-    }
-
-    public String getPubChemID() {
-        return null;
-    }
-   
     public void removePeaks() {
         this.peaks = new Hashtable<String, String>();
     }
@@ -137,19 +94,10 @@ public class SimplePeakListRowOther implements PeakListRow {
     }
 
     public void setPeak(String name, Double value) {
-        
     }
 
     public Object getPeak(int col, Vector<String> sampleNames) {
         return this.peaks.get(sampleNames.elementAt(col));
-    }
-
-    public int getNumberFixColumns() {
-        return -1;
-    }
-
-    public void setNumberFixColumns(int columnNum) {
-        
     }
 
     public boolean isSelected() {
@@ -160,111 +108,51 @@ public class SimplePeakListRowOther implements PeakListRow {
         this.selection = selectionMode;
     }
 
-	public void removeNoSamplePeaks(String[] group) {
-		for (String name : group) {
-			if (this.peaks.containsKey(name)) {
-				this.peaks.remove(name);
-			}
-		}
-	}
+    public void removeNoSamplePeaks(String[] group) {
+        for (String name : group) {
+            if (this.peaks.containsKey(name)) {
+                this.peaks.remove(name);
+            }
+        }
+    }
 
-	public double getMZ() {
-		return -1;
-	}
+    public Object getVar(String varName) {
+        try {
+            Method m = this.getClass().getMethod(varName, new Class[]{});
+            return m.invoke(this);
 
-	public double getRT() {
-		return -1;
-	}
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
-	public int getStandard() {
-		return -1;
-	}
+    public void setVar(String varName, Object value) {
+        try {
+            Method m = this.getClass().getMethod(varName, new Class[]{});
+            Object[] parameters = new Object[1];
+            parameters[0] = value;
+            m.invoke(this, parameters);
 
-	public String getMolClass() {
-		return null;
-	}
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-	public String getFAComposition() {
-		return null;
-	}
-
-	public double getRT1() {
-		return -1;
-	}
-
-	public double getRT2() {
-		return -1;
-	}
-
-	public double getRTI() {
-		return -1;
-	}
-
-	public double getMaxSimilarity() {
-		return -1;
-	}
-
-	public double getMeanSimilarity() {
-		return -1;
-	}
-
-	public double getSimilaritySTDDev() {
-		return -1;
-	}
-
-	public double getMass() {
-		return -1;
-	}
-
-	public double getDifference() {
-		return -1;
-	}
-
-	public String getSpectrumString() {
-		return null;
-	}
-
-	public String getCAS() {
-		return null;
-	}
-
-	public void setCAS(String CAS) {
-		
-	}
-
-	public int nonNullPeakCount() {
-		return -1;
-	}
-
-	public DistValue getDistValue() {
-		return null;
-	}
-
-	public List<GCGCDatum> getRow() {
-		return null;
-	}
-
-	public String getVTTID() {
-		return null;
-	}
-
-	public void setVTTD(String VTTID) {
-		
-	}
-
-	public String getAllVTTID() {
-		return null;
-	}
-
-	public void setAllVTTD(String AllVTTID) {
-
-	}
-
-	public void setPubChemID(String pubchemID) {
-		
-	}
-
-	public Spectrum getSpectrum() {
-		return null;
-	}
+    }
 }

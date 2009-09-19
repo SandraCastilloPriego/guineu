@@ -3,7 +3,6 @@ package guineu.data.datamodels;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
 
@@ -18,8 +17,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
     private int numColumns;
     private int numRows;
     private Vector<String> columns_mol = new Vector<String>();
-    protected SortingDirection sortDirection = SortingDirection.Ascending;
-    protected int sortCol = 0;
+    
 
     public VariationCoefficientDataModel(Vector<VariationCoefficientData> data) {
         columns_mol.add("DatasetName");
@@ -126,22 +124,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
         this.numColumns = count;
     }
 
-    public SortingDirection getSortDirection() {
-        return sortDirection;
-    }
-
-    public int getSortCol() {
-        return sortCol;
-    }
-
-    public void setSortDirection(SortingDirection direction) {
-        this.sortDirection = direction;
-    }
-
-    public void setSortCol(int column) {
-        this.sortCol = column;
-    }
-
+   
     public Object[][] getData() {
         return rows;
     }

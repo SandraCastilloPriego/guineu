@@ -20,6 +20,7 @@
 package guineu.modules.mylly.filter.peakCounter;
 
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.filter.NameFilter.FilterFunction;
 
@@ -33,7 +34,7 @@ import guineu.modules.mylly.filter.NameFilter.FilterFunction;
  * @author jmjarkko
  *
  */
-public class PeakCount implements FilterFunction<SimplePeakListRowGCGC>
+public class PeakCount implements FilterFunction<PeakListRow>
 {
 
 	private int _minPeakCount;
@@ -48,12 +49,12 @@ public class PeakCount implements FilterFunction<SimplePeakListRowGCGC>
 		return "Filter alignment by peak count";
 	}
 
-	public boolean include(SimplePeakListRowGCGC obj)
+	public boolean include(PeakListRow obj)
 	{
-		return obj.nonNullPeakCount() > _minPeakCount;
+		return (Double)obj.getVar("nonNullPeakCount") > _minPeakCount;
 	}
 
-	public SimplePeakListRowGCGC map(SimplePeakListRowGCGC obj)
+	public PeakListRow map(PeakListRow obj)
 	{
 		if (include(obj))
 		{
@@ -62,10 +63,9 @@ public class PeakCount implements FilterFunction<SimplePeakListRowGCGC>
 		return null;
 	}
 
-	public boolean exclude(SimplePeakListRowGCGC obj)
+	public boolean exclude(PeakListRow obj)
 	{
 		return !include(obj);
 	}
-
 
 }

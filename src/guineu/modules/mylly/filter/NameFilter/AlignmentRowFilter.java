@@ -20,6 +20,7 @@
 package guineu.modules.mylly.filter.NameFilter;
 
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 
@@ -61,9 +62,9 @@ public class AlignmentRowFilter
 	{
 		SimpleGCGCDataset newAlignment = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(),input.getAligner());
 
-		for(SimplePeakListRowGCGC row: input.getAlignment()){
-			if(f.include(row)){				
-				newAlignment.addAlignmentRow(row);
+		for(PeakListRow row: input.getAlignment()){
+			if(f.include((SimplePeakListRowGCGC)row)){
+				newAlignment.AddRow(row);
 			}
 		}
 		return newAlignment;

@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package guineu.modules.mylly.filter.SimilarityFilter;
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
@@ -49,7 +50,7 @@ public class Similarity {
 		SimpleGCGCDataset datasetNoMass = filterQuantMass.actualMap(input); //Filter the quant mass alignments out
 
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
-		for (SimplePeakListRowGCGC row : datasetNoMass.getAlignment()) {
+		for (PeakListRow row : datasetNoMass.getAlignment()) {
 			SimplePeakListRowGCGC newRow = (SimplePeakListRowGCGC) row.clone();
 			double curVal = 0.0;
 			if (MAX_SIMILARITY.equals(mode)) {

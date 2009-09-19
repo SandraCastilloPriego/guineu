@@ -17,6 +17,7 @@
  */
 package guineu.modules.mylly.filter.peakCounter;
 
+import guineu.data.PeakListRow;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimplePeakListRowGCGC;
@@ -102,7 +103,7 @@ public class PeakCountFilterTask implements Task {
 				input.getParameters(),
 				input.getAligner());
 
-		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+		for (PeakListRow row : input.getAlignment()) {
 			if (filter.include(row)) {
 				filteredAlignment.addAlignmentRow((SimplePeakListRowGCGC) row.clone());
 			}

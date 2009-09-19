@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package guineu.modules.mylly.filter.pubChem;
 
 import com.csvreader.CsvReader;
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 
@@ -67,11 +68,11 @@ public class PubChem {
 
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 
-		for (SimplePeakListRowGCGC row : input.getAlignment()) {
+		for (PeakListRow row : input.getAlignment()) {
 		
-			if (this.pubchemNames.containsKey(row.getName())) {				
+			if (this.pubchemNames.containsKey(row.getVar("getName"))) {
 				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC) row.clone();
-				String[] data = this.pubchemNames.get(row.getName());
+				String[] data = this.pubchemNames.get(row.getVar("getName"));
 				clonedRow.setPubChemID(data[1]);
 				clonedRow.setCAS(data[0]);
 				clonedRow.setName(data[2]);

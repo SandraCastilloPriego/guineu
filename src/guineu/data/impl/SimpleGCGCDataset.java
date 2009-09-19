@@ -75,7 +75,7 @@ public class SimpleGCGCDataset implements Dataset{
 	public void setGCGCDataConcentration() {
 		if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
 			for (PeakListRow row : peakList) {
-				for (GCGCDatum data : row.getRow()) {
+				for (GCGCDatum data : (List<GCGCDatum>)row.getVar("getDatumArray")) {
 					if (data.getConcentration() > 0) {
 						data.setUseConcentration(true);
 					} else {
@@ -85,7 +85,7 @@ public class SimpleGCGCDataset implements Dataset{
 			}
 		} else {
 			for (PeakListRow row : peakList) {
-				for (GCGCDatum data : row.getRow()) {
+				for (GCGCDatum data : (List<GCGCDatum>)row.getVar("getDatumArray")) {
 					data.setUseConcentration(false);
 				}
 			}
@@ -110,7 +110,7 @@ public class SimpleGCGCDataset implements Dataset{
 		GCGCDatum tempArray[][] = new GCGCDatum[rowCount()][];
 		GCGCDatum returnedArray[][] = new GCGCDatum[colCount()][rowCount()];
 		for (int i = 0; i < rowCount(); i++) {
-			tempArray[i] = peakList.get(i).getRow().toArray(new GCGCDatum[0]);
+			tempArray[i] = ((List<GCGCDatum>)peakList.get(i).getVar("getDatumArray")).toArray(new GCGCDatum[0]);
 		}
 		for (int i = 0; i < rowCount(); i++) {
 			for (int j = 0; j < colCount(); j++) {
@@ -138,7 +138,7 @@ public class SimpleGCGCDataset implements Dataset{
 	public boolean containsMainPeaks() {
 		boolean contains = false;
 		for (PeakListRow row : peakList) {
-			if (!row.getDistValue().isNull()) {
+			if (!((DistValue)row.getVar("getDistValue")).isNull()) {
 				contains = true;
 				break;
 			}
@@ -147,11 +147,11 @@ public class SimpleGCGCDataset implements Dataset{
 	}
 
 	
-	public List<PeakListRow> getQuantMassAlignments() {
-		List<PeakListRow> QuantMassList = new ArrayList<PeakListRow>();
+	public List<SimplePeakListRowGCGC> getQuantMassAlignments() {
+		List<SimplePeakListRowGCGC> QuantMassList = new ArrayList<SimplePeakListRowGCGC>();
 		for (int i = 0; i < peakList.size(); i++) {
 			PeakListRow alignmentRow = peakList.get(i);
-			if (alignmentRow.getMass() > -1) {
+			if ((Double)alignmentRow.getVar("getMass") > -1) {
 				QuantMassList.add((SimplePeakListRowGCGC)alignmentRow);
 			}
 		}
@@ -165,7 +165,7 @@ public class SimpleGCGCDataset implements Dataset{
 					" colIx = " + colIx + " valid range [0," + colCount() +
 					"]");
 		}
-		return peakList.get(rowIx).getRow().get(colIx);
+		return ((List<GCGCDatum>)peakList.get(rowIx).getVar("getDatumArray")).get(colIx);
 	}
 
 	public int colCount() {

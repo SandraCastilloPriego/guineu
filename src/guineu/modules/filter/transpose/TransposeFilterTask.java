@@ -92,7 +92,7 @@ public class TransposeFilterTask implements Task {
 
                 for (PeakListRow row : newDataset.getRows()) {
 
-                    row.setPeak(row2.getName(), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
+                    row.setPeak((String)row2.getVar("getName"), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
                 }
             }
             newDataset.setType(DatasetType.OTHER);

@@ -22,6 +22,7 @@ package guineu.modules.mylly.filter.NameFilter;
 
 
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimpleGCGCDataset;
 import java.util.ArrayList;
@@ -66,9 +67,9 @@ public class NamePostFilter {
 		
 		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 		
-		for (SimplePeakListRowGCGC row : input.getAlignment())
+		for (PeakListRow row : input.getAlignment())
 		{
-			if(curNameFilter.include(row.getName())){
+			if(curNameFilter.include((String)row.getVar("getName"))){
 				als.add((SimplePeakListRowGCGC)row.clone());
 			}
 			

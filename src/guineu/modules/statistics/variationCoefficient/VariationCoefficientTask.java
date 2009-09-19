@@ -111,7 +111,7 @@ public class VariationCoefficientTask implements Task {
 	private int getNumberIdentMol(Dataset dataset) {
 		int cont = 0;
 		for (PeakListRow row : dataset.getRows()) {
-			if (!row.getName().toLowerCase().matches("unknown")) {
+			if (!((String)row.getVar("getName")).toLowerCase().matches("unknown")) {
 				cont++;
 			}
 		}

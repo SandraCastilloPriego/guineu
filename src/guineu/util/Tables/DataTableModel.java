@@ -18,7 +18,6 @@
 package guineu.util.Tables;
 
 import guineu.data.impl.DatasetType;
-import guineu.util.Tables.impl.TableComparator.SortingDirection;
 import javax.swing.table.TableModel;
 
 /**
@@ -26,15 +25,7 @@ import javax.swing.table.TableModel;
  * @author scsandra
  */
 public interface DataTableModel extends TableModel {
-
-    public SortingDirection getSortDirection();
-
-    public int getSortCol();
-
-    public void setSortDirection(SortingDirection direction);
-
-    public void setSortCol(int column);  
-
+   
     public int getFixColumns();
 
     public void removeRows();
