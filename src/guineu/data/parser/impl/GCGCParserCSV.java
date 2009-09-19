@@ -116,8 +116,8 @@ public class GCGCParserCSV implements Parser {
                 } else if (header[i].matches(RegExp.PUBCHEM.getREgExp())) {
                     metabolite.setPubChemID(sdata[i]);
                 } else if (header[i].matches(RegExp.SPECTRUM.getREgExp())) {
-                    metabolite.setSpectrum(sdata[i]);
-					metabolite.setSpectra(this.getSpectrum(sdata[i]));
+                    metabolite.setSpectrumString(sdata[i]);
+					metabolite.setSpectrum(this.getSpectrum(sdata[i]));
                 } else {
                     try {
                         metabolite.setPeak(header[i], Double.valueOf(sdata[i]));

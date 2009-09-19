@@ -125,8 +125,8 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 				} else if (head.elementAt(e).matches(RegExp.SIMSTD.getREgExp())) {
 					metabolite.setSimilaritySTDDev(this.setDateInToStruct(row, e));
 				} else if (head.elementAt(e).matches(RegExp.SPECTRUM.getREgExp())) {
-					metabolite.setSpectrum(this.setStringDateInToStruct(row, e));
-					metabolite.setSpectra(this.getSpectrum(this.setStringDateInToStruct(row, e)));
+					metabolite.setSpectrumString(this.setStringDateInToStruct(row, e));
+					metabolite.setSpectrum(this.getSpectrum(this.setStringDateInToStruct(row, e)));
 				} else {					
 					try {
 						Double concentration = new Double(this.setDateInToStruct(row, e));
