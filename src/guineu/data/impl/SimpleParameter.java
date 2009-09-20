@@ -15,8 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.data.impl;
 
 import guineu.data.Parameter;
@@ -24,15 +22,14 @@ import guineu.data.ParameterType;
 import guineu.util.Range;
 import java.text.NumberFormat;
 
-
 /**
  * Simple Parameter implementation
  */
 public class SimpleParameter implements Parameter {
 
     private ParameterType type;
-    private String name, description, units;
-    private Object defaultValue, minValue, maxValue, possibleValues[];
+    private String name,  description,  units;
+    private Object defaultValue,  minValue,  maxValue,  possibleValues[];
     private NumberFormat defaultNumberFormat;
 
     public SimpleParameter(ParameterType type, String name, String description) {
@@ -43,7 +40,7 @@ public class SimpleParameter implements Parameter {
             String units) {
         this(type, name, description, units, null, null, null, null, null);
     }
- 
+
     public SimpleParameter(ParameterType type, String name, String description,
             String units, NumberFormat format) {
         this(type, name, description, units, null, null, null, null, format);
@@ -112,59 +109,85 @@ public class SimpleParameter implements Parameter {
         this.possibleValues = possibleValues;
         this.defaultNumberFormat = defaultNumberFormat;
 
-        if ((possibleValues != null) && (possibleValues.length == 0))
+        if ((possibleValues != null) && (possibleValues.length == 0)) {
             throw new IllegalArgumentException(
                     "Possible values array must not be 0 size");
-
-        switch (type) {
-        case BOOLEAN:
-            if ((defaultValue != null) && (!(defaultValue instanceof Boolean)))
-                throw new IllegalArgumentException("Invalid default value type");
-            break;
-        case INTEGER:
-            if ((defaultValue != null) && (!(defaultValue instanceof Integer)))
-                throw new IllegalArgumentException("Invalid default value type");
-            if ((minValue != null) && (!(minValue instanceof Integer)))
-                throw new IllegalArgumentException("Invalid min value type");
-            if ((maxValue != null) && (!(maxValue instanceof Integer)))
-                throw new IllegalArgumentException("Invalid max value type");
-            if (possibleValues != null) {
-                for (Object posVal : possibleValues) {
-                    if (!(posVal instanceof Integer))
-                        throw new IllegalArgumentException(
-                                "Invalid possible values type");
-                }
-            }
-            break;
-        case DOUBLE:
-            if ((defaultValue != null) && (!(defaultValue instanceof Number)))
-                throw new IllegalArgumentException("Invalid default value type");
-            if ((minValue != null) && (!(minValue instanceof Number)))
-                throw new IllegalArgumentException("Invalid min value type");
-            if ((maxValue != null) && (!(maxValue instanceof Number)))
-                throw new IllegalArgumentException("Invalid max value type");
-            if (possibleValues != null) {
-                for (Object posVal : possibleValues) {
-                    if (!(posVal instanceof Number))
-                        throw new IllegalArgumentException(
-                                "Invalid possible values type");
-                }
-            }
-            break;
-        case RANGE:
-            if ((defaultValue != null) && (!(defaultValue instanceof Range)))
-                throw new IllegalArgumentException("Invalid default value type");
-            if ((minValue != null) && (!(minValue instanceof Number)))
-                throw new IllegalArgumentException("Invalid min value type");
-            if ((maxValue != null) && (!(maxValue instanceof Number)))
-                throw new IllegalArgumentException("Invalid max value type");
-            if (possibleValues != null) {
-                throw new IllegalArgumentException(
-                        "Range parameters do not support selection from possible values");
-            }
-            break;
         }
 
+        switch (type) {
+            case BOOLEAN:
+                if ((defaultValue != null) && (!(defaultValue instanceof Boolean))) {
+                    throw new IllegalArgumentException("Invalid default value type");
+                }
+                break;
+            case INTEGER:
+                if ((defaultValue != null) && (!(defaultValue instanceof Integer))) {
+                    throw new IllegalArgumentException("Invalid default value type");
+                }
+                if ((minValue != null) && (!(minValue instanceof Integer))) {
+                    throw new IllegalArgumentException("Invalid min value type");
+                }
+                if ((maxValue != null) && (!(maxValue instanceof Integer))) {
+                    throw new IllegalArgumentException("Invalid max value type");
+                }
+                if (possibleValues != null) {
+                    for (Object posVal : possibleValues) {
+                        if (!(posVal instanceof Integer)) {
+                            throw new IllegalArgumentException(
+                                    "Invalid possible values type");
+                        }
+                    }
+                }
+                break;
+            case DOUBLE:
+                if ((defaultValue != null) && (!(defaultValue instanceof Number))) {
+                    throw new IllegalArgumentException("Invalid default value type");
+                }
+                if ((minValue != null) && (!(minValue instanceof Number))) {
+                    throw new IllegalArgumentException("Invalid min value type");
+                }
+                if ((maxValue != null) && (!(maxValue instanceof Number))) {
+                    throw new IllegalArgumentException("Invalid max value type");
+                }
+                if (possibleValues != null) {
+                    for (Object posVal : possibleValues) {
+                        if (!(posVal instanceof Number)) {
+                            throw new IllegalArgumentException(
+                                    "Invalid possible values type");
+                        }
+                    }
+                }
+                break;
+            case RANGE:
+                if ((defaultValue != null) && (!(defaultValue instanceof Range))) {
+                    throw new IllegalArgumentException("Invalid default value type");
+                }
+                if ((minValue != null) && (!(minValue instanceof Number))) {
+                    throw new IllegalArgumentException("Invalid min value type");
+                }
+                if ((maxValue != null) && (!(maxValue instanceof Number))) {
+                    throw new IllegalArgumentException("Invalid max value type");
+                }
+                if (possibleValues != null) {
+                    throw new IllegalArgumentException(
+                            "Range parameters do not support selection from possible values");
+                }
+                break;
+
+            case ORDERED_LIST:
+                if (possibleValues == null) {
+                    throw new IllegalArgumentException(
+                            "Missing possible values for ordered list");
+                }
+                break;
+
+            case FILE_NAME:
+                if ((defaultValue != null) && (!(defaultValue instanceof String))) {
+                    throw new IllegalArgumentException("Invalid default value type");
+                }
+                break;
+
+        }
     }
 
     /**
@@ -206,6 +229,9 @@ public class SimpleParameter implements Parameter {
      * @see net.sf.Guineu.data.Parameter#getDefaultValue()
      */
     public Object getDefaultValue() {
+        if ((type == ParameterType.MULTIPLE_SELECTION)
+                || (type == ParameterType.ORDERED_LIST))
+            return possibleValues;
         return defaultValue;
     }
 
@@ -233,5 +259,4 @@ public class SimpleParameter implements Parameter {
     public NumberFormat getNumberFormat() {
         return defaultNumberFormat;
     }
-
 }

@@ -106,9 +106,7 @@ public class GuineuClient extends GuineuCore implements Runnable {
 			logger.finer("Initializing core classes");
 
 			taskController.initModule();
-			//ioController.initModule();
 			desktop.initModule();
-			//projectManager.initModule();
 
 			logger.finer("Loading modules");
 
@@ -127,7 +125,6 @@ public class GuineuClient extends GuineuCore implements Runnable {
 
 			// load module configuration
 			loadConfiguration(CONFIG_FILE);
-//			GuineuCore.getCurrentProject().addProjectListener(desktop);
 
 
 

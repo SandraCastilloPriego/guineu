@@ -65,10 +65,12 @@ public class ItemSelector extends JPanel implements ActionListener,
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
 
+
 	/**
 	 * Constructor
 	 */
 	public ItemSelector(Desktop desktop) {
+
 
 		// Create panel for raw data objects
 		JPanel rawDataPanel = new JPanel();
