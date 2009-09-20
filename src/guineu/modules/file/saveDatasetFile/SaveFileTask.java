@@ -18,13 +18,10 @@
 package guineu.modules.file.saveDatasetFile;
 
 import guineu.data.Dataset;
-import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.InOracle;
 import guineu.taskcontrol.Task;
-import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 
 /**
  *
@@ -37,21 +34,14 @@ public class SaveFileTask implements Task {
 	private String errorMessage;
 	private String path;
 	private InDataBase db;
-	private SaveFileParameters parameters;
+	private SaveDatasetParameters parameters;
 	private SimpleParameterSet OptionParameters;
 
-	public SaveFileTask(Dataset dataset, SaveFileParameters parameters, String path) {
+	public SaveFileTask(Dataset dataset, SaveDatasetParameters parameters, String path) {
 		this.dataset = dataset;
 		this.path = path;
 		this.parameters = parameters;
-		db = new InOracle();
-		if (dataset.getType() == DatasetType.LCMS) {
-			this.OptionParameters = new SaveOptionsLCMSParameters();
-		} else if (dataset.getType() == DatasetType.GCGCTOF) {
-			this.OptionParameters = new SaveOptionsGCGCParameters();
-		} else {
-			this.OptionParameters = new SaveOptionsLCMSParameters();
-		}
+		db = new InOracle();		
 	}
 
 	public String getTaskDescription() {
@@ -76,38 +66,8 @@ public class SaveFileTask implements Task {
 
 	public void run() {
 		try {
-			ExitCode exitCode = this.setupParameters();
-			if (exitCode == ExitCode.OK) {
-				saveFile();
-			} else {
-				status = TaskStatus.FINISHED;
-				return;
-			}
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
-
-	public ExitCode setupParameters() {
-		try {
-			if (dataset.getType() == DatasetType.LCMS || dataset.getType() == DatasetType.GCGCTOF) {
-				ParameterSetupDialog dialog = new ParameterSetupDialog("Fields", OptionParameters);
-				dialog.setVisible(true);
-				return dialog.getExitCode();
-			} else {
-				return ExitCode.OK;
-			}
-		} catch (Exception exception) {
-			return ExitCode.CANCEL;
-		}
-	}
-
-	public void saveFile() {
-		try {
 			status = TaskStatus.PROCESSING;
-			if (parameters.getParameterValue(SaveFileParameters.type).toString().matches(".*Excel.*")) {
+			if (parameters.getParameterValue(SaveDatasetParameters.type).toString().matches(".*Excel.*")) {
 				db.WriteExcelFile(dataset, path, OptionParameters);
 			} else {
 				db.WriteCommaSeparatedFile(dataset, path, OptionParameters);
@@ -117,4 +77,5 @@ public class SaveFileTask implements Task {
 			status = TaskStatus.ERROR;
 		}
 	}
+
 }

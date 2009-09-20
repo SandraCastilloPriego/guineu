@@ -19,37 +19,48 @@ package guineu.modules.file.saveDatasetFile;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
+import guineu.data.datamodels.GCGCColumnName;
 import guineu.desktop.Desktop;
-import guineu.desktop.impl.DesktopParameters;
-import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskGroup;
 import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import guineu.util.dialogs.ParameterSetupDialog;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class SaveFile implements GuineuModule, TaskListener {
+public class SaveFile implements GuineuModule, TaskListener  {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private Dataset[] Datasets;
-    private SaveFileParameters parameters;
+    private Dataset[] Datasets;  
+    private SaveDatasetParameters parameters;
 
     public SaveFile(Dataset[] Datasets) {
         this.Datasets = Datasets;
     }
 
-    public void initModule() {
-        parameters = new SaveFileParameters();
-        setupParameters(parameters);
+    public void initModule() {      
+        parameters = new SaveDatasetParameters();
+        System.out.println(this.Datasets[0].getClass().toString());
+        if(this.Datasets[0].getClass().toString().contains("SimpleGCGCDataset")){
+            parameters.setMultipleSelection(SaveDatasetParameters.exportItemMultipleSelection, GCGCColumnName.values());
+        }else if(!this.Datasets[0].getClass().toString().contains("SimpleLCMSDataset")){
+            Object[] object = new Object[1];
+            object[0] = "No information";
+            parameters.setMultipleSelection(SaveDatasetParameters.exportItemMultipleSelection, object);
+        }
+
+         ExitCode exitCode = setupParameters();
+        if (exitCode != ExitCode.OK) {
+            return;
+        }
+        runModule(null);
     }
 
     public void taskStarted(Task task) {
@@ -70,21 +81,15 @@ public class SaveFile implements GuineuModule, TaskListener {
         }
     }
 
-    public void setupParameters(ParameterSet currentParameters) {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastSavePath();
-        final DatasetSaveDialog dialog = new DatasetSaveDialog(
-                (SaveFileParameters) currentParameters, lastPath);
-        dialog.setVisible(true);
-        dialog.addWindowListener(new WindowAdapter() {
+    public ExitCode setupParameters() {
+         try {
+            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
+            dialog.setVisible(true);
 
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (dialog.getExitCode() == ExitCode.OK) {
-                    runModule(null);
-                }
-            }
-        });
+            return dialog.getExitCode();
+        } catch (Exception exception) {
+            return ExitCode.CANCEL;
+        }
     }
 
     public ParameterSet getParameterSet() {
@@ -92,7 +97,7 @@ public class SaveFile implements GuineuModule, TaskListener {
     }
 
     public void setParameters(ParameterSet parameterValues) {
-        parameters = (SaveFileParameters) parameterValues;
+        parameters = (SaveDatasetParameters) parameterValues;
     }
 
     @Override
@@ -103,7 +108,7 @@ public class SaveFile implements GuineuModule, TaskListener {
     public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
         // prepare a new group of tasks
-        String path = (String) parameters.getParameterValue(SaveFileParameters.path);
+        String path = (String) parameters.getParameterValue(SaveDatasetParameters.filename);
         Task tasks[] = new SaveFileTask[Datasets.length];
         for (int i = 0; i < Datasets.length; i++) {
             String newpath = path;
