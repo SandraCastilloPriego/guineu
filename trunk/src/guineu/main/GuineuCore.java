@@ -245,29 +245,10 @@ public abstract class GuineuCore {
 
 	}
 
-	/*public static void setProject(GuineuProject myProject) {
-		currentProject = myProject;
-	}*/
-
+	
 	public static void setDesktop(MainWindow mainWindow) {
 		desktop = mainWindow;
 	}
 
-	// Number formatting functions
-	/*public static NumberFormatter getIntensityFormat() {
-		return ((MainWindow) desktop).getIntensityFormat();
-	}
-
-	public static NumberFormatter getMZFormat() {
-		return ((MainWindow) desktop).getMZFormat();
-	}
-
-	public static NumberFormatter getRTFormat() {
-		return ((MainWindow) desktop).getRTFormat();
-	}*/
-
-      /* public static SimpleDataset createNewFile(Sim) throws IOException {
-		return new RawDataFileImpl(name);
-       }	*/
-
+	
 }

@@ -17,30 +17,40 @@
  */
 package guineu.data.datamodels;
 
-
 public enum LCMSColumnName {
 
-	SELECTION("Selection"),
-	ID("Id"),
-	MZ("m/z"),
-	RT("Retention time"),
-	NAME("Name"),
-	ALLNAMES("All names"),
-	PUBCHEM("PubChem ID"),
-	VTT("VTT ID"),
-	ALLVTT("All VTT IDs"),
-	Class("Lipid class"),
-	NFOUND("Num found"),
-	STANDARD("Standard"),
-	FA("FA Composition"),
-	ALIGNMENT("Alignment");
-	private final String columnName;
+    SELECTION("Selection", true),
+    ID("Id", true),
+    MZ("m/z", true),
+    RT("Retention time", true),
+    NAME("Name", true),
+    ALLNAMES("All names", true),
+    PUBCHEM("PubChem ID", false),
+    VTT("VTT ID", false),
+    ALLVTT("All VTT IDs", false),
+    LIPIDCLASS("Lipid class", false),
+    NFOUND("Num found", true),
+    STANDARD("Standard", true),
+    FA("FA Composition", false),
+    ALIGNMENT("Alignment", false);
+    
+    private final String columnName;
+    private final boolean common;
 
-	LCMSColumnName(String columnName) {
-		this.columnName = columnName;
-	}
+    LCMSColumnName(String columnName, boolean common) {
+        this.columnName = columnName;
+        this.common = common;
+    }
 
-	public String getColumnName() {
-		return this.columnName;
-	}
+    public String getColumnName() {
+        return this.columnName;
+    }
+
+    public boolean isCommon() {
+        return this.common;
+    }
+
+    public String toString() {
+        return this.columnName;
+    }
 }

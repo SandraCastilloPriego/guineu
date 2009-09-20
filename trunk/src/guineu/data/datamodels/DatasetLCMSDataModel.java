@@ -22,18 +22,30 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
+import guineu.desktop.impl.DesktopParameters;
+import guineu.main.GuineuCore;
+import guineu.modules.configuration.tables.LCMS.LCMSColumnsViewParameters;
 import guineu.util.Tables.DataTableModel;
 import javax.swing.table.AbstractTableModel;
 
 public class DatasetLCMSDataModel extends AbstractTableModel implements DataTableModel {
 
-    private SimpleLCMSDataset dataset;   
+    private SimpleLCMSDataset dataset;
     private int fixNumberColumns = 0;
+    private LCMSColumnsViewParameters LCMSViewParameters;
+    private Object[] columns;
 
     public DatasetLCMSDataModel(Dataset dataset) {
         this.dataset = (SimpleLCMSDataset) dataset;
-        fixNumberColumns = LCMSColumnName.values().length;
+        //fixNumberColumns = LCMSColumnName.values().length;
+        this.setParameters();
         this.writeData();
+    }
+
+    public void setParameters(){
+        this.LCMSViewParameters = (LCMSColumnsViewParameters) ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getViewLCMSParameters();
+        this.columns = this.LCMSViewParameters.getMultipleSelection(LCMSColumnsViewParameters.columnSelection);
+        fixNumberColumns = columns.length;
     }
 
     public void writeData() {
@@ -71,39 +83,40 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         try {
             SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
 
-            //GCGC-Tof files
-            switch (column) {
-                case 0:
+            String columnName = (String) this.columns[column];
+
+            switch (LCMSColumnName.valueOf(columnName)) {
+                case SELECTION:
                     return peakRow.isSelected();
-                case 1:
+                case ID:
                     return peakRow.getID();
-                case 2:
+                case MZ:
                     return peakRow.getMZ();
-                case 3:
+                case RT:
                     return peakRow.getRT();
-                case 4:
+                case NAME:
                     return peakRow.getName();
-                case 5:
+                case ALLNAMES:
                     return peakRow.getAllNames();
-                case 6:
+                case PUBCHEM:
                     return peakRow.getPubChemID();
-                case 7:
+                case VTT:
                     return peakRow.getVTTID();
-                case 8:
+                case ALLVTT:
                     return peakRow.getAllVTTID();
-                case 9:
+                case LIPIDCLASS:
                     return peakRow.getMolClass();
-                case 10:
+                case NFOUND:
                     return peakRow.getNumFound();
-                case 11:
+                case STANDARD:
                     if (peakRow.getStandard() == 1) {
                         return new Boolean(true);
                     } else {
                         return new Boolean(false);
                     }
-                case 12:
+                case FA:
                     return peakRow.getFAComposition();
-                case 13:
+                case ALIGNMENT:
                     return peakRow.getNumberAlignment();
             }
             return peakRow.getPeak(column - this.fixNumberColumns, this.dataset.getNameExperiments());
@@ -115,11 +128,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
     @Override
     public String getColumnName(int columnIndex) {
         if (columnIndex < this.fixNumberColumns) {
-            if (this.dataset.getType() == DatasetType.LCMS) {
-                return LCMSColumnName.values()[columnIndex].getColumnName();
-            } else {
-                return this.dataset.getNameExperiments().elementAt(columnIndex - this.fixNumberColumns);
-            }
+            return (String) this.columns[columnIndex];
         } else {
             return this.dataset.getNameExperiments().elementAt(columnIndex - this.fixNumberColumns);
         }
@@ -176,52 +185,53 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         }
 
         SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
+        String columnName = (String) this.columns[column];
 
-        switch (column) {
-            case 0:
+        switch (LCMSColumnName.valueOf(columnName)) {
+            case SELECTION:
                 peakRow.setSelectionMode((Boolean) aValue);
                 break;
-            case 1:
+            case ID:
                 peakRow.setID(intValue);
                 break;
-            case 2:
+            case MZ:
                 peakRow.setMZ(doubleValue);
                 break;
-            case 3:
+            case RT:
                 peakRow.setRT(doubleValue);
                 break;
-            case 4:
+            case NAME:
                 peakRow.setName((String) aValue);
                 break;
-            case 5:
+            case ALLNAMES:
                 peakRow.setAllNames((String) aValue);
                 break;
-            case 6:
+            case PUBCHEM:
                 peakRow.setPubChemID((String) aValue);
                 break;
-            case 7:
+            case VTT:
                 peakRow.setVTTD((String) aValue);
                 break;
-            case 8:
+            case ALLVTT:
                 peakRow.setAllVTTD((String) aValue);
                 break;
-            case 9:
+            case LIPIDCLASS:
                 peakRow.setLipidClass((String) aValue);
                 break;
-            case 10:
+            case NFOUND:
                 peakRow.setNumFound(doubleValue);
                 break;
-            case 11:
+            case STANDARD:
                 if ((Boolean) aValue) {
                     peakRow.setStandard(1);
                 } else {
                     peakRow.setStandard(0);
                 }
                 break;
-            case 12:
+            case FA:
                 peakRow.setFAComposition((String) aValue);
                 break;
-            case 13:
+            case ALIGNMENT:
                 peakRow.setNumberAligment(intValue);
                 break;
             default:
@@ -236,7 +246,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
     public boolean isCellEditable(int row, int column) {
         return true;
     }
-    
+
     public DatasetType getType() {
         return this.dataset.getType();
     }
