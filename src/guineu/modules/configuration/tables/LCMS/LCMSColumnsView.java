@@ -46,86 +46,84 @@ import javax.swing.table.TableModel;
  */
 public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private SimpleParameterSet parameters;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private Desktop desktop;
+	private SimpleParameterSet parameters;
 
-    public void initModule() {
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "LCMS Table View..",
-                "TODO write description", KeyEvent.VK_L, this, null);
+	public void initModule() {
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuItem(GuineuMenu.CONFIGURATION, "LCMS Table View..",
+				"TODO write description", KeyEvent.VK_L, this, null);
 		parameters = new LCMSColumnsViewParameters();
 
-    }
+	}
 
-    public void taskStarted(Task task) {
-        logger.info("Running LCMS Table View");
-    }
+	public void taskStarted(Task task) {
+		logger.info("Running LCMS Table View");
+	}
 
-    public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
-            logger.info("Finished LCMS Table View ");
-        }
+	public void taskFinished(Task task) {
+		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+			logger.info("Finished LCMS Table View ");
+		}
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-            String msg = "Error while LCMS Table View  .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+			String msg = "Error while LCMS Table View  .. ";
+			logger.severe(msg);
+			desktop.displayErrorMessage(msg);
 
-        }
-    }
+		}
+	}
 
-    public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {
 
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
-        }
-       ((DesktopParameters) desktop.getParameterSet()).setViewLCMSParameters((LCMSColumnsViewParameters) parameters);
-        runModule(null);
-    }
+		ExitCode exitCode = setupParameters();
+		if (exitCode != ExitCode.OK) {
+			return;
+		}
+		((DesktopParameters) desktop.getParameterSet()).setViewLCMSParameters((LCMSColumnsViewParameters) parameters);
+		runModule(null);
+	}
 
-    public ExitCode setupParameters() {
-        try {         
-            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
-            dialog.setVisible(true);
+	public ExitCode setupParameters() {
+		try {
+			ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
+			dialog.setVisible(true);
 
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
-    }
+			return dialog.getExitCode();
+		} catch (Exception exception) {
+			return ExitCode.CANCEL;
+		}
+	}
 
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }
+	public ParameterSet getParameterSet() {
+		return parameters;
+	}
 
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (LCMSColumnsViewParameters) parameterValues;
-    }
+	public void setParameters(ParameterSet parameterValues) {
+		parameters = (LCMSColumnsViewParameters) parameterValues;
+	}
 
-    public String toString() {
-        return "LCMS Table View";
-    }
+	public String toString() {
+		return "LCMS Table View";
+	}
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
-
-		/* if(selectedTable == null || selectedTable != ((DataInternalFrame)desktop.getSelectedFrame()).getTable()){
-            selectedTable = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-        }*/
-		
-       // JInternalFrame[] frames = desktop.getInternalFrames();
-       // for (int i = 0; i < frames.length; i++) {
-            JTable table = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
-            TableModel model = table.getModel();
-            if(model.getClass().toString().contains("DatasetLCMSDataModel")){
-                ((DatasetLCMSDataModel)model).setParameters();
-            }
-			table.setModel(model);
-			table.createDefaultColumnsFromModel();
-			table.revalidate();
-       // }
-        return null;
-    }
+	public TaskGroup runModule(TaskGroupListener taskGroupListener) {		
+		JInternalFrame[] frames = desktop.getInternalFrames();
+		for (int i = 0; i < frames.length; i++) {
+			try {
+				JTable table = ((DataInternalFrame) frames[i]).getTable();
+				TableModel model = table.getModel();
+				if (model.getClass().toString().contains("DatasetLCMSDataModel")) {
+					((DatasetLCMSDataModel) model).setParameters();
+				}
+				table.setModel(model);
+				table.createDefaultColumnsFromModel();
+				table.revalidate();
+			} catch (Exception e) {
+			}
+		}
+		return null;
+	}
 }
