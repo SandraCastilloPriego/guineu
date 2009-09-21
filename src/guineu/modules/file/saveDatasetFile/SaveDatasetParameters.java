@@ -20,6 +20,7 @@ package guineu.modules.file.saveDatasetFile;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
+import guineu.data.datamodels.GCGCColumnName;
 import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
@@ -38,6 +39,14 @@ public class SaveDatasetParameters extends SimpleParameterSet {
     public static final Parameter exportItemMultipleSelection = new SimpleParameter(
             ParameterType.MULTIPLE_SELECTION, "Export elements",
             "Multiple selection of row's elements to export", null, LCMSColumnName.values());
+
+    public static final Parameter LCMS = new SimpleParameter(
+            ParameterType.MULTIPLE_SELECTION, "Export elements",
+            "Multiple selection of row's elements to export", null, LCMSColumnName.values());
+
+    public static final Parameter GCGC = new SimpleParameter(
+            ParameterType.MULTIPLE_SELECTION, "Export elements",
+            "Multiple selection of row's elements to export", null, GCGCColumnName.values());
     public static final Parameter type = new SimpleParameter(
             ParameterType.STRING, "type",
             "Type of file", null, null, objects, null);
