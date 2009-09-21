@@ -20,6 +20,7 @@ package guineu.desktop.impl;
 import guineu.data.StorableParameterSet;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.main.GuineuCore;
+import guineu.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsViewParameters;
 import guineu.util.NumberFormatter;
 import guineu.util.NumberFormatter.FormatterType;
@@ -61,7 +62,7 @@ public class DesktopParameters implements StorableParameterSet,
     private String lastOpenProjectPath = "";
     private String lastSavePath = "";
     private String lastMyllyPath = " ";
-    private SimpleParameterSet LCMSViewParameters = null;
+    private SimpleParameterSet LCMSViewParameters, GCGCViewParameters;
 
     DesktopParameters() {
         this(new NumberFormatter(FormatterType.NUMBER, "0.000"),
@@ -76,6 +77,7 @@ public class DesktopParameters implements StorableParameterSet,
         this.intensityFormat = intensityFormat;
 
         LCMSViewParameters = new LCMSColumnsViewParameters();
+		GCGCViewParameters = new GCGCColumnsViewParameters();
 
         MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
         mainWindow.addComponentListener(this);
@@ -88,6 +90,14 @@ public class DesktopParameters implements StorableParameterSet,
 
     public void setViewLCMSParameters(LCMSColumnsViewParameters LCMSViewParameters) {
         this.LCMSViewParameters = LCMSViewParameters;
+    }
+
+	 public SimpleParameterSet getViewGCGCParameters() {
+        return GCGCViewParameters;
+    }
+
+    public void setViewGCGCParameters(GCGCColumnsViewParameters GCGCViewParameters) {
+        this.GCGCViewParameters = GCGCViewParameters;
     }
 
     /**
@@ -265,6 +275,7 @@ public class DesktopParameters implements StorableParameterSet,
                 lastMyllyPath);
 
         LCMSViewParameters.exportValuesToXML(element);
+		GCGCViewParameters.exportValuesToXML(element);
 
     }
 
@@ -317,6 +328,7 @@ public class DesktopParameters implements StorableParameterSet,
         lastMyllyPath = element.elementText(LAST_MYLLY_PATH_ELEMENT_NAME);
 
         LCMSViewParameters.importValuesFromXML(element);
+		GCGCViewParameters.importValuesFromXML(element);
     }
 
     public DesktopParameters clone() {

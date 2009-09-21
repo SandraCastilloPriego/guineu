@@ -15,37 +15,56 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data.datamodels;
 
-
 public enum GCGCColumnName {
-    SELECTION ("Selection"),
-    ID ("ID"),
-    RT1 ("RT1"),
-    RT2 ("RT2"),
-    RTI ("RTI"),
-    NFOUND ("N Found"),
-	CAS ("Cas Number"),
-    MAXSIM ("Max similarity"),
-    MEANSIM ("Mean similarity"),
-    SIMSTD ("Similarity std dev"),
-    NAME ("Metabolite name"),
-    ALLNAMES ("Metabolite all names"),
-	CLASS ("Class"),
-    PUBCHEM ("Pubchem ID"),
-    MASS ("Mass"),
-    DIFFERENCE ("Difference"),
-    SPECTRUM ("Spectrum");
 
-    private final String columnName;
+	SELECTION("Selection", true, "isSelected", "setSelectionMode"),
+	ID("ID", true, "getID", "setID"),
+	RT1("RT1", true, "getRT1", "setRT1"),
+	RT2("RT2", true, "getRT2", "setRT2"),
+	RTI("RTI", true, "getRTI", "setRTI"),
+	NFOUND("N Found", true, "getNumFound", "setNumFound"),
+	CAS("Cas Number", true, "getCAS", "setCAS"),
+	MAXSIM("Max similarity", true, "getMaxSimilarity", "setMaxSimilarity"),
+	MEANSIM("Mean similarity", true, "getMeanSimilarity", "setMeanSimilarity"),
+	SIMSTD("Similarity std dev", true, "getSimilaritySTDDev", "setSimilaritySTDDev"),
+	NAME("Metabolite name", true, "getName", "setName"),
+	ALLNAMES("Metabolite all names", true, "getAllNames", "setAllNames"),
+	CLASS("Class", true, "getMolClass", "setMolClass"),
+	PUBCHEM("Pubchem ID", true, "getPubChemID", "setPubChemID"),
+	MASS("Mass", true, "getMass", "setMass"),
+	DIFFERENCE("Difference", true, "getDifference", "setDifference"),
+	SPECTRUM("Spectrum", true, "getSpectrumString", "setSpectrumString");
+	private final String columnName;
+	private final String getFunctionName,  setFunctionName;
+	private final boolean common;
 
-    GCGCColumnName(String columnName){
-        this.columnName = columnName;
-    }
+	GCGCColumnName(String columnName, boolean common, String getFunctionName, String setFunctionName) {
+		this.columnName = columnName;
+		this.getFunctionName = getFunctionName;
+		this.setFunctionName = setFunctionName;
+		this.common = common;
+	}
 
-    public String getColumnName(){
-        return this.columnName;
-    }
+	public String getColumnName() {
+		return this.columnName;
+	}
+
+	public String getGetFunctionName() {
+		return this.getFunctionName;
+	}
+
+	public String getSetFunctionName() {
+		return this.setFunctionName;
+	}
+
+	public boolean isCommon() {
+		return this.common;
+	}
+
+	public String toString() {
+		return this.columnName;
+	}
 }
 
