@@ -26,6 +26,7 @@ import guineu.data.impl.SimpleParameterSet;
 
 public class SaveDatasetParameters extends SimpleParameterSet {
 
+	static Object[] objects = {"Excel", "csv"};
     public static final Parameter filename = new SimpleParameter(
             ParameterType.FILE_NAME,
             "Filename",
@@ -39,9 +40,9 @@ public class SaveDatasetParameters extends SimpleParameterSet {
             "Multiple selection of row's elements to export", null, LCMSColumnName.values());
     public static final Parameter type = new SimpleParameter(
             ParameterType.STRING, "type",
-            "Type of file", null, "Type", null);
+            "Type of file", null, null, objects, null);
 
     public SaveDatasetParameters() {
-        super(new Parameter[]{filename, exportItemMultipleSelection});
+        super(new Parameter[]{filename, type, exportItemMultipleSelection});
     }
 }

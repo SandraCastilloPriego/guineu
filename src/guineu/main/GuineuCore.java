@@ -102,7 +102,7 @@ public abstract class GuineuCore {
 	 * 
 	 */
 	public static void exitGuineu() {
-
+		saveConfiguration(CONFIG_FILE);
 		// If we have GUI, ask if use really wants to quit
 		if (desktop != null) {
 			int selectedValue = JOptionPane.showInternalConfirmDialog(desktop

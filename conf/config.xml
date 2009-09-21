@@ -11,6 +11,8 @@
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
     <module class="guineu.modules.file.exit.ExitProgram"/>  
+    <!-- <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->
+    <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"/>
     <module class="guineu.modules.filter.Alignment.AlignmentDatasets"/>  
     <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  
     <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
@@ -85,5 +87,6 @@
     <lastdirectory></lastdirectory>
     <lastProjectDirectory>/home/bicha/Desktop/prueba.csv</lastProjectDirectory>
     <lastSaveDirectory>D:\data\xxczxczxcz</lastSaveDirectory>
+    <lastMyllyDirectory>D:\data\xxczxczxcz</lastMyllyDirectory>
   </desktop> 
 </configuration>

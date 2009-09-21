@@ -77,7 +77,6 @@ public class DesktopParameters implements StorableParameterSet,
 
         LCMSViewParameters = new LCMSColumnsViewParameters();
 
-
         MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
         mainWindow.addComponentListener(this);
 
