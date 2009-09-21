@@ -130,106 +130,12 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 
 	@Override
 	public void setValueAt(Object aValue, int row, int column) {
-
-		/*double doubleValue = 0;
-		int intValue = 0;
-		if (aValue == null) {
-		aValue = "0";
-		}*/
-		/*if (aValue.getClass().toString().matches(".*String.*")) {
-		if (aValue.toString().equals("NA")) {
-		doubleValue = 0;
-		intValue = 0;
-		aValue = "";
-		} else {
-		try {
-		doubleValue = Double.parseDouble((String) aValue);
-		} catch (Exception e) {
-		try {
-		doubleValue = (Double) this.getValueAt(row, column);
-		} catch (Exception ee) {
-		}
-		}
-		try {
-		doubleValue = Double.parseDouble((String) aValue);
-		intValue = (int) doubleValue;
-		} catch (Exception e) {
-		try {
-		intValue = (Integer) this.getValueAt(row, column);
-		} catch (Exception ee) {
-		}
-		}
-		}
-		} else if (aValue.getClass().toString().matches(".*Double.*")) {
-		doubleValue = ((Double) aValue).doubleValue();
-		intValue = (int) doubleValue;
-		} else if (aValue.getClass().toString().matches(".*Integer.*")) {
-		intValue = ((Integer) aValue).intValue();
-		doubleValue = intValue;
-		}*/
-
 		SimplePeakListRowGCGC peakRow = (SimplePeakListRowGCGC) this.dataset.getRow(row);
 		if (column < this.fixNumberColumns) {
 			peakRow.setVar(this.columns.get(column).getSetFunctionName(), aValue);
 		} else {
 			peakRow.setPeak(this.dataset.getNameExperiments().elementAt(column - this.fixNumberColumns), (Double) aValue);
-		}
-		/*switch (column) {
-		case 0:
-		peakRow.setSelectionMode((Boolean) aValue);
-		break;
-		case 1:
-		peakRow.setID(intValue);
-		break;
-		case 2:
-		peakRow.setRT1(doubleValue);
-		break;
-		case 3:
-		peakRow.setRT2(doubleValue);
-		break;
-		case 4:
-		peakRow.setRTI(doubleValue);
-		break;
-		case 5:
-		peakRow.setNumFound(intValue);
-		break;
-		case 6:
-		peakRow.setCAS((String) aValue);
-		break;
-		case 7:
-		peakRow.setMaxSimilarity(doubleValue);
-		break;
-		case 8:
-		peakRow.setMeanSimilarity(doubleValue);
-		break;
-		case 9:
-		peakRow.setSimilaritySTDDev(doubleValue);
-		break;
-		case 10:
-		peakRow.setName((String) aValue);
-		break;
-		case 11:
-		peakRow.setAllNames((String) aValue);
-		break;
-		case 12:
-		peakRow.setMolClass((String) aValue);
-		break;
-		case 13:
-		peakRow.setPubChemID((String) aValue);
-		break;
-		case 14:
-		peakRow.setMass(doubleValue);
-		break;
-		case 15:
-		peakRow.setDifference(doubleValue);
-		break;
-		case 16:
-		peakRow.setSpectrumString((String) aValue);
-		break;
-		default:
-		peakRow.setPeak(this.dataset.getNameExperiments().elementAt(column - this.fixNumberColumns), doubleValue);
-
-		//}*/
+		}		
 		fireTableCellUpdated(row, column);
 	}
 

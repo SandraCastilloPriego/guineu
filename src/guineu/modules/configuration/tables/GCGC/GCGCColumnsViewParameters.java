@@ -30,7 +30,7 @@ import guineu.data.impl.SimpleParameterSet;
 public class GCGCColumnsViewParameters extends SimpleParameterSet {
 
     public static final Parameter columnSelection = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Columns",
+            ParameterType.MULTIPLE_SELECTION, "GCGC Columns",
             "Columns in the LCMS table", null, GCGCColumnName.values());
 
     public GCGCColumnsViewParameters() {
