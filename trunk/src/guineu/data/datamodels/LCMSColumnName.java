@@ -19,31 +19,41 @@ package guineu.data.datamodels;
 
 public enum LCMSColumnName {
 
-    SELECTION("Selection", true),
-    ID("Id", true),
-    MZ("m/z", true),
-    RT("Retention time", true),
-    NAME("Name", true),
-    ALLNAMES("All names", true),
-    PUBCHEM("PubChem ID", true),
-    VTT("VTT ID", true),
-    ALLVTT("All VTT IDs", true),
-    LIPIDCLASS("Lipid class", true),
-    NFOUND("Num found", true),
-    STANDARD("Standard", true),
-    FA("FA Composition", true),
-    ALIGNMENT("Alignment", true);
-    
+    SELECTION("Selection", true, "isSelected", "setSelectionMode"),
+    ID("Id", true, "getID", "setID"),
+    MZ("m/z", true, "getMZ", "setMZ"),
+    RT("Retention time", true, "getRT", "setRT"),
+    NAME("Name", true, "getName", "setName"),
+    ALLNAMES("All names", true, "getAllNames", "setAllNames"),
+    PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID"),
+    VTT("VTT ID", true, "getVTTID", "setVTTD"),
+    ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD"),
+    LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass"),
+    NFOUND("Num found", true, "getNumFound", "setNumFound"),
+    STANDARD("Standard", true, "getStandard", "setStandard"),
+    FA("FA Composition", true, "getFAComposition", "setFAComposition"),
+    ALIGNMENT("Alignment", true, "getNumberAlignment", "setNumberAligment");
     private final String columnName;
+    private final String getFunctionName,  setFunctionName;
     private final boolean common;
 
-    LCMSColumnName(String columnName, boolean common) {
+    LCMSColumnName(String columnName, boolean common, String getFunctionName, String setFunctionName) {
         this.columnName = columnName;
+        this.getFunctionName = getFunctionName;
+        this.setFunctionName = setFunctionName;
         this.common = common;
     }
 
     public String getColumnName() {
         return this.columnName;
+    }
+
+    public String getGetFunctionName() {
+        return this.getFunctionName;
+    }
+
+    public String getSetFunctionName() {
+        return this.setFunctionName;
     }
 
     public boolean isCommon() {

@@ -277,9 +277,21 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         return null;
     }
 
-    public void setVar(String varName, Object value) {
+   public void setVar(String varName, Object value) {
         try {
-            Method m = this.getClass().getMethod(varName, new Class[]{});
+            Class partypes[] = new Class[1];
+            if (value.getClass().toString().contains("Double")) {
+                partypes[0] = Double.TYPE;
+            } else if (value.getClass().toString().contains("Integer")) {
+                partypes[0] = Integer.TYPE;
+            } else if (value.getClass().toString().contains("String")) {
+                partypes[0] = String.class;
+            } else if (value.getClass().toString().contains("Boolean")) {
+                partypes[0] = Boolean.TYPE;
+            } else {
+                partypes[0] = Object.class;
+            }
+            Method m = this.getClass().getMethod(varName, partypes);
             Object[] parameters = new Object[1];
             parameters[0] = value;
             m.invoke(this, parameters);
