@@ -30,8 +30,8 @@ import guineu.data.impl.SimpleParameterSet;
 public class LCMSColumnsViewParameters extends SimpleParameterSet {
 
     public static final Parameter columnSelection = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "View Columns",
-            "View Columns", null, LCMSColumnName.values());
+            ParameterType.MULTIPLE_SELECTION, "Columns",
+            "Columns in the LCMS table", null, LCMSColumnName.values());
 
     public LCMSColumnsViewParameters() {
         super(new Parameter[]{columnSelection});
