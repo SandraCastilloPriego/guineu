@@ -25,14 +25,14 @@ public enum LCMSColumnName {
     RT("Retention time", true),
     NAME("Name", true),
     ALLNAMES("All names", true),
-    PUBCHEM("PubChem ID", false),
-    VTT("VTT ID", false),
-    ALLVTT("All VTT IDs", false),
-    LIPIDCLASS("Lipid class", false),
+    PUBCHEM("PubChem ID", true),
+    VTT("VTT ID", true),
+    ALLVTT("All VTT IDs", true),
+    LIPIDCLASS("Lipid class", true),
     NFOUND("Num found", true),
     STANDARD("Standard", true),
-    FA("FA Composition", false),
-    ALIGNMENT("Alignment", false);
+    FA("FA Composition", true),
+    ALIGNMENT("Alignment", true);
     
     private final String columnName;
     private final boolean common;

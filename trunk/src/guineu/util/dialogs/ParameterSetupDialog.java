@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.util.dialogs;
 
 import java.awt.BorderLayout;
@@ -87,529 +86,538 @@ import guineu.util.components.ExtendedCheckBox;
  */
 public class ParameterSetupDialog extends JDialog implements ActionListener {
 
-    static final Font smallFont = new Font("SansSerif", Font.PLAIN, 10);
+	static final Font smallFont = new Font("SansSerif", Font.PLAIN, 10);
+	public static final int TEXTFIELD_COLUMNS = 10;
+	private ExitCode exitCode = ExitCode.UNKNOWN;
+	private String helpID;
 
-    public static final int TEXTFIELD_COLUMNS = 10;
+	// Parameters and their representation in the dialog
+	private SimpleParameterSet parameterSet;
+	private Hashtable<Parameter, JComponent> parametersAndComponents;
+	private Hashtable<Parameter, Object> autoValues;
 
-    private ExitCode exitCode = ExitCode.UNKNOWN;
+	// Buttons
+	private JButton btnOK,  btnCancel,  btnAuto,  btnHelp;
+	/**
+	 * Derived classed may add their components to these panels. Both panels use
+	 * BorderLayout. mainPanel containts componentPanel in the CENTER position
+	 * and nothing else. componentsPanel contains parameter components in the
+	 * NORTH position and buttons in the SOUTH position. Other positions are
+	 * free to use by derived (specialized) dialogs.
+	 */
+	protected JPanel componentsPanel,  mainPanel;
 
-    private String helpID;
+	/**
+	 * Constructor
+	 */
+	public ParameterSetupDialog(String title, SimpleParameterSet parameters) {
+		this(title, parameters, null, null);
+	}
 
-    // Parameters and their representation in the dialog
-    private SimpleParameterSet parameterSet;
-    private Hashtable<Parameter, JComponent> parametersAndComponents;
-    private Hashtable<Parameter, Object> autoValues;
+	/**
+	 * Constructor
+	 */
+	public ParameterSetupDialog(String title, SimpleParameterSet parameters,
+			String helpID) {
+		this(title, parameters, null, helpID);
+	}
 
-    // Buttons
-    private JButton btnOK, btnCancel, btnAuto, btnHelp;
+	/**
+	 * Constructor
+	 */
+	public ParameterSetupDialog(String title, SimpleParameterSet parameters,
+			Hashtable<Parameter, Object> autoValues) {
+		this(title, parameters, autoValues, null);
+	}
 
-    /**
-     * Derived classed may add their components to these panels. Both panels use
-     * BorderLayout. mainPanel containts componentPanel in the CENTER position
-     * and nothing else. componentsPanel contains parameter components in the
-     * NORTH position and buttons in the SOUTH position. Other positions are
-     * free to use by derived (specialized) dialogs.
-     */
-    protected JPanel componentsPanel, mainPanel;
+	/**
+	 * Constructor
+	 */
+	public ParameterSetupDialog(String title, SimpleParameterSet parameters,
+			Hashtable<Parameter, Object> autoValues, String helpID) {
 
-    /**
-     * Constructor
-     */
-    public ParameterSetupDialog(String title, SimpleParameterSet parameters) {
-        this(title, parameters, null, null);
-    }
+		// Make dialog modal
+		super(GuineuCore.getDesktop().getMainFrame(), title, true);
 
-    /**
-     * Constructor
-     */
-    public ParameterSetupDialog(String title, SimpleParameterSet parameters,
-            String helpID) {
-        this(title, parameters, null, helpID);
-    }
+		this.parameterSet = parameters;
+		this.autoValues = autoValues;
+		this.helpID = helpID;
 
-    /**
-     * Constructor
-     */
-    public ParameterSetupDialog(String title, SimpleParameterSet parameters,
-            Hashtable<Parameter, Object> autoValues) {
-        this(title, parameters, autoValues, null);
-    }
+		parametersAndComponents = new Hashtable<Parameter, JComponent>();
 
-    /**
-     * Constructor
-     */
-    public ParameterSetupDialog(String title, SimpleParameterSet parameters,
-            Hashtable<Parameter, Object> autoValues, String helpID) {
+		addDialogComponents();
 
-        // Make dialog modal
-        super(GuineuCore.getDesktop().getMainFrame(), title, true);
+		pack();
+		setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
 
-        this.parameterSet = parameters;
-        this.autoValues = autoValues;
-        this.helpID = helpID;
+	}
 
-        parametersAndComponents = new Hashtable<Parameter, JComponent>();
+	/**
+	 * Constructs all components of the dialog
+	 */
+	private void addDialogComponents() {
 
-        addDialogComponents();
+		JComponent components[] = new JComponent[parameterSet.getParameters().length * 3];
+		int componentCounter = 0;
 
-        pack();
-        setResizable(false);
-        setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
+		// Create labels and components for each parameter
+		for (Parameter p : parameterSet.getParameters()) {
 
-    }
+			// create labels
+			JLabel label = new JLabel(p.getName());
+			components[componentCounter++] = label;
 
-    /**
-     * Constructs all components of the dialog
-     */
-    private void addDialogComponents() {
+			JComponent comp = createComponentForParameter(p);
+			comp.setToolTipText(p.getDescription());
+			label.setLabelFor(comp);
 
-        JComponent components[] = new JComponent[parameterSet.getParameters().length * 3];
-        int componentCounter = 0;
+			parametersAndComponents.put(p, comp);
 
-        // Create labels and components for each parameter
-        for (Parameter p : parameterSet.getParameters()) {
+			components[componentCounter++] = comp;
 
-            // create labels
-            JLabel label = new JLabel(p.getName());
-            components[componentCounter++] = label;
+			String unitStr = "";
+			if (p.getUnits() != null) {
+				unitStr = p.getUnits();
+			}
 
-            JComponent comp = createComponentForParameter(p);
-            comp.setToolTipText(p.getDescription());
-            label.setLabelFor(comp);
+			components[componentCounter++] = new JLabel(unitStr);
 
-            parametersAndComponents.put(p, comp);
+		}
 
-            components[componentCounter++] = comp;
+		// Buttons
+		JPanel pnlButtons = new JPanel();
 
-            String unitStr = "";
-            if (p.getUnits() != null)
-                unitStr = p.getUnits();
+		btnOK = GUIUtils.addButton(pnlButtons, "OK", null, this);
+		btnCancel = GUIUtils.addButton(pnlButtons, "Cancel", null, this);
 
-            components[componentCounter++] = new JLabel(unitStr);
+		if (autoValues != null) {
+			btnAuto = GUIUtils.addButton(pnlButtons, "Set automatically", null,
+					this);
+		}
 
-        }
 
-        // Buttons
-        JPanel pnlButtons = new JPanel();
+		// Panel collecting all labels, fields and units
+		JPanel labelsAndFields = GUIUtils.makeTablePanel(
+				parameterSet.getParameters().length, 3, 1, components);
 
-        btnOK = GUIUtils.addButton(pnlButtons, "OK", null, this);
-        btnCancel = GUIUtils.addButton(pnlButtons, "Cancel", null, this);
+		// Load the values into the components
+		updateComponentsFromParameterSet();
 
-        if (autoValues != null) {
-            btnAuto = GUIUtils.addButton(pnlButtons, "Set automatically", null,
-                    this);
-        }
-        
+		// Panel where components are in the NORTH part and derived classes can
+		// add their own components around
+		componentsPanel = new JPanel(new BorderLayout());
+		componentsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10,
+				10));
+		componentsPanel.add(labelsAndFields, BorderLayout.NORTH);
+		componentsPanel.add(pnlButtons, BorderLayout.SOUTH);
 
-        // Panel collecting all labels, fields and units
-        JPanel labelsAndFields = GUIUtils.makeTablePanel(
-                parameterSet.getParameters().length, 3, 1, components);
+		mainPanel = new JPanel(new BorderLayout());
+		mainPanel.add(componentsPanel, BorderLayout.CENTER);
 
-        // Load the values into the components
-        updateComponentsFromParameterSet();
+		add(mainPanel);
 
-        // Panel where components are in the NORTH part and derived classes can
-        // add their own components around
-        componentsPanel = new JPanel(new BorderLayout());
-        componentsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10,
-                10));
-        componentsPanel.add(labelsAndFields, BorderLayout.NORTH);
-        componentsPanel.add(pnlButtons, BorderLayout.SOUTH);
+	}
 
-        mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(componentsPanel, BorderLayout.CENTER);
+	/**
+	 * Creates a dialog component to control given parameter.
+	 */
+	private JComponent createComponentForParameter(Parameter p) {
 
-        add(mainPanel);
+		Object[] possibleValues = p.getPossibleValues();
+		if ((possibleValues != null) && (p.getType() != ParameterType.MULTIPLE_SELECTION) && (p.getType() != ParameterType.ORDERED_LIST)) {
+			JComboBox combo = new JComboBox();
+			for (Object value : possibleValues) {
+				combo.addItem(value);
+				if (value == parameterSet.getParameterValue(p)) {
+					combo.setSelectedItem(value);
+				}
+			}
 
-    }
+			combo.setToolTipText(p.getDescription());
+			return combo;
 
-    /**
-     * Creates a dialog component to control given parameter.
-     */
-    private JComponent createComponentForParameter(Parameter p) {
+		}
 
-        Object[] possibleValues = p.getPossibleValues();
-        if ((possibleValues != null)
-                && (p.getType() != ParameterType.MULTIPLE_SELECTION)
-                && (p.getType() != ParameterType.ORDERED_LIST)) {
-            JComboBox combo = new JComboBox();
-            for (Object value : possibleValues) {
-                combo.addItem(value);
-                if (value == parameterSet.getParameterValue(p))
-                    combo.setSelectedItem(value);
-            }
+		JComponent comp = null;
 
-            combo.setToolTipText(p.getDescription());
-            return combo;
+		NumberFormat format = p.getNumberFormat();
+		if (format == null) {
+			format = NumberFormat.getNumberInstance();
+		}
 
-        }
+		switch (p.getType()) {
 
-        JComponent comp = null;
+			case STRING:
+				JTextField txtField = new JTextField();
+				txtField.setColumns(TEXTFIELD_COLUMNS);
+				comp = txtField;
+				break;
 
-        NumberFormat format = p.getNumberFormat();
-        if (format == null)
-            format = NumberFormat.getNumberInstance();
+			case INTEGER:
+			case DOUBLE:
 
-        switch (p.getType()) {
+				JFormattedTextField fmtField = new JFormattedTextField(format);
+				fmtField.setColumns(TEXTFIELD_COLUMNS);
+				comp = fmtField;
+				break;
 
-        case STRING:
-            JTextField txtField = new JTextField();
-            txtField.setColumns(TEXTFIELD_COLUMNS);
-            comp = txtField;
-            break;
+			case RANGE:
 
-        case INTEGER:
-        case DOUBLE:
+				JFormattedTextField minTxtField = new JFormattedTextField(format);
+				JFormattedTextField maxTxtField = new JFormattedTextField(format);
+				minTxtField.setColumns(TEXTFIELD_COLUMNS);
+				maxTxtField.setColumns(TEXTFIELD_COLUMNS);
+				JPanel panel = new JPanel();
+				panel.add(minTxtField);
+				GUIUtils.addLabel(panel, " - ");
+				panel.add(maxTxtField);
+				comp = panel;
+				break;
 
-            JFormattedTextField fmtField = new JFormattedTextField(format);
-            fmtField.setColumns(TEXTFIELD_COLUMNS);
-            comp = fmtField;
-            break;
+			case BOOLEAN:
+				JCheckBox checkBox = new JCheckBox();
+				comp = checkBox;
+				break;
 
-        case RANGE:
+			case MULTIPLE_SELECTION:
+				JPanel peakCheckBoxesPanel = new JPanel();
+				peakCheckBoxesPanel.setBackground(Color.white);
+				peakCheckBoxesPanel.setLayout(new BoxLayout(peakCheckBoxesPanel,
+						BoxLayout.Y_AXIS));
 
-            JFormattedTextField minTxtField = new JFormattedTextField(format);
-            JFormattedTextField maxTxtField = new JFormattedTextField(format);
-            minTxtField.setColumns(TEXTFIELD_COLUMNS);
-            maxTxtField.setColumns(TEXTFIELD_COLUMNS);
-            JPanel panel = new JPanel();
-            panel.add(minTxtField);
-            GUIUtils.addLabel(panel, " - ");
-            panel.add(maxTxtField);
-            comp = panel;
-            break;
+				int vertSize = 0,
+				 numCheckBoxes = 0;
+				ExtendedCheckBox<Object> ecb = null;
+				Object multipleValues[] = parameterSet.getMultipleSelection(p);
+				if (multipleValues == null) {
+					multipleValues = p.getPossibleValues();
+				}
+				if (multipleValues == null) {
+					multipleValues = new Object[0];
+				}
+				for (Object genericObject : multipleValues) {
 
-        case BOOLEAN:
-            JCheckBox checkBox = new JCheckBox();
-            comp = checkBox;
-            break;
+					ecb = new ExtendedCheckBox<Object>(genericObject, false);
+					ecb.setAlignmentX(Component.LEFT_ALIGNMENT);
+					peakCheckBoxesPanel.add(ecb);
 
-        case MULTIPLE_SELECTION:
-            JPanel peakCheckBoxesPanel = new JPanel();
-            peakCheckBoxesPanel.setBackground(Color.white);
-            peakCheckBoxesPanel.setLayout(new BoxLayout(peakCheckBoxesPanel,
-                    BoxLayout.Y_AXIS));
+					if (numCheckBoxes < 7) {
+						vertSize += (int) ecb.getPreferredSize().getHeight();
+					}
 
-            int vertSize = 0,
-            numCheckBoxes = 0;
-            ExtendedCheckBox<Object> ecb = null;
-            Object multipleValues[] = parameterSet.getMultipleSelection(p);
-            if (multipleValues == null)
-                multipleValues = p.getPossibleValues();
-            for (Object genericObject : multipleValues) {
+					numCheckBoxes++;
+				}
 
-                ecb = new ExtendedCheckBox<Object>(genericObject, false);
-                ecb.setAlignmentX(Component.LEFT_ALIGNMENT);
-                peakCheckBoxesPanel.add(ecb);
+				if (numCheckBoxes < 3) {
+					vertSize += 30;
+				}
 
-                if (numCheckBoxes < 7)
-                    vertSize += (int) ecb.getPreferredSize().getHeight();
+				JScrollPane peakPanelScroll = new JScrollPane(peakCheckBoxesPanel,
+						ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				peakPanelScroll.setPreferredSize(new Dimension(150, vertSize));
+				comp = peakPanelScroll;
+				break;
 
-                numCheckBoxes++;
-            }
+			case FILE_NAME:
+				JTextField txtFilename = new JTextField();
+				txtFilename.setColumns(TEXTFIELD_COLUMNS);
+				txtFilename.setFont(smallFont);
+				JButton btnFileBrowser = new JButton("...");
+				final Parameter fileParameter = p;
+				btnFileBrowser.addActionListener(new ActionListener() {
 
-            if (numCheckBoxes < 3)
-                vertSize += 10;
-
-            JScrollPane peakPanelScroll = new JScrollPane(peakCheckBoxesPanel,
-                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            peakPanelScroll.setPreferredSize(new Dimension(0, vertSize));
-            comp = peakPanelScroll;
-            break;
-
-        case FILE_NAME:
-            JTextField txtFilename = new JTextField();
-            txtFilename.setColumns(TEXTFIELD_COLUMNS);
-            txtFilename.setFont(smallFont);
-            JButton btnFileBrowser = new JButton("...");
-            final Parameter fileParameter = p;
-            btnFileBrowser.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    JFileChooser fileChooser = new JFileChooser();					
-					fileChooser.setCurrentDirectory(new File((String)getComponentValue(fileParameter)));
-                    fileChooser.setMultiSelectionEnabled(true);
-                    int returnVal = fileChooser.showDialog(
-                            GuineuCore.getDesktop().getMainFrame(), "Select");
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-						String fileName = "";
-						File[] fileNames = fileChooser.getSelectedFiles();
-						if(fileNames.length == 1){
-							 setComponentValue(fileParameter,
-                                fileChooser.getSelectedFile());
-						}else if(fileNames.length > 1){
-							for(File file: fileNames){
-								fileName += file.getAbsolutePath();
-								fileName += "&&";
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser fileChooser = new JFileChooser();
+						fileChooser.setCurrentDirectory(new File((String) getComponentValue(fileParameter)));
+						fileChooser.setMultiSelectionEnabled(true);
+						int returnVal = fileChooser.showDialog(
+								GuineuCore.getDesktop().getMainFrame(), "Select");
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
+							String fileName = "";
+							File[] fileNames = fileChooser.getSelectedFiles();
+							if (fileNames.length == 1) {
+								setComponentValue(fileParameter,
+										fileChooser.getSelectedFile());
+							} else if (fileNames.length > 1) {
+								for (File file : fileNames) {
+									fileName += file.getAbsolutePath();
+									fileName += "&&";
+								}
+								setComponentValue(fileParameter,
+										fileName);
 							}
-							setComponentValue(fileParameter,
-                                fileName);
-						}                       
-                    }
+						}
 
-                }
-            });
-            JPanel panelFilename = new JPanel();
-            panelFilename.setLayout(new BoxLayout(panelFilename,
-                    BoxLayout.X_AXIS));
-            panelFilename.add(txtFilename);
-            panelFilename.add(Box.createRigidArea(new Dimension(10, 1)));
-            panelFilename.add(btnFileBrowser);
-            comp = panelFilename;
-            if (p.getDefaultValue() != null) {
-                ExampleFileFilter fileChooserFilter = new ExampleFileFilter(
-                        p.getDefaultValue().toString());
-                fileChooserFilter.setDescription(p.getDescription());
-            }
-            break;
+					}
+				});
+				JPanel panelFilename = new JPanel();
+				panelFilename.setLayout(new BoxLayout(panelFilename,
+						BoxLayout.X_AXIS));
+				panelFilename.add(txtFilename);
+				panelFilename.add(Box.createRigidArea(new Dimension(10, 1)));
+				panelFilename.add(btnFileBrowser);
+				comp = panelFilename;
+				if (p.getDefaultValue() != null) {
+					ExampleFileFilter fileChooserFilter = new ExampleFileFilter(
+							p.getDefaultValue().toString());
+					fileChooserFilter.setDescription(p.getDescription());
+				}
+				break;
 
-        case ORDERED_LIST:
-            DefaultListModel fieldOrderModel = new DefaultListModel();
-            for (Object item : p.getPossibleValues())
-                fieldOrderModel.addElement(item);
-            DragOrderedJList fieldOrderList = new DragOrderedJList(
-                    fieldOrderModel);
-            fieldOrderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            fieldOrderList.setBorder(new EtchedBorder(1));
-            comp = fieldOrderList;
-            break;
+			case ORDERED_LIST:
+				DefaultListModel fieldOrderModel = new DefaultListModel();
+				for (Object item : p.getPossibleValues()) {
+					fieldOrderModel.addElement(item);
+				}
+				DragOrderedJList fieldOrderList = new DragOrderedJList(
+						fieldOrderModel);
+				fieldOrderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				fieldOrderList.setBorder(new EtchedBorder(1));
+				comp = fieldOrderList;
+				break;
 
-        }
+		}
 
-        return comp;
+		return comp;
 
-    }
+	}
 
-    /**
-     * Returns current value of the component controlling given parameter.
-     */
-    protected Object getComponentValue(Parameter p) {
+	/**
+	 * Returns current value of the component controlling given parameter.
+	 */
+	protected Object getComponentValue(Parameter p) {
 
-        Object[] possibleValues = p.getPossibleValues();
-        if ((possibleValues != null)
-                && (p.getType() != ParameterType.MULTIPLE_SELECTION)
-                && (p.getType() != ParameterType.ORDERED_LIST)) {
-            JComboBox combo = (JComboBox) parametersAndComponents.get(p);
-            return possibleValues[combo.getSelectedIndex()];
-        }
+		Object[] possibleValues = p.getPossibleValues();
+		if ((possibleValues != null) && (p.getType() != ParameterType.MULTIPLE_SELECTION) && (p.getType() != ParameterType.ORDERED_LIST)) {
+			JComboBox combo = (JComboBox) parametersAndComponents.get(p);
+			return possibleValues[combo.getSelectedIndex()];
+		}
 
-        switch (p.getType()) {
+		switch (p.getType()) {
 
-        case INTEGER:
-            JFormattedTextField intField = (JFormattedTextField) parametersAndComponents.get(p);
-            Number intNumberValue = (Number) intField.getValue();
-            if (intNumberValue == null)
-                return null;
-            return intNumberValue.intValue();
+			case INTEGER:
+				JFormattedTextField intField = (JFormattedTextField) parametersAndComponents.get(p);
+				Number intNumberValue = (Number) intField.getValue();
+				if (intNumberValue == null) {
+					return null;
+				}
+				return intNumberValue.intValue();
 
-        case DOUBLE:
+			case DOUBLE:
 
-            JFormattedTextField doubleField = (JFormattedTextField) parametersAndComponents.get(p);
-            Number doubleNumberValue = (Number) doubleField.getValue();
-            if (doubleNumberValue == null)
-                return null;
-            return doubleNumberValue.doubleValue();
+				JFormattedTextField doubleField = (JFormattedTextField) parametersAndComponents.get(p);
+				Number doubleNumberValue = (Number) doubleField.getValue();
+				if (doubleNumberValue == null) {
+					return null;
+				}
+				return doubleNumberValue.doubleValue();
 
-        case RANGE:
-            JPanel panel = (JPanel) parametersAndComponents.get(p);
-            JFormattedTextField minField = (JFormattedTextField) panel.getComponent(0);
-            JFormattedTextField maxField = (JFormattedTextField) panel.getComponent(2);
-            double minValue = ((Number) minField.getValue()).doubleValue();
-            double maxValue = ((Number) maxField.getValue()).doubleValue();
-            Range rangeValue = new Range(minValue, maxValue);
-            return rangeValue;
+			case RANGE:
+				JPanel panel = (JPanel) parametersAndComponents.get(p);
+				JFormattedTextField minField = (JFormattedTextField) panel.getComponent(0);
+				JFormattedTextField maxField = (JFormattedTextField) panel.getComponent(2);
+				double minValue = ((Number) minField.getValue()).doubleValue();
+				double maxValue = ((Number) maxField.getValue()).doubleValue();
+				Range rangeValue = new Range(minValue, maxValue);
+				return rangeValue;
 
-        case STRING:
-            JTextField stringField = (JTextField) parametersAndComponents.get(p);
-            return stringField.getText();
+			case STRING:
+				JTextField stringField = (JTextField) parametersAndComponents.get(p);
+				return stringField.getText();
 
-        case BOOLEAN:
-            JCheckBox checkBox = (JCheckBox) parametersAndComponents.get(p);
-            return checkBox.isSelected();
+			case BOOLEAN:
+				JCheckBox checkBox = (JCheckBox) parametersAndComponents.get(p);
+				return checkBox.isSelected();
 
-        case MULTIPLE_SELECTION:
-            JScrollPane scrollPanel = (JScrollPane) parametersAndComponents.get(p);
-            JPanel checkBoxPanel = (JPanel) scrollPanel.getViewport().getComponent(
-                    0);
+			case MULTIPLE_SELECTION:
+				JScrollPane scrollPanel = (JScrollPane) parametersAndComponents.get(p);
+				if (scrollPanel == null) {
+					return null;
+				}
 
-            Vector<Object> selectedGenericObject = new Vector<Object>();
-            Component checkBoxes[] = checkBoxPanel.getComponents();
+				JPanel checkBoxPanel = (JPanel) scrollPanel.getViewport().getComponent(0);
 
-            for (Component comp : checkBoxes) {
-                ExtendedCheckBox<?> box = (ExtendedCheckBox<?>) comp;
-                if (box.isSelected()) {
-                    Object genericObject = box.getObject();
-                    selectedGenericObject.add(genericObject);
-                }
-            }
-            return selectedGenericObject.toArray();
+				Vector<Object> selectedGenericObject = new Vector<Object>();
+				Component checkBoxes[] = checkBoxPanel.getComponents();
 
-        case FILE_NAME:
-            JPanel fileNamePanel = (JPanel) parametersAndComponents.get(p);
-            JTextField txtFilename = (JTextField) fileNamePanel.getComponent(0);
-            return txtFilename.getText();
+				for (Component comp : checkBoxes) {
+					ExtendedCheckBox<?> box = (ExtendedCheckBox<?>) comp;
+					if (box.isSelected()) {
+						Object genericObject = box.getObject();
+						selectedGenericObject.add(genericObject);
+					}
+				}
+				return selectedGenericObject.toArray();
 
-        case ORDERED_LIST:
-            JList list = (JList) parametersAndComponents.get(p);
-            DefaultListModel fieldOrderModel = (DefaultListModel) list.getModel();
-            return fieldOrderModel.toArray();
+			case FILE_NAME:
+				JPanel fileNamePanel = (JPanel) parametersAndComponents.get(p);
+				JTextField txtFilename = (JTextField) fileNamePanel.getComponent(0);
+				return txtFilename.getText();
 
-        }
+			case ORDERED_LIST:
+				JList list = (JList) parametersAndComponents.get(p);
+				DefaultListModel fieldOrderModel = (DefaultListModel) list.getModel();
+				return fieldOrderModel.toArray();
 
-        return null;
+		}
 
-    }
+		return null;
 
-    /**
-     * Sets the value of a component which is controlling given parameter to
-     * given value.
-     */
-    protected void setComponentValue(Parameter p, Object value) {
+	}
 
-        JComponent component = parametersAndComponents.get(p);
-        if ((component == null) || (value == null))
-            return;
+	/**
+	 * Sets the value of a component which is controlling given parameter to
+	 * given value.
+	 */
+	protected void setComponentValue(Parameter p, Object value) {
 
-        if (component instanceof JComboBox) {
-            JComboBox combo = (JComboBox) component;
-            combo.setSelectedItem(value);
-            return;
-        }
+		JComponent component = parametersAndComponents.get(p);
+		if ((component == null) || (value == null)) {
+			return;
+		}
 
-        switch (p.getType()) {
+		if (component instanceof JComboBox) {
+			JComboBox combo = (JComboBox) component;
+			combo.setSelectedItem(value);
+			return;
+		}
 
-        case STRING:
-            JTextField strField = (JTextField) component;
-            String strValue = (String) value;
-            strField.setText(strValue);
-            break;
+		switch (p.getType()) {
 
-        case INTEGER:
-        case DOUBLE:
-            JFormattedTextField txtField = (JFormattedTextField) component;
-            txtField.setValue(value);
-            break;
+			case STRING:
+				JTextField strField = (JTextField) component;
+				String strValue = (String) value;
+				strField.setText(strValue);
+				break;
 
-        case RANGE:
-            Range valueRange = (Range) value;
-            JPanel panel = (JPanel) component;
-            JFormattedTextField minField = (JFormattedTextField) panel.getComponent(0);
-            minField.setValue(valueRange.getMin());
-            JFormattedTextField maxField = (JFormattedTextField) panel.getComponent(2);
-            maxField.setValue(valueRange.getMax());
-            break;
+			case INTEGER:
+			case DOUBLE:
+				JFormattedTextField txtField = (JFormattedTextField) component;
+				txtField.setValue(value);
+				break;
 
-        case BOOLEAN:
-            JCheckBox checkBox = (JCheckBox) component;
-            Boolean selected = (Boolean) value;
-            checkBox.setSelected(selected);
-            break;
+			case RANGE:
+				Range valueRange = (Range) value;
+				JPanel panel = (JPanel) component;
+				JFormattedTextField minField = (JFormattedTextField) panel.getComponent(0);
+				minField.setValue(valueRange.getMin());
+				JFormattedTextField maxField = (JFormattedTextField) panel.getComponent(2);
+				maxField.setValue(valueRange.getMax());
+				break;
 
-        case FILE_NAME:
-            JPanel fileNamePanel = (JPanel) component;
-            JTextField txtFilename = (JTextField) fileNamePanel.getComponent(0);
-            txtFilename.setText(value.toString());
-            break;
+			case BOOLEAN:
+				JCheckBox checkBox = (JCheckBox) component;
+				Boolean selected = (Boolean) value;
+				checkBox.setSelected(selected);
+				break;
 
-        case MULTIPLE_SELECTION:
-            Object multipleValues[] = (Object[]) value;
-            JScrollPane scrollPanel = (JScrollPane) component;
-            JPanel multiplePanel = (JPanel) scrollPanel.getViewport().getComponent(
-                    0);
-            Component checkBoxes[] = multiplePanel.getComponents();
-            for (Component comp : checkBoxes) {
-                ExtendedCheckBox<?> box = (ExtendedCheckBox<?>) comp;
-                boolean isSelected = false;
-                for (Object v : multipleValues) {
-                    if (v == box.getObject())
-                        isSelected = true;
-                }
-                box.setSelected(isSelected);
-            }
-            break;
+			case FILE_NAME:
+				JPanel fileNamePanel = (JPanel) component;
+				JTextField txtFilename = (JTextField) fileNamePanel.getComponent(0);
+				txtFilename.setText(value.toString());
+				break;
 
-        case ORDERED_LIST:
-            JList list = (JList) component;
-            DefaultListModel newModel = new DefaultListModel();
-            Object values[] = (Object[]) value;
-            for (Object v : values)
-                newModel.addElement(v);
-            list.setModel(newModel);
-            break;
+			case MULTIPLE_SELECTION:
+				Object multipleValues[] = (Object[]) value;
+				JScrollPane scrollPanel = (JScrollPane) component;
+				JPanel multiplePanel = (JPanel) scrollPanel.getViewport().getComponent(
+						0);
+				Component checkBoxes[] = multiplePanel.getComponents();
+				for (Component comp : checkBoxes) {
+					ExtendedCheckBox<?> box = (ExtendedCheckBox<?>) comp;
+					boolean isSelected = false;
+					for (Object v : multipleValues) {
+						if (v == box.getObject()) {
+							isSelected = true;
+						}
+					}
+					box.setSelected(isSelected);
+				}
+				break;
 
-        }
-    }
+			case ORDERED_LIST:
+				JList list = (JList) component;
+				DefaultListModel newModel = new DefaultListModel();
+				Object values[] = (Object[]) value;
+				for (Object v : values) {
+					newModel.addElement(v);
+				}
+				list.setModel(newModel);
+				break;
 
-    /**
-     * This function sets the values of all components according to the values
-     * in the ParameterSet.
-     */
-    protected void updateComponentsFromParameterSet() {
-        for (Parameter p : parameterSet.getParameters()) {
-            setComponentValue(p, parameterSet.getParameterValue(p));
-        }
-    }
+		}
+	}
 
-    /**
-     * This function collects all the information from the form components and
-     * set the ParameterSet values accordingly.
-     */
-    protected void updateParameterSetFromComponents()
-            throws IllegalArgumentException {
-        for (Parameter p : parameterSet.getParameters()) {
-            Object value = getComponentValue(p);
-            if (value != null)
-                parameterSet.setParameterValue(p, value);
-        }
+	/**
+	 * This function sets the values of all components according to the values
+	 * in the ParameterSet.
+	 */
+	protected void updateComponentsFromParameterSet() {
+		for (Parameter p : parameterSet.getParameters()) {
+			setComponentValue(p, parameterSet.getParameterValue(p));
+		}
+	}
 
-    }
+	/**
+	 * This function collects all the information from the form components and
+	 * set the ParameterSet values accordingly.
+	 */
+	protected void updateParameterSetFromComponents()
+			throws IllegalArgumentException {
+		for (Parameter p : parameterSet.getParameters()) {
+			Object value = getComponentValue(p);
+			if (value != null) {
+				parameterSet.setParameterValue(p, value);
+			}
+		}
 
-    /**
-     * Return a component which is controlling given parameter.
-     */
-    protected JComponent getComponentForParameter(Parameter p) {
-        return parametersAndComponents.get(p);
-    }
+	}
 
-    /**
-     * Implementation for ActionListener interface
-     */
-    public void actionPerformed(ActionEvent ae) {
+	/**
+	 * Return a component which is controlling given parameter.
+	 */
+	protected JComponent getComponentForParameter(Parameter p) {
+		return parametersAndComponents.get(p);
+	}
 
-        Object src = ae.getSource();
+	/**
+	 * Implementation for ActionListener interface
+	 */
+	public void actionPerformed(ActionEvent ae) {
 
-        if (src == btnOK) {
-            try {
-                updateParameterSetFromComponents();
-            } catch (Exception invalidValueException) {
-                GuineuCore.getDesktop().displayErrorMessage(
-                        invalidValueException.getMessage());
-                return;
-            }
+		Object src = ae.getSource();
 
-            exitCode = ExitCode.OK;
-            dispose();
-        }
+		if (src == btnOK) {
+			try {
+				updateParameterSetFromComponents();
+			} catch (Exception invalidValueException) {
+				GuineuCore.getDesktop().displayErrorMessage(
+						invalidValueException.getMessage());
+				return;
+			}
 
-        if (src == btnCancel) {
-            exitCode = ExitCode.CANCEL;
-            dispose();
-        }
+			exitCode = ExitCode.OK;
+			dispose();
+		}
 
-        if (src == btnAuto) {
-            for (Parameter p : autoValues.keySet()) {
-                setComponentValue(p, autoValues.get(p));
-            }
-        }
+		if (src == btnCancel) {
+			exitCode = ExitCode.CANCEL;
+			dispose();
+		}
 
-    }
+		if (src == btnAuto) {
+			for (Parameter p : autoValues.keySet()) {
+				setComponentValue(p, autoValues.get(p));
+			}
+		}
 
-    /**
-     * Method for reading exit code
-     */
-    public ExitCode getExitCode() {
-        return exitCode;
-    }
+	}
 
+	/**
+	 * Method for reading exit code
+	 */
+	public ExitCode getExitCode() {
+		return exitCode;
+	}
 }
