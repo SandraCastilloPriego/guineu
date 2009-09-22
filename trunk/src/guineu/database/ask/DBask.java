@@ -54,6 +54,87 @@ public class DBask implements DataBase {
 		}
 	}
 
+	public List<String> getExperimentName(){
+	/*	Statement st = null;
+		Connection conn = this.connect();
+		int id_exp = 0;
+		Vector<Double> vt = new Vector<Double>();
+		try {
+			st = conn.createStatement();
+			ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sampleName + "' ORDER BY EPID asc");
+
+			if (r.next()) {
+				id_exp = r.getInt(1);
+			}
+			r.close();
+
+			if (id_exp != 0) {
+				r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE SAMPLE_ID = '" + id_exp + "'AND DATASETID ='" + datasetID + "' ORDER BY ID asc");
+
+				while (r.next()) {
+					vt.add(r.getDouble(5));
+				}
+
+				r.close();
+				st.close();
+			}
+			return vt;
+		} catch (Exception exception) {
+			return null;
+		}*/
+		return null;
+	}
+
+
+	public static String[] getProjectList(){
+		Statement st = null;
+		Connection conn = null;
+		String[] noProjects = {"No Projects"};
+		try {
+			OracleDataSource oracleDataSource;			
+			oracleDataSource = new OracleDataSource();
+			oracleDataSource.setURL("jdbc:oracle:thin:@sboracle1.ad.vtt.fi:1521:BfxDB");
+			oracleDataSource.setUser("sandra");
+			oracleDataSource.setPassword("sandra");
+			conn = oracleDataSource.getConnection();
+
+		} catch (SQLException exception) {
+			System.out.println("ERROR : " + exception);
+			exception.printStackTrace();
+			return noProjects;
+		}
+		List<String> projectNames = new ArrayList<String>();
+		try {
+			st = conn.createStatement();
+			ResultSet r = st.executeQuery("SELECT NAME FROM PROJECTS");
+
+			while (r.next()) {
+				projectNames.add(r.getString("NAME"));
+			}
+			r.close();
+			st.close();
+			conn.close();
+			if(projectNames.size() == 0){
+				return noProjects;
+			}
+			return projectNames.toArray(new String[0]);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			return noProjects;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 	public String[][] get_dataset() {
 		Statement st = null;
 		try {

@@ -391,6 +391,8 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
 		Object[] possibleValues = p.getPossibleValues();
 		if ((possibleValues != null) && (p.getType() != ParameterType.MULTIPLE_SELECTION) && (p.getType() != ParameterType.ORDERED_LIST)) {
 			JComboBox combo = (JComboBox) parametersAndComponents.get(p);
+			int selectedIndex = combo.getSelectedIndex();
+			if (selectedIndex < 0) selectedIndex = 0;
 			return possibleValues[combo.getSelectedIndex()];
 		}
 
