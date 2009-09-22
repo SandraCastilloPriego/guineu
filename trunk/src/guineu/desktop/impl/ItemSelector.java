@@ -31,6 +31,7 @@ import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveGCGCFile.SaveGCGCFile;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
+import guineu.modules.file.saveOtherFile.SaveOtherFile;
 import guineu.util.GUIUtils;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -149,6 +150,11 @@ public class ItemSelector extends JPanel implements ActionListener,
 				save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveGCGCParameters());
 				save.initModule();
 				((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveGCGCParameters((SimpleParameterSet) save.getParameterSet());
+			}else {
+				SaveOtherFile save = new SaveOtherFile(selectedFiles);
+				save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveOtherParameters());
+				save.initModule();
+				((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveOtherParameters((SimpleParameterSet) save.getParameterSet());
 			}
 		}
 

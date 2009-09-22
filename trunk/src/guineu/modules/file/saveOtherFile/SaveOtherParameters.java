@@ -16,18 +16,17 @@
  * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveGCGCFile;
+package guineu.modules.file.saveOtherFile;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.GCGCColumnName;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 
-public class SaveGCGCParameters extends SimpleParameterSet {
+public class SaveOtherParameters extends SimpleParameterSet {
 
 	static Object[] objects = {"Excel", "csv"};
-    public static final Parameter GCGCfilename = new SimpleParameter(
+    public static final Parameter Otherfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
             "Filename",
             "Name of exported peak list file name. If the file exists, it won't be overwritten.");
@@ -35,15 +34,11 @@ public class SaveGCGCParameters extends SimpleParameterSet {
             ParameterType.STRING, "Field separator",
             "Character(s) used to separate fields in the exported file",
             (Object) ",");
-    public static final Parameter exportGCGC = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Export elements",
-            "Multiple selection of row's elements to export", null, GCGCColumnName.values());
-    
-    public static final Parameter type = new SimpleParameter(
+       public static final Parameter type = new SimpleParameter(
             ParameterType.STRING, "type",
             "Type of file", null, null, objects, null);
 
-    public SaveGCGCParameters() {
-        super(new Parameter[]{GCGCfilename, type, exportGCGC});
+    public SaveOtherParameters() {
+        super(new Parameter[]{Otherfilename, type});
     }
 }

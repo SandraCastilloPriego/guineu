@@ -27,7 +27,7 @@ import guineu.data.impl.SimpleParameterSet;
 public class SaveLCMSParameters extends SimpleParameterSet {
 
 	static Object[] objects = {"Excel", "csv"};
-    public static final Parameter filename = new SimpleParameter(
+    public static final Parameter LCMSfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
             "Filename",
             "Name of exported peak list file name. If the file exists, it won't be overwritten.");
@@ -44,6 +44,6 @@ public class SaveLCMSParameters extends SimpleParameterSet {
             "Type of file", null, null, objects, null);
 
     public SaveLCMSParameters() {
-        super(new Parameter[]{filename, type, exportLCMS});
+        super(new Parameter[]{LCMSfilename, type, exportLCMS});
     }
 }
