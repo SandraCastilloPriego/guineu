@@ -15,9 +15,10 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveDatasetFile;
+package guineu.modules.file.saveLCMSFile;
 
 import guineu.data.Dataset;
+import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.InOracle;
@@ -27,21 +28,20 @@ import guineu.taskcontrol.Task;
  *
  * @author scsandra
  */
-public class SaveFileTask implements Task {
+public class SaveLCMSFileTask implements Task {
 
 	private Dataset dataset;
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
 	private String path;
 	private InDataBase db;
-	private SaveDatasetParameters parameters;
-	private SimpleParameterSet OptionParameters;
+	private SimpleParameterSet parameters;
 
-	public SaveFileTask(Dataset dataset, SaveDatasetParameters parameters, String path) {
+	public SaveLCMSFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
 		this.dataset = dataset;
 		this.path = path;
 		this.parameters = parameters;
-		db = new InOracle();		
+		db = new InOracle();
 	}
 
 	public String getTaskDescription() {
@@ -67,15 +67,16 @@ public class SaveFileTask implements Task {
 	public void run() {
 		try {
 			status = TaskStatus.PROCESSING;
-			if (parameters.getParameterValue(SaveDatasetParameters.type).toString().matches(".*Excel.*")) {
-				db.WriteExcelFile(dataset, path, OptionParameters);
-			} else {
-				db.WriteCommaSeparatedFile(dataset, path, OptionParameters);
+			if (dataset.getType() == DatasetType.LCMS) {
+				if (parameters.getParameterValue(SaveLCMSParameters.type).toString().matches(".*Excel.*")) {
+					db.WriteExcelFile(dataset, path, parameters);
+				} else {
+					db.WriteCommaSeparatedFile(dataset, path, parameters);
+				}
 			}
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;
 		}
 	}
-
 }

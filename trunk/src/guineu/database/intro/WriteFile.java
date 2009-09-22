@@ -25,7 +25,7 @@ import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimplePeakListRowOther;
-import guineu.modules.file.saveDatasetFile.SaveDatasetParameters;
+import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.util.CollectionUtils;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,8 +48,8 @@ public class WriteFile {
      */
     public void WriteCommaSeparatedFileLCMS(Dataset dataset, String path, SimpleParameterSet parameters) {
         try {
-            Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveDatasetParameters.exportItemMultipleSelection);
-            parameters.setParameterValue(SaveDatasetParameters.LCMS, elementsObjects);
+            Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveLCMSParameters.exportItemMultipleSelection);
+            parameters.setParameterValue(SaveLCMSParameters.exportItemMultipleSelection, elementsObjects);
 
             LCMSColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
                     LCMSColumnName.class);

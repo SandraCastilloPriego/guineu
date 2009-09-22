@@ -24,11 +24,12 @@ import guineu.data.impl.DatasetType;
 import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
-import guineu.modules.file.saveDatasetFile.SaveFile;
+import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
 import guineu.util.GUIUtils;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -64,7 +65,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
-
 
 	/**
 	 * Constructor
@@ -115,7 +115,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		if (command.equals("CHANGE_NAME")) {
 			//Dataset[] selectedFiles = getSelectedDatasets();
-		/**TO FINISH **/
+			/**TO FINISH **/
 		}
 
 		if (command.equals("REMOVE_FILE")) {
@@ -138,16 +138,17 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		if (command.equals("SAVE_DATASET")) {
 			Dataset[] selectedFiles = getSelectedDatasets();
-			if (selectedFiles[0] != null/* && (selectedFiles[0].getType() == DatasetType.LCMS || selectedFiles[0].getType() == DatasetType.GCGCTOF)*/) {
-				SaveFile save = new SaveFile(selectedFiles);
+			if (selectedFiles[0] != null && selectedFiles[0].getType() == DatasetType.LCMS) {
+				SaveLCMSFile save = new SaveLCMSFile(selectedFiles);
+				save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveLCMSParameters());
 				save.initModule();
+				((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveLCMSParameters((SimpleParameterSet) save.getParameterSet());
+			} else if (selectedFiles[0].getType() == DatasetType.GCGCTOF) {
 			}
 		}
 
 
 	}
-
-
 
 	private void showData() {
 		Dataset[] selectedFiles = getSelectedDatasets();
@@ -159,9 +160,9 @@ public class ItemSelector extends JPanel implements ActionListener,
 					model = new DatasetLCMSDataModel(file);
 				} else if (file.getType() == DatasetType.EXPERIMENTINFO) {
 					model = new ExperimentDataModel(file);
-				} else if(file.getType() == DatasetType.GCGCTOF){
+				} else if (file.getType() == DatasetType.GCGCTOF) {
 					model = new DatasetGCGCDataModel(file);
-				}else {
+				} else {
 					model = new OtherDataModel(file);
 				}
 				DataTable table = new PushableTable(model);
@@ -212,7 +213,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		return res;
 
-	}	
+	}
 
 	/**
 	 * Sets the active raw data item in the list
@@ -275,7 +276,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 		}
 		this.DatasetFilesModel.add(dataset);
 		DatasetNamesModel.addElement(dataset.getDatasetName());
-		this.DatasetFiles.revalidate();		
-	}	
-   
+		this.DatasetFiles.revalidate();
+	}
 }

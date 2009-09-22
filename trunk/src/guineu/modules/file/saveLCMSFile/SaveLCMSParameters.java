@@ -16,16 +16,15 @@
  * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveDatasetFile;
+package guineu.modules.file.saveLCMSFile;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.GCGCColumnName;
 import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 
-public class SaveDatasetParameters extends SimpleParameterSet {
+public class SaveLCMSParameters extends SimpleParameterSet {
 
 	static Object[] objects = {"Excel", "csv"};
     public static final Parameter filename = new SimpleParameter(
@@ -39,19 +38,12 @@ public class SaveDatasetParameters extends SimpleParameterSet {
     public static final Parameter exportItemMultipleSelection = new SimpleParameter(
             ParameterType.MULTIPLE_SELECTION, "Export elements",
             "Multiple selection of row's elements to export", null, LCMSColumnName.values());
-
-    public static final Parameter LCMS = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Export elements",
-            "Multiple selection of row's elements to export", null, LCMSColumnName.values());
-
-    public static final Parameter GCGC = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Export elements",
-            "Multiple selection of row's elements to export", null, GCGCColumnName.values());
+    
     public static final Parameter type = new SimpleParameter(
             ParameterType.STRING, "type",
             "Type of file", null, null, objects, null);
 
-    public SaveDatasetParameters() {
+    public SaveLCMSParameters() {
         super(new Parameter[]{filename, type, exportItemMultipleSelection});
     }
 }
