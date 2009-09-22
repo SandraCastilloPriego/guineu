@@ -22,6 +22,7 @@ import guineu.data.impl.SimpleParameterSet;
 import guineu.main.GuineuCore;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsViewParameters;
+import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
 import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.util.NumberFormatter;
 import guineu.util.NumberFormatter.FormatterType;
@@ -64,7 +65,7 @@ public class DesktopParameters implements StorableParameterSet,
 	private String lastSavePath = "";
 	private String lastMyllyPath = " ";
 	private SimpleParameterSet LCMSViewParameters,  GCGCViewParameters;
-	private SimpleParameterSet SaveLCMSParameters;
+	private SimpleParameterSet SaveLCMSParameters, SaveGCGCParameters;
 
 	DesktopParameters() {
 		this(new NumberFormatter(FormatterType.NUMBER, "0.000"),
@@ -81,6 +82,7 @@ public class DesktopParameters implements StorableParameterSet,
 		LCMSViewParameters = new LCMSColumnsViewParameters();
 		GCGCViewParameters = new GCGCColumnsViewParameters();
 		SaveLCMSParameters = new SaveLCMSParameters();
+		SaveGCGCParameters = new SaveGCGCParameters();
 
 		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
 		mainWindow.addComponentListener(this);
@@ -109,6 +111,14 @@ public class DesktopParameters implements StorableParameterSet,
 
 	public void setSaveLCMSParameters(SimpleParameterSet SaveDatasetParameters) {
 		this.SaveLCMSParameters = SaveDatasetParameters;
+	}
+
+	public SimpleParameterSet getSaveGCGCParameters() {
+		return SaveGCGCParameters;
+	}
+
+	public void setSaveGCGCParameters(SimpleParameterSet SaveDatasetParameters) {
+		this.SaveGCGCParameters = SaveDatasetParameters;
 	}
 
 	/**
@@ -288,6 +298,7 @@ public class DesktopParameters implements StorableParameterSet,
 		LCMSViewParameters.exportValuesToXML(element);
 		GCGCViewParameters.exportValuesToXML(element);
 		SaveLCMSParameters.exportValuesToXML(element);
+		SaveGCGCParameters.exportValuesToXML(element);
 
 	}
 
@@ -342,6 +353,7 @@ public class DesktopParameters implements StorableParameterSet,
 		LCMSViewParameters.importValuesFromXML(element);
 		GCGCViewParameters.importValuesFromXML(element);
 		SaveLCMSParameters.importValuesFromXML(element);
+		SaveGCGCParameters.importValuesFromXML(element);
 	}
 
 	public DesktopParameters clone() {

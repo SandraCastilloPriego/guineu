@@ -16,15 +16,15 @@
  * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveLCMSFile;
+package guineu.modules.file.saveGCGCFile;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.LCMSColumnName;
+import guineu.data.datamodels.GCGCColumnName;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 
-public class SaveLCMSParameters extends SimpleParameterSet {
+public class SaveGCGCParameters extends SimpleParameterSet {
 
 	static Object[] objects = {"Excel", "csv"};
     public static final Parameter filename = new SimpleParameter(
@@ -35,15 +35,15 @@ public class SaveLCMSParameters extends SimpleParameterSet {
             ParameterType.STRING, "Field separator",
             "Character(s) used to separate fields in the exported file",
             (Object) ",");
-    public static final Parameter exportLCMS = new SimpleParameter(
+    public static final Parameter exportGCGC = new SimpleParameter(
             ParameterType.MULTIPLE_SELECTION, "Export elements",
-            "Multiple selection of row's elements to export", null, LCMSColumnName.values());
+            "Multiple selection of row's elements to export", null, GCGCColumnName.values());
     
     public static final Parameter type = new SimpleParameter(
             ParameterType.STRING, "type",
             "Type of file", null, null, objects, null);
 
-    public SaveLCMSParameters() {
-        super(new Parameter[]{filename, type, exportLCMS});
+    public SaveGCGCParameters() {
+        super(new Parameter[]{filename, type, exportGCGC});
     }
 }
