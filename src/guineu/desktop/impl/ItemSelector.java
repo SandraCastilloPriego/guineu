@@ -29,6 +29,7 @@ import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
+import guineu.modules.file.saveGCGCFile.SaveGCGCFile;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
 import guineu.util.GUIUtils;
 import guineu.util.Tables.DataTable;
@@ -144,6 +145,10 @@ public class ItemSelector extends JPanel implements ActionListener,
 				save.initModule();
 				((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveLCMSParameters((SimpleParameterSet) save.getParameterSet());
 			} else if (selectedFiles[0].getType() == DatasetType.GCGCTOF) {
+				SaveGCGCFile save = new SaveGCGCFile(selectedFiles);
+				save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveGCGCParameters());
+				save.initModule();
+				((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveGCGCParameters((SimpleParameterSet) save.getParameterSet());
 			}
 		}
 

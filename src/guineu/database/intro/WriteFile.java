@@ -26,6 +26,7 @@ import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimplePeakListRowOther;
+import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
 import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.util.CollectionUtils;
 import java.io.FileInputStream;
@@ -49,8 +50,8 @@ public class WriteFile {
 	 */
 	public void WriteCommaSeparatedFileLCMS(Dataset dataset, String path, SimpleParameterSet parameters) {
 		try {
-			Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveLCMSParameters.exportItemMultipleSelection);
-			parameters.setParameterValue(SaveLCMSParameters.exportItemMultipleSelection, elementsObjects);
+			Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveLCMSParameters.exportLCMS);
+			parameters.setParameterValue(SaveLCMSParameters.exportLCMS, elementsObjects);
 
 			LCMSColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
 					LCMSColumnName.class);
@@ -124,8 +125,8 @@ public class WriteFile {
 				row = sheet.createRow(0);
 			}
 
-			Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveLCMSParameters.exportItemMultipleSelection);
-			parameters.setParameterValue(SaveLCMSParameters.exportItemMultipleSelection, elementsObjects);
+			Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveLCMSParameters.exportLCMS);
+			parameters.setParameterValue(SaveLCMSParameters.exportLCMS, elementsObjects);
 
 			LCMSColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
 					LCMSColumnName.class);
@@ -258,7 +259,7 @@ public class WriteFile {
 			wb.write(fileOut);
 			fileOut.close();
 		} catch (Exception exception) {
-			exception.printStackTrace();		
+			exception.printStackTrace();
 		}
 	}
 
@@ -282,7 +283,6 @@ public class WriteFile {
 		return cont;
 	}
 
-
 	/**
 	 * Write data in a cell of a Excel file.
 	 * @param row
@@ -303,7 +303,7 @@ public class WriteFile {
 				cell = row.createCell((short) Index);
 			}
 			cell.setCellValue((Double) data);
-		}else if (data.getClass().toString().contains("Integer")) {
+		} else if (data.getClass().toString().contains("Integer")) {
 			HSSFCell cell = row.getCell((short) Index);
 			if (cell == null) {
 				cell = row.createCell((short) Index);
@@ -312,111 +312,83 @@ public class WriteFile {
 		}
 	}
 
-	
-
 	/**
 	 * Write the data into an excel file.
 	 * @param dataset
 	 * @param path
 	 */
 	public void WriteExcelFileGCGC(Dataset dataset, String path, SimpleParameterSet parameters) {
-		/*	FileOutputStream fileOut = null;
+		FileOutputStream fileOut = null;
 		try {
-		HSSFWorkbook wb;
-		HSSFSheet sheet;
-		try {
-		FileInputStream fileIn = new FileInputStream(path);
-		POIFSFileSystem fs = new POIFSFileSystem(fileIn);
-		wb = new HSSFWorkbook(fs);
-		int NumberOfSheets = wb.getNumberOfSheets();
-		sheet = wb.createSheet(String.valueOf(NumberOfSheets));
-		} catch (Exception exception) {
-		wb = new HSSFWorkbook();
-		sheet = wb.createSheet("Normalized");
-		}
-		HSSFRow row = sheet.getRow(0);
-		if (row == null) {
-		row = sheet.createRow(0);
-		}
+			HSSFWorkbook wb;
+			HSSFSheet sheet;
+			try {
+				FileInputStream fileIn = new FileInputStream(path);
+				POIFSFileSystem fs = new POIFSFileSystem(fileIn);
+				wb = new HSSFWorkbook(fs);
+				int NumberOfSheets = wb.getNumberOfSheets();
+				sheet = wb.createSheet(String.valueOf(NumberOfSheets));
+			} catch (Exception exception) {
+				wb = new HSSFWorkbook();
+				sheet = wb.createSheet("Normalized");
+			}
+			HSSFRow row = sheet.getRow(0);
+			if (row == null) {
+				row = sheet.createRow(0);
+			}
 
-		Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveGCGCParameters.exportItemMultipleSelection);
-		parameters.setParameterValue(SaveGCGCParameters.exportItemMultipleSelection, elementsObjects);
+			Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveGCGCParameters.exportGCGC);
+			parameters.setParameterValue(SaveGCGCParameters.exportGCGC, elementsObjects);
 
-		GCGCColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
-		GCGCColumnName.class);
+			GCGCColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
+					GCGCColumnName.class);
 
-		int fieldsNumber = this.getNumFields(elements);
-		int cont = 0;
-		for (Parameter p : parameters.getParameters()) {
-		if ((Boolean) parameters.getParameterValue(p)) {
-		this.setCell(row, cont++, p.getName());
-		}
-		}
-		int c = fieldsNumber;
-		for (String experimentName : dataset.getNameExperiments()) {
-		this.setCell(row, c++, experimentName);
-		}
-		for (int i = 0; i < dataset.getNumberRows(); i++) {
-		SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
-		row = sheet.getRow(i + 1);
-		if (row == null) {
-		row = sheet.createRow(i + 1);
-		}
-		cont = 0;
-		for (Parameter p : parameters.getParameters()) {
-		if ((Boolean) parameters.getParameterValue(p)) {
-		try {
-		if (p.getName().matches("^ID.*")) {
-		this.setCell(row, cont++, metabolite.getID());
-		} else if (p.getName().matches(".*RT1.*")) {
-		this.setCell(row, cont++, metabolite.getRT1());
-		} else if (p.getName().matches(".*RT2.*")) {
-		this.setCell(row, cont++, metabolite.getRT2());
-		} else if (p.getName().matches(".*RTI*")) {
-		this.setCell(row, cont++, metabolite.getRTI());
-		} else if (p.getName().matches(".*Mass.*")) {
-		this.setCell(row, cont++, metabolite.getMass());
-		} else if (p.getName().matches(".*Difference to ideal peak.*")) {
-		this.setCell(row, cont++, metabolite.getDifference());
-		} else if (p.getName().matches(".*Num Found.*")) {
-		this.setCell(row, cont++, metabolite.getNumFound());
-		} else if (p.getName().matches(".*CAS.*")) {
-		this.setCell(row, cont++, metabolite.getCAS());
-		} else if (p.getName().matches(".*Name.*")) {
-		this.setCell(row, cont++, metabolite.getName());
-		} else if (p.getName().matches(".*All names.*")) {
-		this.setCell(row, cont++, metabolite.getAllNames());
-		} else if (p.getName().matches(".*Pubchem ID.*")) {
-		this.setCell(row, cont++, metabolite.getPubChemID());
-		} else if (p.getName().matches(".*Max Similarity.*")) {
-		this.setCell(row, cont++, metabolite.getMaxSimilarity());
-		} else if (p.getName().matches(".*Mean Similarity.*")) {
-		this.setCell(row, cont++, metabolite.getMeanSimilarity());
-		} else if (p.getName().matches(".*Similarity std dev.*")) {
-		this.setCell(row, cont++, metabolite.getSimilaritySTDDev());
-		} else if (p.getName().matches(".*Spectrum.*")) {
-		this.setCell(row, cont++, metabolite.getSpectrumString());
-		}
-		} catch (Exception ee) {
-		}
-		}
-		}
-		c = fieldsNumber;
-		for (String experimentName : dataset.getNameExperiments()) {
-		try {
-		this.setCell(row, c++, metabolite.getPeak(experimentName));
+			// Write head
+			int fieldsNumber = this.getNumFields(elements);
+			int cont = 0;
+			for (GCGCColumnName p : elements) {
+				if (p.isCommon()) {
+					this.setCell(row, cont++, p.getColumnName());
+				}
+			}
+			int c = fieldsNumber;
+			for (String experimentName : dataset.getNameExperiments()) {
+				this.setCell(row, c++, experimentName);
+			}
+
+			// Write content
+			for (int i = 0; i < dataset.getNumberRows(); i++) {
+				SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
+				row = sheet.getRow(i + 1);
+				if (row == null) {
+					row = sheet.createRow(i + 1);
+				}
+				cont = 0;
+
+				for (GCGCColumnName p : elements) {
+					if (p.isCommon()) {
+						try {
+							this.setCell(row, cont++, metabolite.getVar(p.getGetFunctionName()));
+						} catch (Exception ee) {
+						}
+					}
+				}
+				c = fieldsNumber;
+				for (String experimentName : dataset.getNameExperiments()) {
+					try {
+						this.setCell(row, c++, metabolite.getPeak(experimentName));
+					} catch (Exception e) {
+						this.setCell(row, c, "NA");
+					}
+				}
+			}
+			//Write the output to a file
+			fileOut = new FileOutputStream(path);
+			wb.write(fileOut);
+			fileOut.close();
 		} catch (Exception e) {
-		this.setCell(row, c, "NA");
+			System.out.println("Inoracle2.java --> WriteExcelFileGCGC() " + e);
 		}
-		}
-		}
-		//Write the output to a file
-		fileOut = new FileOutputStream(path);
-		wb.write(fileOut);
-		fileOut.close();
-		} catch (Exception e) {
-		System.out.println("Inoracle2.java --> WriteExcelFileGCGC() " + e);
-		}*/
 	}
 
 	/**
@@ -426,76 +398,57 @@ public class WriteFile {
 	 */
 	public void WriteCommaSeparatedFileGCGC(Dataset dataset, String path, SimpleParameterSet parameters) {
 		try {
-			/* CsvWriter w = new CsvWriter(path);
-			int fieldsNumber = this.getNumFields(parameters);
+			Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveGCGCParameters.exportGCGC);
+			parameters.setParameterValue(SaveGCGCParameters.exportGCGC, elementsObjects);
+
+			GCGCColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
+					GCGCColumnName.class);
+
+			CsvWriter w = new CsvWriter(path);
+			// Write head
+			int fieldsNumber = this.getNumFields(elements);
 			String[] data = new String[dataset.getNumberCols() + fieldsNumber];
 			int cont = 0;
-			for (Parameter p : parameters.getParameters()) {
-			if ((Boolean) parameters.getParameterValue(p)) {
-			data[cont++] = p.getName();
-			}
+			for (GCGCColumnName p : elements) {
+				if (p.isCommon()) {
+					data[cont++] = p.getColumnName();
+				}
 			}
 			int c = fieldsNumber;
 
 			for (String experimentName : dataset.getNameExperiments()) {
-			data[c++] = experimentName;
+				data[c++] = experimentName;
 			}
 			w.writeRecord(data);
+
+			// Write content
 			for (int i = 0; i < dataset.getNumberRows(); i++) {
-			SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
-			if (metabolite != null && metabolite.getControl()) {
-			cont = 0;
-			for (Parameter p : parameters.getParameters()) {
-			if ((Boolean) parameters.getParameterValue(p)) {
-			try {
-			if (p.getName().matches("^ID.*")) {
-			data[cont++] = String.valueOf(metabolite.getID());
-			} else if (p.getName().matches(".*RT1.*")) {
-			data[cont++] = String.valueOf(metabolite.getRT1());
-			} else if (p.getName().matches(".*RT2.*")) {
-			data[cont++] = String.valueOf(metabolite.getRT2());
-			} else if (p.getName().matches(".*RTI*")) {
-			data[cont++] = String.valueOf(metabolite.getRTI());
-			} else if (p.getName().matches(".*Mass.*")) {
-			data[cont++] = String.valueOf(metabolite.getMass());
-			} else if (p.getName().matches(".*Difference to ideal peak.*")) {
-			data[cont++] = String.valueOf(metabolite.getDifference());
-			} else if (p.getName().matches(".*CAS.*")) {
-			data[cont++] = metabolite.getCAS();
-			} else if (p.getName().matches(".*Num Found.*")) {
-			data[cont++] = String.valueOf(metabolite.getNumFound());
-			} else if (p.getName().matches(".*Metabolite Name.*")) {
-			data[cont++] = metabolite.getName();
-			} else if (p.getName().matches(".*Metabolite all Names.*")) {
-			data[cont++] = metabolite.getAllNames();
-			} else if (p.getName().matches(".*Pubchem ID.*")) {
-			data[cont++] = metabolite.getPubChemID();
-			} else if (p.getName().matches(".*Max Similarity.*")) {
-			data[cont++] = String.valueOf(metabolite.getMaxSimilarity());
-			} else if (p.getName().matches(".*Mean Similarity.*")) {
-			data[cont++] = String.valueOf(metabolite.getMeanSimilarity());
-			} else if (p.getName().matches(".*Similarity std dev.*")) {
-			data[cont++] = String.valueOf(metabolite.getSimilaritySTDDev());
-			} else if (p.getName().matches(".*Spectrum.*")) {
-			data[cont++] = metabolite.getSpectrumString();
-			}
-			} catch (Exception ee) {
-			}
-			}
-			}
-			c = fieldsNumber;
-			for (String experimentName : dataset.getNameExperiments()) {
-			try {
-			data[c++] = String.valueOf(metabolite.getPeak(experimentName));
-			} catch (Exception e) {
-			data[c] = "NA";
-			}
-			}
-			w.writeRecord(data);
-			}
+				SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
+				if (metabolite != null && metabolite.getControl()) {
+					cont = 0;
+
+					for (GCGCColumnName p : elements) {
+						if (p.isCommon()) {
+							try {
+								data[cont++] = String.valueOf(metabolite.getVar(p.getGetFunctionName()));
+							} catch (Exception ee) {
+							}
+						}
+					}
+
+					c = fieldsNumber;
+					for (String experimentName : dataset.getNameExperiments()) {
+						try {
+							data[c++] = String.valueOf(metabolite.getPeak(experimentName));
+						} catch (Exception e) {
+							data[c] = "NA";
+						}
+					}
+					w.writeRecord(data);
+				}
 			}
 			w.endRecord();
-			w.close();*/
+			w.close();
 		} catch (Exception exception) {
 			System.out.println("InOracle.java---> WriteCommaSeparatedFileGCGC() " + exception);
 		}
