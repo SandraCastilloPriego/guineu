@@ -232,45 +232,30 @@ public class WriteDataBase {
 	}
 
 	public int[] tableMOL_GCGCTof(Connection conn, SimpleGCGCDataset dataset, int exp_id) {
-		//intro table MOL_GCGCTOF
-		Statement st = null;
-		int[] mol_ID = new int[dataset.getNumberRows() + 1];
-		for (int i = 0; i < dataset.getNumberRows(); i++) {
-			SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
-			try {
-				int result = 0;
-				st = conn.createStatement();
-				st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, " +
-						"N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, " +
-						"METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, " +
-						"EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES ('" + (float) metabolite.getRT1() +
-						"', '" + (float) metabolite.getRT2() +
-						"', '" + (float) metabolite.getRTI() +
-						"', '" + metabolite.getNumFound() +
-						"', '" + metabolite.getMaxSimilarity() +
-						"', '" + (float) metabolite.getMeanSimilarity() +
-						"', '" + (float) metabolite.getSimilaritySTDDev() +
-						"', '" + metabolite.getName() +
-						"', '" + (int) result +
-						"', '" + metabolite.getAllNames() +
-						"', '" + (int) exp_id +
-						"', '" + (float) metabolite.getMass() +
-						"', '" + (float) metabolite.getDifference() +
-						"', '" + metabolite.getSpectrumString() +
-						"', '" + metabolite.getCAS() +
-						"', '" + metabolite.getMolClass() + "') ");
-				ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");
-				r.next();
-				mol_ID[i] = r.getInt(1);
-				r.close();
-				st.close();
-			} catch (SQLException se) {
-				System.out.println("We got an exception while preparing a statement:" +
-						"Probably bad SQL.");
-				se.printStackTrace();
+		try {
+			//intro table MOL_GCGCTOF
+			Statement st = conn.createStatement();
+			int[] mol_ID = new int[dataset.getNumberRows() + 1];
+			for (int i = 0; i < dataset.getNumberRows(); i++) {
+				SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
+				try {
+					st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, " + "N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, " + "METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, " + "EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES " + "(\"" + (float) metabolite.getRT1() + "\", \"" + (float) metabolite.getRT2() + "\", \"" + (float) metabolite.getRTI() + "\", \"" + (int) metabolite.getNumFound() + "\", \"" + (int) metabolite.getMaxSimilarity() + "\", \"" + (float) metabolite.getMeanSimilarity() + "\", \"" + (float) metabolite.getSimilaritySTDDev() + "\", \"" + metabolite.getName() + "\", \"" + metabolite.getPubChemID() + "\", \"" + metabolite.getAllNames() + "\", \"" + (int) exp_id + "\", \"" + (float) metabolite.getMass() + "\", \"" + (float) metabolite.getDifference() + "\", \"" + metabolite.getSpectrumString() + "\", \"" + metabolite.getCAS() + "\", \"" + metabolite.getMolClass() + "') ");
+					System.out.println(metabolite.getName());
+					ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");
+					r.next();
+					mol_ID[i] = r.getInt(1);
+					r.close();
+				} catch (SQLException se) {
+					System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
+					se.printStackTrace();
+				}
 			}
+			st.close();
+			return mol_ID;
+		} catch (SQLException ex) {
+			Logger.getLogger(WriteDataBase.class.getName()).log(Level.SEVERE, null, ex);
+			return null;
 		}
-		return mol_ID;
 	}
 
 	public void tableSPECTRUM(Connection conn, SimpleGCGCDataset mol, Statement st, int[] mol_ID) {
