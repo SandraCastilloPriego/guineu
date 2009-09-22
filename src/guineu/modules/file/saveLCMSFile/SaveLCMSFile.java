@@ -97,7 +97,7 @@ public class SaveLCMSFile implements GuineuModule, TaskListener {
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
 		// prepare a new group of tasks
-		String path = (String) parameters.getParameterValue(SaveLCMSParameters.filename);
+		String path = (String) parameters.getParameterValue(SaveLCMSParameters.LCMSfilename);
 		Task tasks[] = new SaveLCMSFileTask[Datasets.length];
 		for (int i = 0; i < Datasets.length; i++) {
 			String newpath = path;

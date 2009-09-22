@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.saveGCGCFile;
+package guineu.modules.file.saveOtherFile;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
@@ -34,14 +34,14 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class SaveGCGCFile implements GuineuModule, TaskListener {
+public class SaveOtherFile implements GuineuModule, TaskListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 	private Dataset[] Datasets;
 	private SimpleParameterSet parameters;
 
-	public SaveGCGCFile(Dataset[] Datasets) {
+	public SaveOtherFile(Dataset[] Datasets) {
 		this.Datasets = Datasets;
 	}
 
@@ -59,12 +59,12 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Save Dataset" + ((SaveGCGCFileTask) task).getTaskDescription());
+			logger.info("Finished Save Dataset" + ((SaveOtherFileTask) task).getTaskDescription());
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while save Dataset on .. " + ((SaveGCGCFileTask) task).getErrorMessage();
+			String msg = "Error while save Dataset on .. " + ((SaveOtherFileTask) task).getErrorMessage();
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
@@ -73,7 +73,7 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
 
 	public ExitCode setupParameters() {
 		try {
-			ParameterSetupDialog dialog = new ParameterSetupDialog("GCGC Table View parameters", parameters);
+			ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
 			dialog.setVisible(true);
 			return dialog.getExitCode();
 		} catch (Exception exception) {
@@ -97,14 +97,14 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
 	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
 		// prepare a new group of tasks
-		String path = (String) parameters.getParameterValue(SaveGCGCParameters.GCGCfilename);
-		Task tasks[] = new SaveGCGCFileTask[Datasets.length];
+		String path = (String) parameters.getParameterValue(SaveOtherParameters.Otherfilename);
+		Task tasks[] = new SaveOtherFileTask[Datasets.length];
 		for (int i = 0; i < Datasets.length; i++) {
 			String newpath = path;
 			if (i > 0) {
 				newpath = path.substring(0, path.length() - 4) + String.valueOf(i) + path.substring(path.length() - 4);
 			}
-			tasks[i] = new SaveGCGCFileTask(Datasets[i], parameters, newpath);
+			tasks[i] = new SaveOtherFileTask(Datasets[i], parameters, newpath);
 		}
 
 		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
