@@ -36,7 +36,7 @@ import guineu.util.GUIUtils;
  */
 class MainMenu extends JMenuBar implements ActionListener {
 
-    private JMenu fileMenu,  msmsMenu,  myllyMenu,  databaseMenu,  filterMenu,  IdentificationMenu,  helpMenu,  statisticsMenu,  configurationMenu;
+    private JMenu fileMenu,  /*msmsMenu, */ myllyMenu,  databaseMenu,  filterMenu,  IdentificationMenu,  helpMenu,  statisticsMenu,  configurationMenu;
     private JWindowsMenu windowsMenu;
     private JMenuItem hlpAbout;
 
@@ -66,12 +66,12 @@ class MainMenu extends JMenuBar implements ActionListener {
         statisticsMenu.setMnemonic(KeyEvent.VK_S);
         this.add(statisticsMenu);
 
-        msmsMenu = new JMenu("MS/MS Filters");
+       /* msmsMenu = new JMenu("MS/MS Filters");
         msmsMenu.setMnemonic(KeyEvent.VK_M);
-        add(msmsMenu);
+        add(msmsMenu);*/
 
         myllyMenu = new JMenu("GCGC-Tof Files");
-        myllyMenu.setMnemonic(KeyEvent.VK_Y);
+        myllyMenu.setMnemonic(KeyEvent.VK_G);
         add(myllyMenu);
 
         JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop()).getDesktopPane();
@@ -110,9 +110,9 @@ class MainMenu extends JMenuBar implements ActionListener {
             case STATISTICS:
                 statisticsMenu.add(newItem);
                 break;
-            case MSMS:
+           /* case MSMS:
                 msmsMenu.add(newItem);
-                break;
+                break;*/
             case MYLLY:
                 myllyMenu.add(newItem);
                 break;
@@ -166,9 +166,9 @@ class MainMenu extends JMenuBar implements ActionListener {
             case STATISTICS:
                 statisticsMenu.addSeparator();
                 break;
-            case MSMS:
+          /*  case MSMS:
                 msmsMenu.addSeparator();
-                break;
+                break;*/
             case MYLLY:
                 myllyMenu.addSeparator();
                 break;
