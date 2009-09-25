@@ -103,8 +103,8 @@ public class IdentificationTask implements Task {
                 this.lines.add(MZdata);
             }
             this.findOtherDates();
-            DataTableModel model = new DatasetLCMSDataModel(dataset);
-            this.table.setModel(model);
+          //  DataTableModel model = new DatasetLCMSDataModel(dataset);
+          //  this.table.setModel(model);
 
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
@@ -161,26 +161,26 @@ public class IdentificationTask implements Task {
             }
 
             String LipidName = "";
+			String LipidAllNames = "";
             for (int i = 0; i < lipidNames.size(); i++) {
                 if (i > 0) {
-                    LipidName += ";";
+                    LipidAllNames += ";";
                 }
-                LipidName += lipidNames.elementAt(i);
+               LipidAllNames += lipidNames.elementAt(i);
             }
             if (lipidNames.size() == 0) {
                 LipidName = "unknown";
-            }
+            }else{
+				LipidName = lipidNames.elementAt(0);
+			}
             SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) dataset.getRow(Index);
             lipid.setName(LipidName);
+			lipid.setAllNames(LipidAllNames);
             int lipidClass = this.LipidClassLib.get_class(lipid.getName());
             lipid.setLipidClass(String.valueOf(lipidClass));
-            if (table != null) {
-                table.setValueAt(LipidName, Index, 4);
-                table.setValueAt(String.valueOf(lipidClass), Index, 5);
-                table.setValueAt(new Boolean(false), Index, 0);                  
-               // table.repaint();
-				table.revalidate();
-               
+            if (table != null) {               
+                table.setValueAt(new Boolean(false), Index, 0);
+				table.revalidate();               
             }
 
         } catch (Exception e) {

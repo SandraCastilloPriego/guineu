@@ -20,12 +20,12 @@ package guineu.modules.filter.transpose;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleOtherDataset;
-import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,84 +33,78 @@ import guineu.taskcontrol.Task;
  */
 public class TransposeFilterTask implements Task {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress = 0.0f;
-    private SimpleLCMSDataset dataset;
+	private TaskStatus status = TaskStatus.WAITING;
+	private String errorMessage;
+	private Desktop desktop;
+	private double progress = 0.0f;
+	private Dataset dataset;
 
-    public TransposeFilterTask(Dataset dataset, Desktop desktop) {
-        this.dataset = (SimpleLCMSDataset) dataset;
-        this.desktop = desktop;
-    }
+	public TransposeFilterTask(Dataset dataset, Desktop desktop) {
+		this.dataset = dataset;
+		this.desktop = desktop;
+	}
 
-    public String getTaskDescription() {
-        return "Transpose Dataset filter... ";
-    }
+	public String getTaskDescription() {
+		return "Transpose Dataset filter... ";
+	}
 
-    public double getFinishedPercentage() {
-        return progress;
-    }
+	public double getFinishedPercentage() {
+		return progress;
+	}
 
-    public TaskStatus getStatus() {
-        return status;
-    }
+	public TaskStatus getStatus() {
+		return status;
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
+	public void cancel() {
+		status = TaskStatus.CANCELED;
+	}
 
-    public void run() {
-        try {
-            SimpleOtherDataset newDataset = new SimpleOtherDataset(dataset.getDatasetName() + "- transposed");
-            newDataset.AddNameExperiment("Name");
-            status = TaskStatus.PROCESSING;
-           
-            for (PeakListRow Row : dataset.getRows()) {
-				SimplePeakListRowLCMS row = (SimplePeakListRowLCMS)Row;
-                int cont = 0;
-                int l = row.getName().length();
-                while(newDataset.containtName(row.getName())) {
-                    row.setName(row.getName().substring(0, l));
-                    row.setName(row.getName() + cont);
-                    cont++;
-                }
-                newDataset.AddNameExperiment(row.getName()+ " - "+ row.getMZ() + " - " +row.getRT()+ " - " + row.getNumFound());
-                row.setName(row.getName()+ " - "+ row.getMZ() + " - " +row.getRT() + " - " + row.getNumFound());
-            }
-            for (String samples : dataset.getNameExperiments()) {
-                SimplePeakListRowOther row = new SimplePeakListRowOther();
-                row.setPeak("Name", samples);
-                newDataset.AddRow(row);
-            }
+	public void run() {
+		try {
+			SimpleOtherDataset newDataset = new SimpleOtherDataset(dataset.getDatasetName() + "- transposed");
+			newDataset.AddNameExperiment("Name");
+			status = TaskStatus.PROCESSING;			
 
-            for (PeakListRow row2 : dataset.getRows()) {
+			List<String> newNames = new ArrayList<String>();
+			for (PeakListRow row : dataset.getRows()) {
+				String newName = " ";				
+				int l = ((String) row.getVar("getName")).length();				
+				try {
+					newName = ((String) row.getVar("getName")).substring(0, l)+ " - " + ((Double) row.getVar("getMZ")).toString() + " - " + ((Double) row.getVar("getRT")).toString() + " - " + ((Double) row.getVar("getNumFound")).toString();
 
-                for (PeakListRow row : newDataset.getRows()) {
+				} catch (Exception e) {					
+					newName =((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
+				}
+				newDataset.AddNameExperiment(newName);
 
-                    row.setPeak((String)row2.getVar("getName"), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
-                }
-            }
-            newDataset.setType(DatasetType.OTHER);
-            desktop.AddNewFile(newDataset);
-            //creates internal frame with the table
-           /* DataTableModel model = new DatasetDataModel_concatenate(newDataset);
-            DataTable table = new PushableTable(model);
-            DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
+				newNames.add(newName);
+			}
+			for (String samples : dataset.getNameExperiments()) {
+				SimplePeakListRowOther row = new SimplePeakListRowOther();
+				row.setPeak("Name", samples);
+				newDataset.AddRow(row);
+			}
+			int cont = 0;
+			for (PeakListRow row2 : dataset.getRows()) {
 
-            desktop.addInternalFrame(frame);*/
-           
-           // frame.setVisible(true);
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
-        }
-    }
+				for (PeakListRow row : newDataset.getRows()) {
+					row.setPeak(newNames.get(cont), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
+				}
+				cont++;
+			}
+			newDataset.setType(DatasetType.OTHER);
+			desktop.AddNewFile(newDataset);
+			status = TaskStatus.FINISHED;
+		} catch (Exception e) {
+			status = TaskStatus.ERROR;
+			errorMessage = e.toString();
+			return;
+		}
+	}
 }
 

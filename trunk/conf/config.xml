@@ -9,7 +9,8 @@
     <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
     <module class="guineu.modules.file.openExperimentsData.OpenFile"/>  
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
-    <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
+    <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>
+    <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/>  
     <module class="guineu.modules.file.exit.ExitProgram"/>  
     <!-- <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"/>

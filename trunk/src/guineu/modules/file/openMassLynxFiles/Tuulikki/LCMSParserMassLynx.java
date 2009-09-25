@@ -15,8 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.openMassLynxFiles;
-
+package guineu.modules.file.openMassLynxFiles.Tuulikki;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
@@ -44,7 +43,7 @@ public class LCMSParserMassLynx implements Parser {
 		progress = 0.1f;
 		this.datasetPath = datasetPath;
 		this.dataset = new SimpleOtherDataset(this.getDatasetName());
-		this.dataset.setType(DatasetType.OTHER);	
+		this.dataset.setType(DatasetType.OTHER);
 		progress = 0.5f;
 		fillData();
 		progress = 1.0f;
@@ -70,51 +69,51 @@ public class LCMSParserMassLynx implements Parser {
 			FileReader fr = new FileReader(new File(datasetPath));
 			BufferedReader br = new BufferedReader(fr);
 			String line = br.readLine();
-			String head = null;
-			String[] header = null;
 			String compound = "";
-			PeakListRow lipid = null;
-			int contRow = 0;
-			int contLipids = 0;
+			boolean oneTime = false;
+			this.dataset.AddNameExperiment("Sample Name");
+			SimplePeakListRowOther row = null;
+			SimplePeakListRowOther rt = new SimplePeakListRowOther();
+			rt.setPeak("Sample Name", "RT");
+			// Write Columns
 			while ((line = (br.readLine())) != null) {
-				if (!line.isEmpty()) {
+				if (!line.isEmpty()) {					
 					if (line.matches("^Compound.*|^Sample Name.*")) {
 						compound = line;
-						compound = compound.substring(compound.indexOf(":") + 1);					
+						if (oneTime) {
+							break;
+						}
+						oneTime = true;
 						br.readLine();
-						head = br.readLine();
-						header = head.split("\t");
-						contRow = 0;
-						contLipids++;
-
-						if (contLipids == 1) {
-							setExperimentsName(header, compound, true);
-						} else {
-							setExperimentsName(header, compound, false);
-						}
-						continue;
+						br.readLine();
+					} else if(!compound.isEmpty()){						
+						String[] data = line.split("\t");						
+						dataset.AddNameExperiment(data[2]);
+						rt.setPeak(data[2], data[4]);
 					}
-					if (compound != null) {
-						if (contLipids == 1) {
-							lipid = new SimplePeakListRowOther();
-						} else if (contLipids > 1) {
-							lipid = (PeakListRow) this.dataset.getRow(contRow);
-						}
-						if (head != null && !head.isEmpty()) {
-							getData(lipid, line, header, compound);
-						}
-						if (contLipids == 1) {
-							this.dataset.AddRow(lipid);
-						}
-
-					}
-					contRow++;
 				}
 
 			}
-
-
-
+			dataset.AddRow(rt);
+			br.mark(0);
+			br.reset();
+			// Write content
+			while ((line = (br.readLine())) != null) {
+				if (!line.isEmpty()) {
+					if (line.matches("^Compound.*|^Sample Name.*")) {
+						row = new SimplePeakListRowOther();
+						compound = line;
+						compound = compound.substring(compound.indexOf(":") + 1);
+						br.readLine();
+						br.readLine();
+						row.setPeak("Sample Name", compound);
+						dataset.AddRow(row);
+					} else if (row != null) {
+						String[] data = line.split("\t");
+						row.setPeak(data[2], data[5]);
+					}
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -137,7 +136,7 @@ public class LCMSParserMassLynx implements Parser {
 						lipid.setPeak(name, sdata[i].toString());
 					}
 				} catch (Exception e) {
-				//lipid.setPeak(header[i], " ");
+					//lipid.setPeak(header[i], " ");
 				}
 
 			}
@@ -162,10 +161,11 @@ public class LCMSParserMassLynx implements Parser {
 						name = "Name";
 					} else if (header[i].matches("#")) {
 						name = "#";
-					}if (header[i] != null && !header[i].isEmpty()){
+					}
+					if (header[i] != null && !header[i].isEmpty()) {
 						this.dataset.AddNameExperiment(name);
 					}
-				} else if (header[i] != null && !header[i].isEmpty() && !header[i].matches("Name") && !header[i].matches("#") ) {
+				} else if (header[i] != null && !header[i].isEmpty() && !header[i].matches("Name") && !header[i].matches("#")) {
 					this.dataset.AddNameExperiment(compound + " - " + header[i]);
 				}
 			}
