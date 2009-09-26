@@ -47,7 +47,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
     public void initModule() {
         this.standards = new StandardUmol();
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "Tissue Normalization Filter..",
+        desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Tissue Normalization Filter..",
                 "TODO write description", KeyEvent.VK_T, this, null);
 
     }
