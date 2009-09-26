@@ -46,7 +46,7 @@ public class VariationCoefficientRowFilter implements GuineuModule, TaskListener
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.STATISTICS, "Coefficient of variation on each row..",
-                "TODO write description", KeyEvent.VK_D, this, null);
+                "TODO write description", KeyEvent.VK_D, this, null, "icons/coefficientRow.png");
 
     }
 

@@ -48,7 +48,7 @@ public class ClassIdentificationFilter implements GuineuModule, TaskListener, Ac
 		parameters = new ClassIdentificationParameters();
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Class Identification Filter..",
-				"TODO write description", KeyEvent.VK_I, this, null);
+				"TODO write description", KeyEvent.VK_I, this, null, null);
 
 	}
 

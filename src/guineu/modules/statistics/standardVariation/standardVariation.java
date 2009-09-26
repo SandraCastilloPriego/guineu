@@ -51,7 +51,7 @@ public class standardVariation implements GuineuModule, TaskListener, ActionList
 
         this.desktop = GuineuCore.getDesktop();         
         desktop.addMenuItem(GuineuMenu.STATISTICS, "Standard Variation..",
-                "TODO write description", KeyEvent.VK_V, this, null);
+                "TODO write description", KeyEvent.VK_V, this, null, null);
 
     }
 

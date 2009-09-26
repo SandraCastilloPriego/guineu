@@ -33,7 +33,7 @@ public class HelpClass {
 			helpListener = new CSH.DisplayHelpFromSource(hb);
 
 			menu.addMenuItem(GuineuMenu.HELP, "Help Contents",
-					"Help system contents", KeyEvent.VK_C, helpListener, null);
+					"Help system contents", KeyEvent.VK_C, helpListener, null, "icons/help.png");
 			
 			
 		} catch (Exception e) {

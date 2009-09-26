@@ -54,7 +54,7 @@ public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, Act
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuSeparator(GuineuMenu.MYLLY);
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Alkane RTI Corrector Filter..",
-				"TODO write description", KeyEvent.VK_A, this, null);
+				"TODO write description", KeyEvent.VK_A, this, null, "icons/help.png");
 
 	}
 

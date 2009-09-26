@@ -45,7 +45,7 @@ public class NormalizeNOMISFilter implements GuineuModule, TaskListener, ActionL
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "NOMIS Normalization Filter training..",
-                "TODO write description", KeyEvent.VK_N, this, null);
+                "TODO write description", KeyEvent.VK_N, this, null, "icons/help.png");
 
     }
 

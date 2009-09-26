@@ -48,7 +48,7 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
 
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Files..",
-				"TODO write description", KeyEvent.VK_G, this, null);
+				"TODO write description", KeyEvent.VK_G, this, null, "icons/pickedpeakicon.png");
 		parameters = new OpenGCGCFileParameters();
 	}
 

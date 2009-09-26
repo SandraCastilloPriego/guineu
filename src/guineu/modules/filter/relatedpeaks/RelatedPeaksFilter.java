@@ -47,7 +47,7 @@ public class RelatedPeaksFilter implements GuineuModule, TaskListener, ActionLis
 
         this.desktop = GuineuCore.getDesktop();         
         desktop.addMenuItem(GuineuMenu.FILTER, "Related Peaks Filter..",
-                "TODO write description", KeyEvent.VK_R, this, null);
+                "TODO write description", KeyEvent.VK_R, this, null, null);
 
     }
 
