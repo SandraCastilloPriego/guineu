@@ -36,7 +36,7 @@ import guineu.util.GUIUtils;
  */
 class MainMenu extends JMenuBar implements ActionListener {
 
-    private JMenu fileMenu,  /*msmsMenu, */ myllyMenu,  databaseMenu,  filterMenu,  IdentificationMenu,  helpMenu,  statisticsMenu,  configurationMenu;
+    private JMenu fileMenu, /*msmsMenu, */  myllyMenu,  identificationSubMenu,  normalizationMenu,  identificationFilterMenu,  databaseMenu,  filterMenu,  identificationMenu,  helpMenu,  statisticsMenu,  configurationMenu;
     private JWindowsMenu windowsMenu;
     private JMenuItem hlpAbout;
 
@@ -58,15 +58,28 @@ class MainMenu extends JMenuBar implements ActionListener {
         filterMenu.setMnemonic(KeyEvent.VK_L);
         this.add(filterMenu);
 
-        IdentificationMenu = new JMenu("Identification");
-        IdentificationMenu.setMnemonic(KeyEvent.VK_I);
-        this.add(IdentificationMenu);
+        identificationMenu = new JMenu("LC-MS Identification");
+        identificationMenu.setMnemonic(KeyEvent.VK_I);
+        this.add(identificationMenu);
+
+        identificationSubMenu = new JMenu("Identification");
+        identificationSubMenu.setMnemonic(KeyEvent.VK_I);
+        identificationMenu.add(identificationSubMenu);
+
+        identificationFilterMenu = new JMenu("Filters");
+        identificationFilterMenu.setMnemonic(KeyEvent.VK_F);
+        identificationMenu.add(identificationFilterMenu);
+
+
+        normalizationMenu = new JMenu("Normalization");
+        normalizationMenu.setMnemonic(KeyEvent.VK_N);
+        identificationMenu.add(normalizationMenu);
 
         statisticsMenu = new JMenu("Statistics");
         statisticsMenu.setMnemonic(KeyEvent.VK_S);
         this.add(statisticsMenu);
 
-       /* msmsMenu = new JMenu("MS/MS Filters");
+        /* msmsMenu = new JMenu("MS/MS Filters");
         msmsMenu.setMnemonic(KeyEvent.VK_M);
         add(msmsMenu);*/
 
@@ -105,14 +118,24 @@ class MainMenu extends JMenuBar implements ActionListener {
                 filterMenu.add(newItem);
                 break;
             case IDENTIFICATION:
-                IdentificationMenu.add(newItem);
+                identificationMenu.add(newItem);
                 break;
+            case IDENTIFICATIONSUBMENU:
+                identificationSubMenu.add(newItem);
+                break;
+            case IDENTIFICATIONFILTERS:
+                identificationFilterMenu.add(newItem);
+                break;
+            case NORMALIZATION:
+                normalizationMenu.add(newItem);
+                break;
+
             case STATISTICS:
                 statisticsMenu.add(newItem);
                 break;
-           /* case MSMS:
-                msmsMenu.add(newItem);
-                break;*/
+            /* case MSMS:
+            msmsMenu.add(newItem);
+            break;*/
             case MYLLY:
                 myllyMenu.add(newItem);
                 break;
@@ -161,14 +184,23 @@ class MainMenu extends JMenuBar implements ActionListener {
                 filterMenu.addSeparator();
                 break;
             case IDENTIFICATION:
-                IdentificationMenu.addSeparator();
+                identificationMenu.addSeparator();
+                break;
+            case IDENTIFICATIONSUBMENU:
+                identificationSubMenu.addSeparator();
+                break;
+            case IDENTIFICATIONFILTERS:
+                identificationFilterMenu.addSeparator();
+                break;
+            case NORMALIZATION:
+                normalizationMenu.addSeparator();
                 break;
             case STATISTICS:
                 statisticsMenu.addSeparator();
                 break;
-          /*  case MSMS:
-                msmsMenu.addSeparator();
-                break;*/
+            /*  case MSMS:
+            msmsMenu.addSeparator();
+            break;*/
             case MYLLY:
                 myllyMenu.addSeparator();
                 break;

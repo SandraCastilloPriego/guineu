@@ -45,9 +45,8 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "Purge Identification.. ",
-                "TODO write description", KeyEvent.VK_U, this, null);
-        desktop.addMenuSeparator(GuineuMenu.IDENTIFICATION);
+        desktop.addMenuItem(GuineuMenu.IDENTIFICATIONFILTERS, "Purge Identification.. ",
+                "TODO write description", KeyEvent.VK_U, this, null);       
     }
 
     public void taskStarted(Task task) {
