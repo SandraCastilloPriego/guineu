@@ -211,9 +211,9 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
    
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
             String toolTip, int mnemonic, ActionListener listener,
-            String actionCommand) {
+            String actionCommand, String icon) {
         return menuBar.addMenuItem(parentMenu, text, toolTip, mnemonic,
-                listener, actionCommand);
+                listener, actionCommand, icon);
     }
 
     

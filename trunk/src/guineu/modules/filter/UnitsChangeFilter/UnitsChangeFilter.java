@@ -49,7 +49,7 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
         this.parameters = new UnitsChangeFilterParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Change Units Filter..",
-                "TODO write description", KeyEvent.VK_U, this, null);
+                "TODO write description", KeyEvent.VK_U, this, null, null);
         desktop.addMenuSeparator(GuineuMenu.FILTER);
     }
 

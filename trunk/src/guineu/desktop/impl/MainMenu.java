@@ -30,6 +30,8 @@ import ca.guydavis.swing.desktop.JWindowsMenu;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.util.GUIUtils;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * 
@@ -147,9 +149,13 @@ class MainMenu extends JMenuBar implements ActionListener {
 
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
             String toolTip, int mnemonic, ActionListener listener,
-            String actionCommand) {
-
-        JMenuItem newItem = new JMenuItem(text);
+            String actionCommand, String icon) {
+        JMenuItem newItem = null;
+        if (icon != null) {
+            newItem = new JMenuItem(text, new ImageIcon(icon));
+        } else {
+            newItem = new JMenuItem(text);
+        }
         if (listener != null) {
             newItem.addActionListener(listener);
         }

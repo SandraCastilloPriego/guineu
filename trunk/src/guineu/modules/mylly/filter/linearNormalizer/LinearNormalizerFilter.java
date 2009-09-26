@@ -45,7 +45,7 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Linear Normalizer..",
-				"TODO write description", KeyEvent.VK_L, this, null);
+				"TODO write description", KeyEvent.VK_L, this, null, null);
 
 	}
 

@@ -50,7 +50,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         this.desktop = GuineuCore.getDesktop(); 
         desktop.addMenuSeparator(GuineuMenu.FILE);
         desktop.addMenuItem(GuineuMenu.FILE, "Open Experiment File..",
-                "TODO write description", KeyEvent.VK_P, this, null);
+                "TODO write description", KeyEvent.VK_P, this, null, "icons/experiment2.png");
 
     }
 

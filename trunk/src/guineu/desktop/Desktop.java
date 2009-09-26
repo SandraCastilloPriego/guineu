@@ -51,7 +51,7 @@ public interface Desktop extends GuineuModule {
      * @return Newly created JMenuItem
      */
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-            String toolTip, int mnemonic, ActionListener listener, String actionCommand);
+            String toolTip, int mnemonic, ActionListener listener, String actionCommand, String icon);
 
     /**
      * Adds a separator to a given Guineu menu

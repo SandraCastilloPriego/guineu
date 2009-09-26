@@ -48,7 +48,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Split dataset..",
-                "TODO write description", KeyEvent.VK_S, this, null);
+                "TODO write description", KeyEvent.VK_S, this, null, null);
         desktop.addMenuSeparator(GuineuMenu.FILTER);
     }
 

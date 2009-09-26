@@ -48,7 +48,7 @@ public class Foldtest implements GuineuModule, TaskListener, ActionListener {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.STATISTICS, "Fold Test..",
-                "TODO write description", KeyEvent.VK_F, this, null);
+                "TODO write description", KeyEvent.VK_F, this, null, "icons/fold.png");
 
     }
 

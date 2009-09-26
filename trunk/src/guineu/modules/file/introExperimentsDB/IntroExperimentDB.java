@@ -55,7 +55,7 @@ public class IntroExperimentDB implements GuineuModule, TaskListener, ActionList
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILE, "Intro Experiment into database..",
-                "TODO write description", KeyEvent.VK_I, this, null);
+                "TODO write description", KeyEvent.VK_I, this, null, null);
         parameters = new IntroExperimentParameters();
         setupParameters(parameters);
     }

@@ -49,7 +49,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
         this.desktop = GuineuCore.getDesktop();         
         desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Aligned Dataset..",
-                "TODO write description", KeyEvent.VK_D, this, null);
+                "TODO write description", KeyEvent.VK_D, this, null, "icons/spectrumicon.png");
     }
     
     public void taskStarted(Task task) {

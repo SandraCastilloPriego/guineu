@@ -45,7 +45,7 @@ public class AlignmentDatasets implements GuineuModule, TaskListener, ActionList
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();        
         desktop.addMenuItem(GuineuMenu.FILTER, "Combine datasets..",
-                "TODO write description", KeyEvent.VK_A, this, null);       
+                "TODO write description", KeyEvent.VK_A, this, null, null);
         parameters = new AlignmentParameters();
     }
 

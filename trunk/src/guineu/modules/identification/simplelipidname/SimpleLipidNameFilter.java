@@ -45,7 +45,7 @@ public class SimpleLipidNameFilter implements GuineuModule, TaskListener, Action
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.IDENTIFICATIONFILTERS, "Simplify Lipid Name..",
-                "TODO write description", KeyEvent.VK_I, this, null);
+                "TODO write description", KeyEvent.VK_I, this, null, null);
 
     }
 
