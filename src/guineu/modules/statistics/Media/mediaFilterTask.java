@@ -22,15 +22,9 @@ import guineu.data.PeakListRow;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
-import javax.swing.table.TableModel;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /**

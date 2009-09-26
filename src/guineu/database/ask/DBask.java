@@ -98,9 +98,7 @@ public class DBask implements DataBase {
 			oracleDataSource.setPassword("sandra");
 			conn = oracleDataSource.getConnection();
 
-		} catch (SQLException exception) {
-			System.out.println("ERROR : " + exception);
-			exception.printStackTrace();
+		} catch (Exception exception) {			
 			return noProjects;
 		}
 		List<String> projectNames = new ArrayList<String>();
@@ -119,7 +117,6 @@ public class DBask implements DataBase {
 			}
 			return projectNames.toArray(new String[0]);
 		} catch (Exception exception) {
-			exception.printStackTrace();
 			return noProjects;
 		}
 	}
