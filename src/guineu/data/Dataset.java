@@ -19,6 +19,7 @@ package guineu.data;
 
 import guineu.data.impl.DatasetType;
 import java.util.List;
+import java.util.Vector;
 
 public interface Dataset {
 
@@ -26,11 +27,11 @@ public interface Dataset {
 
 	public String getDatasetName();
 
-	public Iterable<String> getNameExperiments();
+	public Vector<String> getNameExperiments();
 
 	public int getNumberCols();
 
-	public int getNumberRows();
+	public int getNumberRows();	
 
 	public void setDatasetName(String name);
 

@@ -15,7 +15,7 @@
     <!-- <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"/>
     <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView"/>
-    <module class="guineu.modules.filter.Alignment.AlignmentDatasets"/>  
+    <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"/>  
     <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  
     <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
     <module class="guineu.modules.filter.splitdatasets.Split"/>  

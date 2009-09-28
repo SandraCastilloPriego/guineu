@@ -23,6 +23,8 @@ import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.impl.MainWindow;
 import guineu.taskcontrol.TaskController;
+import guineu.util.NumberFormatter;
+import guineu.util.NumberFormatter.FormatterType;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.logging.Level;
@@ -54,13 +56,14 @@ public abstract class GuineuCore {
 	public static final String NODES_ELEMENT_NAME = "nodes";
 	public static final String LOCAL_ATTRIBUTE_NAME = "local";
 	public static final String DESKTOP_ELEMENT_NAME = "desktop";
-
+	public static final String PREFERENCES_ELEMENT_NAME = "preferences";
+	
 	private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
-
 	protected static TaskController taskController;
 	protected static Desktop desktop;
 	//protected static GuineuProject currentProject;
 	protected static GuineuModule[] initializedModules;
+	protected static GuineuPreferences preferences;
 
 	/**
 	 * Returns a reference to local task controller.
@@ -85,9 +88,8 @@ public abstract class GuineuCore {
 	 * 
 	 */
 	/*public static GuineuProject getCurrentProject() {
-		return currentProject;
+	return currentProject;
 	}*/
-
 	/**
 	 * Returns an array of all initialized Guineu modules
 	 * 
@@ -105,13 +107,13 @@ public abstract class GuineuCore {
 		saveConfiguration(CONFIG_FILE);
 		// If we have GUI, ask if use really wants to quit
 		if (desktop != null) {
-			int selectedValue = JOptionPane.showInternalConfirmDialog(desktop
-					.getMainFrame().getContentPane(),
+			int selectedValue = JOptionPane.showInternalConfirmDialog(desktop.getMainFrame().getContentPane(),
 					"Are you sure you want to exit Guineu?", "Exiting...",
 					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-			if (selectedValue != JOptionPane.YES_OPTION)
+			if (selectedValue != JOptionPane.YES_OPTION) {
 				return;
+			}
 			desktop.getMainFrame().dispose();
 		}
 
@@ -128,14 +130,23 @@ public abstract class GuineuCore {
 			Document configuration = reader.read(CONFIG_FILE);
 			Element configRoot = configuration.getRootElement();
 
+			/*Element preferencesConfigElement = configRoot.element(PREFERENCES_ELEMENT_NAME);
+			if (preferencesConfigElement == null) {
+				preferencesConfigElement = configRoot.addElement(PREFERENCES_ELEMENT_NAME);
+			}
+			preferencesConfigElement.clearContent();
+			try {
+				preferences.exportValuesToXML(preferencesConfigElement);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "Could not save preferences", e);
+			}*/
+
+
 			// save desktop configuration
-			StorableParameterSet desktopParameters = ((MainWindow) desktop)
-					.getParameterSet();
-			Element desktopConfigElement = configRoot
-					.element(DESKTOP_ELEMENT_NAME);
+			StorableParameterSet desktopParameters = ((MainWindow) desktop).getParameterSet();
+			Element desktopConfigElement = configRoot.element(DESKTOP_ELEMENT_NAME);
 			if (desktopConfigElement == null) {
-				desktopConfigElement = configRoot
-						.addElement(DESKTOP_ELEMENT_NAME);
+				desktopConfigElement = configRoot.addElement(DESKTOP_ELEMENT_NAME);
 			}
 			desktopConfigElement.clearContent();
 			try {
@@ -149,32 +160,27 @@ public abstract class GuineuCore {
 			for (GuineuModule module : getAllModules()) {
 
 				ParameterSet currentParameters = module.getParameterSet();
-				if ((currentParameters == null)
-						|| (!(currentParameters instanceof StorableParameterSet)))
+				if ((currentParameters == null) || (!(currentParameters instanceof StorableParameterSet))) {
 					continue;
+				}
 
 				String className = module.getClass().getName();
-				String xpathLocation = "//configuration/modules/module[@class='"
-						+ className + "']";
-				Element moduleElement = (Element) configuration
-						.selectSingleNode(xpathLocation);
+				String xpathLocation = "//configuration/modules/module[@class='" + className + "']";
+				Element moduleElement = (Element) configuration.selectSingleNode(xpathLocation);
 				if (moduleElement != null) {
 
-					Element parametersElement = moduleElement
-							.element(PARAMETERS_ELEMENT_NAME);
-					if (parametersElement == null)
-						parametersElement = moduleElement
-								.addElement(PARAMETERS_ELEMENT_NAME);
-					else
+					Element parametersElement = moduleElement.element(PARAMETERS_ELEMENT_NAME);
+					if (parametersElement == null) {
+						parametersElement = moduleElement.addElement(PARAMETERS_ELEMENT_NAME);
+					} else {
 						parametersElement.clearContent();
+					}
 
 					try {
-						((StorableParameterSet) currentParameters)
-								.exportValuesToXML(parametersElement);
+						((StorableParameterSet) currentParameters).exportValuesToXML(parametersElement);
 					} catch (Exception e) {
 						logger.log(Level.SEVERE,
-								"Could not save configuration of module "
-										+ module, e);
+								"Could not save configuration of module " + module, e);
 					}
 				}
 
@@ -189,8 +195,7 @@ public abstract class GuineuCore {
 			logger.info("Saved configuration to file " + file);
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Could not update configuration file "
-					+ file, e);
+			logger.log(Level.SEVERE, "Could not update configuration file " + file, e);
 		}
 
 	}
@@ -204,34 +209,35 @@ public abstract class GuineuCore {
 
 			logger.finest("Loading desktop configuration");
 
-			StorableParameterSet desktopParameters = (StorableParameterSet) desktop
-					.getParameterSet();
-			Element desktopConfigElement = configRoot
-					.element(DESKTOP_ELEMENT_NAME);
-			if (desktopConfigElement != null)
+			/*Element preferencesConfigElement = configRoot.element(PREFERENCES_ELEMENT_NAME);
+			if (preferencesConfigElement != null) {
+				preferences.importValuesFromXML(preferencesConfigElement);
+			}*/
+
+			StorableParameterSet desktopParameters = (StorableParameterSet) desktop.getParameterSet();
+			Element desktopConfigElement = configRoot.element(DESKTOP_ELEMENT_NAME);
+			if (desktopConfigElement != null) {
 				desktopParameters.importValuesFromXML(desktopConfigElement);
+			}
 
 			logger.finest("Loading modules configuration");
 
 			for (GuineuModule module : getAllModules()) {
 				String className = module.getClass().getName();
-				String xpathLocation = "//configuration/modules/module[@class='"
-						+ className + "']";
+				String xpathLocation = "//configuration/modules/module[@class='" + className + "']";
 
-				Element moduleElement = (Element) configuration
-						.selectSingleNode(xpathLocation);
-				if (moduleElement == null)
+				Element moduleElement = (Element) configuration.selectSingleNode(xpathLocation);
+				if (moduleElement == null) {
 					continue;
+				}
 
-				Element parametersElement = moduleElement
-						.element(PARAMETERS_ELEMENT_NAME);
+				Element parametersElement = moduleElement.element(PARAMETERS_ELEMENT_NAME);
 
 				if (parametersElement != null) {
 					ParameterSet moduleParameters = module.getParameterSet();
-					if ((moduleParameters != null)
-							&& (moduleParameters instanceof StorableParameterSet))
-						((StorableParameterSet) moduleParameters)
-								.importValuesFromXML(parametersElement);
+					if ((moduleParameters != null) && (moduleParameters instanceof StorableParameterSet)) {
+						((StorableParameterSet) moduleParameters).importValuesFromXML(parametersElement);
+					}
 				}
 
 			}
@@ -239,16 +245,31 @@ public abstract class GuineuCore {
 			logger.info("Loaded configuration from file " + file);
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Could not parse configuration file "
-					+ file, e);
+			logger.log(Level.SEVERE, "Could not parse configuration file " + file, e);
 		}
 
 	}
 
-	
 	public static void setDesktop(MainWindow mainWindow) {
 		desktop = mainWindow;
 	}
 
-	
+	// Number formatting functions
+	public static NumberFormatter getIntensityFormat() {
+		return preferences.getIntensityFormat();
+	}
+
+	public static NumberFormatter getMZFormat() {
+		if(preferences == null || preferences.getMZFormat() == null){
+			return new NumberFormatter(FormatterType.NUMBER, "0.000");
+		}
+		return preferences.getMZFormat();
+	}
+
+	public static NumberFormatter getRTFormat() {
+		if(preferences == null || preferences.getRTFormat() == null){
+			return new NumberFormatter(FormatterType.TIME, "m:ss");
+		}
+		return preferences.getRTFormat();
+	}
 }
