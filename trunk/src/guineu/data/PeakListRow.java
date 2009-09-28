@@ -52,4 +52,6 @@ public interface PeakListRow {
     public Object getVar(String varName);
 
     public void setVar(String varName, Object value);
+
+	
 }

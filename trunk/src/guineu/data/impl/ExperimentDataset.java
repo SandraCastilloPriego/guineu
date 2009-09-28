@@ -68,7 +68,7 @@ public class ExperimentDataset implements Dataset {
         return this.type;
     }
 
-    public Iterable<String> getNameExperiments() {
+    public Vector<String> getNameExperiments() {
 		return columnNames;
     }
 

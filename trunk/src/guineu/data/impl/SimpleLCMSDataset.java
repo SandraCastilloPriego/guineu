@@ -19,6 +19,7 @@ package guineu.data.impl;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import guineu.util.Range;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -114,4 +115,8 @@ public class SimpleLCMSDataset implements Dataset {
     public void AddNameExperiment(String nameExperiment, int position) {
         this.nameExperiments.insertElementAt(nameExperiment, position);
     }
+
+	public String toString(){
+		return this.getDatasetName();
+	}
 }

@@ -68,7 +68,7 @@ class MainMenu extends JMenuBar implements ActionListener {
         identificationSubMenu.setMnemonic(KeyEvent.VK_I);
         identificationMenu.add(identificationSubMenu);
 
-        identificationFilterMenu = new JMenu("Filters");
+        identificationFilterMenu = new JMenu("Identification Filters");
         identificationFilterMenu.setMnemonic(KeyEvent.VK_F);
         identificationMenu.add(identificationFilterMenu);
 

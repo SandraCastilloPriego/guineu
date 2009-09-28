@@ -27,6 +27,8 @@ import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.SimplePeakListRowLCMS;
+import guineu.data.impl.SimplePeakListRowOther;
 import guineu.util.Tables.DataTableModel;
 
 /**
@@ -34,6 +36,19 @@ import guineu.util.Tables.DataTableModel;
  * @author scsandra
  */
 public class FileUtils {
+
+	public static PeakListRow getPeakListRow(DatasetType type){
+		if (type == DatasetType.LCMS) {
+			return new SimplePeakListRowLCMS();
+		} else if (type  == DatasetType.GCGCTOF) {
+			return new SimplePeakListRowGCGC();
+		} else if (type  == DatasetType.OTHER) {
+			return new SimplePeakListRowOther();
+		}else{
+			return null;
+		}
+	}
+
 
 	public static Dataset getDataset(Dataset dataset, String Name) {
 		Dataset newDataset = null;

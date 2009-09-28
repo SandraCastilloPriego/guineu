@@ -257,6 +257,10 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.pubchemID = pubchemID;
 	}
 
+	public Hashtable<String, Double> getPeaksTable(){
+		return this.peaks;
+	}
+
 	
      public Object getVar(String varName) {
         try {
