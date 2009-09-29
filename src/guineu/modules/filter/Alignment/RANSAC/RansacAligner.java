@@ -49,7 +49,7 @@ public class RansacAligner implements GuineuModule, TaskListener, ActionListener
 		parameters = new RansacAlignerParameters();
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Combine datasets..",
-				"TODO write description", KeyEvent.VK_A, this, null, null);
+				"TODO write description", KeyEvent.VK_A, this, null,  "icons/alignment.png");
 		desktop.addMenuSeparator(GuineuMenu.ALIGNMENT);
 	}
 
