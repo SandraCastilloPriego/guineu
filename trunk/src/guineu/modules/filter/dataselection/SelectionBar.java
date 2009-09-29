@@ -21,8 +21,11 @@ package guineu.modules.filter.dataselection;
 
 
 
+import guineu.data.Dataset;
 import guineu.desktop.Desktop;
+import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
+import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import javax.swing.JTable;
 
@@ -257,7 +260,7 @@ public class SelectionBar extends javax.swing.JPanel {
 
     private void jButtonDeleteRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteRowsActionPerformed
         JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable(); 
-        ((DataTableModel)table.getModel()).removeRows();    
+        ((DataTableModel)table.getModel()).removeRows();	
         
 }//GEN-LAST:event_jButtonDeleteRowsActionPerformed
 
@@ -277,14 +280,7 @@ public class SelectionBar extends javax.swing.JPanel {
     private void select(){        
         int index = this.jComboBox1.getSelectedIndex();
         for(int i = 0; i < selectedTable.getRowCount(); i++){
-            if(index == 6){ 
-                try{
-                    if(selectedTable.getValueAt(i, index).toString().matches(Double.valueOf(this.jTextField1.getText()).toString())){
-                        selectedTable.setValueAt(new Boolean(true), i, 0);
-                    }    
-                }catch(Exception e){                    
-                }
-            }else if(selectedTable.getValueAt(i, index).toString().matches(".*"+this.jTextField1.getText()+".*")){
+            if(selectedTable.getValueAt(i, index).toString().matches(".*"+this.jTextField1.getText()+".*")){
                 selectedTable.setValueAt(new Boolean(true), i, 0);
             }
         }

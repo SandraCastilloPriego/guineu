@@ -20,8 +20,8 @@ package guineu.data.parser.impl;
 public enum RegExp {
 
     ID("^ID.*"),
-    MZ(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*"),
-    RT(".*Average RT.*|.*Average retention time.*|.*retention time*"),
+    MZ(".*Average M/Z.*|.*Average m/z.*|.*row m/z.*|.*m/z.*"),
+    RT(".*Average RT.*|.*Average retention time.*|.*etention time*"),
     NAME(".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|"),
     ALLNAMES(".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*"),
     CLASS(".*Class.*"),
