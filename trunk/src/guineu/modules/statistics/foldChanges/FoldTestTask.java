@@ -19,12 +19,6 @@ package guineu.modules.statistics.foldChanges;
 
 import guineu.data.PeakListRow;
 import guineu.data.Dataset;
-import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
