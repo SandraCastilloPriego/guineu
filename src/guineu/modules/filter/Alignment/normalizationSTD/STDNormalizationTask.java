@@ -33,10 +33,10 @@ class STDNormalizationTask implements Task {
 	private String errorMessage;
 	// Processed rows counter
 	private int processedRows,  totalRows;
-	
+
 	public STDNormalizationTask(Dataset[] peakLists) {
 
-		this.peakLists = peakLists;		
+		this.peakLists = peakLists;
 	}
 
 	/**
@@ -84,7 +84,7 @@ class STDNormalizationTask implements Task {
 		status = TaskStatus.PROCESSING;
 		logger.info("Running Normalization");
 
-		for(Dataset data: this.peakLists){
+		for (Dataset data : this.peakLists) {
 			normalize(data);
 		}
 		logger.info(
@@ -95,16 +95,20 @@ class STDNormalizationTask implements Task {
 
 	private void normalize(Dataset data) {
 		DescriptiveStatistics stats = new DescriptiveStatistics();
-		for(String nameExperiment : data.getNameExperiments()){
-			for(PeakListRow row : data.getRows()){
-				stats.addValue((Double)row.getPeak(nameExperiment));
+		for (String nameExperiment : data.getNameExperiments()) {
+			for (PeakListRow row : data.getRows()) {
+				Object value = row.getPeak(nameExperiment);
+				if (value != null) {
+					stats.addValue((Double) value);
+				}
 			}
-			for(PeakListRow row : data.getRows()){
-				row.setPeak(nameExperiment, (Double)row.getPeak(nameExperiment)/stats.getStandardDeviation());
+			for (PeakListRow row : data.getRows()) {
+				Object value = row.getPeak(nameExperiment);
+				if (value != null) {
+					row.setPeak(nameExperiment, (Double) value / stats.getStandardDeviation());
+				}
 			}
 			stats.clear();
 		}
 	}
-
-	
 }

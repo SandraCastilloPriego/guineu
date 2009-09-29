@@ -44,7 +44,7 @@ public class STDNormalization implements GuineuModule, TaskListener, ActionListe
 		this.desktop = GuineuCore.getDesktop();
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Normalize datasets..",
-				"TODO write description", KeyEvent.VK_A, this, null, null);		
+				"TODO write description", KeyEvent.VK_N, this, null, null);
 	}
 
 	public String toString() {

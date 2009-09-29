@@ -108,8 +108,10 @@ public class variationCoefficientRowFilterTask implements Task {
 	public double CoefficientOfVariation(PeakListRow row) {
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		for (Object peak : row.getPeaks()) {
-			stats.addValue((Double) peak);
+			if (peak != null) {
+				stats.addValue((Double) peak);
+			}
 		}
 		return stats.getStandardDeviation() / stats.getMean();
-	}	
+	}
 }
