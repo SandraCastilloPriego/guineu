@@ -76,7 +76,8 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
             PeakListRow row = this.dataset.getRow(i);
             if (row.isSelected()) {
                 this.dataset.removeRow(row);
-                fireTableStructureChanged();
+               // fireTableStructureChanged();
+				this.fireTableDataChanged();
                 this.removeRows();
                 break;
             }
