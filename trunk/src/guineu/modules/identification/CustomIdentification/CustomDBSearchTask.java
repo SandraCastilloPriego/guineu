@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import com.Ostermiller.util.CSVParser;
 import guineu.data.Dataset;
+import guineu.data.IdentificationType;
 import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleLCMSDataset;
@@ -50,6 +51,7 @@ class CustomDBSearchTask implements Task {
 	private boolean ignoreFirstLine;
 	private double mzTolerance;
 	private double rtTolerance;
+	private IdentificationType type;
 
 	CustomDBSearchTask(Dataset peakList, CustomDBSearchParameters parameters) {
 		status = TaskStatus.WAITING;
@@ -64,7 +66,11 @@ class CustomDBSearchTask implements Task {
 		ignoreFirstLine = (Boolean) parameters.getParameterValue(CustomDBSearchParameters.ignoreFirstLine);
 		mzTolerance = (Double) parameters.getParameterValue(CustomDBSearchParameters.mzTolerance);
 		rtTolerance = (Double) parameters.getParameterValue(CustomDBSearchParameters.rtTolerance);
-
+		if ((Boolean) parameters.getParameterValue(CustomDBSearchParameters.MS)) {
+			type = IdentificationType.MSMS;
+		} else {
+			type = IdentificationType.MS;
+		}
 	}
 
 	public void cancel() {
@@ -153,22 +159,29 @@ class CustomDBSearchTask implements Task {
 
 		for (PeakListRow peakrow : peakList.getRows()) {
 			SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) peakrow;
-			boolean mzOK = (Math.abs(peakRow.getMZ() - lineMZ) < mzTolerance);
-			boolean rtOK = (Math.abs(peakRow.getRT() - lineRT) < rtTolerance);
+			if (peakRow.getIdentificationType().compareTo(IdentificationType.UNKNOWN.toString()) == 0 || peakRow.getIdentificationType().compareTo(IdentificationType.MS.toString()) == 0) {
+				boolean mzOK = (Math.abs(peakRow.getMZ() - lineMZ) < mzTolerance);
+				boolean rtOK = (Math.abs(peakRow.getRT() - lineRT) < rtTolerance);
 
-			if (mzOK && rtOK) {
-				String name = peakRow.getName();
-				if (name.matches(".*nknown.*")) {
-					peakRow.setName(lineName);
-				} else {
-					String allNames = peakRow.getAllNames();
-					if (allNames != null) {
-						peakRow.setAllNames(allNames + " // " + lineName);
+				if (mzOK && rtOK) {
+					String name = peakRow.getName();
+					if (name.matches(".*nknown.*") || this.type == IdentificationType.MSMS || this.type == IdentificationType.UNKNOWN) {
+						peakRow.setName(lineName);
+						peakRow.setVTTD(lineID);
 					} else {
-						peakRow.setAllNames(lineName);
+						String allNames = peakRow.getAllNames();
+						String allVTTIDs = peakRow.getAllVTTID();
+						if (allNames != null) {
+							peakRow.setAllNames(allNames + " // " + lineName);
+							peakRow.setAllVTTD(allVTTIDs + " // " + lineID);
+						} else {
+							peakRow.setAllNames(lineName);
+							peakRow.setAllVTTD(lineID);
+						}
 					}
-				}
+					peakRow.setIdentificationType(type.toString());
 
+				}
 			}
 		}
 

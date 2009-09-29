@@ -25,6 +25,7 @@ public enum LCMSColumnName {
     RT("Retention time", true, "getRT", "setRT"),
     NAME("Name", true, "getName", "setName"),
     ALLNAMES("All names", true, "getAllNames", "setAllNames"),
+	IDENTIFICATION("Identification type", true, "getIdentificationType", "setIdentificationType"),
     PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID"),
     VTT("VTT ID", true, "getVTTID", "setVTTD"),
     ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD"),

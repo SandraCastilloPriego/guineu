@@ -39,6 +39,9 @@ public enum RegExp {
     MEANSIM(".*Mean sim.*|.*Mean Sim.*"),
     SIMSTD(".*Similarity std dev.*"),
     SPECTRUM(".*Spectrum.*|.*Spectra.*"),
+	VTTID(".*VTT ID.*"),
+	VTTALLID(".*All VTT IDs.*"),
+	IDENTIFICATION(".*Identification type.*"),
 	CAS(".*CAS.*");
     private final String columnName;
 

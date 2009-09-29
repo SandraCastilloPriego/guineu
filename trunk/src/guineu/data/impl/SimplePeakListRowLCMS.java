@@ -17,6 +17,7 @@
  */
 package guineu.data.impl;
 
+import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,16 +34,17 @@ import java.util.logging.Logger;
  */
 public class SimplePeakListRowLCMS implements PeakListRow {
 
-	private String FAComposition,  allNames,  Name, lipidClass ="0";
+	private String FAComposition,  allNames,  Name,  lipidClass = "0";
 	private double averageMZ,  averageRT,  numFound;
-	private int standard, ID,  aligment,  numFixColumns;
+	private int standard,  ID,  aligment,  numFixColumns;
 	private boolean control,  selection;
-	private String VTTid, VTTAllIDs;
+	private String VTTid,  VTTAllIDs;
 	private Hashtable<String, Double> peaks;
 	private String pubchemID;
+	private String identificationType = IdentificationType.UNKNOWN.toString();
 
 	public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound,
-			int standard, String lipidClass, String Name, String identity, String FAComposition) {
+			int standard, String lipidClass, String Name, String identificationType, String allNames, String FAComposition) {
 		this.ID = ID;
 		this.FAComposition = FAComposition;
 		this.averageMZ = averageMZ;
@@ -51,7 +53,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.standard = standard;
 		this.lipidClass = String.valueOf(lipidClass);
 		this.Name = Name;
-		this.allNames = identity;
+		this.allNames = allNames;
+		this.identificationType = identificationType;
 		this.peaks = new Hashtable<String, Double>();
 		this.aligment = -1;
 		this.numFixColumns = 11;
@@ -66,7 +69,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	@Override
 	public PeakListRow clone() {
 		PeakListRow peakListRow = new SimplePeakListRowLCMS(this.ID, this.averageMZ, this.averageRT,
-				this.numFound, this.standard, this.lipidClass, this.Name, this.allNames,
+				this.numFound, this.standard, this.lipidClass, this.Name, this.identificationType, this.allNames,
 				this.FAComposition);
 		peakListRow.setVar("setNumberAligment", aligment);
 		String str;
@@ -80,6 +83,14 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		return peakListRow;
 	}
 
+	public String getIdentificationType() {
+		return this.identificationType;
+	}
+
+	public void setIdentificationType(String identificationType) {
+		this.identificationType = identificationType;
+	}
+	
 	public double getMZ() {
 		return this.averageMZ;
 	}
@@ -187,7 +198,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	public String getPubChemID() {
 		return this.pubchemID;
 	}
-	
+
 	public void removePeaks() {
 		this.peaks = new Hashtable<String, Double>();
 	}
@@ -235,7 +246,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 				this.peaks.remove(name);
 			}
 		}
-	}	
+	}
 
 	public String getVTTID() {
 		return this.VTTid;
@@ -257,60 +268,59 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.pubchemID = pubchemID;
 	}
 
-	public Hashtable<String, Double> getPeaksTable(){
+	public Hashtable<String, Double> getPeaksTable() {
 		return this.peaks;
 	}
 
-	
-     public Object getVar(String varName) {
-        try {
-            Method m = this.getClass().getMethod(varName, new Class[]{});
-            return m.invoke(this);
+	public Object getVar(String varName) {
+		try {
+			Method m = this.getClass().getMethod(varName, new Class[]{});
+			return m.invoke(this);
 
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+		} catch (IllegalAccessException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IllegalArgumentException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InvocationTargetException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (NoSuchMethodException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (SecurityException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return null;
+	}
 
-   public void setVar(String varName, Object value) {
-        try {
-            Class partypes[] = new Class[1];
-            if (value.getClass().toString().contains("Double")) {
-                partypes[0] = Double.TYPE;
-            } else if (value.getClass().toString().contains("Integer")) {
-                partypes[0] = Integer.TYPE;
-            } else if (value.getClass().toString().contains("String")) {
-                partypes[0] = String.class;
-            } else if (value.getClass().toString().contains("Boolean")) {
-                partypes[0] = Boolean.TYPE;
-            } else {
-                partypes[0] = Object.class;
-            }
-            Method m = this.getClass().getMethod(varName, partypes);
-            Object[] parameters = new Object[1];
-            parameters[0] = value;
-            m.invoke(this, parameters);
+	public void setVar(String varName, Object value) {
+		try {
+			Class partypes[] = new Class[1];
+			if (value.getClass().toString().contains("Double")) {
+				partypes[0] = Double.TYPE;
+			} else if (value.getClass().toString().contains("Integer")) {
+				partypes[0] = Integer.TYPE;
+			} else if (value.getClass().toString().contains("String")) {
+				partypes[0] = String.class;
+			} else if (value.getClass().toString().contains("Boolean")) {
+				partypes[0] = Boolean.TYPE;
+			} else {
+				partypes[0] = Object.class;
+			}
+			Method m = this.getClass().getMethod(varName, partypes);
+			Object[] parameters = new Object[1];
+			parameters[0] = value;
+			m.invoke(this, parameters);
 
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		} catch (IllegalAccessException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IllegalArgumentException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InvocationTargetException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (NoSuchMethodException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (SecurityException ex) {
+			Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
-    }
+	}
 }
