@@ -19,6 +19,7 @@ package guineu.data.parser.impl;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
+import guineu.data.IdentificationType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 			}
 
 			int initRow = this.getRowInit(sheet);
-			
+
 			if (initRow > -1) {
 				numberRows = this.getNumberRows(initRow, sheet);
 				HSSFRow row = sheet.getRow(initRow);
@@ -74,7 +75,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 				this.readLipids(initRow + 1, numberRows, sheet);
 
 				this.setExperimentsName(head);
-			}else{
+			} else {
 				this.dataset = null;
 			}
 		} catch (IOException ex) {
@@ -148,6 +149,25 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 				} else if (title.matches(RegExp.ALLNAMES.getREgExp())) {
 					try {
 						lipid.setAllNames(cell.toString());
+					} catch (Exception e) {
+					}
+				} else if (title.matches(RegExp.VTTID.getREgExp())) {
+					try {
+						lipid.setVTTD(cell.toString());
+					} catch (Exception e) {
+					}
+				} else if (title.matches(RegExp.VTTALLID.getREgExp())) {
+					try {
+						lipid.setAllVTTD(cell.toString());
+					} catch (Exception e) {
+					}
+				} else if (title.matches(RegExp.IDENTIFICATION.getREgExp())) {
+					try {
+						if (cell.toString().compareTo(IdentificationType.MS.toString()) == 0) {
+							lipid.setIdentificationType(IdentificationType.MS.toString());
+						} else if (cell.toString().compareTo(IdentificationType.MSMS.toString()) == 0) {
+							lipid.setIdentificationType(IdentificationType.MSMS.toString());
+						}
 					} catch (Exception e) {
 					}
 				} else if (title.matches(RegExp.ALIGNMENT.getREgExp())) {

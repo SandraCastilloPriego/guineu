@@ -18,6 +18,7 @@
 package guineu.modules.identification.purgeIdentification;
 
 import guineu.data.Dataset;
+import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.parser.impl.Lipidclass;
@@ -78,7 +79,7 @@ public class purgeIdentificationTask implements Task {
 			Dataset newDataset = dataset.clone();
 			for (int i = 0; i < newDataset.getNumberRows(); i++) {
 				PeakListRow lipid = newDataset.getRow(i);
-				if (lipid == null) {
+				if (lipid == null || (IdentificationType) lipid.getVar("getIdentificationType") == IdentificationType.MSMS) {
 					continue;
 				}
 				this.getName(lipid);
@@ -174,16 +175,16 @@ public class purgeIdentificationTask implements Task {
 					this.getName(lipid);
 				} else {
 					String name = ((String) lipid.getVar("getName"));
-					name = name.substring(name.indexOf("/")+1);
+					name = name.substring(name.indexOf("/") + 1);
 					System.out.println("name" + name);
-					System.out.println(name.substring(name.indexOf(":")+1, name.indexOf(")")));
-					double num = Double.valueOf(name.substring(name.indexOf(":")+1, name.indexOf(")")));
+					System.out.println(name.substring(name.indexOf(":") + 1, name.indexOf(")")));
+					double num = Double.valueOf(name.substring(name.indexOf(":") + 1, name.indexOf(")")));
 					System.out.println("numero" + num);
-						if (num > 3) {
-							this.getFirstName(lipid);
-							this.getName(lipid);
-						}
-					
+					if (num > 3) {
+						this.getFirstName(lipid);
+						this.getName(lipid);
+					}
+
 				}
 			} else if (((String) lipid.getVar("getName")).matches(".*PA.*") || ((String) lipid.getVar("getName")).matches(".*PG.*")) {
 				lipid.setVar("setName", "unknown");
