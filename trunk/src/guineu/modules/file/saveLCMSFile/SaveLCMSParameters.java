@@ -29,18 +29,18 @@ public class SaveLCMSParameters extends SimpleParameterSet {
 	static Object[] objects = {"Excel", "csv"};
     public static final Parameter LCMSfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
-            "Filename",
+            "LCMS Filename",
             "Name of exported peak list file name. If the file exists, it won't be overwritten.");
     public static final Parameter fieldSeparator = new SimpleParameter(
             ParameterType.STRING, "Field separator",
             "Character(s) used to separate fields in the exported file",
             (Object) ",");
     public static final Parameter exportLCMS = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Export elements",
+            ParameterType.MULTIPLE_SELECTION, "Export LCMS elements",
             "Multiple selection of row's elements to export", null, LCMSColumnName.values());
     
     public static final Parameter type = new SimpleParameter(
-            ParameterType.STRING, "type",
+            ParameterType.STRING, "LCMS type",
             "Type of file", null, null, objects, null);
 
     public SaveLCMSParameters() {
