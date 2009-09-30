@@ -29,18 +29,18 @@ public class SaveGCGCParameters extends SimpleParameterSet {
 	static Object[] objects = {"Excel", "csv"};
     public static final Parameter GCGCfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
-            "Filename",
+            "GCGC Filename",
             "Name of exported peak list file name. If the file exists, it won't be overwritten.");
     public static final Parameter fieldSeparator = new SimpleParameter(
             ParameterType.STRING, "Field separator",
             "Character(s) used to separate fields in the exported file",
             (Object) ",");
     public static final Parameter exportGCGC = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Export elements",
+            ParameterType.MULTIPLE_SELECTION, "Export GCGC elements",
             "Multiple selection of row's elements to export", null, GCGCColumnName.values());
     
     public static final Parameter type = new SimpleParameter(
-            ParameterType.STRING, "type",
+            ParameterType.STRING, "GCGC type",
             "Type of file", null, null, objects, null);
 
     public SaveGCGCParameters() {
