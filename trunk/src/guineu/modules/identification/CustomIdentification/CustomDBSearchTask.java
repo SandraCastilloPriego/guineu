@@ -167,16 +167,22 @@ class CustomDBSearchTask implements Task {
 					String name = peakRow.getName();
 					if (name.matches(".*nknown.*") || this.type == IdentificationType.MSMS || this.type == IdentificationType.UNKNOWN) {
 						peakRow.setName(lineName);
-						peakRow.setVTTD(lineID);
+						peakRow.setVTTID(lineID);
+
 					} else {
 						String allNames = peakRow.getAllNames();
 						String allVTTIDs = peakRow.getAllVTTID();
 						if (allNames != null) {
 							peakRow.setAllNames(allNames + " // " + lineName);
-							peakRow.setAllVTTD(allVTTIDs + " // " + lineID);
 						} else {
 							peakRow.setAllNames(lineName);
-							peakRow.setAllVTTD(lineID);
+						}
+						if (!lineID.matches(".*N/A.*")) {
+							if (allVTTIDs != null) {
+								peakRow.setAllVTTD(allVTTIDs + " // " + lineID);
+							} else {
+								peakRow.setAllVTTD(lineID);
+							}
 						}
 					}
 					peakRow.setIdentificationType(type.toString());

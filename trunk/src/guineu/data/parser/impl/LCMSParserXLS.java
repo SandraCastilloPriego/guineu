@@ -153,7 +153,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 					}
 				} else if (title.matches(RegExp.VTTID.getREgExp())) {
 					try {
-						lipid.setVTTD(cell.toString());
+						lipid.setVTTID(cell.toString());
 					} catch (Exception e) {
 					}
 				} else if (title.matches(RegExp.VTTALLID.getREgExp())) {
