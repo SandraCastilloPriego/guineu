@@ -252,7 +252,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		return this.VTTid;
 	}
 
-	public void setVTTD(String VTTID) {
+	public void setVTTID(String VTTID) {
 		this.VTTid = VTTID;
 	}
 

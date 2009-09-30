@@ -23,6 +23,7 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.data.datamodels.DatasetLCMSDataModel;
+import guineu.data.datamodels.LCMSColumnName;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
@@ -76,20 +77,19 @@ public class purgeIdentificationTask implements Task {
 	public void run() {
 		try {
 			status = TaskStatus.PROCESSING;
-			Dataset newDataset = dataset.clone();
-			for (int i = 0; i < newDataset.getNumberRows(); i++) {
-				PeakListRow lipid = newDataset.getRow(i);
-				if (lipid == null || (IdentificationType) lipid.getVar("getIdentificationType") == IdentificationType.MSMS) {
-					continue;
+			if (dataset != null) {
+				for (int i = 0; i < dataset.getNumberRows(); i++) {
+					PeakListRow lipid = dataset.getRow(i);
+					if (lipid == null || ((String) lipid.getVar("getIdentificationType")).compareTo(IdentificationType.MSMS.toString()) == 0) {
+						continue;
+					}
+					this.getName(lipid);
 				}
-				this.getName(lipid);
 			}
-			newDataset.setType(DatasetType.LCMS);
-			desktop.AddNewFile(newDataset);
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;
-			// errorMessage = e.toString();
+			errorMessage = e.toString();
 			return;
 		}
 	}
@@ -149,6 +149,9 @@ public class purgeIdentificationTask implements Task {
 
 			} else if (((String) lipid.getVar("getName")).matches(".*PS.*") || ((String) lipid.getVar("getName")).matches(".*PI.*")) {
 				lipid.setVar("setName", "unknown");
+				lipid.setVar(LCMSColumnName.VTT.getSetFunctionName(), "");
+				lipid.setVar(LCMSColumnName.ALLVTT.getSetFunctionName(), "");
+				lipid.setVar(LCMSColumnName.IDENTIFICATION.getSetFunctionName(), IdentificationType.UNKNOWN.toString());
 			/*if (lipid.getRT() < 300 || lipid.getRT() > 420 || lipid.getMZ() < 550) {
 			this.getFirstName(lipid);
 			this.getName(lipid);
@@ -169,6 +172,9 @@ public class purgeIdentificationTask implements Task {
 				this.getName(lipid);
 				}*/
 				lipid.setVar("setName", "unknown");
+				lipid.setVar(LCMSColumnName.VTT.getSetFunctionName(), "");
+				lipid.setVar(LCMSColumnName.ALLVTT.getSetFunctionName(), "");
+				lipid.setVar(LCMSColumnName.IDENTIFICATION.getSetFunctionName(), IdentificationType.UNKNOWN.toString());
 			} else if (((String) lipid.getVar("getName")).matches(".*SM.*")) {
 				if ((Double) lipid.getVar("getRT") > 420 || (Double) lipid.getVar("getRT") < 330 || !((String) lipid.getVar("getName")).matches(".*d18:1.*")) {
 					this.getFirstName(lipid);
@@ -176,10 +182,10 @@ public class purgeIdentificationTask implements Task {
 				} else {
 					String name = ((String) lipid.getVar("getName"));
 					name = name.substring(name.indexOf("/") + 1);
-					System.out.println("name" + name);
-					System.out.println(name.substring(name.indexOf(":") + 1, name.indexOf(")")));
+					//System.out.println("name" + name);
+					//System.out.println(name.substring(name.indexOf(":") + 1, name.indexOf(")")));
 					double num = Double.valueOf(name.substring(name.indexOf(":") + 1, name.indexOf(")")));
-					System.out.println("numero" + num);
+					//System.out.println("numero" + num);
 					if (num > 3) {
 						this.getFirstName(lipid);
 						this.getName(lipid);
@@ -188,6 +194,9 @@ public class purgeIdentificationTask implements Task {
 				}
 			} else if (((String) lipid.getVar("getName")).matches(".*PA.*") || ((String) lipid.getVar("getName")).matches(".*PG.*")) {
 				lipid.setVar("setName", "unknown");
+				lipid.setVar(LCMSColumnName.VTT.getSetFunctionName(), "");
+				lipid.setVar(LCMSColumnName.ALLVTT.getSetFunctionName(), "");
+				lipid.setVar(LCMSColumnName.IDENTIFICATION.getSetFunctionName(), IdentificationType.UNKNOWN.toString());
 			/* if (lipid.getRT() > 410 || lipid.getMZ() < 550) {
 			this.getFirstName(lipid);
 			this.getName(lipid);
@@ -261,10 +270,16 @@ public class purgeIdentificationTask implements Task {
 					this.getName(lipid);
 				} else {
 					lipid.setVar("setName", "unknown");
+					lipid.setVar(LCMSColumnName.VTT.getSetFunctionName(), "");
+					lipid.setVar(LCMSColumnName.ALLVTT.getSetFunctionName(), "");
+					lipid.setVar(LCMSColumnName.IDENTIFICATION.getSetFunctionName(), IdentificationType.UNKNOWN.toString());
 				}
 			}
 		} catch (Exception e) {
 			lipid.setVar("setName", "unknown");
+			lipid.setVar(LCMSColumnName.VTT.getSetFunctionName(), "");
+			lipid.setVar(LCMSColumnName.ALLVTT.getSetFunctionName(), "");
+			lipid.setVar(LCMSColumnName.IDENTIFICATION.getSetFunctionName(), IdentificationType.UNKNOWN.toString());
 			// System.out.println("getName ->  " + e.getMessage());
 			return;
 		}

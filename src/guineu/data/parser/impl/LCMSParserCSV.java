@@ -113,7 +113,7 @@ public class LCMSParserCSV implements Parser {
 				} else if (header[i].matches(RegExp.VTTALLID.getREgExp())) {
 					lipid.setAllVTTD(sdata[i]);
 				} else if (header[i].matches(RegExp.VTTID.getREgExp())) {
-					lipid.setVTTD(sdata[i]);
+					lipid.setVTTID(sdata[i]);
 				} else if (header[i].matches(RegExp.IDENTIFICATION.getREgExp())) {
 					if (sdata[i].compareTo(IdentificationType.MS.toString()) == 0) {
 						lipid.setIdentificationType(IdentificationType.MS.toString());
