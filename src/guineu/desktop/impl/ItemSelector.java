@@ -37,6 +37,8 @@ import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.components.DragOrderedJList;
+import guineu.util.dialogs.ExitCode;
+import guineu.util.dialogs.ParameterSetupDialog;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -67,6 +69,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
+	private NameChangeParameter parameterName;
 
 	/**
 	 * Constructor
@@ -99,10 +102,12 @@ public class ItemSelector extends JPanel implements ActionListener,
 		dataFilePopupMenu = new JPopupMenu();
 		GUIUtils.addMenuItem(dataFilePopupMenu, "Change Name", this, "CHANGE_NAME");
 		GUIUtils.addMenuItem(dataFilePopupMenu, "Show Dataset", this, "SHOW_DATASET");
+		GUIUtils.addMenuItem(dataFilePopupMenu, "Add Comments", this, "ADD_COMMENT");
 		GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset in a File", this, "SAVE_DATASET");
 		GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
 		GUIUtils.addMenuItem(dataFilePopupMenu, "Remove", this, "REMOVE_FILE");
 
+		this.parameterName = new NameChangeParameter();
 
 	}
 
@@ -110,15 +115,38 @@ public class ItemSelector extends JPanel implements ActionListener,
 		DatasetFiles.addListSelectionListener(listener);
 	}
 
+	public ExitCode setupParameters() {
+		try {
+			ParameterSetupDialog dialog = new ParameterSetupDialog("Change Name", parameterName);
+			dialog.setVisible(true);
+			return dialog.getExitCode();
+		} catch (Exception exception) {
+			return ExitCode.CANCEL;
+		}
+	}
+
 	// Implementation of action listener interface
 	public void actionPerformed(ActionEvent e) {
 		Runtime.getRuntime().freeMemory();
-		String command = e.getActionCommand();
+		String command = e.getActionCommand();		
+		Boolean changeName = false;
 
-		if (command.equals("CHANGE_NAME")) {
-			//Dataset[] selectedFiles = getSelectedDatasets();
-			/**TO FINISH **/
+		if (command.equals("CHANGE_NAME") || changeName) {
+			ExitCode code = this.setupParameters();
+			changeName = true;
+			if (code != ExitCode.OK) {
+				return;
+			}
+			
+			Dataset[] selectedFiles = this.getSelectedDatasets();
+			if(selectedFiles[0] != null){
+				int index = DatasetNamesModel.indexOf(selectedFiles[0].getDatasetName());
+				selectedFiles[0].setDatasetName((String) parameterName.getParameterValue(NameChangeParameter.name));
+			   	DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
+			}
+			changeName = false;
 		}
+		
 
 		if (command.equals("REMOVE_FILE")) {
 			removeData();
@@ -150,7 +178,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 				save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveGCGCParameters());
 				save.initModule();
 				((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveGCGCParameters((SimpleParameterSet) save.getParameterSet());
-			}else {
+			} else {
 				SaveOtherFile save = new SaveOtherFile(selectedFiles);
 				save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveOtherParameters());
 				save.initModule();
