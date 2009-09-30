@@ -19,15 +19,11 @@ package guineu.desktop.impl;
 
 import guineu.data.Dataset;
 
-import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
-import guineu.data.datamodels.OtherDataModel;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveGCGCFile.SaveGCGCFile;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
@@ -37,6 +33,7 @@ import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.components.DragOrderedJList;
+import guineu.util.components.FileUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import guineu.util.internalframe.DataInternalFrame;
@@ -66,10 +63,12 @@ public class ItemSelector extends JPanel implements ActionListener,
 	public static final String DATA_FILES_LABEL = "Dataset Files";
 	private DragOrderedJList DatasetFiles;
 	private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
+	private List<String> InfoFilesModel = new ArrayList<String>();
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
 	private NameChangeParameter parameterName;
+	private InfoDatasetDialog dialog;
 
 	/**
 	 * Constructor
@@ -117,7 +116,17 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 	public ExitCode setupParameters() {
 		try {
-			ParameterSetupDialog dialog = new ParameterSetupDialog("Change Name", parameterName);
+			ParameterSetupDialog nameDialog = new ParameterSetupDialog("Change Name", parameterName);
+			nameDialog.setVisible(true);
+			return nameDialog.getExitCode();
+		} catch (Exception exception) {
+			return ExitCode.CANCEL;
+		}
+	}
+
+	public ExitCode setupInfoDialog(String infoData) {
+		try {
+			dialog = new InfoDatasetDialog(GuineuCore.getDesktop().getMainFrame(), true, infoData);
 			dialog.setVisible(true);
 			return dialog.getExitCode();
 		} catch (Exception exception) {
@@ -128,8 +137,9 @@ public class ItemSelector extends JPanel implements ActionListener,
 	// Implementation of action listener interface
 	public void actionPerformed(ActionEvent e) {
 		Runtime.getRuntime().freeMemory();
-		String command = e.getActionCommand();		
+		String command = e.getActionCommand();
 		Boolean changeName = false;
+		Boolean addInfo = false;
 
 		if (command.equals("CHANGE_NAME") || changeName) {
 			ExitCode code = this.setupParameters();
@@ -137,16 +147,31 @@ public class ItemSelector extends JPanel implements ActionListener,
 			if (code != ExitCode.OK) {
 				return;
 			}
-			
+
 			Dataset[] selectedFiles = this.getSelectedDatasets();
-			if(selectedFiles[0] != null){
+			if (selectedFiles != null) {
 				int index = DatasetNamesModel.indexOf(selectedFiles[0].getDatasetName());
 				selectedFiles[0].setDatasetName((String) parameterName.getParameterValue(NameChangeParameter.name));
-			   	DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
+				DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
 			}
 			changeName = false;
 		}
-		
+
+		if (command.equals("ADD_COMMENT") || addInfo) {
+			Dataset[] selectedFiles = this.getSelectedDatasets();
+			if (selectedFiles != null) {
+				ExitCode code = this.setupInfoDialog(selectedFiles[0].getInfo());
+				addInfo = true;
+				if (code != ExitCode.OK) {
+					return;
+				}
+
+				selectedFiles[0].setInfo(dialog.getInfo());
+				int index = this.DatasetFilesModel.indexOf(selectedFiles[0]);
+				this.InfoFilesModel.set(index, dialog.getInfo());
+			}
+			addInfo = false;
+		}
 
 		if (command.equals("REMOVE_FILE")) {
 			removeData();
@@ -194,16 +219,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 		Desktop desktop = GuineuCore.getDesktop();
 		for (Dataset file : selectedFiles) {
 			if (file != null) {
-				DataTableModel model = null;
-				if (file.getType() == DatasetType.LCMS) {
-					model = new DatasetLCMSDataModel(file);
-				} else if (file.getType() == DatasetType.EXPERIMENTINFO) {
-					model = new ExperimentDataModel(file);
-				} else if (file.getType() == DatasetType.GCGCTOF) {
-					model = new DatasetGCGCDataModel(file);
-				} else {
-					model = new OtherDataModel(file);
-				}
+				DataTableModel model = FileUtils.getTableModel(file);
 				DataTable table = new PushableTable(model);
 				table.formatNumbers(file.getType());
 				DataInternalFrame frame = new DataInternalFrame(file.getDatasetName(), table.getTable(), new Dimension(800, 800));
@@ -219,16 +235,18 @@ public class ItemSelector extends JPanel implements ActionListener,
 
 		for (Dataset file : selectedFiles) {
 			if (file != null) {
-				this.DatasetFilesModel.remove(file);
+				DatasetFilesModel.remove(file);
 				DatasetNamesModel.removeElement(file.getDatasetName());
+				InfoFilesModel.remove(file.getInfo());
 			}
 		}
 	}
 
 	public void removeData(Dataset file) {
 		if (file != null) {
-			this.DatasetFilesModel.remove(file);
+			DatasetFilesModel.remove(file);
 			DatasetNamesModel.removeElement(file.getDatasetName());
+			InfoFilesModel.remove(file.getInfo());
 		}
 
 	}
@@ -314,6 +332,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 			}
 		}
 		this.DatasetFilesModel.add(dataset);
+		this.InfoFilesModel.add(dataset.getInfo());
 		DatasetNamesModel.addElement(dataset.getDatasetName());
 		this.DatasetFiles.revalidate();
 	}
