@@ -43,6 +43,7 @@ public class SimpleGCGCDataset implements Dataset{
 	private Aligner aligner;	
 	private String datasetName;
 	private DatasetType type;
+	private String infoDataset = "";
 	
 
 	public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
@@ -258,5 +259,13 @@ public class SimpleGCGCDataset implements Dataset{
 
 	public void AddRow(PeakListRow peakListRow) {
 		this.peakList.add(peakListRow);
+	}
+
+	public String getInfo() {
+		return infoDataset;
+	}
+
+	public void setInfo(String info) {
+		this.infoDataset = info;
 	}
 }

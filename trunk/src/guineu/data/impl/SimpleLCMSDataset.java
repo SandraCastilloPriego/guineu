@@ -19,7 +19,6 @@ package guineu.data.impl;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.util.Range;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -30,10 +29,11 @@ import java.util.Vector;
  */
 public class SimpleLCMSDataset implements Dataset {
 
-    String datasetName;
-    List<PeakListRow> peakList;
-    Vector<String> nameExperiments;
-    DatasetType type;
+    private String datasetName;
+    private List<PeakListRow> peakList;
+    private Vector<String> nameExperiments;
+    private DatasetType type;
+	private String infoDataset = "";
   
     public SimpleLCMSDataset(String datasetName) {
         this.datasetName = datasetName;
@@ -118,5 +118,13 @@ public class SimpleLCMSDataset implements Dataset {
 
 	public String toString(){
 		return this.getDatasetName();
+	}
+
+	public String getInfo() {
+		return infoDataset;
+	}
+
+	public void setInfo(String info) {
+		this.infoDataset = info;
 	}
 }

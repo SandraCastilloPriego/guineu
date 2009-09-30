@@ -30,8 +30,8 @@ import guineu.data.impl.SimpleParameterSet;
 public class NameChangeParameter extends SimpleParameterSet {
 
      public static final Parameter name = new SimpleParameter(
-            ParameterType.STRING, "Field separator",
-            "Character(s) used to separate fields in the exported file", (Object) ",");
+            ParameterType.STRING, "New Dataset Name",
+            "New Dataset Name", (Object) "");
 
     public NameChangeParameter() {
         super(new Parameter[]{name});

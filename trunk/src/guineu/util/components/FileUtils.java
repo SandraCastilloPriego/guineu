@@ -21,6 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
+import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
@@ -37,18 +38,17 @@ import guineu.util.Tables.DataTableModel;
  */
 public class FileUtils {
 
-	public static PeakListRow getPeakListRow(DatasetType type){
+	public static PeakListRow getPeakListRow(DatasetType type) {
 		if (type == DatasetType.LCMS) {
 			return new SimplePeakListRowLCMS();
-		} else if (type  == DatasetType.GCGCTOF) {
+		} else if (type == DatasetType.GCGCTOF) {
 			return new SimplePeakListRowGCGC();
-		} else if (type  == DatasetType.OTHER) {
+		} else if (type == DatasetType.OTHER) {
 			return new SimplePeakListRowOther();
-		}else{
+		} else {
 			return null;
 		}
 	}
-
 
 	public static Dataset getDataset(Dataset dataset, String Name) {
 		Dataset newDataset = null;
@@ -73,6 +73,8 @@ public class FileUtils {
 			model = new DatasetGCGCDataModel(dataset);
 		} else if (dataset.getType() == DatasetType.OTHER) {
 			model = new OtherDataModel(dataset);
+		} else if (dataset.getType() == DatasetType.EXPERIMENTINFO) {
+			model = new ExperimentDataModel(dataset);
 		}
 		return model;
 	}

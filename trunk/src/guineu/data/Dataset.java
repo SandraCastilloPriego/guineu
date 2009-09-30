@@ -50,4 +50,8 @@ public interface Dataset {
 	public List<PeakListRow> getRows();
 
 	public void AddRow(PeakListRow peakListRow);
+
+	public String getInfo();
+
+	public void setInfo(String info);
 }

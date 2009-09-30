@@ -27,92 +27,99 @@ import java.util.Vector;
  */
 public class ExperimentDataset implements Dataset {
 
-    String datasetName;
-    Vector<Bexperiments> experiments;
-    DatasetType type = DatasetType.EXPERIMENTINFO;
-	Vector <String> columnNames;
+	String datasetName;
+	Vector<Bexperiments> experiments;
+	DatasetType type = DatasetType.EXPERIMENTINFO;
+	Vector<String> columnNames;
+	String infoDataset = "";
 
-    public ExperimentDataset(String datasetName) {
-        this.datasetName = datasetName;
-        this.experiments = new Vector<Bexperiments>();
+	public ExperimentDataset(String datasetName) {
+		this.datasetName = datasetName;
+		this.experiments = new Vector<Bexperiments>();
 		columnNames = new Vector<String>();
 		columnNames.add("Name");
-        columnNames.add("Type");
-        columnNames.add("Project");
-        columnNames.add("Person");
-        columnNames.add("Replicate");
-        columnNames.add("Amount");
-        columnNames.add("Unit");
-        columnNames.add("Method");
-        columnNames.add("Sample");
-        columnNames.add("Date");
-    }
+		columnNames.add("Type");
+		columnNames.add("Project");
+		columnNames.add("Person");
+		columnNames.add("Replicate");
+		columnNames.add("Amount");
+		columnNames.add("Unit");
+		columnNames.add("Method");
+		columnNames.add("Sample");
+		columnNames.add("Date");
+	}
 
-    public void addExperiment(Bexperiments experiment) {
-        this.experiments.addElement(experiment);
-    }
+	public void addExperiment(Bexperiments experiment) {
+		this.experiments.addElement(experiment);
+	}
 
-    public Vector<Bexperiments> getExperiments() {
-        return this.experiments;
-    }
+	public Vector<Bexperiments> getExperiments() {
+		return this.experiments;
+	}
 
-    public String getDatasetName() {
-        return datasetName;
-    }
+	public String getDatasetName() {
+		return datasetName;
+	}
 
-    public void setDatasetName(String name) {
-        this.datasetName = name;
-    }
+	public void setDatasetName(String name) {
+		this.datasetName = name;
+	}
 
-    public DatasetType getType() {
-        return this.type;
-    }
+	public DatasetType getType() {
+		return this.type;
+	}
 
-    public Vector<String> getNameExperiments() {
+	public Vector<String> getNameExperiments() {
 		return columnNames;
-    }
+	}
 
-    public int getNumberCols() {
-        return columnNames.size();
-    }
+	public int getNumberCols() {
+		return columnNames.size();
+	}
 
-    public int getNumberRows() {
-        return experiments.size();
-    }
+	public int getNumberRows() {
+		return experiments.size();
+	}
 
-    public PeakListRow getRow(int row) {
-        return null;
-    }
+	public PeakListRow getRow(int row) {
+		return null;
+	}
 
-    public void setType(DatasetType type) {
-        this.type = type;
-    }
- 
-    public void removeRow(PeakListRow row) {
-         
-    }
+	public void setType(DatasetType type) {
+		this.type = type;
+	}
 
-    public void AddNameExperiment(String nameExperiment) {
-        this.columnNames.add(nameExperiment);
-    }
+	public void removeRow(PeakListRow row) {
+	}
 
-    public Vector<PeakListRow> getRows() {
-        return null;
-    }
+	public void AddNameExperiment(String nameExperiment) {
+		this.columnNames.add(nameExperiment);
+	}
 
-    public void AddNameExperiment(String nameExperiment, int position) {
-       this.columnNames.set(position, nameExperiment);
-    }
+	public Vector<PeakListRow> getRows() {
+		return null;
+	}
+
+	public void AddNameExperiment(String nameExperiment, int position) {
+		this.columnNames.set(position, nameExperiment);
+	}
 
 	public Dataset clone() {
 		Dataset newDataset = new ExperimentDataset(datasetName);
-		for(Bexperiments row: experiments){
-			((ExperimentDataset)newDataset).addExperiment(row.clone());
+		for (Bexperiments row : experiments) {
+			((ExperimentDataset) newDataset).addExperiment(row.clone());
 		}
 		return newDataset;
 	}
 
 	public void AddRow(PeakListRow peakListRow) {
-		
+	}
+
+	public String getInfo() {
+		return infoDataset;
+	}
+
+	public void setInfo(String info) {
+		this.infoDataset = info;
 	}
 }
