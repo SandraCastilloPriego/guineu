@@ -152,6 +152,7 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
 
 	}
 
+	
 	/**
 	 * Constructs all components of the dialog
 	 */

@@ -43,7 +43,7 @@ public class SaveFileParameters extends SimpleParameterSet{
 
 	public static final Parameter units = new SimpleParameter(
             ParameterType.STRING, "Dataset units: ",
-            "Units of the dataset", null, "Units", null);
+            "Units of the dataset", null, "Micromols/litre", null);
 
     public static final Parameter parameters = new SimpleParameter(
             ParameterType.FILE_NAME, "Dataset parameters: ",
