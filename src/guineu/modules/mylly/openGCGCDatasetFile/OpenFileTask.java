@@ -55,7 +55,11 @@ public class OpenFileTask implements Task {
     }
 
     public double getFinishedPercentage() {
-        return parser.getProgress();
+        if (parser != null) {
+			return parser.getProgress();
+		} else {
+			return 0.0f;
+		}
     }
 
     public TaskStatus getStatus() {

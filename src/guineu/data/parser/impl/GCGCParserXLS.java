@@ -21,7 +21,6 @@ import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.ParameterType;
 import guineu.data.datamodels.GCGCColumnName;
-import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import java.io.IOException;
@@ -35,130 +34,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class GCGCParserXLS extends ParserXLS implements Parser {
-
-    /*private String DatasetPath;
-    private HSSFWorkbook book;
-    private Vector<String> head;
-    SimpleGCGCDataset dataset;
-    private int numberRows,  rowsReaded;
-
-    public GCGCParserXLS(String DatasetPath) {
-        this.numberRows = 0;
-        this.rowsReaded = 0;
-        this.DatasetPath = DatasetPath;
-        this.dataset = new SimpleGCGCDataset(this.getDatasetName());
-        this.dataset.setType(DatasetType.GCGCTOF);
-        head = new Vector<String>();
-    }
-
-    public String getDatasetName() {
-        return "GCGC - " + this.getDatasetName(DatasetPath);
-    }
-
-    public float getProgress() {
-        if (this.numberRows != 0) {
-            return (float) this.rowsReaded / this.numberRows;
-        } else {
-            return 0.0f;
-        }
-    }
-
-    public void fillData() {
-        try {
-
-            book = openExcel(DatasetPath);
-            HSSFSheet sheet;
-            sheet = book.getSheetAt(0);
-
-            HSSFRow row = sheet.getRow(0);
-            for (int i = 0; i < row.getLastCellNum(); i++) {
-                HSSFCell cell = row.getCell((short) i);
-                this.head.addElement(cell.toString());
-            }
-            numberRows = this.getNumberRows(0, sheet);
-            this.setExperimentsName();
-
-            for (int i = 1; i < numberRows + 1; i++) {
-                this.read_data(sheet, i);
-                this.rowsReaded++;
-            }
-
-
-        } catch (IOException ex) {
-            Logger.getLogger(GCGCParserXLS.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
-    private Object getType(String data, ParameterType type) {
-        switch (type) {
-            case BOOLEAN:
-                return new Boolean(data);
-            case INTEGER:
-                return Integer.valueOf(data);
-            case DOUBLE:
-                return Double.valueOf(data);
-            case STRING:
-                return data;
-        }
-
-        return null;
-    }
-
-    
-    private void read_data(HSSFSheet sheet, int Index) {
-        try {
-            HSSFCell cell;
-            HSSFRow row = sheet.getRow(Index);
-            SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
-            for (int e = 0; e < head.size(); e++) {
-                boolean isfound = false;
-                cell = row.getCell((short) e);
-                for (GCGCColumnName field : GCGCColumnName.values()) {
-                    if (head.elementAt(e).matches(field.getRegularExpression())) {
-                        metabolite.setVar(field.getSetFunctionName(), this.getType(cell.toString(), field.getType()));
-                        isfound = true;
-                        break;
-                    }
-                }  
-                if (!isfound) {
-                    try {
-                        metabolite.setPeak(head.elementAt(e), cell.getNumericCellValue());
-                    } catch (Exception exception) {
-                        metabolite.setPeak(head.elementAt(e), 0.0);
-                    }
-                
-                }
-            }
-
-            this.dataset.addAlignmentRow(metabolite);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-
-        }
-    }
-
-    private void setExperimentsName() {
-        try {
-            String regExpression = "";
-            for (GCGCColumnName value : GCGCColumnName.values()) {
-                regExpression += value.getRegularExpression() + "|";
-            }
-
-            for (int i = 0; i < head.size(); i++) {
-                if (!head.elementAt(i).matches(regExpression)) {
-                    this.dataset.AddNameExperiment(head.elementAt(i));
-                }
-            }
-
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    public Dataset getDataset() {
-        return this.dataset;
-    }*/
 
     private String DatasetName;
     private SimpleGCGCDataset dataset;
@@ -254,7 +129,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 }
                 cell = row.getCell((short) i);
                 boolean isfound = false;
-                System.out.println("1");
+
                 for (GCGCColumnName field : GCGCColumnName.values()) {
                     if (title.matches(field.getRegularExpression())) {
                         metabolite.setVar(field.getSetFunctionName(), this.getType(cell.toString(), field.getType()));
@@ -262,21 +137,19 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                         break;
                     }
                 }
- System.out.println("2");
+
                 if (!isfound) {
                     try {
-                         System.out.println("3");
-                        metabolite.setPeak(title, cell.getNumericCellValue());
+                        metabolite.setPeak(title, (Double) this.getType(cell.toString(), ParameterType.DOUBLE));
                     } catch (Exception e) {
-                         System.out.println("4");
                         metabolite.setPeak(title, 0.0);
                     }
                 }
- System.out.println("5");
+
                 if (metabolite.getName() == null) {
                     metabolite.setName("unknown");
                 }
-             } catch (Exception exception) {
+            } catch (Exception exception) {
                 //exception.printStackTrace();
             }
         }
@@ -293,16 +166,17 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
         Iterator rowIt = sheet.rowIterator();
         int num = -1;
 
-      //  String average = "Average M/Z";
-
         while (rowIt.hasNext()) {
             HSSFRow row = (HSSFRow) rowIt.next();
             HSSFCell cell = row.getCell((short) 0);
 
             if (cell != null) {
-               // if (average.compareTo(cell.toString()) == 0) {
-                    num = row.getRowNum();
-               // }
+                for (GCGCColumnName field : GCGCColumnName.values()) {
+                    if (cell.toString().matches(field.getRegularExpression())) {
+                        num = row.getRowNum();
+                        break;
+                    }
+                }
             }
         }
 
@@ -326,7 +200,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
         try {
 
             String regExpression = "";
-            for( GCGCColumnName value : GCGCColumnName.values()) {
+            for (GCGCColumnName value : GCGCColumnName.values()) {
                 regExpression += value.getRegularExpression() + "|";
             }
 
@@ -341,9 +215,13 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
     }
 
     public float getProgress() {
-        if (this.numberRows != 0) {
-            return (float) this.rowsReaded / this.numberRows;
-        } else {
+        try {
+            if (this.numberRows != 0) {
+                return (float) this.rowsReaded / this.numberRows;
+            } else {
+                return 0.0f;
+            }
+        } catch (Exception exception) {
             return 0.0f;
         }
     }

@@ -178,17 +178,18 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
         Iterator rowIt = sheet.rowIterator();
         int num = -1;
-
-        String average = "Average M/Z";
-
+     
         while (rowIt.hasNext()) {
             HSSFRow row = (HSSFRow) rowIt.next();
             HSSFCell cell = row.getCell((short) 0);
 
             if (cell != null) {
-                //if (average.compareTo(cell.toString()) == 0) {
-                    num = row.getRowNum();
-               // }
+                 for (LCMSColumnName field : LCMSColumnName.values()){
+                     if (cell.toString().matches(field.getRegularExpression())) {
+                        num = row.getRowNum();
+                        break;
+                     }
+                }
             }
         }
 
