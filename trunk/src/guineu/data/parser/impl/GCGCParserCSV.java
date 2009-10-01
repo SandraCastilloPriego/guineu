@@ -20,8 +20,9 @@ package guineu.data.parser.impl;
 import com.csvreader.CsvReader;
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
+import guineu.data.ParameterType;
+import guineu.data.datamodels.GCGCColumnName;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.Spectrum;
@@ -82,43 +83,37 @@ public class GCGCParserCSV implements Parser {
         }
     }
 
+    private Object getType(String data, ParameterType type) {
+        switch (type) {
+            case BOOLEAN:
+                return new Boolean(data);
+            case INTEGER:
+                return Integer.valueOf(data);
+            case DOUBLE:
+                return Double.valueOf(data);
+            case STRING:
+                return data;
+        }
+
+        return null;
+    }
+
     private void getData(String[] sdata, String[] header) {
         try {
             SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
             for (int i = 0; i < sdata.length; i++) {
                 if (i >= header.length) {
-                } else if (header[i].matches(RegExp.ID.getREgExp())) {
-                    metabolite.setID(Integer.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.RT1.getREgExp())) {
-                    metabolite.setRT1(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.RT2.getREgExp())) {
-                    metabolite.setRT2(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.RTI.getREgExp())) {
-                    metabolite.setRTI(Double.valueOf(sdata[i]));
-				}else if (header[i].matches(RegExp.CAS.getREgExp())) {
-                    metabolite.setCAS(sdata[i]);
-                } else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
-                    metabolite.setNumFound(Double.valueOf(sdata[i]).doubleValue());
-                } else if (header[i].matches(RegExp.MAXSIM.getREgExp())) {
-                    metabolite.setMaxSimilarity(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.MEANSIM.getREgExp())) {
-                    metabolite.setMeanSimilarity(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.SIMSTD.getREgExp())) {
-                    metabolite.setSimilaritySTDDev(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.NAME.getREgExp())) {
-                    metabolite.setName(sdata[i]);
-                } else if (header[i].matches(RegExp.ALLNAMES.getREgExp())) {
-                    metabolite.setAllNames(sdata[i]);
-                } else if (header[i].matches(RegExp.MASS.getREgExp())) {
-                    metabolite.setMass(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.DIFFERENCE.getREgExp())) {
-                    metabolite.setDifference(Double.valueOf(sdata[i]));
-                } else if (header[i].matches(RegExp.PUBCHEM.getREgExp())) {
-                    metabolite.setPubChemID(sdata[i]);
-                } else if (header[i].matches(RegExp.SPECTRUM.getREgExp())) {
-                    metabolite.setSpectrumString(sdata[i]);
-					metabolite.setSpectrum(this.getSpectrum(sdata[i]));
-                } else {
+                }
+                boolean isfound = false;
+                for (GCGCColumnName field : GCGCColumnName.values()) {
+                    if (header[i].matches(field.getRegularExpression())) {
+                        metabolite.setVar(field.getSetFunctionName(), this.getType(sdata[i], field.getType()));
+                        isfound = true;
+                        break;
+                    }
+                }
+
+                if(!isfound){
                     try {
                         metabolite.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
@@ -154,8 +149,8 @@ public class GCGCParserCSV implements Parser {
         try {
             
             String regExpression = "";
-            for (RegExp value : RegExp.values()) {
-                regExpression += value.getREgExp() + "|";
+            for (GCGCColumnName value : GCGCColumnName.values()) {
+                regExpression += value.getRegularExpression() + "|";
             }
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {

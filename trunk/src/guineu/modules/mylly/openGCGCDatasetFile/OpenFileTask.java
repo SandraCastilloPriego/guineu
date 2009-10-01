@@ -17,10 +17,8 @@
  */
 package guineu.modules.mylly.openGCGCDatasetFile;
 
-import guineu.data.parser.impl.GCGCParserXLS;
-import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.parser.impl.GCGCParserXLS;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.GCGCParserCSV;
@@ -31,6 +29,7 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
+import java.io.IOException;
 
 /**
  *
@@ -49,11 +48,6 @@ public class OpenFileTask implements Task {
             this.fileDir = fileDir;
         }
         this.desktop = desktop;
-        if (fileDir.matches(".*xls")) {
-            parser = new GCGCParserXLS(fileDir);
-        } else if (fileDir.matches(".*csv.*")) {
-            parser = new GCGCParserCSV(fileDir);
-        }
     }
 
     public String getTaskDescription() {
@@ -89,23 +83,73 @@ public class OpenFileTask implements Task {
     public void openFile() {
         status = TaskStatus.PROCESSING;
         try {
-            parser.fillData();
-            SimpleGCGCDataset dataset =  (SimpleGCGCDataset) parser.getDataset();
-            desktop.AddNewFile(dataset);
+            if (fileDir.matches(".*xls")) {
+                try {
+                    Parser parserName = new GCGCParserXLS(fileDir, null);
+                    String[] sheetsNames = ((GCGCParserXLS) parserName).getSheetNames(fileDir);
+                    for (String Name : sheetsNames) {
+                        try {
+                            if (status != TaskStatus.CANCELED) {
+                                parser = new GCGCParserXLS(fileDir, Name);
+                                parser.fillData();
+                                this.open(parser);
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } else if (fileDir.matches(".*csv")) {
+                try {
+                    if (status != TaskStatus.CANCELED) {
+                        parser = new GCGCParserCSV(fileDir);
+                        parser.fillData();
+                        this.open(parser);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
 
-            //creates internal frame with the table
-            DataTableModel model = new DatasetGCGCDataModel(dataset);
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(dataset.getType());
-            DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
+        /*parser.fillData();
+        SimpleGCGCDataset dataset =  (SimpleGCGCDataset) parser.getDataset();
+        desktop.AddNewFile(dataset);
 
-            desktop.addInternalFrame(frame);
-            frame.setVisible(true);
+        //creates internal frame with the table
+        DataTableModel model = new DatasetGCGCDataModel(dataset);
+        DataTable table = new PushableTable(model);
+        table.formatNumbers(dataset.getType());
+        DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
+
+        desktop.addInternalFrame(frame);
+        frame.setVisible(true);*/
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         status = TaskStatus.FINISHED;
+    }
+
+    public void open(Parser parser) {
+        try {
+            if (status != TaskStatus.CANCELED) {
+                SimpleGCGCDataset dataset = (SimpleGCGCDataset) parser.getDataset();
+                desktop.AddNewFile(dataset);
+
+                //creates internal frame with the table
+                DataTableModel model = new DatasetGCGCDataModel(dataset);
+                DataTable table = new PushableTable(model);
+                table.formatNumbers(dataset.getType());
+                DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
+
+                desktop.addInternalFrame(frame);
+                frame.setVisible(true);
+            }
+        } catch (Exception exception) {
+            // exception.printStackTrace();
+        }
     }
 }

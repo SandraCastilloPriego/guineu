@@ -52,7 +52,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 			return comparison;
 		}
 	};
-	private int ID,  numberFixColumns;
+	private int ID;
 	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity = 0,  meanSimilarity = 0,  similaritySTDDev = 0,  mass = 0,  difference = 0;
 	private String name,  allNames,  spectra,  pubChemID,  molClass;
 	private boolean control,  selection = false;
@@ -82,8 +82,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 		this.allNames = allNames;
 		this.spectra = spectra;
 		this.pubChemID = pubChemID;
-		this.control = true;
-		this.numberFixColumns = 16;
+		this.control = true;	
 		this.CAS = CAS;
 	}
 
@@ -316,15 +315,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 	public Object getPeak(int col, Vector<String> sampleNames) {
 		return this.getPeak(sampleNames.elementAt(col));
 	}
-
-	public int getNumberFixColumns() {
-		return this.numberFixColumns;
-	}
-
-	public void setNumberFixColumns(int columnNum) {
-		this.numberFixColumns = columnNum;
-	}
-
+	
 	public boolean isSelected() {
 		return this.selection;
 	}

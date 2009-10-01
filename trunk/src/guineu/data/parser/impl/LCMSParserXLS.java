@@ -19,7 +19,8 @@ package guineu.data.parser.impl;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.IdentificationType;
+import guineu.data.ParameterType;
+import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import java.io.IOException;
@@ -34,262 +35,206 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class LCMSParserXLS extends ParserXLS implements Parser {
 
-	private String DatasetName;
-	private SimpleLCMSDataset dataset;
-	private Vector<String> head;
-	private Lipidclass LipidClassLib;
-	private HSSFWorkbook book;
-	private String sheetName;
-	private int numberRows,  rowsReaded;
+    private String DatasetName;
+    private SimpleLCMSDataset dataset;
+    private Vector<String> head;
+    private Lipidclass LipidClassLib;
+    private HSSFWorkbook book;
+    private String sheetName;
+    private int numberRows,  rowsReaded;
 
-	public LCMSParserXLS(String DatasetName, String sheetName) {
-		this.numberRows = 0;
-		this.rowsReaded = 0;
-		this.DatasetName = DatasetName;
-		this.sheetName = sheetName;
-		this.dataset = new SimpleLCMSDataset(this.getDatasetName());
-		this.head = new Vector<String>();
-		this.LipidClassLib = new Lipidclass();
-	}
+    public LCMSParserXLS(String DatasetName, String sheetName) {
+        this.numberRows = 0;
+        this.rowsReaded = 0;
+        this.DatasetName = DatasetName;
+        this.sheetName = sheetName;
+        this.dataset = new SimpleLCMSDataset(this.getDatasetName());
+        this.head = new Vector<String>();
+        this.LipidClassLib = new Lipidclass();
+    }
 
-	public void fillData() {
-		try {
-			book = this.openExcel(DatasetName);
-			HSSFSheet sheet;
-			try {
-				sheet = book.getSheet(sheetName);
-			} catch (Exception exception) {
-				sheet = book.getSheetAt(0);
-			}
+    public void fillData() {
+        try {
+            book = this.openExcel(DatasetName);
+            HSSFSheet sheet;
+            try {
+                sheet = book.getSheet(sheetName);
+            } catch (Exception exception) {
+                sheet = book.getSheetAt(0);
+            }
 
-			int initRow = this.getRowInit(sheet);
+            int initRow = this.getRowInit(sheet);
 
-			if (initRow > -1) {
-				numberRows = this.getNumberRows(initRow, sheet);
-				HSSFRow row = sheet.getRow(initRow);
+            if (initRow > -1) {
+                numberRows = this.getNumberRows(initRow, sheet);
+                HSSFRow row = sheet.getRow(initRow);
 
-				for (int i = 0; i < row.getLastCellNum(); i++) {
-					HSSFCell cell = row.getCell((short) i);
-					this.head.addElement(cell.toString());
-				}
-				this.readLipids(initRow + 1, numberRows, sheet);
+                for (int i = 0; i < row.getLastCellNum(); i++) {
+                    HSSFCell cell = row.getCell((short) i);
+                    this.head.addElement(cell.toString());
+                }
+                this.readLipids(initRow + 1, numberRows, sheet);
 
-				this.setExperimentsName(head);
-			} else {
-				this.dataset = null;
-			}
-		} catch (IOException ex) {
-			Logger.getLogger(LCMSParserXLS.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
+                this.setExperimentsName(head);
+            } else {
+                this.dataset = null;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LCMSParserXLS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-	/**
-	 * Reads lipid information.
-	 * @param initRow
-	 * @param numberRows
-	 * @param numberCols
-	 * @param sheet
-	 */
-	public void readLipids(int initRow, int numberRows, HSSFSheet sheet) {
-		for (int i = initRow; i < numberRows + initRow; i++) {
-			HSSFRow row = sheet.getRow(i);
-			this.readRow(row);
-			this.rowsReaded++;
-		}
-	}
+    /**
+     * Reads lipid information.
+     * @param initRow
+     * @param numberRows
+     * @param numberCols
+     * @param sheet
+     */
+    public void readLipids(int initRow, int numberRows, HSSFSheet sheet) {
+        for (int i = initRow; i < numberRows + initRow; i++) {
+            HSSFRow row = sheet.getRow(i);
+            this.readRow(row);
+            this.rowsReaded++;
+        }
+    }
 
-	/**
-	 * Reads lipid information of one row.
-	 * @param row
-	 * @param numberCols
-	 * @return
-	 */
-	public void readRow(HSSFRow row) {
-		HSSFCell cell;
-		SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
-		for (int i = 0; i < row.getLastCellNum(); i++) {
-			try {
-				String title = head.elementAt(i);
-				if (title == null) {
-					continue;
-				}
-				cell = row.getCell((short) i);
-				if (title.matches(RegExp.MZ.getREgExp())) {
-					if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						lipid.setMZ(cell.getNumericCellValue());
-					} else {
-						lipid.setMZ(Double.valueOf(cell.toString()));
-					}
-				} else if (title.matches(RegExp.RT.getREgExp())) {
-					if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						lipid.setRT(cell.getNumericCellValue());
-					} else {
-						lipid.setRT(Double.valueOf(cell.toString()));
-					}
-				} else if (title.matches(RegExp.NAME.getREgExp())) {
-					String str = cell.toString();
-					if (str.indexOf("GPEth") > -1) {
-						str = this.replace(str, "GPEth", "GPEtn");
-					}
-					lipid.setName(str);
-					lipid.setLipidClass(String.valueOf(this.LipidClassLib.get_class(lipid.getName())));
-				} else if (title.matches(RegExp.CLASS.getREgExp())) {
-				} else if (title.matches(RegExp.NFOUND.getREgExp())) {
-					if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						lipid.setNumFound((int) cell.getNumericCellValue());
-					} else {
-						lipid.setNumFound(Integer.valueOf(cell.toString()));
-					}
-				} else if (title.matches(RegExp.STANDARD.getREgExp())) {
-					if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-						lipid.setStandard((int) cell.getNumericCellValue());
-					} else {
-						lipid.setStandard(Integer.valueOf(cell.toString()));
-					}
-				} else if (title.matches(RegExp.ALLNAMES.getREgExp())) {
-					try {
-						lipid.setAllNames(cell.toString());
-					} catch (Exception e) {
-					}
-				} else if (title.matches(RegExp.VTTID.getREgExp())) {
-					try {
-						lipid.setVTTID(cell.toString());
-					} catch (Exception e) {
-					}
-				} else if (title.matches(RegExp.VTTALLID.getREgExp())) {
-					try {
-						lipid.setAllVTTD(cell.toString());
-					} catch (Exception e) {
-					}
-				} else if (title.matches(RegExp.IDENTIFICATION.getREgExp())) {
-					try {
-						if (cell.toString().compareTo(IdentificationType.MS.toString()) == 0) {
-							lipid.setIdentificationType(IdentificationType.MS.toString());
-						} else if (cell.toString().compareTo(IdentificationType.MSMS.toString()) == 0) {
-							lipid.setIdentificationType(IdentificationType.MSMS.toString());
-						}
-					} catch (Exception e) {
-					}
-				} else if (title.matches(RegExp.ALIGNMENT.getREgExp())) {
-					try {
-						lipid.setAllNames(cell.toString());
-					} catch (Exception e) {
-					}
-				} else {
-					try {
-						lipid.setPeak(title, cell.getNumericCellValue());
-					} catch (Exception e) {
-						lipid.setPeak(title, 0.0);
-					}
-				}
+    private Object getType(String data, ParameterType type) {
+        switch (type) {
+            case BOOLEAN:
+                return new Boolean(data);
+            case INTEGER:
+                return Integer.valueOf(data);
+            case DOUBLE:
+                return Double.valueOf(data);
+            case STRING:
+                return data;
+        }
 
-				if (i == 0 && (cell.getCellStyle().getFillForegroundColor() == 13)) {
-					lipid.setStandard(1);
-				}
-				int DataType = this.v_type(book, row, cell);
-				if (DataType == 0) {
-					lipid.setControl(false);
-					lipid.setName("z-non valid");
-				} else {
-					lipid.setControl(true);
-				}
+        return null;
+    }
 
-				if (lipid.getName() == null) {
-					lipid.setName("unknown");
-				}
-				lipid.setLipidClass(String.valueOf(this.LipidClassLib.get_class(lipid.getName())));
-			} catch (Exception exception) {
-				//exception.printStackTrace();
-			}
-		}
-		this.dataset.AddRow(lipid);
-	}
+    /**
+     * Reads lipid information of one row.
+     * @param row
+     * @param numberCols
+     * @return
+     */
+    public void readRow(HSSFRow row) {
+        HSSFCell cell;
+        SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
+        for (int i = 0; i < row.getLastCellNum(); i++) {
+            try {
+                String title = head.elementAt(i);
+                if (title == null) {
+                    continue;
+                }
+                cell = row.getCell((short) i);
+                boolean isfound = false;
+                for (LCMSColumnName field : LCMSColumnName.values()) {
+                    if (title.matches(field.getRegularExpression())) {
+                        lipid.setVar(field.getSetFunctionName(), this.getType(cell.toString(), field.getType()));
+                        isfound = true;
+                        break;
+                    }
+                }
 
-	/**
-	 *
-	 * @param row
-	 * @return Number of columns with lipid information.
-	 */
-	public int getLipidNumberCols(HSSFRow row) {
-		int N = 3;
-		for (short i = 0; i < row.getLastCellNum(); i++) {
-			String str = row.getCell(i).toString().replaceAll("'", ",");
-			if (row.getCell(i) != null) {
-				this.head.addElement(str);
-				if (row.getCell(i).toString().matches(".*Class.*|.*Num Found.*|.*Standard.*")) {
-					N++;
-				}
-			}
-		}
-		return N;
-	}
+                if (!isfound) {
+                    try {
+                        lipid.setPeak(title, cell.getNumericCellValue());
+                    } catch (Exception e) {
+                        lipid.setPeak(title, 0.0);
+                    }
+                }
 
-	/**
-	 *
-	 * @param sheet
-	 * @return number of row which it starts to read the excel file.
-	 */
-	public int getRowInit(HSSFSheet sheet) {
+                if (i == 0 && (cell.getCellStyle().getFillForegroundColor() == 13)) {
+                    lipid.setStandard(1);
+                }
+                int DataType = this.v_type(book, row, cell);
+                if (DataType == 0) {
+                    lipid.setControl(false);
+                    lipid.setName("z-non valid");
+                } else {
+                    lipid.setControl(true);
+                }
 
-		Iterator rowIt = sheet.rowIterator();
-		int num = -1;
+                if (lipid.getName() == null) {
+                    lipid.setName("unknown");
+                }
+                lipid.setLipidClass(String.valueOf(this.LipidClassLib.get_class(lipid.getName())));
+            } catch (Exception exception) {
+                //exception.printStackTrace();
+            }
+        }
+        this.dataset.AddRow(lipid);
+    }
 
-		String average = "Average M/Z";
+    /**
+     *
+     * @param sheet
+     * @return number of row which it starts to read the excel file.
+     */
+    public int getRowInit(HSSFSheet sheet) {
 
-		while (rowIt.hasNext()) {
-			HSSFRow row = (HSSFRow) rowIt.next();
-			HSSFCell cell = row.getCell((short) 0);
+        Iterator rowIt = sheet.rowIterator();
+        int num = -1;
 
-			if (cell != null) {
-				if (average.compareTo(cell.toString()) == 0) {
-					num = row.getRowNum();
-				}
-			}
-		}
+        String average = "Average M/Z";
 
-		return num;
-	}
+        while (rowIt.hasNext()) {
+            HSSFRow row = (HSSFRow) rowIt.next();
+            HSSFCell cell = row.getCell((short) 0);
 
-	public String getDatasetName() {
-		return "LCMS - " + this.getDatasetName(DatasetName) + " - " + sheetName;
-	}
+            if (cell != null) {
+                //if (average.compareTo(cell.toString()) == 0) {
+                    num = row.getRowNum();
+               // }
+            }
+        }
 
-	public String[] getSheetNames(String fileName) throws IOException {
-		HSSFWorkbook wb = this.openExcel(fileName);
-		String[] sheetsNames = new String[wb.getNumberOfSheets()];
-		for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-			sheetsNames[i] = wb.getSheetName(i);
-		}
-		return sheetsNames;
-	}
+        return num;
+    }
 
-	private void setExperimentsName(Vector<String> header) {
-		try {
+    public String getDatasetName() {
+        return "LCMS - " + this.getDatasetName(DatasetName) + " - " + sheetName;
+    }
 
-			String regExpression = "";
-			for (RegExp value : RegExp.values()) {
-				regExpression += value.getREgExp() + "|";
-			}
+    public String[] getSheetNames(String fileName) throws IOException {
+        HSSFWorkbook wb = this.openExcel(fileName);
+        String[] sheetsNames = new String[wb.getNumberOfSheets()];
+        for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+            sheetsNames[i] = wb.getSheetName(i);
+        }
+        return sheetsNames;
+    }
 
-			for (int i = 0; i < header.size(); i++) {
-				if (!header.elementAt(i).matches(regExpression)) {
-					this.dataset.AddNameExperiment(header.elementAt(i));
-				}
-			}
+    private void setExperimentsName(Vector<String> header) {
+        try {
 
-		} catch (Exception exception) {
-		}
-	}
+            String regExpression = "";
+            for (LCMSColumnName value : LCMSColumnName.values()) {
+                regExpression += value.getRegularExpression() + "|";
+            }
 
-	public float getProgress() {
-		if (this.numberRows != 0) {
-			return (float) this.rowsReaded / this.numberRows;
-		} else {
-			return 0.0f;
-		}
-	}
+            for (int i = 0; i < header.size(); i++) {
+                if (!header.elementAt(i).matches(regExpression)) {
+                    this.dataset.AddNameExperiment(header.elementAt(i));
+                }
+            }
 
-	public Dataset getDataset() {
-		return this.dataset;
-	}
+        } catch (Exception exception) {
+        }
+    }
+
+    public float getProgress() {
+        if (this.numberRows != 0) {
+            return (float) this.rowsReaded / this.numberRows;
+        } else {
+            return 0.0f;
+        }
+    }
+
+    public Dataset getDataset() {
+        return this.dataset;
+    }
 }
