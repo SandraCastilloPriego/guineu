@@ -140,17 +140,20 @@ public class ItemSelector extends JPanel implements ActionListener,
 		Boolean changeName = false;
 
 		if (command.equals("CHANGE_NAME") || changeName) {
-			ExitCode code = this.setupParameters();
-			changeName = true;
-			if (code != ExitCode.OK) {
-				return;
-			}
+			try {
+				Dataset[] selectedFiles = this.getSelectedDatasets();
+				this.parameterName.setParameterValue(NameChangeParameter.name, selectedFiles[0].getDatasetName());
+				ExitCode code = this.setupParameters();
+				changeName = true;
+				if (code != ExitCode.OK) {
+					return;
+				}
 
-			Dataset[] selectedFiles = this.getSelectedDatasets();
-			if (selectedFiles != null) {
+
 				int index = DatasetNamesModel.indexOf(selectedFiles[0].getDatasetName());
 				selectedFiles[0].setDatasetName((String) parameterName.getParameterValue(NameChangeParameter.name));
 				DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
+			} catch (Exception exception) {
 			}
 			changeName = false;
 		}
