@@ -30,7 +30,6 @@ import ca.guydavis.swing.desktop.JWindowsMenu;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.util.GUIUtils;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
