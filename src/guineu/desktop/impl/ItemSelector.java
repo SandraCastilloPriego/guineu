@@ -63,12 +63,10 @@ public class ItemSelector extends JPanel implements ActionListener,
 	public static final String DATA_FILES_LABEL = "Dataset Files";
 	private DragOrderedJList DatasetFiles;
 	private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
-	private List<String> InfoFilesModel = new ArrayList<String>();
 	private DefaultListModel DatasetNamesModel = new DefaultListModel();
 	private JPopupMenu dataFilePopupMenu;
 	private int copies = 0;
 	private NameChangeParameter parameterName;
-	private InfoDatasetDialog dialog;
 
 	/**
 	 * Constructor
@@ -124,13 +122,14 @@ public class ItemSelector extends JPanel implements ActionListener,
 		}
 	}
 
-	public ExitCode setupInfoDialog(String infoData) {
+	public void setupInfoDialog(Dataset data) {
 		try {
-			dialog = new InfoDatasetDialog(GuineuCore.getDesktop().getMainFrame(), true, infoData);
+			InfoDataIF dialog = new InfoDataIF();
+			dialog.setData(data);
+			GuineuCore.getDesktop().getDesktopPane().add(dialog);
+			GuineuCore.getDesktop().getDesktopPane().validate();
 			dialog.setVisible(true);
-			return dialog.getExitCode();
 		} catch (Exception exception) {
-			return ExitCode.CANCEL;
 		}
 	}
 
@@ -139,7 +138,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 		Runtime.getRuntime().freeMemory();
 		String command = e.getActionCommand();
 		Boolean changeName = false;
-		Boolean addInfo = false;
 
 		if (command.equals("CHANGE_NAME") || changeName) {
 			ExitCode code = this.setupParameters();
@@ -157,20 +155,15 @@ public class ItemSelector extends JPanel implements ActionListener,
 			changeName = false;
 		}
 
-		if (command.equals("ADD_COMMENT") || addInfo) {
+		if (command.equals("ADD_COMMENT")) {
 			Dataset[] selectedFiles = this.getSelectedDatasets();
-			if (selectedFiles != null) {
-				ExitCode code = this.setupInfoDialog(selectedFiles[0].getInfo());
-				addInfo = true;
-				if (code != ExitCode.OK) {
-					return;
+			try {
+				for (Dataset data : selectedFiles) {
+					this.setupInfoDialog(data);
 				}
-
-				selectedFiles[0].setInfo(dialog.getInfo());
-				int index = this.DatasetFilesModel.indexOf(selectedFiles[0]);
-				this.InfoFilesModel.set(index, dialog.getInfo());
+			} catch (Exception exception) {
+				return;
 			}
-			addInfo = false;
 		}
 
 		if (command.equals("REMOVE_FILE")) {
@@ -237,7 +230,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 			if (file != null) {
 				DatasetFilesModel.remove(file);
 				DatasetNamesModel.removeElement(file.getDatasetName());
-				InfoFilesModel.remove(file.getInfo());
 			}
 		}
 	}
@@ -246,7 +238,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 		if (file != null) {
 			DatasetFilesModel.remove(file);
 			DatasetNamesModel.removeElement(file.getDatasetName());
-			InfoFilesModel.remove(file.getInfo());
 		}
 
 	}
@@ -332,7 +323,6 @@ public class ItemSelector extends JPanel implements ActionListener,
 			}
 		}
 		this.DatasetFilesModel.add(dataset);
-		this.InfoFilesModel.add(dataset.getInfo());
 		DatasetNamesModel.addElement(dataset.getDatasetName());
 		this.DatasetFiles.revalidate();
 	}

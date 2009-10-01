@@ -92,9 +92,9 @@ public class Identification implements GuineuModule, TaskListener, ActionListene
         JInternalFrame[] IF = desktop.getInternalFrames();
         if (IF != null) {
             for (JInternalFrame IFn : IF) {
-                if (IFn != null && datasets != null && IFn.getTitle().contains(datasets[0].getDatasetName())) {
+                if (IFn != null && datasets != null && IFn.getTitle().contains(datasets[0].getDatasetName()) && ((DataInternalFrame) IFn).getTable() != null) {
                     Task tasks[] = new IdentificationTask[1];
-                    tasks[0] = new IdentificationTask(((DataInternalFrame) IF[0]).getTable(), datasets[0], desktop);
+                    tasks[0] = new IdentificationTask(((DataInternalFrame) IFn).getTable(), datasets[0], desktop);
 
                     TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 

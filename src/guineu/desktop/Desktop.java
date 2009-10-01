@@ -22,6 +22,7 @@ import guineu.main.GuineuModule;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
@@ -120,5 +121,6 @@ public interface Desktop extends GuineuModule {
     public void AddNewFile(Dataset dataset);   
 
     public void removeData(Dataset file);
-    
+
+	public JDesktopPane getDesktopPane();
 }
