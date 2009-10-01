@@ -54,54 +54,55 @@ public class DBask implements DataBase {
 		}
 	}
 
-	public List<String> getExperimentName(){
-	/*	Statement st = null;
+	public List<String> getExperimentName() {
+		/*	Statement st = null;
 		Connection conn = this.connect();
 		int id_exp = 0;
 		Vector<Double> vt = new Vector<Double>();
 		try {
-			st = conn.createStatement();
-			ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sampleName + "' ORDER BY EPID asc");
+		st = conn.createStatement();
+		ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sampleName + "' ORDER BY EPID asc");
 
-			if (r.next()) {
-				id_exp = r.getInt(1);
-			}
-			r.close();
+		if (r.next()) {
+		id_exp = r.getInt(1);
+		}
+		r.close();
 
-			if (id_exp != 0) {
-				r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE SAMPLE_ID = '" + id_exp + "'AND DATASETID ='" + datasetID + "' ORDER BY ID asc");
+		if (id_exp != 0) {
+		r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE SAMPLE_ID = '" + id_exp + "'AND DATASETID ='" + datasetID + "' ORDER BY ID asc");
 
-				while (r.next()) {
-					vt.add(r.getDouble(5));
-				}
+		while (r.next()) {
+		vt.add(r.getDouble(5));
+		}
 
-				r.close();
-				st.close();
-			}
-			return vt;
+		r.close();
+		st.close();
+		}
+		return vt;
 		} catch (Exception exception) {
-			return null;
+		return null;
 		}*/
 		return null;
 	}
 
-
-	public static String[] getProjectList(){
+	public static String[] getProjectList() {
 		Statement st = null;
 		Connection conn = null;
 		String[] noProjects = {"No Projects"};
 		try {
-			OracleDataSource oracleDataSource;			
+			OracleDataSource oracleDataSource;
 			oracleDataSource = new OracleDataSource();
 			oracleDataSource.setURL("jdbc:oracle:thin:@sboracle1.ad.vtt.fi:1521:BfxDB");
 			oracleDataSource.setUser("sandra");
 			oracleDataSource.setPassword("sandra");
 			conn = oracleDataSource.getConnection();
 
-		} catch (Exception exception) {			
+		} catch (Exception exception) {
 			return noProjects;
 		}
 		List<String> projectNames = new ArrayList<String>();
+		projectNames.add("All projects");
+
 		try {
 			st = conn.createStatement();
 			ResultSet r = st.executeQuery("SELECT NAME FROM PROJECTS");
@@ -112,7 +113,7 @@ public class DBask implements DataBase {
 			r.close();
 			st.close();
 			conn.close();
-			if(projectNames.size() == 0){
+			if (projectNames.size() == 0) {
 				return noProjects;
 			}
 			return projectNames.toArray(new String[0]);
@@ -121,16 +122,9 @@ public class DBask implements DataBase {
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
+	public int[] getStudiesFromProject() {
+		return null;
+	}
 
 	public String[][] get_dataset() {
 		Statement st = null;
@@ -143,9 +137,11 @@ public class DBask implements DataBase {
 			Vector<String[]> vt = new Vector<String[]>();
 			while (r.next()) {
 				String[] data = new String[5];
-				for (int i = 0; i < 5; i++) {
-					data[i] = r.getString(i + 1);
-				}
+				data[0] = r.getString("DATASETID");
+				data[1] = r.getString("EXCEL_NAME");
+				data[2] = r.getString("D_TYPE");
+				data[3] = r.getString("AUTHOR");
+				data[4] = r.getString("D_DATE");
 				vt.add(data);
 			}
 			String[][] datafinal = new String[vt.size()][5];
@@ -292,7 +288,7 @@ public class DBask implements DataBase {
 			Connection conn = this.connect();
 
 			st = conn.createStatement();
-			ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE ID_DATASET = '" + datasetID + "'ORDER BY EPID asc");
+			ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + datasetID + "'ORDER BY EXPERIMENT_ID asc");
 
 			Vector<String> vt = new Vector<String>();
 			while (r.next()) {
@@ -303,8 +299,33 @@ public class DBask implements DataBase {
 			return vt;
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public void get_samplenames(int datasetID, SimpleLCMSDataset dataset) {
+		Statement st = null;
+		try {
+			Connection conn = this.connect();
+
+			st = conn.createStatement();
+			ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + datasetID + "' ");
+
+			while (r.next()) {
+				try {
+					dataset.AddNameExperiment(r.getString("NAME"));
+				} catch (Exception exception) {
+				}
+			}
+			r.close();
+			st.close();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public Vector<Integer> get_sampleID(int datasetID) {
@@ -516,12 +537,12 @@ public class DBask implements DataBase {
 			Connection conn = this.connect();
 
 			st = conn.createStatement();
-			ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE ID_DATASET = '" + datasetID + "'ORDER BY EPID asc");
+			ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + datasetID + "'ORDER BY EXPERIMENT_ID asc");
 
 			Hashtable<Integer, String> vt = new Hashtable<Integer, String>();
 			while (r.next()) {
 				try {
-					vt.put(r.getInt("EPID"), r.getString("NAME"));
+					vt.put(r.getInt("COLUMN_ID"), r.getString("NAME"));
 				} catch (Exception ee) {
 				}
 			}
@@ -549,17 +570,21 @@ public class DBask implements DataBase {
 				peakListRow.setRT(r.getFloat("AVERAGE_RT"));
 				peakListRow.setNumFound(r.getInt("N_FOUND"));
 				peakListRow.setLipidClass(String.valueOf(r.getInt("LIPID_CLASS")));
-				peakListRow.setAllNames(r.getString("IDENTITY"));
+				peakListRow.setAllNames(r.getString("ALL_NAMES"));
 				peakListRow.setStandard(r.getInt("STD"));
 				peakListRow.setName(r.getString("LIPID_NAME"));
 				peakListRow.setFAComposition(r.getString("FA_COMPOSITION"));
-				peakListRow.setID(r.getInt("DATASET_ID"));
+				peakListRow.setVTTID(r.getString("VTTID"));
+				peakListRow.setAllVTTD(r.getString("VTTALLIDS"));
+				peakListRow.setIdentificationType(r.getString("IDENTIFICATION_TYPE"));
+				peakListRow.setPubChemID(r.getString("PUBCHEM_ID"));
 				this.setPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn);
 				dataset.AddRow(peakListRow);
 			}
 			r.close();
 			st.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -572,9 +597,9 @@ public class DBask implements DataBase {
 
 			while (r.next()) {
 				try {
-					if (experimentIDs.containsKey(new Integer(r.getInt("SAMPLE_ID")))) {
+					if (experimentIDs.containsKey(new Integer(r.getInt("DATASET_CID")))) {
 						// System.out.println(new Double(r.getFloat("CONCENTRATION")));
-						peakListRow.setPeak(experimentIDs.get(new Integer(r.getInt("SAMPLE_ID"))), new Double(r.getFloat("CONCENTRATION")));
+						peakListRow.setPeak(experimentIDs.get(new Integer(r.getInt("DATASET_CID"))), new Double(r.getFloat("CONCENTRATION")));
 					}
 				} catch (Exception ee) {
 				}
@@ -593,11 +618,11 @@ public class DBask implements DataBase {
 		try {
 
 			st = conn.createStatement();
-			ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES WHERE NAMES = '"+StudyName+"'");
+			ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES WHERE NAMES = '" + StudyName + "'");
 			int ID = 0;
-			if(r.next()) {
+			if (r.next()) {
 				try {
-					ID =r.getInt(1);
+					ID = r.getInt(1);
 				} catch (Exception ee) {
 				}
 			}
@@ -612,8 +637,6 @@ public class DBask implements DataBase {
 
 	}
 
-
-
 	public static synchronized String[] getStudies() {
 		Statement st = null;
 		try {
@@ -627,7 +650,7 @@ public class DBask implements DataBase {
 			oracleDataSource.setPassword(ORACLE_QUERY_PASSWORD);
 			Connection conn = oracleDataSource.getConnection();
 
-			
+
 			st = conn.createStatement();
 			ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES ORDER BY ID asc");
 			Vector<String> studies = new Vector<String>();
@@ -637,11 +660,11 @@ public class DBask implements DataBase {
 				} catch (Exception ee) {
 				}
 			}
-		
+
 			r.close();
 			st.close();
-			String[] studiesString= {""};
-			if(!studies.isEmpty()){
+			String[] studiesString = {""};
+			if (!studies.isEmpty()) {
 				studiesString = studies.toArray(new String[0]);
 			}
 

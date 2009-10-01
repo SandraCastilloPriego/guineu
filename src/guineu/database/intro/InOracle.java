@@ -77,7 +77,7 @@ public class InOracle implements InDataBase {
 			excel_name = "unknown";
 		}
 		//Intro table DATASET
-		int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters, study);
+		int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters, study, LipidMol.getInfo());
 		progress = 0.25f;	
 		if (excel_id != -1) {
 			writer.tableEXPERIMENT(conn, LipidMol, excel_id);
@@ -107,7 +107,7 @@ public class InOracle implements InDataBase {
 			//Intro table DATASET_EXPERIMENTS
 		
 			progress = 0.15f;
-		    int exp_id = writer.tableDATASET(conn, excel_name, type, author, null, study);
+		    int exp_id = writer.tableDATASET(conn, excel_name, type, author, null, study, mol.getInfo());
 			progress = 0.25f;
 			writer.tableEXPERIMENT(conn, mol, exp_id);
 			//Intro table GCGCTof

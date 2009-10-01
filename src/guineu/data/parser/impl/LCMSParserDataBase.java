@@ -41,17 +41,17 @@ public class LCMSParserDataBase implements Parser{
     public LCMSParserDataBase(int datasetID){
         db = new DBask();
         this.datasetID = datasetID; 
-        this.dataset = new SimpleLCMSDataset(db.getDatasetName(datasetID));
+        this.dataset = new SimpleLCMSDataset(db.getDatasetName(datasetID));		
     }
     
     public void fillData(){         
-        progress = 0.1f;      
-        Vector<String> experimentNames = db.get_samplenames(datasetID);       
-        for(String experimentName : experimentNames){
-            this.dataset.AddNameExperiment(experimentName);
-        }     
+        progress = 0.1f;
+		
+        db.get_samplenames(datasetID, dataset);
+			
         progress = 0.4f;
-        db.getLCMSRows(this.datasetID, dataset);  
+        db.getLCMSRows(this.datasetID, dataset);
+			
         progress = 0.8f;
         dataset.setType(DatasetType.LCMS);
         progress = 1f;

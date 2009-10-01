@@ -86,7 +86,7 @@ public class WriteDataBase {
 	 * @param author (Author of the data)
 	 * @return the ID of the data in the database.
 	 */
-	public int tableDATASET(Connection conn, String excel_name, String type, String author, String parameters, String study) {
+	public int tableDATASET(Connection conn, String excel_name, String type, String author, String parameters, String study, String info) {
 		{
 			try {
 				int exp_id = 0;
@@ -105,7 +105,10 @@ public class WriteDataBase {
 							}
 						} catch (Exception exception) {
 						}
-						statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY) VALUES ('" + excel_name + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + DBask.getStudyID(study, conn) + "')");
+						if (info.length() > 3999) {
+							info = info.substring(0, 3999);
+						}
+						statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION) VALUES ('" + excel_name + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + DBask.getStudyID(study, conn) + "', '" + info + "')");
 					} catch (SQLException sqlexception) {
 						sqlexception.printStackTrace();
 					}
@@ -145,7 +148,7 @@ public class WriteDataBase {
 				try {
 					statement.executeUpdate("INSERT INTO MOL_LCMS (AVERAGE_MZ," +
 							"AVERAGE_RT,LIPID_NAME,LIPID_CLASS,N_FOUND,STD,EPID, " +
-							"FA_COMPOSITION,PUBCHEM_ID, VTTID, VTTALLIDS,ALL_NAMES)" +
+							"FA_COMPOSITION,PUBCHEM_ID, VTTID, VTTALLIDS,ALL_NAMES,IDENTIFICATION_TYPE)" +
 							" VALUES ( '" + Double.valueOf(lipid.getMZ()).floatValue() +
 							"', '" + Double.valueOf(lipid.getRT()).floatValue() +
 							"', '" + lipid.getName() +
@@ -157,7 +160,8 @@ public class WriteDataBase {
 							"', '" + lipid.getPubChemID() +
 							"', '" + lipid.getVTTID() +
 							"', '" + lipid.getAllVTTID() +
-							"', '" + lipid.getAllNames() + "') ");
+							"', '" + lipid.getAllNames() +
+							"', '" + lipid.getIdentificationType() + "') ");
 					ResultSet r = statement.executeQuery("SELECT * FROM MOL_LCMS ORDER BY ID desc");
 
 					if (r.next()) {
@@ -240,7 +244,7 @@ public class WriteDataBase {
 				SimplePeakListRowGCGC metabolite = (SimplePeakListRowGCGC) dataset.getRow(i);
 				try {
 					st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, " + "N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, " + "METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, " + "EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES " + "(\"" + (float) metabolite.getRT1() + "\", \"" + (float) metabolite.getRT2() + "\", \"" + (float) metabolite.getRTI() + "\", \"" + (int) metabolite.getNumFound() + "\", \"" + (int) metabolite.getMaxSimilarity() + "\", \"" + (float) metabolite.getMeanSimilarity() + "\", \"" + (float) metabolite.getSimilaritySTDDev() + "\", \"" + metabolite.getName() + "\", \"" + metabolite.getPubChemID() + "\", \"" + metabolite.getAllNames() + "\", \"" + (int) exp_id + "\", \"" + (float) metabolite.getMass() + "\", \"" + (float) metabolite.getDifference() + "\", \"" + metabolite.getSpectrumString() + "\", \"" + metabolite.getCAS() + "\", \"" + metabolite.getMolClass() + "') ");
-					System.out.println(metabolite.getName());
+					//System.out.println(metabolite.getName());
 					ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");
 					r.next();
 					mol_ID[i] = r.getInt(1);

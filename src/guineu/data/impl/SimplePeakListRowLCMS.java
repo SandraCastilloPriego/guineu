@@ -34,13 +34,13 @@ import java.util.logging.Logger;
  */
 public class SimplePeakListRowLCMS implements PeakListRow {
 
-	private String FAComposition,  allNames,  Name,  lipidClass = "0";
+	private String FAComposition = "",  allNames,  Name,  lipidClass = "0";
 	private double averageMZ,  averageRT,  numFound;
 	private int standard,  ID,  aligment,  numFixColumns;
 	private boolean control,  selection;
-	private String VTTid,  VTTAllIDs;
+	private String VTTid = "",  VTTAllIDs = "";
 	private Hashtable<String, Double> peaks;
-	private String pubchemID;
+	private String pubchemID = "";
 	private String identificationType = IdentificationType.UNKNOWN.toString();
 
 	public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound,
@@ -90,7 +90,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	public void setIdentificationType(String identificationType) {
 		this.identificationType = identificationType;
 	}
-	
+
 	public double getMZ() {
 		return this.averageMZ;
 	}
@@ -144,7 +144,11 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	}
 
 	public void setAllNames(String allNames) {
-		this.allNames = allNames;
+		if (allNames == null || allNames.endsWith("null")) {
+			this.allNames = "";
+		} else {
+			this.allNames = allNames;
+		}
 	}
 
 	public void setPeak(String name, Double value) {
@@ -156,7 +160,11 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	}
 
 	public void setFAComposition(String FAComposition) {
-		this.FAComposition = FAComposition;
+		if (FAComposition == null || FAComposition.endsWith("null")) {
+			this.FAComposition = "";
+		} else {
+			this.FAComposition = FAComposition;
+		}
 	}
 
 	public int getID() {
@@ -253,7 +261,11 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	}
 
 	public void setVTTID(String VTTID) {
-		this.VTTid = VTTID;
+		if (VTTID == null || VTTID.endsWith("null")) {
+			this.VTTid = "";
+		} else {
+			this.VTTid = VTTID;
+		}
 	}
 
 	public String getAllVTTID() {
@@ -261,11 +273,19 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 	}
 
 	public void setAllVTTD(String AllVTTIDs) {
-		this.VTTAllIDs = AllVTTIDs;
+		if (AllVTTIDs == null || AllVTTIDs.endsWith("null")) {
+			this.VTTAllIDs = "";
+		} else {
+			this.VTTAllIDs = AllVTTIDs;
+		}
 	}
 
 	public void setPubChemID(String pubchemID) {
-		this.pubchemID = pubchemID;
+		if (pubchemID == null || pubchemID.endsWith("null")) {
+			this.pubchemID = "";
+		} else {
+			this.pubchemID = pubchemID;
+		}
 	}
 
 	public Hashtable<String, Double> getPeaksTable() {

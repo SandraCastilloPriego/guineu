@@ -46,8 +46,8 @@ public class OpenFileDBTask implements Task {
 
     public OpenFileDBTask(int datasetID, String type, Desktop desktop) {
         this.datasetID = datasetID;
-        this.desktop = desktop;
-        if (type.contains("GCGC")) {
+        this.desktop = desktop;		
+        if (type.contains("GCxGC")) {
             parser = new GCGCParserDataBase(datasetID);
         } else {
             parser = new LCMSParserDataBase(datasetID);
