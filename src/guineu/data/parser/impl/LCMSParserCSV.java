@@ -19,7 +19,8 @@ package guineu.data.parser.impl;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
-import guineu.data.IdentificationType;
+import guineu.data.ParameterType;
+import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
@@ -34,149 +35,134 @@ import java.util.regex.Pattern;
  */
 public class LCMSParserCSV implements Parser {
 
-	private String datasetPath;
-	private SimpleLCMSDataset dataset;
-	private int rowsNumber;
-	private int rowsReaded;
-	Lipidclass LipidClassLib;
+    private String datasetPath;
+    private SimpleLCMSDataset dataset;
+    private int rowsNumber;
+    private int rowsReaded;
+    Lipidclass LipidClassLib;
 
-	public LCMSParserCSV(String datasetPath) {
-		this.rowsNumber = 0;
-		this.rowsReaded = 0;
-		this.datasetPath = datasetPath;
-		this.dataset = new SimpleLCMSDataset(this.getDatasetName());
-		this.dataset.setType(DatasetType.LCMS);
-		this.LipidClassLib = new Lipidclass();
-		countNumberRows();
-	}
+    public LCMSParserCSV(String datasetPath) {
+        this.rowsNumber = 0;
+        this.rowsReaded = 0;
+        this.datasetPath = datasetPath;
+        this.dataset = new SimpleLCMSDataset(this.getDatasetName());
+        this.dataset.setType(DatasetType.LCMS);
+        this.LipidClassLib = new Lipidclass();
+        countNumberRows();
+    }
 
-	public String getDatasetName() {
-		Pattern pat = Pattern.compile("[\\\\/]");
-		Matcher matcher = pat.matcher(datasetPath);
-		int index = 0;
-		while (matcher.find()) {
-			index = matcher.start();
-		}
-		String n = "LCMS - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
-		return n;
-	}
+    public String getDatasetName() {
+        Pattern pat = Pattern.compile("[\\\\/]");
+        Matcher matcher = pat.matcher(datasetPath);
+        int index = 0;
+        while (matcher.find()) {
+            index = matcher.start();
+        }
+        String n = "LCMS - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
+        return n;
+    }
 
-	public float getProgress() {
-		return (float) rowsReaded / rowsNumber;
-	}
+    public float getProgress() {
+        return (float) rowsReaded / rowsNumber;
+    }
 
-	public void fillData() {
-		try {
-			CsvReader reader = new CsvReader(new FileReader(datasetPath));
+    public void fillData() {
+        try {
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
 
-			reader.readHeaders();
-			String[] header = reader.getHeaders();
+            reader.readHeaders();
+            String[] header = reader.getHeaders();
 
-			while (reader.readRecord()) {
-				getData(reader.getValues(), header);
-				rowsReaded++;
-			}
+            while (reader.readRecord()) {
+                getData(reader.getValues(), header);
+                rowsReaded++;
+            }
 
-			setExperimentsName(header);
+            setExperimentsName(header);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void getData(String[] sdata, String[] header) {
-		try {
-			SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
-			for (int i = 0; i < sdata.length; i++) {
-				if (i >= header.length) {
-				} else if (header[i].matches(RegExp.ID.getREgExp())) {
-					lipid.setID(Integer.valueOf(sdata[i]));
-				} else if (header[i].matches(RegExp.MZ.getREgExp())) {
-					lipid.setMZ(Double.valueOf(sdata[i]));
-				} else if (header[i].matches(RegExp.RT.getREgExp())) {
-					double rt = Double.valueOf(sdata[i]);
-					if (rt < 20) {
-						rt = rt * 60;
-					}
-					lipid.setRT(rt);
-				} else if (header[i].matches(RegExp.NFOUND.getREgExp())) {
-					lipid.setNumFound(Double.valueOf(sdata[i]).doubleValue());
-				} else if (header[i].matches(RegExp.STANDARD.getREgExp())) {
-					lipid.setStandard(Integer.valueOf(sdata[i]));
-				} else if (header[i].matches(RegExp.CLASS.getREgExp())) {
-				} else if (header[i].matches(RegExp.FA.getREgExp())) {
-					lipid.setFAComposition(sdata[i]);
-				} else if (header[i].matches(RegExp.NAME.getREgExp())) {
-					lipid.setName(sdata[i]);
-				} else if (header[i].matches(RegExp.ALLNAMES.getREgExp())) {
-					lipid.setAllNames(sdata[i]);
-				} else if (header[i].matches(RegExp.VTTALLID.getREgExp())) {
-					lipid.setAllVTTD(sdata[i]);
-				} else if (header[i].matches(RegExp.VTTID.getREgExp())) {
-					lipid.setVTTID(sdata[i]);
-				} else if (header[i].matches(RegExp.IDENTIFICATION.getREgExp())) {
-					if (sdata[i].compareTo(IdentificationType.MS.toString()) == 0) {
-						lipid.setIdentificationType(IdentificationType.MS.toString());
-					} else if (sdata[i].compareTo(IdentificationType.MSMS.toString()) == 0) {
-						lipid.setIdentificationType(IdentificationType.MSMS.toString());
-					} else {
-						lipid.setIdentificationType(sdata[i]);
-					}
-				} else if (header[i].matches(RegExp.ALIGNMENT.getREgExp())) {
-					try {
-						lipid.setNumberAlignment(Integer.valueOf(sdata[i]));
-					} catch (Exception e) {
-						lipid.setNumberAlignment(0);
-					}
-				} else {
-					try {
-						lipid.setPeak(header[i], Double.valueOf(sdata[i]));
-					} catch (Exception e) {
-						lipid.setPeak(header[i], Double.valueOf(0.0));
-					}
-				}
-				if (lipid.getName() == null || lipid.getName().isEmpty()) {
-					lipid.setName("unknown");
-				}
-			// lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
-			}
-			lipid.setSelectionMode(false);
-			this.dataset.AddRow(lipid);
+    private Object getType(String data, ParameterType type) {
+        switch (type) {
+            case BOOLEAN:
+                return new Boolean(data);
+            case INTEGER:
+                return Integer.valueOf(data);
+            case DOUBLE:
+                return Double.valueOf(data);
+            case STRING:
+                return data;
+        }
 
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
+        return null;
+    }
 
-	public Dataset getDataset() {
-		return this.dataset;
-	}
+    private void getData(String[] sdata, String[] header) {
+        try {
+            SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
+            for (int i = 0; i < sdata.length; i++) {
+                if (i >= header.length) {
+                }
+                boolean isfound = false;
+                for (LCMSColumnName field : LCMSColumnName.values()) {
+                    if (header[i].matches(field.getRegularExpression())) {
+                        lipid.setVar(field.getSetFunctionName(), this.getType(sdata[i], field.getType()));
+                        isfound = true;
+                        break;
+                    }
+                }
+                if (!isfound) {
+                    try {
+                        lipid.setPeak(header[i], Double.valueOf(sdata[i]));
+                    } catch (Exception e) {
+                        lipid.setPeak(header[i], Double.valueOf(0.0));
+                    }
+                }
+                if (lipid.getName() == null || lipid.getName().isEmpty()) {
+                    lipid.setName("unknown");
+                }
+            // lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
+            }
+            lipid.setSelectionMode(false);
+            this.dataset.AddRow(lipid);
 
-	private void setExperimentsName(String[] header) {
-		try {
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 
-			String regExpression = "";
-			for (RegExp value : RegExp.values()) {
-				regExpression += value.getREgExp() + "|";
-			}
-			for (int i = 0; i < header.length; i++) {
-				if (!header[i].matches(regExpression)) {
-					this.dataset.AddNameExperiment(header[i]);
-				}
-			}
+    public Dataset getDataset() {
+        return this.dataset;
+    }
 
-		} catch (Exception exception) {
-		}
-	}
+    private void setExperimentsName(String[] header) {
+        try {
 
-	private void countNumberRows() {
-		try {
-			CsvReader reader = new CsvReader(new FileReader(datasetPath));
-			while (reader.readRecord()) {
-				this.rowsNumber++;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            String regExpression = "";
+            for (LCMSColumnName value : LCMSColumnName.values()) {
+                regExpression += value.getRegularExpression() + "|";
+            }
+            for (int i = 0; i < header.length; i++) {
+                if (!header[i].matches(regExpression)) {
+                    this.dataset.AddNameExperiment(header[i]);
+                }
+            }
+
+        } catch (Exception exception) {
+        }
+    }
+
+    private void countNumberRows() {
+        try {
+            CsvReader reader = new CsvReader(new FileReader(datasetPath));
+            while (reader.readRecord()) {
+                this.rowsNumber++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

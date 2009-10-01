@@ -36,7 +36,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
 	private String FAComposition = "",  allNames,  Name,  lipidClass = "0";
 	private double averageMZ,  averageRT,  numFound;
-	private int standard,  ID,  aligment,  numFixColumns;
+	private int standard,  ID,  aligment;
 	private boolean control,  selection;
 	private String VTTid = "",  VTTAllIDs = "";
 	private Hashtable<String, Double> peaks;
@@ -57,7 +57,6 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 		this.identificationType = identificationType;
 		this.peaks = new Hashtable<String, Double>();
 		this.aligment = -1;
-		this.numFixColumns = 11;
 	}
 
 	public SimplePeakListRowLCMS() {
@@ -226,14 +225,6 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
 	public Object getPeak(int col, Vector<String> sampleNames) {
 		return this.peaks.get(sampleNames.elementAt(col));
-	}
-
-	public int getNumberFixColumns() {
-		return this.numFixColumns;
-	}
-
-	public void setNumberFixColumns(int columnNum) {
-		this.numFixColumns = columnNum;
 	}
 
 	public boolean isSelected() {
