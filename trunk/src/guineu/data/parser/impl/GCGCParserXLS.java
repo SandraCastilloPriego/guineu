@@ -140,8 +140,9 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 
                 if (!isfound) {
                     try {
-                        metabolite.setPeak(title, (Double) this.getType(cell.toString(), ParameterType.DOUBLE));
+                        metabolite.setPeak(title, cell.getNumericCellValue());
                     } catch (Exception e) {
+						e.printStackTrace();
                         metabolite.setPeak(title, 0.0);
                     }
                 }
