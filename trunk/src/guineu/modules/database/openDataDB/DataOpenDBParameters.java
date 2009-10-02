@@ -29,14 +29,13 @@ import guineu.database.ask.DBask;
  * @author scsandra
  */
 public class DataOpenDBParameters extends SimpleParameterSet{
-
-	final static String[] projectName = DBask.getProjectList();
+	static String[] projectName = DBask.getProjectList();
 	final static String[] info = {"Sample Information", "Project Information", "Study Information", "Dataset Information"};
 	final static String[] typeExperiment = {"LC-MS", "GCGC-Tof"};
 
-	public static final Parameter project = new SimpleParameter(
+	public static Parameter project = new SimpleParameter(
             ParameterType.STRING, "Project",
-            "Projects", null, null, projectName, null);
+            "Projects", null, null, projectName , null);
 
 	public static final Parameter studies = new SimpleParameter(
             ParameterType.STRING, "Study",
@@ -53,4 +52,8 @@ public class DataOpenDBParameters extends SimpleParameterSet{
 	public DataOpenDBParameters() {
         super(new Parameter[]{project, studies, type, information});
     }
+	public void actualize(){
+		projectName = DBask.getProjectList();
+		project.setPossibleValues(projectName);
+	}
 }

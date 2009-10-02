@@ -113,6 +113,11 @@ public class SimpleParameterSet implements StorableParameterSet {
 
 		Object possibleValues[] = parameter.getPossibleValues();
 
+		if(value instanceof String[]){
+			parameter.setPossibleValues((String[])value);
+			return;
+		}
+
 		if ((possibleValues != null) && (parameter.getType() != ParameterType.MULTIPLE_SELECTION) && (parameter.getType() != ParameterType.ORDERED_LIST)) {
 			for (Object possibleValue : possibleValues) {
 				// We compare String version of the values, in case some values
@@ -189,6 +194,7 @@ public class SimpleParameterSet implements StorableParameterSet {
 				if (!(value instanceof String)) {
 					throw (new IllegalArgumentException("Value type mismatch"));
 				}
+
 				break;
 
 			case MULTIPLE_SELECTION:
