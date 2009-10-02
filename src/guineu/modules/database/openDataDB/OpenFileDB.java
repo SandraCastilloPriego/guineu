@@ -17,8 +17,12 @@
  */
 package guineu.modules.database.openDataDB;
 
+import guineu.data.Parameter;
 import guineu.data.ParameterSet;
+import guineu.data.ParameterType;
+import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
+import guineu.database.ask.DBask;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -53,6 +57,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 		desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
 				"TODO write description", KeyEvent.VK_O, this, null, null);
 
+
 	}
 
 	public void taskStarted(Task task) {
@@ -74,6 +79,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		((DataOpenDBParameters)parameters).actualize();
 		ExitCode exitCode = setupParameters();
 
 		if (exitCode != ExitCode.OK) {

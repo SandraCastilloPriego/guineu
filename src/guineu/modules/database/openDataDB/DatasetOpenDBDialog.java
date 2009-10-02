@@ -133,7 +133,7 @@ public class DatasetOpenDBDialog extends ParameterSetupDialog implements ActionL
 		table.setDefaultRenderer(Object.class, centerRenderer);
 		table.setAutoCreateRowSorter(true);
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(800, 600));
+		scrollPane.setPreferredSize(new Dimension(700, 280));
 		componentsPanel.add(scrollPane, BorderLayout.CENTER);
 
 		//size columns

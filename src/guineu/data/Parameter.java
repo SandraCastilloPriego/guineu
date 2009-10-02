@@ -24,60 +24,63 @@ import java.text.NumberFormat;
  */
 public interface Parameter {
 
-    /**
-     * Returns the parameter type
-     * 
-     * @return Parameter type
-     */
-    public ParameterType getType();
-    
-    /**
-     * Returns this parameter's name. The name must be unique within one ParameterSet.
-     * 
-     * @return Parameter name
-     */
-    public String getName();
+	/**
+	 * Returns the parameter type
+	 *
+	 * @return Parameter type
+	 */
+	public ParameterType getType();
 
-    /**
-     * 
-     * @return Detailed description of the parameter
-     */
-    public String getDescription();
-    
-    /**
-     * 
-     * @return Symbol for units of the parameter or null
-     */
-    public String getUnits();
-  
-    /**
-     * 
-     * @return Default value of this parameter or null
-     */
-    public Object getDefaultValue();
-    
-    /**
-     * 
-     * @return Array of possible values of this parameter or null
-     */
-    public Object[] getPossibleValues();
+	/**
+	 * Returns this parameter's name. The name must be unique within one ParameterSet.
+	 *
+	 * @return Parameter name
+	 */
+	public String getName();
 
-    /**
-     * 
-     * @return Minimum possible value of this parameter or null
-     */
-    public Object getMinimumValue();
+	/**
+	 *
+	 * @return Detailed description of the parameter
+	 */
+	public String getDescription();
 
-    /**
-     * 
-     * @return Maximum possible value of this parameter or null
-     */
-    public Object getMaximumValue();
-    
-    /**
-     * 
-     * @return Parameter for the NumberFormat suitable for this parameter or null
-     */
-    public NumberFormat getNumberFormat();
+	/**
+	 *
+	 * @return Symbol for units of the parameter or null
+	 */
+	public String getUnits();
+
+	/**
+	 *
+	 * @return Default value of this parameter or null
+	 */
+	public Object getDefaultValue();
+
+	/**
+	 *
+	 * @return Array of possible values of this parameter or null
+	 */
+	public Object[] getPossibleValues();
+
+	/**
+	 *
+	 * @return Minimum possible value of this parameter or null
+	 */
+	public Object getMinimumValue();
+
+	/**
+	 *
+	 * @return Maximum possible value of this parameter or null
+	 */
+	public Object getMaximumValue();
+
+	/**
+	 *
+	 * @return Parameter for the NumberFormat suitable for this parameter or null
+	 */
+	public NumberFormat getNumberFormat();
+
+	public void setPossibleValues(Object[] possibleValues);
+
     
 }
