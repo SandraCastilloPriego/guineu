@@ -5,10 +5,6 @@
 
 package guineu.modules.R;
 
-/**
- *
- * @author bicha
- */
 import java.io.*;
 import java.awt.Frame;
 import java.awt.FileDialog;
@@ -67,7 +63,7 @@ class TextConsole implements RMainLoopCallbacks
 }
 
 public class test {
-    public static void main(String[] args) {
+    public test(String[] args) {
 	// just making sure we have the right version of everything
 	if (!Rengine.versionCheck()) {
 	    System.err.println("** Version mismatch - Java files don't match library version.");

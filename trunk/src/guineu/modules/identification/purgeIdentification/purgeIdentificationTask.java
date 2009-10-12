@@ -20,17 +20,10 @@ package guineu.modules.identification.purgeIdentification;
 import guineu.data.Dataset;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
 import guineu.data.parser.impl.Lipidclass;
-import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.LCMSColumnName;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

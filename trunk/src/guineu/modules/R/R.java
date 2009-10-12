@@ -38,62 +38,74 @@ import java.util.logging.Logger;
  */
 public class R implements ActionListener, GuineuModule, TaskListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private Desktop desktop;
 
-    public void initModule() {
+	public void initModule() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILTER, "R",
-                "TODO write description",
-                KeyEvent.VK_R, this, null, null);
-    }
+		this.desktop = GuineuCore.getDesktop();
+		desktop.addMenuItem(GuineuMenu.STATISTICS, "R",
+				"TODO write description",
+				KeyEvent.VK_R, this, null, null);
+	}
 
-    public void taskStarted(Task task) {
-        logger.info("R");
-    }
+	public void taskStarted(Task task) {
+		logger.info("R");
+	}
 
-    public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
-            logger.info("Finished R" + ((RTask) task).getTaskDescription());
-        }
+	public void taskFinished(Task task) {
+		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+			logger.info("Finished R" + ((RTask) task).getTaskDescription());
+		}
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-            String msg = "Error while R on .. " + ((RTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+			String msg = "Error while R on .. " + ((RTask) task).getErrorMessage();
+			logger.severe(msg);
+			desktop.displayErrorMessage(msg);
 
-        }
-    }
+		}
+	}
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+	public ParameterSet getParameterSet() {
+		return null;
+	}
 
-    public void setParameters(ParameterSet parameterValues) {
-    }
+	public void setParameters(ParameterSet parameterValues) {
+	}
 
-    @Override
-    public String toString() {
-        return "R";
-    }
+	@Override
+	public String toString() {
+		return "R";
+	}
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
 
-        // prepare a new group of tasks
-        Task tasks[] = new RTask[1];
-        tasks[0] = new RTask();
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		// prepare a new group of tasks
+		Task tasks[] = new RTask[1];
+		tasks[0] = new RTask();
+		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
 
-        // start the group
-        newGroup.start();
+		// start the group
+		newGroup.start();
 
-        return newGroup;
+		return newGroup;
 
-    }
+	}
 
-    public void actionPerformed(ActionEvent arg0) {
-        runModule(null);
-    }
+	public void actionPerformed(ActionEvent arg0) {
+		// runModule(null);
+
+		String[] args = new String[1];
+		args[0] = "--save";
+		try {
+			Runnable R = new test2();
+			Thread thread = new Thread(R);
+
+			// Start the thread
+			thread.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

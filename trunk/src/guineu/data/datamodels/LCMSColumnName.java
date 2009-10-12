@@ -28,11 +28,11 @@ public enum LCMSColumnName {
     NAME("Name", true, "getName", "setName", ".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|", ParameterType.STRING),
     ALLNAMES("All names", true, "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*", ParameterType.STRING),
     IDENTIFICATION("Identification type", true, "getIdentificationType", "setIdentificationType", ".*Identification type.*", ParameterType.STRING),
-    PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*", ParameterType.STRING),
+    PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*|.*ubChem.*|.*PubChem ID.*", ParameterType.STRING),
     VTT("VTT ID", true, "getVTTID", "setVTTID", ".*VTT ID.*", ParameterType.STRING),
     ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD", ".*All VTT IDs.*", ParameterType.STRING),
     LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*", ParameterType.INTEGER),
-    NFOUND("Num found", true, "getNumFound", "setNumFound", ".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*", ParameterType.DOUBLE),
+    NFOUND("Num found", true, "getNumFound", "setNumFound", ".*Num found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*", ParameterType.DOUBLE),
     STANDARD("Standard", true, "getStandard", "setStandard", ".*Standard.*", ParameterType.INTEGER),
     FA("FA Composition", true, "getFAComposition", "setFAComposition", ".*FAComposition.*", ParameterType.STRING),
     ALIGNMENT("Alignment", true, "getNumberAlignment", "setNumberAligment", ".*Aligment.*|.*Alignment.*", ParameterType.INTEGER);

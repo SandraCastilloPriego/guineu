@@ -21,6 +21,7 @@ import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.ParameterType;
 import guineu.data.datamodels.GCGCColumnName;
+import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
         this.DatasetName = DatasetName;
         this.sheetName = sheetName;
         this.dataset = new SimpleGCGCDataset(this.getDatasetName());
+		this.dataset.setType(DatasetType.GCGCTOF);
         this.head = new Vector<String>();
     }
 

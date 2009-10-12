@@ -54,7 +54,7 @@ public class RTask implements Task {
 	public void run() {
 		try {
 			status = TaskStatus.PROCESSING;
-			test2 R = new test2();
+			
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;
