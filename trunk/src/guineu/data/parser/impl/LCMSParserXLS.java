@@ -134,10 +134,12 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 				for (LCMSColumnName field : LCMSColumnName.values()) {
 					if (title.matches(field.getRegularExpression())) {
 						if (field == LCMSColumnName.RT) {
-							double rt = Double.parseDouble(cell.toString());
+							double rt = cell.getNumericCellValue();
 							if (rt < 20) {
 								rt *= 60;
 								lipid.setVar(field.getSetFunctionName(), rt);
+							}else{
+								lipid.setVar(field.getSetFunctionName(), cell.getNumericCellValue());
 							}
 						} else {
 							lipid.setVar(field.getSetFunctionName(), this.getType(cell.toString(), field.getType()));
