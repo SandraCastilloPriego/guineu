@@ -16,9 +16,9 @@
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"/>
     <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView"/>
     <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"/> 
+    <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering"/>  
+    <module class="guineu.modules.filter.Alignment.centering.median.MedianCentering"/>  
     <module class="guineu.modules.filter.Alignment.normalizationSTD.STDNormalization"/> 
-    <module class="guineu.modules.filter.Alignment.data.scaling.mean.MeanScaling"/>  
-    <module class="guineu.modules.filter.Alignment.data.scaling.median.MedianScaling"/>  
     <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  
     <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
     <module class="guineu.modules.filter.splitdatasets.Split"/>  
