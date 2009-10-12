@@ -128,6 +128,7 @@ class RansacAlignerTask implements Task {
 		// Ransac alignmnent
 		ransacPeakLists(peakLists, alignedPeakList);
 		removeDuplicateRows(alignedPeakList);
+
 		// Write non-aligned peaks
 
 		for (Dataset dataset : this.peakLists) {
@@ -139,7 +140,7 @@ class RansacAlignerTask implements Task {
 				}
 			}
 		}
-
+		
 
 		// Add new aligned peak list to the project
 		GuineuCore.getDesktop().AddNewFile(alignedPeakList);
@@ -152,8 +153,8 @@ class RansacAlignerTask implements Task {
 
 	}
 
-	private String getMostCommon(String name) {		
-		String[] names = name.split(" ; ");		
+	private String getMostCommon(String name) {
+		String[] names = name.split(" ; ");
 		int[] score = new int[names.length];
 		int cont = 0;
 		for (String name1 : names) {
@@ -179,7 +180,7 @@ class RansacAlignerTask implements Task {
 	}
 
 	private PeakListRow getPeakRow(Dataset newDataset, Dataset oldDataset, PeakListRow molRow) {
-		int NPeaks = molRow.getNumberPeaks() - 1;
+		int NPeaks = molRow.getNumberPeaks();
 		for (PeakListRow row : newDataset.getRows()) {
 			int cont = 0;
 			for (String experimentNames : oldDataset.getNameExperiments()) {
@@ -310,6 +311,7 @@ class RansacAlignerTask implements Task {
 		row.setVar("setName", allNames);
 		row.setVar("setMZ", mz);
 		row.setVar("setRT", rt);
+		row.setVar("setIdentificationType", row2.getVar("getIdentificationType"));
 	}
 
 	/**
