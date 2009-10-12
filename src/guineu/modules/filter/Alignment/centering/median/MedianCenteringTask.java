@@ -16,16 +16,18 @@
  * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.data.scaling.mean;
+package guineu.modules.filter.Alignment.centering.median;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.Task.TaskStatus;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
-class MeanScalingTask implements Task {
+class MedianCenteringTask implements Task {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Dataset peakLists[];
@@ -34,7 +36,7 @@ class MeanScalingTask implements Task {
 	// Processed rows counter
 	private int processedRows,  totalRows;
 
-	public MeanScalingTask(Dataset[] peakLists) {
+	public MedianCenteringTask(Dataset[] peakLists) {
 
 		this.peakLists = peakLists;
 	}
@@ -43,7 +45,7 @@ class MeanScalingTask implements Task {
 	 * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
 	 */
 	public String getTaskDescription() {
-		return "Mean scaling";
+		return "Median centering";
 	}
 
 	/**
@@ -82,33 +84,34 @@ class MeanScalingTask implements Task {
 	 */
 	public void run() {
 		status = TaskStatus.PROCESSING;
-		logger.info("Running Mean scaling");
+		logger.info("Running Median centering");
 
 		for (Dataset data : this.peakLists) {
 			normalize(data);
 		}
 		logger.info(
-				"Finished Mean scaling");
+				"Finished Median centering");
 		status = TaskStatus.FINISHED;
 
 	}
 
 	private void normalize(Dataset data) {
-		DescriptiveStatistics stats = new DescriptiveStatistics();
 		for (String nameExperiment : data.getNameExperiments()) {
+			List<Double> median = new ArrayList<Double>();
 			for (PeakListRow row : data.getRows()) {
 				Object value = row.getPeak(nameExperiment);
 				if (value != null) {
-					stats.addValue((Double) value);
+					median.add((Double) value);
 				}
 			}
+			Collections.sort(median);
+
 			for (PeakListRow row : data.getRows()) {
 				Object value = row.getPeak(nameExperiment);
 				if (value != null) {
-					row.setPeak(nameExperiment, Math.abs((Double) value - stats.getMean()));
+					row.setPeak(nameExperiment, Math.abs((Double) value - median.get(median.size() / 2)));
 				}
 			}
-			stats.clear();
 		}
 	}
 }

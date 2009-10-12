@@ -16,7 +16,7 @@
  * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.data.scaling.median;
+package guineu.modules.filter.Alignment.centering.mean;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 /**
  * 
  */
-public class MedianScaling implements GuineuModule, TaskListener, ActionListener {
+public class MeanCentering implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
@@ -43,12 +43,12 @@ public class MedianScaling implements GuineuModule, TaskListener, ActionListener
 
 		this.desktop = GuineuCore.getDesktop();
 
-		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Median Scaling..",
-				"TODO write description", KeyEvent.VK_E, this, null, null);
+		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Mean centering..",
+				"TODO write description", KeyEvent.VK_M, this, null, null);
 	}
 
 	public String toString() {
-		return "Median Scaling";
+		return "Mean centering";
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class MedianScaling implements GuineuModule, TaskListener, ActionListener
 		Dataset[] peakLists = desktop.getSelectedDataFiles();
 
 		if (peakLists.length == 0) {
-			desktop.displayErrorMessage("Please select peak lists for Median Scaling");
+			desktop.displayErrorMessage("Please select peak lists for Mean centering");
 			return;
 		}
 		
@@ -89,12 +89,12 @@ public class MedianScaling implements GuineuModule, TaskListener, ActionListener
 
 		// check peak lists
 		if ((peakLists == null) || (peakLists.length == 0)) {
-			desktop.displayErrorMessage("Please select peak lists for Median Scaling");
+			desktop.displayErrorMessage("Please select peak lists for Mean centering");
 			return null;
 		}
 
 		// prepare a new group with just one task
-		Task task = new MedianScalingTask(peakLists);
+		Task task = new MeanCenteringTask(peakLists);
 
 		GuineuCore.getTaskController().addTask(task);
 
@@ -103,17 +103,17 @@ public class MedianScaling implements GuineuModule, TaskListener, ActionListener
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Median Scaling");
+		logger.info("Running Mean centering");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Median Scaling on " + ((MedianScalingTask) task).getTaskDescription());
+			logger.info("Finished Mean centering on " + ((MeanCenteringTask) task).getTaskDescription());
 		}
 
 		if (task.getStatus() == Task.TaskStatus.ERROR) {
 
-			String msg = "Error while Median Scaling on .. " + ((MedianScalingTask) task).getErrorMessage();
+			String msg = "Error while Mean centering on .. " + ((MeanCenteringTask) task).getErrorMessage();
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
