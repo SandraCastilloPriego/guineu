@@ -96,7 +96,7 @@ public class AlkaneRTICorrectorFilterTask implements Task {
 
 		for (GCGCDatum mol : data) {
 			SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
-					mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), 0, mol.getName(),
+					mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), null, mol.getName(),
 					null, mol.getSpectrum().toString(), null, mol.getCAS());
 
 			mol.setColumnName(name);

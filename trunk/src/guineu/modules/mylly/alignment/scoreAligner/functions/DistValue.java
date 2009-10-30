@@ -40,15 +40,21 @@ public class DistValue implements Comparable<DistValue>, Cloneable
 		_dist = dist;
 		_isNull = false;
 	}
-	
+
+
 	public DistValue(DistValue val)
 	{
 		_dist = val._dist;
 		_isNull = val._isNull;
 	}
 
+	public void setDistance (double dist){
+		this._dist = dist;
+		_isNull = false;		
+	}
+
 	public double distance()
-	{
+	{		
 		return _dist;
 	}
 	
