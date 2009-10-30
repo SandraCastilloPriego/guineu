@@ -99,7 +99,7 @@ public class Singling {
 			//First of pair, the one with most peaks
 			boolean setFirst = false;
 			if (pair.getFirst() != null) {
-				int peakCountDiff = peak.nonNullPeakCount() - pair.getFirst().nonNullPeakCount();
+				int peakCountDiff = (int) (peak.nonNullPeakCount() - pair.getFirst().nonNullPeakCount());
 				if (peakCountDiff > 0 || (peakCountDiff == 0 && peak.getMaxSimilarity() >
 						pair.getFirst().getMaxSimilarity())) {
 					setFirst = true;

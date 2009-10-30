@@ -53,7 +53,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 		}
 	};
 	private int ID;
-	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity = 0,  meanSimilarity = 0,  similaritySTDDev = 0,  mass = 0,  difference = 0;
+	private double RT1 = 0.0,  RT2 = 0.0,  RTI = 0.0,  maxSimilarity = 0,  meanSimilarity = 0,  similaritySTDDev = 0,  mass = 0;
 	private String name,  allNames,  spectra,  pubChemID,  molClass;
 	private boolean control,  selection = false;
 	private String CAS;
@@ -66,7 +66,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
 	public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
 			double maxSimilarity, double meanSimilarity, double similaritySTDDev,
-			double numFound, double mass, double difference, String name,
+			double numFound, double mass, DistValue _distValue, String name,
 			String allNames, String spectra, String pubChemID, String CAS) {
 		this.ID = ID;
 		this.RT1 = RT1;
@@ -77,7 +77,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 		this.similaritySTDDev = similaritySTDDev;
 		this.numFound = numFound;
 		this.mass = mass;
-		this.difference = difference;
+		this.setDistValue(_distValue);
 		this.name = name;
 		this.allNames = allNames;
 		this.spectra = spectra;
@@ -188,7 +188,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 	public PeakListRow clone() {
 		PeakListRow newPeakListRow = new SimplePeakListRowGCGC(ID, RT1, RT2, RTI,
 				maxSimilarity, meanSimilarity, similaritySTDDev,
-				numFound, mass, difference, name, allNames, spectra, pubChemID, CAS);
+				numFound, mass, _distValue, name, allNames, spectra, pubChemID, CAS);
 
 		((SimplePeakListRowGCGC) newPeakListRow).numFound = numFound;
 		((SimplePeakListRowGCGC) newPeakListRow).names = names == null ? null : names.clone();
@@ -239,8 +239,9 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 		return this.mass;
 	}
 
-	public double getDifference() {
-		return this.difference;
+	public double getDifference() {		
+		return this._distValue.distance();
+
 	}
 
 	public String getSpectrumString() {
@@ -284,7 +285,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 	}
 
 	public void setDifference(double difference) {
-		this.difference = difference;
+		this._distValue.setDistance(difference);		
 	}
 
 	public void setSpectrumString(String spectra) {
@@ -412,7 +413,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
 		this.spectrum = p.getSpectrum() == null ? null : p.getSpectrum().clone();
 		this.spectra = this.spectrum.toString();
-		_distValue = DistValue.getNull();
+		_distValue = new DistValue(0);
 	}
 
 	public String[] getNames() {
@@ -443,8 +444,8 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 		return comparison;
 	}
 
-	public int nonNullPeakCount() {
-		return (int) numFound;
+	public double nonNullPeakCount() {
+		return numFound;
 	}
 
 	/**
@@ -482,10 +483,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 	}
 
 	public void setDistValue(DistValue val) {
-		_distValue = val;
-		if (val != null) {
-			this.difference = val.distance();
-		}
+		_distValue = val;		
 	}
 
 	public DistValue getDistValue() {

@@ -95,7 +95,7 @@ public class CalculateDeviationsTask implements Task {
         for (PeakListRow ar : al.getAlignment()) {
             Double diff = representatives.get(i++);
             if (diff != null) {
-                ar.setVar("setDifference", diff);
+                ar.setVar("setDifference", diff);				
             }
         }
 
