@@ -71,6 +71,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 				this.numFound, this.standard, this.lipidClass, this.Name, this.identificationType, this.allNames,
 				this.FAComposition);
 		peakListRow.setVar("setNumberAligment", aligment);
+        peakListRow.setVar("setVTTID", VTTid);
+        peakListRow.setVar("setAllVTTD", VTTAllIDs);
 		String str;
 		Set<String> set = peaks.keySet();
 

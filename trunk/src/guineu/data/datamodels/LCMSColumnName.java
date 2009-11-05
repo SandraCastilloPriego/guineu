@@ -29,7 +29,7 @@ public enum LCMSColumnName {
     ALLNAMES("All names", true, "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*", ParameterType.STRING),
     IDENTIFICATION("Identification type", true, "getIdentificationType", "setIdentificationType", ".*Identification type.*", ParameterType.STRING),
     PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*|.*ubChem.*|.*PubChem ID.*", ParameterType.STRING),
-    VTT("VTT ID", true, "getVTTID", "setVTTID", ".*VTT ID.*", ParameterType.STRING),
+    VTT("VTT ID", true, "getVTTID", "setVTTID", "^VTT ID.*", ParameterType.STRING),
     ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD", ".*All VTT IDs.*", ParameterType.STRING),
     LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*", ParameterType.INTEGER),
     NFOUND("Num found", true, "getNumFound", "setNumFound", ".*Num found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*", ParameterType.DOUBLE),
