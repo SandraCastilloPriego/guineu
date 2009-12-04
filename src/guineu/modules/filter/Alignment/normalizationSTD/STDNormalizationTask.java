@@ -98,13 +98,13 @@ class STDNormalizationTask implements Task {
 		for (String nameExperiment : data.getNameExperiments()) {
 			for (PeakListRow row : data.getRows()) {
 				Object value = row.getPeak(nameExperiment);
-				if (value != null) {
+				if (value != null && value instanceof Double) {
 					stats.addValue((Double) value);
 				}
 			}
 			for (PeakListRow row : data.getRows()) {
 				Object value = row.getPeak(nameExperiment);
-				if (value != null) {
+				if (value != null && value instanceof Double) {
 					row.setPeak(nameExperiment, (Double) value / stats.getStandardDeviation());
 				}
 			}

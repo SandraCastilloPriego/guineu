@@ -18,16 +18,13 @@
 package guineu.modules.mylly.alignment.scoreAligner;
 
 
-import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.ScoreAligner;
 import guineu.modules.mylly.datastruct.GCGCData;
-import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;

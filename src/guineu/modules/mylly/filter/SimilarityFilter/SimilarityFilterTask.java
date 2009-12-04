@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.SimilarityFilter;
 
-import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.DatasetType;
 import guineu.main.GuineuCore;

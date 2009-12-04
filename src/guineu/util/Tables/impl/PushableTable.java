@@ -17,6 +17,7 @@
  */
 package guineu.util.Tables.impl;
 
+import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.DatasetType;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -133,7 +134,13 @@ public class PushableTable implements DataTable, ActionListener {
 
 	public boolean getStandard(int row) {
 		try {
-			return (Boolean) this.getTable().getValueAt(row, 8);
+            for (int i = 0; i < this.getTable().getColumnCount(); i++) {
+                String columnName = this.getTable().getColumnName(i);
+				if (columnName.matches(LCMSColumnName.STANDARD.getRegularExpression())) {
+					return (Boolean)this.getTable().getValueAt(row, i);
+				}
+			}
+			return false;
 		} catch (Exception e) {
 			return false;
 		}
