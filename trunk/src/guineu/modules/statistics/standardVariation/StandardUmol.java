@@ -59,8 +59,11 @@ public class StandardUmol {
                     PeakListRow row2 = this.standards.get(stdName2);
 
                     for (String experimentName : groupExperimentName) {
-                        double concentration = (Double)row1.getPeak(experimentName) / (Double)row2.getPeak(experimentName);
-                        newRow.setPeak(experimentName, concentration);
+                        try {
+                            double concentration = (Double) row1.getPeak(experimentName) / (Double) row2.getPeak(experimentName);
+                            newRow.setPeak(experimentName, concentration);
+                        } catch (Exception e) {
+                        }
                     }
                     mols.addElement(newRow);
                 }

@@ -29,89 +29,89 @@ import java.util.logging.Logger;
 
 class MedianCenteringTask implements Task {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Dataset peakLists[];
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	// Processed rows counter
-	private int processedRows,  totalRows;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Dataset peakLists[];
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    // Processed rows counter
+    private int processedRows,  totalRows;
 
-	public MedianCenteringTask(Dataset[] peakLists) {
+    public MedianCenteringTask(Dataset[] peakLists) {
 
-		this.peakLists = peakLists;
-	}
+        this.peakLists = peakLists;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
-	 */
-	public String getTaskDescription() {
-		return "Median centering";
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
+     */
+    public String getTaskDescription() {
+        return "Median centering";
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
-	 */
-	public double getFinishedPercentage() {
-		if (totalRows == 0) {
-			return 0f;
-		}
-		return (double) processedRows / (double) totalRows;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
+     */
+    public double getFinishedPercentage() {
+        if (totalRows == 0) {
+            return 0f;
+        }
+        return (double) processedRows / (double) totalRows;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getStatus()
-	 */
-	public TaskStatus getStatus() {
-		return status;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getStatus()
+     */
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#cancel()
-	 */
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#cancel()
+     */
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
 
-	/**
-	 * @see Runnable#run()
-	 */
-	public void run() {
-		status = TaskStatus.PROCESSING;
-		logger.info("Running Median centering");
+    /**
+     * @see Runnable#run()
+     */
+    public void run() {
+        status = TaskStatus.PROCESSING;
+        logger.info("Running Median centering");
 
-		for (Dataset data : this.peakLists) {
-			normalize(data);
-		}
-		logger.info(
-				"Finished Median centering");
-		status = TaskStatus.FINISHED;
+        for (Dataset data : this.peakLists) {
+            normalize(data);
+        }
+        logger.info(
+                "Finished Median centering");
+        status = TaskStatus.FINISHED;
 
-	}
+    }
 
-	private void normalize(Dataset data) {
-		for (String nameExperiment : data.getNameExperiments()) {
-			List<Double> median = new ArrayList<Double>();
-			for (PeakListRow row : data.getRows()) {
-				Object value = row.getPeak(nameExperiment);
-				if (value != null) {
-					median.add((Double) value);
-				}
-			}
-			Collections.sort(median);
+    private void normalize(Dataset data) {
+        for (String nameExperiment : data.getNameExperiments()) {
+            List<Double> median = new ArrayList<Double>();
+            for (PeakListRow row : data.getRows()) {
+                Object value = row.getPeak(nameExperiment);
+                if (value != null && value instanceof Double) {
+                    median.add((Double) value);
+                }
+            }
+            Collections.sort(median);
 
-			for (PeakListRow row : data.getRows()) {
-				Object value = row.getPeak(nameExperiment);
-				if (value != null) {
-					row.setPeak(nameExperiment, Math.abs((Double) value - median.get(median.size() / 2)));
-				}
-			}
-		}
-	}
+            for (PeakListRow row : data.getRows()) {
+                Object value = row.getPeak(nameExperiment);
+                if (value != null && value instanceof Double) {
+                    row.setPeak(nameExperiment, Math.abs((Double) value - median.get(median.size() / 2)));
+                }
+            }
+        }
+    }
 }

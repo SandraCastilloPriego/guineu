@@ -125,7 +125,9 @@ public class LCMSParserCSV implements Parser {
 					try {
 						lipid.setPeak(header[i], Double.valueOf(sdata[i]));
 					} catch (Exception e) {
-						lipid.setPeak(header[i], Double.valueOf(0.0));
+                        if(sdata[i] != null){
+                            lipid.setPeak(header[i], sdata[i].toString());
+                        }
 					}
 				}
 				if (lipid.getName() == null || lipid.getName().isEmpty()) {

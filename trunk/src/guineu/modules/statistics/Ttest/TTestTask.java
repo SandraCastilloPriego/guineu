@@ -38,88 +38,94 @@ import org.apache.commons.math.stat.inference.TTestImpl;
  */
 public class TTestTask implements Task {
 
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private Desktop desktop;
-	private double progress = 0.0f;
-	private String[] group1,  group2;
-	private Dataset dataset;
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    private Desktop desktop;
+    private double progress = 0.0f;
+    private String[] group1,  group2;
+    private Dataset dataset;
 
-	public TTestTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop) {
-		this.group1 = group1;
-		this.group2 = group2;
-		this.dataset = dataset;
-		this.desktop = desktop;
+    public TTestTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop) {
+        this.group1 = group1;
+        this.group2 = group2;
+        this.dataset = dataset;
+        this.desktop = desktop;
 
-	}
+    }
 
-	public String getTaskDescription() {
-		return "T-Test... ";
-	}
+    public String getTaskDescription() {
+        return "T-Test... ";
+    }
 
-	public double getFinishedPercentage() {
-		return progress;
-	}
+    public double getFinishedPercentage() {
+        return progress;
+    }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
 
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			double[] t = new double[dataset.getNumberRows()];
-			for (int i = 0; i < dataset.getNumberRows(); i++) {
-				t[i] = this.Ttest(i);
-			}
+    public void run() {
+        try {
+            status = TaskStatus.PROCESSING;
+            double[] t = new double[dataset.getNumberRows()];
+            for (int i = 0; i < dataset.getNumberRows(); i++) {
+                t[i] = this.Ttest(i);
+            }
 
-			progress = 0.5f;
+            progress = 0.5f;
 
-			Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
-			newDataset.AddNameExperiment("Ttest");
-			int cont = 0;
+            Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
+            newDataset.AddNameExperiment("Ttest");
+            int cont = 0;
 
-			for (PeakListRow row : dataset.getRows()) {
-				PeakListRow newRow = row.clone();
-				newRow.removePeaks();
-				newRow.setPeak("Ttest", t[cont++]);
-				newDataset.AddRow(newRow);
-			}
-			DataTableModel model = FileUtils.getTableModel(newDataset);
+            for (PeakListRow row : dataset.getRows()) {
+                PeakListRow newRow = row.clone();
+                newRow.removePeaks();
+                newRow.setPeak("Ttest", t[cont++]);
+                newDataset.AddRow(newRow);
+            }
+            DataTableModel model = FileUtils.getTableModel(newDataset);
 
-			DataTable table = new PushableTable(model);
-			table.formatNumbers(dataset.getType());
-			DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
-			desktop.addInternalFrame(frame);
-			desktop.AddNewFile(newDataset);
-			frame.setVisible(true);
-			progress = 1f;
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
+            DataTable table = new PushableTable(model);
+            table.formatNumbers(dataset.getType());
+            DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
+            desktop.addInternalFrame(frame);
+            desktop.AddNewFile(newDataset);
+            frame.setVisible(true);
+            progress = 1f;
+            status = TaskStatus.FINISHED;
+        } catch (Exception e) {
+            status = TaskStatus.ERROR;
+            errorMessage = e.toString();
+            return;
+        }
+    }
 
-	public double Ttest(int mol) throws IllegalArgumentException, MathException {
-		DescriptiveStatistics stats1 = new DescriptiveStatistics();
-		DescriptiveStatistics stats2 = new DescriptiveStatistics();
-		for (int i = 0; i < group1.length; i++) {
-			stats1.addValue((Double) this.dataset.getRow(mol).getPeak(group1[i]));
-		}
-		for (int i = 0; i < group2.length; i++) {
-			stats2.addValue((Double) this.dataset.getRow(mol).getPeak(group2[i]));
-		}
-		TTestImpl ttest = new TTestImpl();
-		return ttest.tTest((StatisticalSummary) stats1, (StatisticalSummary) stats2);
-	}
+    public double Ttest(int mol) throws IllegalArgumentException, MathException {
+        DescriptiveStatistics stats1 = new DescriptiveStatistics();
+        DescriptiveStatistics stats2 = new DescriptiveStatistics();
+        for (int i = 0; i < group1.length; i++) {
+            try {
+                stats1.addValue((Double) this.dataset.getRow(mol).getPeak(group1[i]));
+            } catch (Exception e) {
+            }
+        }
+        for (int i = 0; i < group2.length; i++) {
+            try {
+                stats2.addValue((Double) this.dataset.getRow(mol).getPeak(group2[i]));
+            } catch (Exception e) {
+            }
+        }
+        TTestImpl ttest = new TTestImpl();
+        return ttest.tTest((StatisticalSummary) stats1, (StatisticalSummary) stats2);
+    }
 }

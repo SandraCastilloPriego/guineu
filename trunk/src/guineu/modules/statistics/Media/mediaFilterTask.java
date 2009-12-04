@@ -113,7 +113,10 @@ public class mediaFilterTask implements Task {
         for (PeakListRow peak : dataset.getRows()) {
             stats.clear();
             for (String nameExperiment : dataset.getNameExperiments()) {
-                stats.addValue((Double) peak.getPeak(nameExperiment));
+                try {
+                    stats.addValue((Double) peak.getPeak(nameExperiment));
+                } catch (Exception e) {
+                }
             }
             double[] values = stats.getSortedValues();
             median[numRows++] = values[values.length / 2];

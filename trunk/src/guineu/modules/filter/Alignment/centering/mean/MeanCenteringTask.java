@@ -27,88 +27,88 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 class MeanCenteringTask implements Task {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Dataset peakLists[];
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	// Processed rows counter
-	private int processedRows,  totalRows;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Dataset peakLists[];
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    // Processed rows counter
+    private int processedRows,  totalRows;
 
-	public MeanCenteringTask(Dataset[] peakLists) {
+    public MeanCenteringTask(Dataset[] peakLists) {
 
-		this.peakLists = peakLists;
-	}
+        this.peakLists = peakLists;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
-	 */
-	public String getTaskDescription() {
-		return "Mean centering";
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
+     */
+    public String getTaskDescription() {
+        return "Mean centering";
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
-	 */
-	public double getFinishedPercentage() {
-		if (totalRows == 0) {
-			return 0f;
-		}
-		return (double) processedRows / (double) totalRows;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
+     */
+    public double getFinishedPercentage() {
+        if (totalRows == 0) {
+            return 0f;
+        }
+        return (double) processedRows / (double) totalRows;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getStatus()
-	 */
-	public TaskStatus getStatus() {
-		return status;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getStatus()
+     */
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	/**
-	 * @see net.sf.mzmine.taskcontrol.Task#cancel()
-	 */
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+    /**
+     * @see net.sf.mzmine.taskcontrol.Task#cancel()
+     */
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
 
-	/**
-	 * @see Runnable#run()
-	 */
-	public void run() {
-		status = TaskStatus.PROCESSING;
-		logger.info("Running Mean centering");
+    /**
+     * @see Runnable#run()
+     */
+    public void run() {
+        status = TaskStatus.PROCESSING;
+        logger.info("Running Mean centering");
 
-		for (Dataset data : this.peakLists) {
-			normalize(data);
-		}
-		logger.info(
-				"Finished Mean centering");
-		status = TaskStatus.FINISHED;
+        for (Dataset data : this.peakLists) {
+            normalize(data);
+        }
+        logger.info(
+                "Finished Mean centering");
+        status = TaskStatus.FINISHED;
 
-	}
+    }
 
-	private void normalize(Dataset data) {
-		DescriptiveStatistics stats = new DescriptiveStatistics();
-		for (String nameExperiment : data.getNameExperiments()) {
-			for (PeakListRow row : data.getRows()) {
-				Object value = row.getPeak(nameExperiment);
-				if (value != null) {
-					stats.addValue((Double) value);
-				}
-			}
-			for (PeakListRow row : data.getRows()) {
-				Object value = row.getPeak(nameExperiment);
-				if (value != null) {
-					row.setPeak(nameExperiment, Math.abs((Double) value - stats.getMean()));
-				}
-			}
-			stats.clear();
-		}
-	}
+    private void normalize(Dataset data) {
+        DescriptiveStatistics stats = new DescriptiveStatistics();
+        for (String nameExperiment : data.getNameExperiments()) {
+            for (PeakListRow row : data.getRows()) {
+                Object value = row.getPeak(nameExperiment);
+                if (value != null && value instanceof Double) {
+                    stats.addValue((Double) value);
+                }
+            }
+            for (PeakListRow row : data.getRows()) {
+                Object value = row.getPeak(nameExperiment);
+                if (value != null && value instanceof Double) {
+                    row.setPeak(nameExperiment, Math.abs((Double) value - stats.getMean()));
+                }
+            }
+            stats.clear();
+        }
+    }
 }
