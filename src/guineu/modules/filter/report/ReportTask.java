@@ -99,6 +99,10 @@ public class ReportTask implements Task {
         }
     }
 
+    /**
+     * Read the file with the name of the samples in order
+     * @throws java.lang.Exception
+     */
     private void readFile() throws Exception {
         FileReader fr = null;
         try {
@@ -116,6 +120,9 @@ public class ReportTask implements Task {
         fr.close();
     }
 
+    /**
+     * For each selected row a chart is created and saved.
+     */
     private void saveRTCharts() {
         for (PeakListRow row : dataset.getRows()) {
             if (row.isSelected()) {
@@ -128,10 +135,17 @@ public class ReportTask implements Task {
         }
     }
 
+    /**
+     * Create the chart and save it into a png file.
+     * @param dataset
+     * @param lipidName
+     */
     private void createChart(CategoryDataset dataset, String lipidName) {
         try {
+
             JFreeChart chart = ChartFactory.createLineChart("RT shift", "Samples", "RT", dataset, PlotOrientation.VERTICAL, true, false, false);
 
+            // Chart characteristics
             CategoryPlot plot = (CategoryPlot) chart.getPlot();
             final NumberAxis axis = (NumberAxis) plot.getRangeAxis();
             axis.setAutoRangeIncludesZero(false);
@@ -140,6 +154,8 @@ public class ReportTask implements Task {
             categoryRenderer.setSeriesLinesVisible(0, false);
             categoryRenderer.setSeriesShapesVisible(0, true);
             plot.setRenderer(categoryRenderer);
+
+            // Save all the charts in the folder choosen by the user
             ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/RT Shift:" + lipidName + ".png"), chart, 1000, 500);
         } catch (IOException ex) {
             Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,9 +163,15 @@ public class ReportTask implements Task {
 
     }
 
+    /**
+     * Create the dataset for the chart. Each sample represents
+     * one category.
+     * @param row The intensities and general data of one metabolite
+     * @return CategoryDataset
+     */
     private CategoryDataset createSampleDataset(PeakListRow row) {
-        DefaultCategoryDataset data = new DefaultCategoryDataset();
 
+        DefaultCategoryDataset data = new DefaultCategoryDataset();
         int cont = 1;
         for (String sampleName : sampleNames) {
             sampleName += ".CDF peak retention time";
