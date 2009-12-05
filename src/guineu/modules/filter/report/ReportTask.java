@@ -37,9 +37,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.renderer.category.MinMaxCategoryRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -150,17 +148,17 @@ public class ReportTask implements Task {
     }
 
     private CategoryDataset createSampleDataset(PeakListRow row) {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultCategoryDataset data = new DefaultCategoryDataset();
 
         int cont = 1;
         for (String sampleName : sampleNames) {
             sampleName += ".CDF peak retention time";
             double value = (Double) row.getPeak(sampleName);
-            dataset.addValue(value, cont + " => " + sampleName, String.valueOf(cont));
+            data.addValue(value, cont + " => " + sampleName, String.valueOf(cont));
             cont++;
         }
 
 
-        return dataset;
+        return data;
     }
 }
