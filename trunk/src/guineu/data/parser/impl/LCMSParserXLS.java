@@ -153,7 +153,11 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 					try {
 						lipid.setPeak(title, cell.getNumericCellValue());
 					} catch (Exception e) {
-						lipid.setPeak(title, 0.0);
+						if (cell.toString().matches(".*null.*|.*NA.*|.*N/A.*")) {
+                            lipid.setPeak(title, 0.0);
+                        } else if (cell.toString() != null) {
+                            lipid.setPeak(title, cell.toString());
+                        }
 					}
 				}
 

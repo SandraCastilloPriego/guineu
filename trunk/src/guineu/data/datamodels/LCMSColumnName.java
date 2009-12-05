@@ -24,7 +24,7 @@ public enum LCMSColumnName {
     SELECTION("Selection", true, "isSelected", "setSelectionMode", "", ParameterType.BOOLEAN),
     ID("Id", true, "getID", "setID", "^ID.*", ParameterType.INTEGER),
     MZ("Average m/z", true, "getMZ", "setMZ", ".*Average M/Z.*|.*Average m/z.*|.*row m/z.*", ParameterType.DOUBLE),
-    RT("Average Retention time", true, "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*", ParameterType.DOUBLE),
+    RT("Average Retention time", true, "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*|.*Average Retention time.*", ParameterType.DOUBLE),
     NAME("Name", true, "getName", "setName", ".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|", ParameterType.STRING),
     ALLNAMES("All names", true, "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*", ParameterType.STRING),
     IDENTIFICATION("Identification type", true, "getIdentificationType", "setIdentificationType", ".*Identification type.*", ParameterType.STRING),

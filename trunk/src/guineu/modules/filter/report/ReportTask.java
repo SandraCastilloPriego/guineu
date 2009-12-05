@@ -17,10 +17,31 @@
  */
 package guineu.modules.filter.report;
 
+import com.csvreader.CsvReader;
 import guineu.data.Dataset;
+import guineu.data.PeakListRow;
+import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.category.MinMaxCategoryRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -31,14 +52,20 @@ public class ReportTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private double progress = 0.0f;
     private Dataset dataset;
-    private ReportParameters parameters;
+    private String fileName;
+    private String reportFileName;
+    private List<String> sampleNames;
+    private double totalRows,  processedRows;
 
     public ReportTask(Dataset simpleDataset, Desktop desktop, SimpleParameterSet parameters) {
         this.dataset = simpleDataset;
         this.desktop = desktop;
-        this.parameters = (ReportParameters) parameters;
+        this.fileName = (String) parameters.getParameterValue(ReportParameters.filename);
+        this.reportFileName = (String) parameters.getParameterValue(ReportParameters.reportFilename);
+        this.sampleNames = new ArrayList<String>();
+        this.totalRows = dataset.getNumberRows();
+        this.processedRows = 0;
     }
 
     public String getTaskDescription() {
@@ -46,7 +73,7 @@ public class ReportTask implements Task {
     }
 
     public double getFinishedPercentage() {
-        return progress;
+        return processedRows / totalRows;
     }
 
     public TaskStatus getStatus() {
@@ -64,12 +91,74 @@ public class ReportTask implements Task {
     public void run() {
         try {
             status = TaskStatus.PROCESSING;
-            
+            readFile();
+            saveRTCharts();
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;
             errorMessage = e.toString();
             return;
         }
+    }
+
+    private void readFile() throws Exception {
+        FileReader fr = null;
+        try {
+            fr = new FileReader(new File(fileName));
+        } catch (Exception e) {
+            throw e;
+        }
+        CsvReader reader = new CsvReader(fr);
+        String splitRow[];
+        while (reader.readRecord()) {
+            splitRow = reader.getValues();
+            this.sampleNames.add(splitRow[0]);
+        }
+        reader.close();
+        fr.close();
+    }
+
+    private void saveRTCharts() {
+        for (PeakListRow row : dataset.getRows()) {
+            CategoryDataset data = createSampleDataset(row);
+            String lipidName = "MZ: " + String.valueOf(row.getVar(LCMSColumnName.MZ.getGetFunctionName())) +
+                    "RT: " + String.valueOf(row.getVar(LCMSColumnName.RT.getGetFunctionName()));
+            createChart(data, lipidName);
+            this.processedRows++;
+        }
+    }
+
+    private void createChart(CategoryDataset dataset, String lipidName) {
+        try {
+            JFreeChart chart = ChartFactory.createLineChart("RT shift", "Samples", "RT", dataset, PlotOrientation.VERTICAL, true, false, false);
+
+            CategoryPlot plot = (CategoryPlot) chart.getPlot();
+            final NumberAxis axis = (NumberAxis) plot.getRangeAxis();
+            axis.setAutoRangeIncludesZero(false);
+            axis.setAutoRangeMinimumSize(1.0);
+            LineAndShapeRenderer categoryRenderer = new LineAndShapeRenderer();
+            categoryRenderer.setSeriesLinesVisible(0, false);
+            categoryRenderer.setSeriesShapesVisible(0, true);
+            plot.setRenderer(categoryRenderer);
+            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/RT Shift:" + lipidName + ".png"), chart, 1000, 500);
+        } catch (IOException ex) {
+            Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private CategoryDataset createSampleDataset(PeakListRow row) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        int cont = 1;
+        for (String sampleName : sampleNames) {
+            sampleName += ".CDF peak retention time";
+            double value = (Double) row.getPeak(sampleName);
+            dataset.addValue(value, cont + " => " + sampleName, String.valueOf(cont));
+            cont++;
+        }
+
+
+        return dataset;
     }
 }

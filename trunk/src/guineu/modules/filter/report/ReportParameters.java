@@ -33,7 +33,12 @@ public class ReportParameters extends SimpleParameterSet {
             "Run list file name",
             "Run list file name");
 
+    public static final Parameter reportFilename = new SimpleParameter(
+            ParameterType.FILE_NAME,
+            "Save report",
+            "Folder where the report will be saved.");
+
     public ReportParameters() {
-        super(new Parameter[]{filename});
+        super(new Parameter[]{filename, reportFilename});
     }
 }
