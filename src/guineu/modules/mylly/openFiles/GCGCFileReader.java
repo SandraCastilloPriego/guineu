@@ -21,7 +21,6 @@ import com.csvreader.CsvReader;
 import guineu.modules.mylly.datastruct.ComparablePair;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.GCGCDatumWithConcentration;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -65,8 +64,7 @@ public class GCGCFileReader {
 		int quantMassPos;
 		int concentrationPos;
 		List<GCGCDatum> peaks;
-
-		BufferedReader br = null;
+		
 		FileReader fr = null;
 
 		rtPos = ClassificationsPos = riPos = spectrumPos = concentrationPos = -1;
@@ -74,7 +72,6 @@ public class GCGCFileReader {
 
 		try {
 			fr = new FileReader(file);
-			br = new BufferedReader(fr);
 		} catch (FileNotFoundException e) {
 			throw e;
 		} catch (NullPointerException e2) {
@@ -244,10 +241,7 @@ public class GCGCFileReader {
 					}
 				}//End for-loop for (int i = 0; i < splitRow.length; i++)...
 			}
-		}
-		if (br != null) {
-			br.close();
-		}
+		}		
 		return peaks;
 	}
 

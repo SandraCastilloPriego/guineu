@@ -330,6 +330,7 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
 
 					public void actionPerformed(ActionEvent e) {
 						JFileChooser fileChooser = new JFileChooser();
+                        fileChooser.setFileSelectionMode(2);
 						fileChooser.setCurrentDirectory(new File((String) getComponentValue(fileParameter)));
 						fileChooser.setMultiSelectionEnabled(true);
 						int returnVal = fileChooser.showDialog(
