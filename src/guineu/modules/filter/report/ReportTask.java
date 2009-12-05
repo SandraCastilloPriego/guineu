@@ -120,10 +120,12 @@ public class ReportTask implements Task {
 
     private void saveRTCharts() {
         for (PeakListRow row : dataset.getRows()) {
-            CategoryDataset data = createSampleDataset(row);
-            String lipidName = "MZ: " + String.valueOf(row.getVar(LCMSColumnName.MZ.getGetFunctionName())) +
-                    "RT: " + String.valueOf(row.getVar(LCMSColumnName.RT.getGetFunctionName()));
-            createChart(data, lipidName);
+            if (row.isSelected()) {
+                CategoryDataset data = createSampleDataset(row);
+                String lipidName = "MZ: " + String.valueOf(row.getVar(LCMSColumnName.MZ.getGetFunctionName())) +
+                        "RT: " + String.valueOf(row.getVar(LCMSColumnName.RT.getGetFunctionName()));
+                createChart(data, lipidName);
+            }
             this.processedRows++;
         }
     }
