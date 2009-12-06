@@ -22,7 +22,7 @@
     <!-- <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"> 
       <parameters>
-        <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
+        <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView"> 
@@ -54,9 +54,23 @@
         <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.filter.report.Report"> 
+    <module class="guineu.modules.filter.report.RTShift.Report"> 
       <parameters>
-        <parameter name="Run list file name" type="FILE_NAME"/>
+        <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
+        <parameter name="Save report" type="FILE_NAME">/home/bicha/Desktop/guineu/report/rt</parameter>
+      </parameters> 
+    </module>  
+    <module class="guineu.modules.filter.report.intensitiesReport.Report"> 
+      <parameters>
+        <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
+        <parameter name="Save report" type="FILE_NAME">/home/bicha/Desktop/guineu/report/intensities/heights</parameter>
+        <parameter name="Use area " type="BOOLEAN">false</parameter>
+      </parameters> 
+    </module>  
+    <module class="guineu.modules.filter.report.areaVSheight.Report"> 
+      <parameters>
+        <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
+        <parameter name="Save report" type="FILE_NAME">/home/bicha/Desktop/guineu/report/NewFolder</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  
@@ -166,16 +180,16 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>-3</x>
-      <y>25</y>
+      <x>0</x>
+      <y>26</y>
       <width>-1</width>
       <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
-    <lastProjectDirectory>/home/scsandra/Desktop/processed files/179-167GUT/3-12/167-179GUTsero.csv</lastProjectDirectory>
+    <lastProjectDirectory>/home/bicha/Download/167-179GUTsero2.csv</lastProjectDirectory>
     <lastSaveDirectory>D:\data\xxczxczxcz</lastSaveDirectory>
     <lastMyllyDirectory>D:\data\xxczxczxcz</lastMyllyDirectory>
-    <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
+    <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
     <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
     <parameter name="LCMS Filename" type="FILE_NAME">/home/scsandra/Desktop/processed files/179-167GUT/3-12/167-179GUTsero2.csv</parameter>
     <parameter name="LCMS type" type="STRING">csv</parameter>
