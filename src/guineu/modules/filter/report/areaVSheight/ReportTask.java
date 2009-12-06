@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.report;
+package guineu.modules.filter.report.areaVSheight;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
@@ -143,7 +143,8 @@ public class ReportTask implements Task {
     private void createChart(CategoryDataset dataset, String lipidName) {
         try {
 
-            JFreeChart chart = ChartFactory.createLineChart("RT shift", "Samples", "RT", dataset, PlotOrientation.VERTICAL, true, false, false);
+
+            JFreeChart chart = ChartFactory.createLineChart("Intensities", "Samples", "Height/Area", dataset, PlotOrientation.VERTICAL, true, false, false);
 
             // Chart characteristics
             CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -156,7 +157,7 @@ public class ReportTask implements Task {
             plot.setRenderer(categoryRenderer);
 
             // Save all the charts in the folder choosen by the user
-            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/RT Shift:" + lipidName + ".png"), chart, 1000, 500);
+            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/HeightvsArea:" + lipidName + ".png"), chart, 1000, 500);
         } catch (IOException ex) {
             Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -174,10 +175,19 @@ public class ReportTask implements Task {
         DefaultCategoryDataset data = new DefaultCategoryDataset();
         int cont = 1;
         for (String sampleName : sampleNames) {
-            sampleName += ".CDF peak retention time";
-            double value = (Double) row.getPeak(sampleName);
-            data.addValue(value, cont + " => " + sampleName, String.valueOf(cont));
-            cont++;
+            try {
+                String sampleName2 = sampleName + ".CDF peak area";
+
+                sampleName += ".CDF peak height";
+
+
+                double height = (Double) row.getPeak(sampleName);
+                double area = (Double) row.getPeak(sampleName2);
+                data.addValue(height / area, cont + " => " + sampleName, String.valueOf(cont));
+                cont++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
 
