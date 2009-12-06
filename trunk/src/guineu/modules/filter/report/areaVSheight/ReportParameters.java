@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.report;
+package guineu.modules.filter.report.areaVSheight;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
@@ -38,6 +38,7 @@ public class ReportParameters extends SimpleParameterSet {
             "Save report",
             "Folder where the report will be saved.");
 
+    	
     public ReportParameters() {
         super(new Parameter[]{filename, reportFilename});
     }

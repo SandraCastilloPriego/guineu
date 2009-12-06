@@ -15,9 +15,30 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.desktop;
+package guineu.modules.filter.report.RTShift;
 
-public enum GuineuMenu {
-    FILE, CONFIGURATION, DATABASE, FILTER, ALIGNMENT, IDENTIFICATION,
-    IDENTIFICATIONSUBMENU, NORMALIZATION, IDENTIFICATIONFILTERS, STATISTICS, MSMS, MYLLY, REPORT, HELP
-};
+import guineu.data.Parameter;
+import guineu.data.ParameterType;
+import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimpleParameterSet;
+
+/**
+ *
+ * @author scsandra
+ */
+public class ReportParameters extends SimpleParameterSet {
+
+    public static final Parameter filename = new SimpleParameter(
+            ParameterType.FILE_NAME,
+            "Run list file name",
+            "Run list file name");
+
+    public static final Parameter reportFilename = new SimpleParameter(
+            ParameterType.FILE_NAME,
+            "Save report",
+            "Folder where the report will be saved.");
+
+    public ReportParameters() {
+        super(new Parameter[]{filename, reportFilename});
+    }
+}

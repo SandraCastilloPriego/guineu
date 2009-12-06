@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.report;
+package guineu.modules.filter.report.intensitiesReport;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
@@ -48,9 +48,9 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
     public void initModule() {
         this.parameters = new ReportParameters();
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILTER, "Report..",
-                "TODO write description", KeyEvent.VK_R, this, null, null);
-        desktop.addMenuSeparator(GuineuMenu.FILTER);
+        desktop.addMenuItem(GuineuMenu.REPORT, "Report intesities..",
+                "TODO write description", KeyEvent.VK_I, this, null, null);
+        
     }
 
     public void taskStarted(Task task) {
