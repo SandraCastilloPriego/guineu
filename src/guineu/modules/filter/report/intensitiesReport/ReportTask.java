@@ -69,7 +69,7 @@ public class ReportTask implements Task {
     }
 
     public String getTaskDescription() {
-        return "Report... ";
+        return "Report Intensities... ";
     }
 
     public double getFinishedPercentage() {
@@ -127,7 +127,7 @@ public class ReportTask implements Task {
      */
     private void saveRTCharts() {
         for (PeakListRow row : dataset.getRows()) {
-            if (row.isSelected()) {
+            if (row.isSelected() && status == TaskStatus.PROCESSING) {
                 CategoryDataset data = createSampleDataset(row);
                 String lipidName = "MZ: " + String.valueOf(row.getVar(LCMSColumnName.MZ.getGetFunctionName())) +
                         "RT: " + String.valueOf(row.getVar(LCMSColumnName.RT.getGetFunctionName()));
@@ -157,14 +157,13 @@ public class ReportTask implements Task {
             CategoryPlot plot = (CategoryPlot) chart.getPlot();
             final NumberAxis axis = (NumberAxis) plot.getRangeAxis();
             axis.setAutoRangeIncludesZero(false);
-            axis.setAutoRangeMinimumSize(1.0);
             LineAndShapeRenderer categoryRenderer = new LineAndShapeRenderer();
             categoryRenderer.setSeriesLinesVisible(0, false);
             categoryRenderer.setSeriesShapesVisible(0, true);
             plot.setRenderer(categoryRenderer);
 
             // Save all the charts in the folder choosen by the user
-            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/" + fieldY + ":" + lipidName + ".png"), chart, 1000, 500);
+            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/" + fieldY + ":" + lipidName + ".png"), chart, 1000, (500 + (this.dataset.getNumberCols() * 10)));
         } catch (IOException ex) {
             Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
         }
