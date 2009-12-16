@@ -89,24 +89,25 @@ public class PCADataset extends AbstractXYDataset implements
 
         if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
             // Group files with same parameter value to same group
-         /*   MZmineProject project = MZmineCore.getCurrentProject();
-            Vector<Object> availableParameterValues = new Vector<Object>();
+          /*  MZmineProject project = MZmineCore.getCurrentProject();
+            
             for (String rawDataFile : selectedRawDataFiles) {
                 Object paramValue = project.getParameterValue(
                         selectedParameter, rawDataFile);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
                 }
-            }
+            }*/
 
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
+            /*for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
                 Object paramValue = project.getParameterValue(
                         selectedParameter, selectedRawDataFiles[ind]);
                 groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
-            }
+            }*/
+            Vector<Object> availableParameterValues = new Vector<Object>();
             parameterValuesForGroups = availableParameterValues.toArray();
 
-            numberOfGroups = parameterValuesForGroups.length;*/
+            numberOfGroups = parameterValuesForGroups.length;
         }
 
     }
