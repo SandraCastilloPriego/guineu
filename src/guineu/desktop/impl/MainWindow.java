@@ -174,7 +174,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 
         desktopPane.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        desktopPane.setBackground(new Color(165, 197, 198));
+       // desktopPane.setBackground(new Color(237, 249, 255));
         Container c = getContentPane();
         c.setLayout(new BorderLayout());
         c.add(split, BorderLayout.CENTER);
