@@ -174,7 +174,7 @@ public class ProjectionPlotSetupDialog extends JDialog implements
         comp = GUIUtils.addLabel(components, "Peak measuring approach");
         constraints.gridx = 0;
         constraints.gridy = 2;
-        layout.setConstraints(comp, constraints);    
+        layout.setConstraints(comp, constraints);
 
         comp = GUIUtils.addLabel(components, "Peaks");
         constraints.gridx = 0;

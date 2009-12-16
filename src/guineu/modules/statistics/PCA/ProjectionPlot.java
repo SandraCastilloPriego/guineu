@@ -48,14 +48,14 @@ public class ProjectionPlot implements GuineuModule, ActionListener {
 
         desktop.addMenuItem(GuineuMenu.STATISTICS,
                 "Principal component analysis (PCA)",
-                "Principal component analysis", KeyEvent.VK_P, this, null, null);
+                "Principal component analysis", KeyEvent.VK_P, this, "PCA_PLOT", null);
 
         desktop.addMenuItem(GuineuMenu.STATISTICS,
                 "Curvilinear distance analysis (CDA)",
-                "Curvilinear distance analysis", KeyEvent.VK_C, this, null, null);
+                "Curvilinear distance analysis", KeyEvent.VK_C, this, "CDA_PLOT", null);
         
         desktop.addMenuItem(GuineuMenu.STATISTICS, "Sammon's projection",
-                "Sammon's projection", KeyEvent.VK_S,  this, null, null);
+                "Sammon's projection", KeyEvent.VK_S,  this, "SAMMON_PLOT", null);
 
     }
 
@@ -98,7 +98,7 @@ public class ProjectionPlot implements GuineuModule, ActionListener {
             forceXYComponents = false;
 
         ProjectionPlotSetupDialog setupDialog = new ProjectionPlotSetupDialog(
-                selectedAlignedPeakLists[0], parameters, forceXYComponents);
+                selectedAlignedPeakLists[0], parameters,  forceXYComponents);
         setupDialog.setVisible(true);
 
         if (setupDialog.getExitCode() == ExitCode.OK) {
