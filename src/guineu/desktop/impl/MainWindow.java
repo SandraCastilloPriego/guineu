@@ -41,7 +41,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JLayeredPane;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
@@ -72,7 +71,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
     }
 
     public void addInternalFrame(JInternalFrame frame) {
-        try {          
+        try {
             desktopPane.add(frame);
             frame.setVisible(true);
         } catch (Exception e) {
@@ -175,6 +174,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 
         desktopPane.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        desktopPane.setBackground(new Color(165, 197, 198));
         Container c = getContentPane();
         c.setLayout(new BorderLayout());
         c.add(split, BorderLayout.CENTER);
@@ -204,7 +204,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         setTitle("Guineu");
 
 //        taskList = new TaskProgressWindow();
-      //  desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
+    //  desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
 
     }
 
