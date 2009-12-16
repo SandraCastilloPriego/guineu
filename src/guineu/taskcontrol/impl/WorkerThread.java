@@ -20,99 +20,91 @@
 package guineu.taskcontrol.impl;
 
 import guineu.main.GuineuCore;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
+import guineu.util.ExceptionUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 
 /**
- * Task controller worker thread
+ * Task controller worker thread, this thread will process one task and then
+ * finish
  */
 class WorkerThread extends Thread {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    
-    private WrappedTask currentTask;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    WorkerThread(int workerNumber) {
-        super("Worker thread #" + workerNumber);
-    }
+	private WrappedTask wrappedTask;
+	private boolean finished = false;
 
-    /**
-     * @return Returns the currentTask.
-     */
-    WrappedTask getCurrentTask() {
-        return currentTask;
-    }
+	WorkerThread(WrappedTask wrappedTask) {
+		super("Thread executing task " + wrappedTask);
+		this.wrappedTask = wrappedTask;
+		wrappedTask.assignTo(this);
+	}
 
-    /**
-     * @param currentTask The currentTask to set.
-     */
-    void setCurrentTask(WrappedTask newTask) {
-        assert currentTask == null;
-        currentTask = newTask;
-        newTask.assignTo(this);
-        synchronized (this) {
-            notify();
-        }
-    }
+	/**
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run() {
 
-    /**
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
+		Task actualTask = wrappedTask.getActualTask();
 
-        while (true) {
+		logger.finest("Starting processing of task: "
+				+ actualTask.getTaskDescription());
 
-            while (currentTask == null) {
-                try {
-                    synchronized (this) {
-                        wait();
-                    }
-                } catch (InterruptedException e) {
-                    // nothing happens
-                }
-            }
+		try {
 
-            try {
-                
-                TaskListener listener = currentTask.getListener();
-                
-                if (listener != null)
-                    listener.taskStarted(currentTask.getTask());
-                
-                currentTask.getTask().run();
-                
-                if (listener != null)
-                    listener.taskFinished(currentTask.getTask());
-                
-            } catch (Throwable e) {
+			// Process the actual task
+			actualTask.run();
 
-                // this should never happen!
+			// Check if task finished with an error
+			if (actualTask.getStatus() == TaskStatus.ERROR) {
+				logger.severe("Task error: " + actualTask.getErrorMessage());
 
-                logger.log(Level.SEVERE, "Unhandled exception " + e + " while processing task "
-                        + currentTask, e);
+				GuineuCore.getDesktop().displayErrorMessage(
+						"Error of task " + actualTask.getTaskDescription(),
+						actualTask.getErrorMessage());
+			}
 
-                if (GuineuCore.getDesktop() != null) {
-                    
-                    String errorMessage = "Unhandled exception while processing task "
-                        + currentTask + ": " + e;
+			/*
+			 * This is important to allow the garbage collector to remove the task,
+			 * while keeping the task description in the "Tasks in progress" window
+			 */
+			wrappedTask.removeTaskReference();
 
-                    GuineuCore.getDesktop().displayErrorMessage(errorMessage);
-                }
+		} catch (Throwable e) {
 
-            }
+			/*
+			 * This should never happen, it means the task did not handle its
+			 * exception properly, or there was some severe error, like
+			 * OutOfMemoryError
+			 */
 
-            /* discard the task, so that garbage collecter can collect it */
-            currentTask = null;
+			logger.log(Level.SEVERE, "Unhandled exception " + e
+					+ " while processing task "
+					+ actualTask.getTaskDescription(), e);
 
-        }
+			GuineuCore.getDesktop().displayErrorMessage(
+					"Unhandled exception in task "
+							+ actualTask.getTaskDescription() + ": "
+							+ ExceptionUtils.exceptionToString(e));
 
-    }
-    
-    public String toString() {
-        return this.getName();
-    }
+			e.printStackTrace();
+
+		}
+
+		/*
+		 * Mark this thread as finished
+		 */
+		finished = true;
+
+	}
+
+	boolean isFinished() {
+		return finished;
+	}
 
 }

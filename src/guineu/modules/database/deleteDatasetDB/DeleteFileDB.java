@@ -23,9 +23,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,11 +55,11 @@ public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener 
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished delete database on " + ((DeleteFileDBTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while delete database on .. " + ((DeleteFileDBTask) task).getErrorMessage();
             logger.severe(msg);
@@ -76,7 +75,7 @@ public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener 
         }
 
         Datasets = dialog.getSelectedDataset();
-        runModule(null);
+        runModule();
     }
 
     public ExitCode setupParameters() {
@@ -98,7 +97,7 @@ public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener 
         return "Open Database";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
         Task tasks[] = new DeleteFileDBTask[Datasets.length];
@@ -106,12 +105,10 @@ public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener 
             tasks[i] = new DeleteFileDBTask(Datasets[i], desktop);
         }
 
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
+        return tasks;
 
-        return newGroup;
 
     }
 }

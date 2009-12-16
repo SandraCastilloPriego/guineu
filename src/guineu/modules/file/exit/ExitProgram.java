@@ -52,11 +52,7 @@ public class ExitProgram implements GuineuModule, ActionListener {
         
     }
 
-    public void actionPerformed(ActionEvent e) {
-        while (((TaskControllerImpl) GuineuCore.getTaskController())
-					.getTaskExists()) {
-				// wait unitl all task to finish
-			}
+    public void actionPerformed(ActionEvent e) {      
         GuineuCore.exitGuineu();
     }
     

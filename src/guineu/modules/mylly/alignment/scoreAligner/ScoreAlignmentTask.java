@@ -26,6 +26,7 @@ import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.ScoreAligner;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;

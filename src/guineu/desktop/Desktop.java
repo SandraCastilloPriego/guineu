@@ -32,7 +32,6 @@ import javax.swing.JMenuItem;
  * 
  */
 public interface Desktop extends GuineuModule {
-
     /**
      * Returns a reference to main application window
      * 
@@ -97,20 +96,43 @@ public interface Desktop extends GuineuModule {
      */
     public void setStatusBarText(String text, Color textColor);
 
+
     /**
      * Displays a message box with a given text
-     * 
+     *
      * @param msg Text to show
      */
     public void displayMessage(String msg);
 
     /**
+     * Displays a message box with a given text
+     *
+     * @param title Message box title
+     * @param msg Text to show
+     */
+    public void displayMessage(String title, String msg);
+
+    /**
      * Displays an error message box with a given text
-     * 
+     *
      * @param msg Text to show
      */
     public void displayErrorMessage(String msg);
 
+    /**
+     * Displays an error message box with a given text
+     *
+     * @param title Message box title
+     * @param msg Text to show
+     */
+    public void displayErrorMessage(String title, String msg);
+
+    /**
+     * Displays an error message
+     *
+     */
+    public void displayException(Exception e);
+    
     /**
      * Returns array of currently selected raw data files in GUI
      * 

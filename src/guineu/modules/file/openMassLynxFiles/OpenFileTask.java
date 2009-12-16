@@ -22,6 +22,7 @@ import guineu.data.impl.SimpleOtherDataset;
 import guineu.desktop.Desktop;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;

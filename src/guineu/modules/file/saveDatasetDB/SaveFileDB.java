@@ -20,11 +20,11 @@ package guineu.modules.file.saveDatasetDB;
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
+import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.util.logging.Logger;
@@ -35,78 +35,75 @@ import java.util.logging.Logger;
  */
 public class SaveFileDB implements GuineuModule, TaskListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private Dataset Datasets;
-	private SaveFileParameters parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private Dataset Datasets;
+    private SaveFileParameters parameters;
 
-	public SaveFileDB(Dataset Datasets) {
-		this.Datasets = Datasets;
-	}
+    public SaveFileDB(Dataset Datasets) {
+        this.Datasets = Datasets;
+    }
 
-	public void initModule() {
-		parameters = new SaveFileParameters();
-		if (Datasets.getDatasetName() != null) {
-			parameters.setParameterValue(SaveFileParameters.name, Datasets.getDatasetName());
-		}
-		setupParameters(parameters);
-	}
+    public void initModule() {
+        parameters = new SaveFileParameters();
+        if (Datasets.getDatasetName() != null) {
+            parameters.setParameterValue(SaveFileParameters.name, Datasets.getDatasetName());
+        }
+        setupParameters(parameters);
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Save Dataset into Database");
-	}
+    public void taskStarted(Task task) {
+        logger.info("Running Save Dataset into Database");
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Save Dataset" + ((SaveFileDBTask) task).getTaskDescription());
-		}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Save Dataset" + ((SaveFileDBTask) task).getTaskDescription());
+        }
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while save Dataset on .. " + ((SaveFileDBTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+            String msg = "Error while save Dataset on .. " + ((SaveFileDBTask) task).getErrorMessage();
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-		}
-	}
+        }
+    }
 
-	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(SaveFileParameters) currentParameters);
-		dialog.setVisible(true);
-		
-		if(dialog.getExitCode() == ExitCode.OK){
-			runModule(null);
-		}
-	}
+    public void setupParameters(ParameterSet currentParameters) {
+        final ParameterSetupDialog dialog = new ParameterSetupDialog(
+                "Please set parameter values for " + toString(),
+                (SaveFileParameters) currentParameters);
+        dialog.setVisible(true);
 
-	public ParameterSet getParameterSet() {
-		return parameters;
-	}
+        if (dialog.getExitCode() == ExitCode.OK) {
+            runModule();
+        }
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		parameters = (SaveFileParameters) parameterValues;
-	}
+    public ParameterSet getParameterSet() {
+        return parameters;
+    }
 
-	@Override
-	public String toString() {
-		return "Save Dataset";
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        parameters = (SaveFileParameters) parameterValues;
+    }
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    @Override
+    public String toString() {
+        return "Save Dataset";
+    }
 
-		// prepare a new group of tasks
-		Task tasks[] = new SaveFileDBTask[1];
+    public Task[] runModule() {
 
-		tasks[0] = new SaveFileDBTask(Datasets, parameters);
+        // prepare a new group of tasks
+        Task tasks[] = new SaveFileDBTask[1];
 
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        tasks[0] = new SaveFileDBTask(Datasets, parameters);
 
-		// start the group
-		newGroup.start();
+        GuineuCore.getTaskController().addTasks(tasks);
 
-		return newGroup;
+        return tasks;
 
-	}
+    }
 }

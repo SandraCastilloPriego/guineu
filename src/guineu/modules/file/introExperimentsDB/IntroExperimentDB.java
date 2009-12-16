@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.file.introExperimentsDB;
 
 import guineu.data.Dataset;
@@ -26,9 +25,8 @@ import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,11 +45,11 @@ public class IntroExperimentDB implements GuineuModule, TaskListener, ActionList
     private Desktop desktop;
     private IntroExperimentParameters parameters;
     private Dataset[] datasets;
-    
 
-    public IntroExperimentDB (Dataset[] datasets){
+    public IntroExperimentDB(Dataset[] datasets) {
         this.datasets = datasets;
     }
+
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILE, "Intro Experiment into database..",
@@ -65,11 +63,11 @@ public class IntroExperimentDB implements GuineuModule, TaskListener, ActionList
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Save Experiments" + ((IntroExperimentDBTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while save Experiments on .. " + ((IntroExperimentDBTask) task).getErrorMessage();
             logger.severe(msg);
@@ -90,7 +88,7 @@ public class IntroExperimentDB implements GuineuModule, TaskListener, ActionList
             @Override
             public void windowClosed(WindowEvent e) {
                 if (dialog.getExitCode() == ExitCode.OK) {
-                    runModule(null);
+                    runModule();
                 }
             }
         });
@@ -109,7 +107,7 @@ public class IntroExperimentDB implements GuineuModule, TaskListener, ActionList
         return "Save Dataset";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
         Task tasks[] = new IntroExperimentDBTask[1];
@@ -117,16 +115,12 @@ public class IntroExperimentDB implements GuineuModule, TaskListener, ActionList
         tasks[0] = new IntroExperimentDBTask(parameters, datasets);
 
 
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
-
-        return newGroup;
+        return tasks;
 
     }
 
     public void actionPerformed(ActionEvent e) {
-        
     }
 }

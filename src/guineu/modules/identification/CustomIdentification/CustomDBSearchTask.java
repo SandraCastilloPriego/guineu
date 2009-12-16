@@ -33,6 +33,7 @@ import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 
 /**
  * 

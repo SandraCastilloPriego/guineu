@@ -6,7 +6,7 @@ package guineu.modules.mylly.filter.calculateDeviations;
 
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

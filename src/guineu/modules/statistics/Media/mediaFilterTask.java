@@ -22,6 +22,7 @@ import guineu.data.PeakListRow;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.internalframe.DataInternalFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;

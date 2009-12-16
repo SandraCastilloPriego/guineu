@@ -18,11 +18,11 @@
 package guineu.modules.file.saveOtherFile;
 
 import guineu.data.Dataset;
-import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.InOracle;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 
 /**
  *
@@ -30,52 +30,52 @@ import guineu.taskcontrol.Task;
  */
 public class SaveOtherFileTask implements Task {
 
-	private Dataset dataset;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private String path;
-	private InDataBase db;
-	private SimpleParameterSet parameters;
+    private Dataset dataset;
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    private String path;
+    private InDataBase db;
+    private SimpleParameterSet parameters;
 
-	public SaveOtherFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
-		this.dataset = dataset;
-		this.path = path;
-		this.parameters = parameters;
-		db = new InOracle();
-	}
+    public SaveOtherFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
+        this.dataset = dataset;
+        this.path = path;
+        this.parameters = parameters;
+        db = new InOracle();
+    }
 
-	public String getTaskDescription() {
-		return "Saving Dataset... ";
-	}
+    public String getTaskDescription() {
+        return "Saving Dataset... ";
+    }
 
-	public double getFinishedPercentage() {
-		return db.getProgress();
-	}
+    public double getFinishedPercentage() {
+        return db.getProgress();
+    }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
 
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			if (parameters.getParameterValue(SaveOtherParameters.type).toString().matches(".*Excel.*")) {
-				db.WriteExcelFile(dataset, path, parameters);
-			} else {
-				db.WriteCommaSeparatedFile(dataset, path, parameters);
-			}
+    public void run() {
+        try {
+            status = TaskStatus.PROCESSING;
+            if (parameters.getParameterValue(SaveOtherParameters.type).toString().matches(".*Excel.*")) {
+                db.WriteExcelFile(dataset, path, parameters);
+            } else {
+                db.WriteCommaSeparatedFile(dataset, path, parameters);
+            }
 
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-		}
-	}
+            status = TaskStatus.FINISHED;
+        } catch (Exception e) {
+            status = TaskStatus.ERROR;
+        }
+    }
 }

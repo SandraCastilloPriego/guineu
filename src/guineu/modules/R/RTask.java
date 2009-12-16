@@ -17,6 +17,7 @@
  */
 package guineu.modules.R;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 
 /**
  *
@@ -59,5 +60,5 @@ public class RTask implements Task {
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;
 		}
-	}
+	}   
 }

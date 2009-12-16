@@ -24,8 +24,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,11 +54,11 @@ public class NormalizeNOMISFilter implements GuineuModule, TaskListener, ActionL
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished NOMIS Normalization Filter on " + ((NormalizeNOMISFilterTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while NOMIS Normalization Filter on .. " + ((NormalizeNOMISFilterTask) task).getErrorMessage();
             logger.severe(msg);
@@ -68,7 +68,7 @@ public class NormalizeNOMISFilter implements GuineuModule, TaskListener, ActionL
     }
 
     public void actionPerformed(ActionEvent e) {
-        runModule(null);
+        runModule();
     }
 
     public ParameterSet getParameterSet() {
@@ -82,19 +82,16 @@ public class NormalizeNOMISFilter implements GuineuModule, TaskListener, ActionL
         return "NOMIS Normalization Filter";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new NormalizeNOMISFilterTask[datasets.length];
         for (int i = 0; i < datasets.length; i++) {
             tasks[i] = new NormalizeNOMISFilterTask(datasets[i], desktop);
         }
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
-
-        return newGroup;
+        return tasks;
 
 
     }

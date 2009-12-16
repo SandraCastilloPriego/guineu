@@ -25,8 +25,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -40,100 +40,97 @@ import java.util.logging.Logger;
  */
 public class CustomDBSearch implements ActionListener, GuineuModule, TaskListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	public static final String MODULE_NAME = "Custom database search";
-	private Desktop desktop;
-	private CustomDBSearchParameters parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    public static final String MODULE_NAME = "Custom database search";
+    private Desktop desktop;
+    private CustomDBSearchParameters parameters;
 
-	public void initModule() {
+    public void initModule() {
 
-		this.desktop = GuineuCore.getDesktop();
+        this.desktop = GuineuCore.getDesktop();
 
-		parameters = new CustomDBSearchParameters();
+        parameters = new CustomDBSearchParameters();
 
-		desktop.addMenuItem(GuineuMenu.IDENTIFICATIONSUBMENU, "Identification by searching in CSV file",
-				"TODO write description",
-				KeyEvent.VK_C, this, null, null);
-	}
+        desktop.addMenuItem(GuineuMenu.IDENTIFICATIONSUBMENU, "Identification by searching in CSV file",
+                "TODO write description",
+                KeyEvent.VK_C, this, null, null);
+    }
 
-	public ParameterSet getParameterSet() {
-		return parameters;
-	}
+    public ParameterSet getParameterSet() {
+        return parameters;
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		this.parameters = (CustomDBSearchParameters) parameterValues;
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        this.parameters = (CustomDBSearchParameters) parameterValues;
+    }
 
-	/**
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent e) {
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
 
-		Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
+        Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
 
-		if (selectedPeakLists.length < 1) {
-			desktop.displayErrorMessage("Please select a peak list");
-			return;
-		}
+        if (selectedPeakLists.length < 1) {
+            desktop.displayErrorMessage("Please select a peak list");
+            return;
+        }
 
-		ExitCode exitCode = setupParameters(parameters);
-		if (exitCode != ExitCode.OK) {
-			return;
-		}
+        ExitCode exitCode = setupParameters(parameters);
+        if (exitCode != ExitCode.OK) {
+            return;
+        }
 
-		runModule(selectedPeakLists, parameters.clone(), null);
+        runModule(selectedPeakLists, parameters.clone());
 
-	}
+    }
 
-	public TaskGroup runModule(Dataset[] peakLists,
-			ParameterSet parameters, TaskGroupListener methodListener) {
+     public Task[] runModule(Dataset[] peakLists,
+            ParameterSet parameters) {
 
-		if (peakLists == null) {
-			throw new IllegalArgumentException(
-					"Cannot run identification without a peak list");
-		}
-		// prepare a new sequence of tasks
-		Task tasks[] = new CustomDBSearchTask[peakLists.length];
-		for (int i = 0; i < peakLists.length; i++) {
-			tasks[i] = new CustomDBSearchTask(peakLists[i],
-					(CustomDBSearchParameters) parameters);
-		}
-		TaskGroup newSequence = new TaskGroup(tasks, null, methodListener);
+        if (peakLists == null) {
+            throw new IllegalArgumentException(
+                    "Cannot run identification without a peak list");
+        }
+        // prepare a new sequence of tasks
+        Task tasks[] = new CustomDBSearchTask[peakLists.length];
+        for (int i = 0; i < peakLists.length; i++) {
+            tasks[i] = new CustomDBSearchTask(peakLists[i],
+                    (CustomDBSearchParameters) parameters);
+        }
+        GuineuCore.getTaskController().addTasks(tasks);
 
-		// execute the sequence
-		newSequence.start();
+        return tasks;
 
-		return newSequence;
+    }
 
-	}
+    public ExitCode setupParameters(ParameterSet parameters) {
+        ParameterSetupDialog dialog = new ParameterSetupDialog(
+                "Please set parameter values for " + toString(),
+                (SimpleParameterSet) parameters);
+        dialog.setVisible(true);
+        return dialog.getExitCode();
+    }
 
-	public ExitCode setupParameters(ParameterSet parameters) {
-		ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(SimpleParameterSet) parameters);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
+    public String toString() {
+        return MODULE_NAME;
+    }
 
-	public String toString() {
-		return MODULE_NAME;
-	}
+    public void taskStarted(Task task) {
+        logger.info("Running identification");
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running identification");
-	}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Transpose Dataset on " + ((CustomDBSearchTask) task).getTaskDescription());
+        }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Transpose Dataset on " + ((CustomDBSearchTask) task).getTaskDescription());
-		}
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+            String msg = "Error while Transpose Dataset on .. " + ((CustomDBSearchTask) task).getErrorMessage();
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-			String msg = "Error while Transpose Dataset on .. " + ((CustomDBSearchTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
-
-		}
-	}
+        }
+    }
 }

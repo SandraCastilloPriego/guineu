@@ -15,54 +15,23 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.taskcontrol.impl;
 
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskPriority;
-import guineu.taskcontrol.TaskListener;
-import java.util.Date;
+import guineu.taskcontrol.TaskPriority;
 
 /**
  * Wrapper class for Tasks that stores additional information
  */
-class WrappedTask implements Comparable {
+class WrappedTask {
 
     private Task task;
-    private Date addedTime;
-    private TaskListener listener;
     private TaskPriority priority;
     private WorkerThread assignedTo;
 
-    WrappedTask(Task task, TaskPriority priority, TaskListener listener) {
-        addedTime = new Date();
+    WrappedTask(Task task, TaskPriority priority) {
         this.task = task;
-        this.listener = listener;
         this.priority = priority;
-    }
-
-    /**
-     * Tasks are sorted by priority order using this comparator method.
-     * 
-     * @see java.lang.Comparable#compareTo(T)
-     */
-    public int compareTo(Object arg) {
-
-        WrappedTask t = (WrappedTask) arg;
-        int result;
-
-        result = priority.compareTo(t.priority);
-        if (result == 0)
-            result = addedTime.compareTo(t.addedTime);
-        return result;
-
-    }
-
-    /**
-     * @return Returns the listener.
-     */
-    TaskListener getListener() {
-        return listener;
     }
 
     /**
@@ -77,6 +46,16 @@ class WrappedTask implements Comparable {
      */
     void setPriority(TaskPriority priority) {
         this.priority = priority;
+        if (assignedTo != null) {
+            switch (priority) {
+                case HIGH:
+                    assignedTo.setPriority(Thread.MAX_PRIORITY);
+                    break;
+                case NORMAL:
+                    assignedTo.setPriority(Thread.NORM_PRIORITY);
+                    break;
+            }
+        }
     }
 
     /**
@@ -93,12 +72,20 @@ class WrappedTask implements Comparable {
     /**
      * @return Returns the task.
      */
-    Task getTask() {
+    synchronized Task getActualTask() {
         return task;
     }
 
-    public String toString() {
-        return task.getTaskDescription();
+    public synchronized String toString() {
+        try {
+            return task.getTaskDescription();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
+    synchronized void removeTaskReference() {
+        task = new FinishedTask(task);
+    }
 }
+

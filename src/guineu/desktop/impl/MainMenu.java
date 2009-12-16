@@ -241,6 +241,7 @@ class MainMenu extends JMenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         Object src = e.getSource();
+       
 
         // Help->About
         if (src == hlpAbout) {

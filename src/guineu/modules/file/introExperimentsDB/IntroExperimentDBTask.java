@@ -22,6 +22,7 @@ import guineu.data.impl.ExperimentDataset;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.InOracle;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import java.sql.Connection;
 
 /**

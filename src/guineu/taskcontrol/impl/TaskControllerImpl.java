@@ -18,203 +18,214 @@
 
 package guineu.taskcontrol.impl;
 
-import guineu.desktop.impl.MainWindow;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskPriority;
-import guineu.taskcontrol.Task.TaskStatus;
 import guineu.taskcontrol.TaskController;
-import guineu.taskcontrol.TaskListener;
-import guineu.util.components.TaskProgressWindow;
+import guineu.taskcontrol.TaskPriority;
+import guineu.taskcontrol.TaskStatus;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.logging.Logger;
 
-
+import javax.swing.SwingUtilities;
 
 /**
  * Task controller implementation
  */
 public class TaskControllerImpl implements TaskController, Runnable {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    // TODO: always create a worker thread for high priority tasks
+	/**
+	 * Update the task progress window every 300 ms
+	 */
+	private final int TASKCONTROLLER_THREAD_SLEEP = 300;
 
-    private final int TASKCONTROLLER_THREAD_SLEEP = 200;
+	private Thread taskControllerThread;
 
-    private Thread taskControllerThread;
+	private TaskQueue taskQueue;
+	private TaskProgressWindow taskWindow;
 
-    private WorkerThread[] workerThreads;
+	/**
+	 * This vector contains references to all running threads of NORMAL
+	 * priority. Maximum number of concurrent threads is specified in the
+	 * preferences dialog.
+	 */
+	private Vector<WorkerThread> runningThreads;
 
-    private TaskQueue taskQueue;
+	/**
+	 * Initialize the task controller
+	 */
+	public void initModule() {
 
-    /**
-     * 
-     */
-    public TaskControllerImpl(int numberOfThreads) {
+		taskQueue = new TaskQueue();
 
-        taskQueue = new TaskQueue();
+		runningThreads = new Vector<WorkerThread>();
 
-        taskControllerThread = new Thread(this, "Task controller thread");
-        taskControllerThread.setPriority(Thread.MIN_PRIORITY);
-        taskControllerThread.start();
+		// Create a low-priority thread that will manage the queue and start
+		// worker threads for tasks
+		taskControllerThread = new Thread(this, "Task controller thread");
+		taskControllerThread.setPriority(Thread.MIN_PRIORITY);
+		taskControllerThread.start();
+    System.out.print("lalalalalla ");
+		// Create the task progress window and add it to desktop
+		taskWindow = new TaskProgressWindow();
+    
+		GuineuCore.getDesktop().addInternalFrame(taskWindow);
 
-        workerThreads = new WorkerThread[numberOfThreads];
-        for (int i = 0; i < numberOfThreads; i++) {
-            workerThreads[i] = new WorkerThread(i + 1);
-            workerThreads[i].start();
-        }
+		// Initially, hide the task progress window
+		taskWindow.setVisible(false);
 
-    }
+	}
 
-    public void addTask(Task task) {
-        addTask(task, TaskPriority.NORMAL, null);
-    }
+	TaskQueue getTaskQueue() {
+		return taskQueue;
+	}
 
-    public void addTask(Task task, TaskPriority priority) {
-        addTask(task, priority, null);
-    }
+	public void addTask(Task task) {
+		addTasks(new Task[] { task }, TaskPriority.NORMAL);
+	}
 
-    public void addTask(Task task, TaskListener listener) {
-        addTask(task, TaskPriority.NORMAL, listener);
-    }
+	public void addTask(Task task, TaskPriority priority) {
+		addTasks(new Task[] { task }, priority);
+	}
 
-    public void addTask(Task task, TaskPriority priority, TaskListener listener) {
+	public void addTasks(Task tasks[]) {
+		addTasks(tasks, TaskPriority.NORMAL);
+	}
 
-        assert task != null;
+	public void addTasks(Task tasks[], TaskPriority priority) {
 
-        WrappedTask newQueueEntry = new WrappedTask(task, priority, listener);
+		// It can sometimes happen during a batch that no tasks are actually
+		// executed --> tasks[] array may be empty
+		if ((tasks == null) || (tasks.length == 0))
+			return;
 
-        logger.finest("Adding task \"" + task.getTaskDescription()
-                + "\" to the task controller queue");
+		for (Task task : tasks) {
+			WrappedTask newQueueEntry = new WrappedTask(task, priority);
+			taskQueue.addWrappedTask(newQueueEntry);
+		}
 
-        taskQueue.addWrappedTask(newQueueEntry);
+		// Wake up the task controller thread
+		synchronized (this) {
+			this.notifyAll();
+		}
 
-        synchronized (this) {
-            this.notifyAll();
-        }
+		// Show the task list component
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				taskWindow.setVisible(true);
+			}
+		});
 
-        /*
-         * show the task list component
-         */
-        MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
-        if (mainWindow != null) {
-            // JInternalFrame selectedFrame = desktop.getSelectedFrame();
+	}
 
-            TaskProgressWindow tlc = mainWindow.getTaskList();
-            tlc.setVisible(true);
+	/**
+	 * Task controller thread main method.
+	 *
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run() {
 
-            /*
-             * if ((selectedFrame != null) && (desktop.getSelectedFrame() ==
-             * tlc)) { try { selectedFrame.setSelected(true); } catch
-             * (PropertyVetoException e) { // do nothing } }
-             */
-        }
+		while (true) {
 
-    }
+			// If the queue is empty, we can sleep. When new task is added into
+			// the queue, we will be awaken by notify()
+			synchronized (this) {
+				while (taskQueue.isEmpty()) {
+					try {
+						this.wait();
+					} catch (InterruptedException e) {
+						// Ignore
+					}
+				}
+			}
 
-    /**
-     * Task controller thread main method.
-     * 
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
+			// Check if all tasks in the queue are finished
+			if (taskQueue.allTasksFinished()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						taskWindow.setVisible(false);
+					}
+				});
+				taskQueue.clear();
+				continue;
+			}
 
-        while (true) {
+			// Remove already finished threads from runningThreads
+			Iterator<WorkerThread> threadIterator = runningThreads.iterator();
+			while (threadIterator.hasNext()) {
+				WorkerThread thread = threadIterator.next();
+				if (thread.isFinished())
+					threadIterator.remove();
+			}
 
-            /* if the queue is empty, we can sleep */
-            synchronized (this) {
-                while (taskQueue.isEmpty()) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-            }
+			// Get a snapshot of the queue
+			WrappedTask[] queueSnapshot = taskQueue.getQueueSnapshot();
 
-            WrappedTask[] queueSnapshot = taskQueue.getQueueSnapshot();
+			// Get the settings for maximum # of threads
+			//GuineuPreferences preferences = GuineuCore.getPreferences();
+			int maxRunningThreads;
+			//if (preferences.isAutoNumberOfThreads()) {
+				maxRunningThreads = Runtime.getRuntime().availableProcessors();
+			//} else {
+			//	maxRunningThreads = preferences.getManualNumberOfThreads();
+			//}
 
-            // for each task, check if it's assigned and not canceled
-            for (WrappedTask task : queueSnapshot) {
+			// Check all tasks in the queue
+			for (WrappedTask task : queueSnapshot) {
 
-                if (!task.isAssigned()
-                        && (task.getTask().getStatus() != TaskStatus.CANCELED)) {
-                    // poll local threads
+				// Skip assigned and canceled tasks
+				if (task.isAssigned()
+						|| (task.getActualTask().getStatus() == TaskStatus.CANCELED))
+					continue;
 
-                    for (WorkerThread worker : workerThreads) {
+				// Create a new thread if the task is high-priority or if we
+				// have less then maximum # of threads running
+				if ((task.getPriority() == TaskPriority.HIGH)
+						|| (runningThreads.size() < maxRunningThreads)) {
+					WorkerThread newThread = new WorkerThread(task);
 
-                        if (worker.getCurrentTask() == null) {
-                            logger.finest("Assigning task \""
-                                    + task.getTask().getTaskDescription()
-                                    + "\" to " + worker.toString());
-                            worker.setCurrentTask(task);
-                            break;
-                        }
+					if (task.getPriority() == TaskPriority.NORMAL) {
+						runningThreads.add(newThread);
+					}
 
-                    }
+					newThread.start();
+				}
+			}
 
-                    // TODO: poll remote nodes
+			// Tell the queue to refresh the Task progress window
+			taskQueue.refresh();
 
-                }
+			// Sleep for a while until next update
+			try {
+				Thread.sleep(TASKCONTROLLER_THREAD_SLEEP);
+			} catch (InterruptedException e) {
+				// Ignore
+			}
 
-            }
+		}
 
-            // check if all tasks are finished
-            if (taskQueue.allTasksFinished()) {
+	}
 
-                MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
+	public void setTaskPriority(Task task, TaskPriority priority) {
 
-                if (mainWindow != null) {
-                    TaskProgressWindow tlc = mainWindow.getTaskList();
-                    tlc.setVisible(false);
-                    taskQueue.clear();
-                }
+		// Get a snapshot of current task queue
+		WrappedTask currentQueue[] = taskQueue.getQueueSnapshot();
 
-            } else {
-                taskQueue.refresh();
-            }
+		// Find the requested task
+		for (WrappedTask wrappedTask : currentQueue) {
 
-            try {
-                Thread.sleep(TASKCONTROLLER_THREAD_SLEEP);
-            } catch (InterruptedException e) {
-                // do nothing
-            }
-        }
+			if (wrappedTask.getActualTask() == task) {
+				logger.finest("Setting priority of task \""
+						+ task.getTaskDescription() + "\" to " + priority);
+				wrappedTask.setPriority(priority);
 
-    }
-
-    public void setTaskPriority(Task task, TaskPriority priority) {
-        WrappedTask wt = taskQueue.getWrappedTask(task);
-        if (wt != null) {
-            logger.finest("Setting priority of task \""
-                    + task.getTaskDescription() + "\" to " + priority);
-            wt.setPriority(priority);
-            taskQueue.refresh();
-        }
-    }
-
-    public TaskQueue getTaskQueue() {
-        return taskQueue;
-    }
-
-    public Task getTask(int index) {
-        WrappedTask wt = taskQueue.getWrappedTask(index);
-        if (wt != null)
-            return wt.getTask();
-        else
-            return null;
-    }
-    public boolean getTaskExists (){
-    	if ( taskQueue.allTasksFinished()){
-    		return false;
-    	}else{
-    		return true;
-    	}
-    }
-    /**
-     */
-    public void initModule() {
-
-    }
+				// Call refresh to re-sort the queue according to new priority
+				// and update the Task progress window
+				taskQueue.refresh();
+			}
+		}
+	}
 
 }

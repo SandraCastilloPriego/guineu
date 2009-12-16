@@ -24,8 +24,8 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -57,11 +57,11 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished Peak Count Filter ");
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while Peak Count Filtering .. ";
 			logger.severe(msg);
@@ -84,7 +84,7 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
+			runModule();
 		}
 	}
 
@@ -100,7 +100,7 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 		return "Peak Count Filter";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 
 		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
@@ -109,11 +109,10 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 		for (int cont = 0; cont < DataFiles.length; cont++) {
 			tasks[cont] = new PeakCountFilterTask((SimpleGCGCDataset)DataFiles[cont], parameters);
 		}
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-		// start the group
-		newGroup.start();
+		GuineuCore.getTaskController().addTasks(tasks);
 
-		return newGroup;
+        return tasks;
+
 
 
 	}

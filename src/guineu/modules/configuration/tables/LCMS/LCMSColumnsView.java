@@ -26,9 +26,8 @@ import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import guineu.util.internalframe.DataInternalFrame;
@@ -63,11 +62,11 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished LCMS Table View ");
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while LCMS Table View  .. ";
 			logger.severe(msg);
@@ -83,7 +82,7 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
 			return;
 		}
 		((DesktopParameters) desktop.getParameterSet()).setViewLCMSParameters((LCMSColumnsViewParameters) parameters);
-		runModule(null);
+		runModule();
 	}
 
 	public ExitCode setupParameters() {
@@ -109,7 +108,7 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
 		return "LCMS Table View";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {		
+	public Task[] runModule() {
 		JInternalFrame[] frames = desktop.getInternalFrames();
 		for (int i = 0; i < frames.length; i++) {
 			try {

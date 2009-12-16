@@ -24,8 +24,8 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -63,11 +63,11 @@ public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, Act
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished Alkane RTI Corrector Filter ");
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while Alkane RTI Corrector Filtering .. ";
 			logger.severe(msg);
@@ -90,7 +90,7 @@ public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, Act
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
+			runModule();
 		}
 	}
 
@@ -106,7 +106,7 @@ public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, Act
 		return "Alkane RTI Corrector Filter";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 
 		Dataset[] datasets = desktop.getSelectedDataFiles();
 		List<GCGCData> newDatasets = new ArrayList<GCGCData>();
@@ -125,12 +125,10 @@ public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, Act
 
 		tasks[0] = new AlkaneRTICorrectorFilterTask(newDatasets, parameters);
 
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		GuineuCore.getTaskController().addTasks(tasks);
 
-		// start the group
-		newGroup.start();
+        return tasks;
 
-		return newGroup;
 
 
 	}

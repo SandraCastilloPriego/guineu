@@ -23,6 +23,7 @@ import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 
 /**
  *

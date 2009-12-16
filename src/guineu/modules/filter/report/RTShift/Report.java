@@ -25,8 +25,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -50,7 +50,7 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.REPORT, "Report RT shift..",
                 "TODO write description", KeyEvent.VK_R, this, null, null);
-        
+
     }
 
     public void taskStarted(Task task) {
@@ -58,11 +58,11 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Report on " + ((ReportTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while Report on .. " + ((ReportTask) task).getErrorMessage();
             logger.severe(msg);
@@ -77,7 +77,7 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
             return;
         }
 
-        runModule(null);
+        runModule();
     }
 
     public ExitCode setupParameters() {
@@ -102,7 +102,7 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
         return "Report";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
@@ -110,12 +110,8 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
         for (int i = 0; i < datasets.length; i++) {
             tasks[i] = new ReportTask(datasets[i], desktop, parameters);
         }
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
-
-        return newGroup;
-
+        return tasks;
     }
 }

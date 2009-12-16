@@ -25,8 +25,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -58,11 +58,11 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Change Units Filter on " + ((UnitsChangeFilterTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while Change Units Filter on .. " + ((UnitsChangeFilterTask) task).getErrorMessage();
             logger.severe(msg);
@@ -77,7 +77,7 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
             return;
         }
 
-        runModule(null);
+        runModule();
     }
 
     public ExitCode setupParameters() {
@@ -102,7 +102,7 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
         return "Change Units Filter";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
@@ -110,12 +110,9 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
         for (int i = 0; i < datasets.length; i++) {
             tasks[i] = new UnitsChangeFilterTask(datasets[i], desktop, parameters);
         }
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
-
-        return newGroup;
+        return tasks;
 
     }
 }

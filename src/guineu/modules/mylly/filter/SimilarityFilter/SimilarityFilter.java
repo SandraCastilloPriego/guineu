@@ -23,8 +23,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -58,11 +58,11 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished Similarity Filter ");
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while Similarity Filtering .. ";
 			logger.severe(msg);
@@ -85,7 +85,7 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
+			runModule();
 		}
 	}
 
@@ -101,7 +101,7 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 		return "Similarity Filter";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 
 		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
@@ -110,11 +110,10 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 		for (int cont = 0; cont < DataFiles.length; cont++) {
 			tasks[cont] = new SimilarityFilterTask((SimpleGCGCDataset)DataFiles[cont], parameters);
 		}
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-		// start the group
-		newGroup.start();
+		GuineuCore.getTaskController().addTasks(tasks);
 
-		return newGroup;
+        return tasks;
+
 
 
 	}
