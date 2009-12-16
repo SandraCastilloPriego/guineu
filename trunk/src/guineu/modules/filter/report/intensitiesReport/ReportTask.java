@@ -24,6 +24,7 @@ import guineu.data.datamodels.LCMSColumnName;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -151,7 +152,7 @@ public class ReportTask implements Task {
                 fieldY = "Heights";
             }
 
-            JFreeChart chart = ChartFactory.createLineChart("Intensities", "Samples", fieldY, dataset, PlotOrientation.VERTICAL, true, false, false);
+            JFreeChart chart = ChartFactory.createLineChart("Intensities", "Samples", fieldY, dataset, PlotOrientation.VERTICAL, false, false, false);
 
             // Chart characteristics
             CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -163,7 +164,7 @@ public class ReportTask implements Task {
             plot.setRenderer(categoryRenderer);
 
             // Save all the charts in the folder choosen by the user
-            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/" + fieldY + ":" + lipidName + ".png"), chart, 1000, (500 + (this.dataset.getNumberCols() * 10)));
+            ChartUtilities.saveChartAsPNG(new File(this.reportFileName + "/" + fieldY + ":" + lipidName + ".png"), chart, 1000, 500);
         } catch (IOException ex) {
             Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -181,15 +182,18 @@ public class ReportTask implements Task {
         DefaultCategoryDataset data = new DefaultCategoryDataset();
         int cont = 1;
         for (String sampleName : sampleNames) {
-            sampleName += ".CDF peak ";
-            if (this.useArea) {
-                sampleName += "area";
-            } else {
-                sampleName += "height";
+            try {
+                sampleName += "01.CDF peak ";
+                if (this.useArea) {
+                    sampleName += "area";
+                } else {
+                    sampleName += "height";
+                }
+                double value = (Double) row.getPeak(sampleName);
+                data.addValue(value, cont + " => " + sampleName, String.valueOf(cont));
+                cont++;
+            } catch (Exception e) {
             }
-            double value = (Double) row.getPeak(sampleName);
-            data.addValue(value, cont + " => " + sampleName, String.valueOf(cont));
-            cont++;
         }
 
 

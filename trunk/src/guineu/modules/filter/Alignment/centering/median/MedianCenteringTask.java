@@ -21,7 +21,7 @@ package guineu.modules.filter.Alignment.centering.median;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

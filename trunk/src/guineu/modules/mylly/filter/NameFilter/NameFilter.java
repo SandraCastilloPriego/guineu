@@ -23,8 +23,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -40,85 +40,81 @@ import guineu.data.Dataset;
  */
 public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private NameFilterParameters parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private NameFilterParameters parameters;
 
-	public void initModule() {
-		parameters = new NameFilterParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuSeparator(GuineuMenu.MYLLY);
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
-				"TODO write description", KeyEvent.VK_O, this, null, null);
+    public void initModule() {
+        parameters = new NameFilterParameters();
+        this.desktop = GuineuCore.getDesktop();
+        desktop.addMenuSeparator(GuineuMenu.MYLLY);
+        desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
+                "TODO write description", KeyEvent.VK_O, this, null, null);
 
-	}
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Name Filter");
-	}
+    public void taskStarted(Task task) {
+        logger.info("Running Name Filter");
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Name Filter " );
-		}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Name Filter ");
+        }
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Name Filtering .. " ;
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+            String msg = "Error while Name Filtering .. ";
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-		}
-	}
+        }
+    }
 
-	public void actionPerformed(ActionEvent e) {		
-		try {
-			setupParameters(parameters);
-		} catch (Exception exception) {
-		}
-	}
+    public void actionPerformed(ActionEvent e) {
+        try {
+            setupParameters(parameters);
+        } catch (Exception exception) {
+        }
+    }
 
-	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(NameFilterParameters) currentParameters);
-		dialog.setVisible(true);
+    public void setupParameters(ParameterSet currentParameters) {
+        final ParameterSetupDialog dialog = new ParameterSetupDialog(
+                "Please set parameter values for " + toString(),
+                (NameFilterParameters) currentParameters);
+        dialog.setVisible(true);
 
-		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
-		}
-	}
+        if (dialog.getExitCode() == ExitCode.OK) {
+            runModule();
+        }
+    }
 
-	public ParameterSet getParameterSet() {
-		return this.parameters;
-	}
+    public ParameterSet getParameterSet() {
+        return this.parameters;
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		 parameters = (NameFilterParameters) parameters;
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        parameters = (NameFilterParameters) parameters;
+    }
 
-	public String toString() {
-		return "Name Filter";
-	}
+    public String toString() {
+        return "Name Filter";
+    }
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
-        Dataset[] AlignmentFiles =  desktop.getSelectedDataFiles();
-
-        
-            // prepare a new group of tasks
-            Task tasks[] = new NameFilterTask[1];
-
-            tasks[0] = new NameFilterTask(AlignmentFiles,parameters);
-
-            TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-
-            // start the group
-            newGroup.start();
-
-            return newGroup;
-       
-	}
+        Dataset[] AlignmentFiles = desktop.getSelectedDataFiles();
 
 
+        // prepare a new group of tasks
+        Task tasks[] = new NameFilterTask[1];
+
+        tasks[0] = new NameFilterTask(AlignmentFiles, parameters);
+
+        GuineuCore.getTaskController().addTasks(tasks);
+
+        return tasks;
+
+
+    }
 }

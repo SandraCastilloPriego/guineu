@@ -23,6 +23,7 @@ import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;
+import guineu.taskcontrol.TaskStatus;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

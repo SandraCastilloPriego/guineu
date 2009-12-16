@@ -26,6 +26,7 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -107,11 +108,11 @@ public class STDNormalization implements GuineuModule, TaskListener, ActionListe
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished normalization on " + ((STDNormalizationTask) task).getTaskDescription());
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while normalization on .. " + ((STDNormalizationTask) task).getErrorMessage();
 			logger.severe(msg);

@@ -25,8 +25,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -40,91 +40,87 @@ import java.util.logging.Logger;
  */
 public class CommonMolecules implements ActionListener, GuineuModule, TaskListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	public static final String MODULE_NAME = "Search Common Peaks";
-	private Desktop desktop;	
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    public static final String MODULE_NAME = "Search Common Peaks";
+    private Desktop desktop;
 
-	public void initModule() {
+    public void initModule() {
 
-		this.desktop = GuineuCore.getDesktop();
+        this.desktop = GuineuCore.getDesktop();
 
-		
-		desktop.addMenuItem(GuineuMenu.FILTER, "Search for common peaks between datasets",
-				"TODO write description",
-				KeyEvent.VK_C, this, null, null);
-	}
 
-	public ParameterSet getParameterSet() {
-		return null;
-	}
+        desktop.addMenuItem(GuineuMenu.FILTER, "Search for common peaks between datasets",
+                "TODO write description",
+                KeyEvent.VK_C, this, null, null);
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		
-	}
+    public ParameterSet getParameterSet() {
+        return null;
+    }
 
-	/**
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent e) {
+    public void setParameters(ParameterSet parameterValues) {
+    }
 
-		Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
 
-		if (selectedPeakLists.length < 1) {
-			desktop.displayErrorMessage("Please select a peak list");
-			return;
-		}		
+        Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
 
-		runModule(selectedPeakLists, null, null);
+        if (selectedPeakLists.length < 1) {
+            desktop.displayErrorMessage("Please select a peak list");
+            return;
+        }
 
-	}
+        runModule(selectedPeakLists, null);
 
-	public TaskGroup runModule(Dataset[] peakLists,
-			ParameterSet parameters, TaskGroupListener methodListener) {
+    }
 
-		if (peakLists == null) {
-			throw new IllegalArgumentException(
-					"Cannot run identification without a peak list");
-		}
-		// prepare a new sequence of tasks
-		Task tasks[] = new CommonMoleculesTask[1];
-			tasks[0] = new CommonMoleculesTask(peakLists);
-		
-		TaskGroup newSequence = new TaskGroup(tasks, null, methodListener);
+    public Task[] runModule(Dataset[] peakLists,
+            ParameterSet parameters) {
 
-		// execute the sequence
-		newSequence.start();
+        if (peakLists == null) {
+            throw new IllegalArgumentException(
+                    "Cannot run identification without a peak list");
+        }
+        // prepare a new sequence of tasks
+        Task tasks[] = new CommonMoleculesTask[1];
+        tasks[0] = new CommonMoleculesTask(peakLists);
 
-		return newSequence;
+        GuineuCore.getTaskController().addTasks(tasks);
 
-	}
+        return tasks;
 
-	public ExitCode setupParameters(ParameterSet parameters) {
-		ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(SimpleParameterSet) parameters);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
+    }
 
-	public String toString() {
-		return MODULE_NAME;
-	}
+    public ExitCode setupParameters(ParameterSet parameters) {
+        ParameterSetupDialog dialog = new ParameterSetupDialog(
+                "Please set parameter values for " + toString(),
+                (SimpleParameterSet) parameters);
+        dialog.setVisible(true);
+        return dialog.getExitCode();
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running identification");
-	}
+    public String toString() {
+        return MODULE_NAME;
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished Transpose Dataset on " + ((CommonMoleculesTask) task).getTaskDescription());
-		}
+    public void taskStarted(Task task) {
+        logger.info("Running identification");
+    }
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Transpose Dataset on " + ((CommonMoleculesTask) task).getTaskDescription());
+        }
 
-			String msg = "Error while Transpose Dataset on .. " + ((CommonMoleculesTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-		}
-	}
+            String msg = "Error while Transpose Dataset on .. " + ((CommonMoleculesTask) task).getErrorMessage();
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
+
+        }
+    }
 }

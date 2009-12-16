@@ -17,15 +17,14 @@
  */
 package guineu.modules.mylly.filter.alkaneRTCorrector;
 
-import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;

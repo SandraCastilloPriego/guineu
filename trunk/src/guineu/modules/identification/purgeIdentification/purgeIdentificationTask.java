@@ -24,6 +24,7 @@ import guineu.data.parser.impl.Lipidclass;
 import guineu.data.datamodels.LCMSColumnName;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

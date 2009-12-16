@@ -24,8 +24,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.event.ActionEvent;
@@ -56,11 +56,11 @@ public class Identification implements GuineuModule, TaskListener, ActionListene
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Identification on " + ((IdentificationTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while Identification on .. " + ((IdentificationTask) task).getErrorMessage();
             logger.severe(msg);
@@ -70,7 +70,7 @@ public class Identification implements GuineuModule, TaskListener, ActionListene
     }
 
     public void actionPerformed(ActionEvent e) {
-        runModule(null);
+        runModule();
     }
 
     public ParameterSet getParameterSet() {
@@ -78,14 +78,13 @@ public class Identification implements GuineuModule, TaskListener, ActionListene
     }
 
     public void setParameters(ParameterSet parameterValues) {
-
     }
 
     public String toString() {
         return "Identification";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
@@ -96,11 +95,9 @@ public class Identification implements GuineuModule, TaskListener, ActionListene
                     Task tasks[] = new IdentificationTask[1];
                     tasks[0] = new IdentificationTask(((DataInternalFrame) IFn).getTable(), datasets[0], desktop);
 
-                    TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+                    GuineuCore.getTaskController().addTasks(tasks);
 
-                    // start the group
-                    newGroup.start();
-                    return newGroup;
+                    return tasks;
                 } else {
                     return null;
                 }

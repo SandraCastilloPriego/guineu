@@ -12,8 +12,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -42,11 +42,11 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished open file on " + ((OpenFileTask) task).getTaskDescription());
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while open file on .. " + ((OpenFileTask) task).getErrorMessage();
 			logger.severe(msg);
@@ -62,7 +62,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
+			runModule();
 		}
 	}
 
@@ -77,7 +77,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 		return "Open File";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 
 
 		Task tasks[] = new OpenFileTask[1];
@@ -85,12 +85,9 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
 		tasks[0] = new OpenFileTask(desktop, parameters);
 
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		GuineuCore.getTaskController().addTasks(tasks);
 
-		// start the group
-		newGroup.start();
-
-		return newGroup;
+        return tasks;
 
 
 	}

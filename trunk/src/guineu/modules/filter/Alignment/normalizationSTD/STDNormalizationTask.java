@@ -21,7 +21,7 @@ package guineu.modules.filter.Alignment.normalizationSTD;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 import java.util.logging.Logger;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 

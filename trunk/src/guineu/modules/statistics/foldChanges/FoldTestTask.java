@@ -21,6 +21,7 @@ import guineu.data.PeakListRow;
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
@@ -114,18 +115,18 @@ public class FoldTestTask implements Task {
         for (int i = 0; i < group1.length; i++) {
             try {
                 double value = (Double) this.dataset.getRow(mol).getPeak(group1[i]);
-                if (value > 0) {
+               // if (value > 0) {
                     stats1.addValue(value);
-                }
+               // }
             } catch (Exception e) {
             }
         }
         for (int i = 0; i < group2.length; i++) {
             try {
                 double value = (Double) this.dataset.getRow(mol).getPeak(group2[i]);
-                if (value > 0) {
+                //if (value > 0) {
                     stats2.addValue(value);
-                }
+               // }
             } catch (Exception e) {
             }
         }

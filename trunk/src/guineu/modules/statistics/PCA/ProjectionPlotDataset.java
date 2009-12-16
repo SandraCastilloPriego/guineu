@@ -17,12 +17,24 @@
  */
 
 
-package guineu.taskcontrol;
+package guineu.modules.statistics.PCA;
 
-public interface TaskGroupListener {
 
-    public void taskGroupStarted(TaskGroup group);
-    
-    public void taskGroupFinished(TaskGroup group);
+import guineu.taskcontrol.Task;
+import org.jfree.data.xy.XYDataset;
 
+public interface ProjectionPlotDataset extends XYDataset, Task {
+
+	public String getRawDataFile(int item);
+	
+	public int getGroupNumber(int item);
+	
+	public Object getGroupParameterValue(int groupNumber);
+	
+	public int getNumberOfGroups();
+	
+	public String getXLabel();
+	
+	public String getYLabel();
+		
 }

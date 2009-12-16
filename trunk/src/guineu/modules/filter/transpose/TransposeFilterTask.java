@@ -24,6 +24,7 @@ import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 import java.util.ArrayList;
 import java.util.List;
 

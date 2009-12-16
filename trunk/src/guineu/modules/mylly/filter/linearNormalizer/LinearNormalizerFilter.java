@@ -24,8 +24,8 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,11 +54,11 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished Linear Normalizer ");
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while Linear Normalizer .. ";
 			logger.severe(msg);
@@ -75,7 +75,7 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 	}
 
 	public void setupParameters(ParameterSet currentParameters) {
-		runModule(null);		
+		runModule();		
 	}
 
 	public ParameterSet getParameterSet() {
@@ -90,7 +90,7 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 		return "Linear Normalizer";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 
 		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
@@ -99,11 +99,9 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 		for (int cont = 0; cont < DataFiles.length; cont++) {
 			tasks[cont] = new LinearNormalizerFilterTask((SimpleGCGCDataset)DataFiles[cont]);
 		}
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-		// start the group
-		newGroup.start();
+		GuineuCore.getTaskController().addTasks(tasks);
 
-		return newGroup;
+        return tasks;
 
 
 	}

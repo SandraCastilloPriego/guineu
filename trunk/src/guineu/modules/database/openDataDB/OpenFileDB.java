@@ -17,20 +17,15 @@
  */
 package guineu.modules.database.openDataDB;
 
-import guineu.data.Parameter;
 import guineu.data.ParameterSet;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
-import guineu.database.ask.DBask;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
@@ -44,85 +39,82 @@ import java.util.logging.Logger;
  */
 public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private int[] Datasets;
-	private String[] DatasetsType;
-	SimpleParameterSet parameters;
-	ParameterSetupDialog dialog;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private int[] Datasets;
+    private String[] DatasetsType;
+    SimpleParameterSet parameters;
+    ParameterSetupDialog dialog;
 
-	public void initModule() {
-		parameters = new DataOpenDBParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
-				"TODO write description", KeyEvent.VK_O, this, null, null);
+    public void initModule() {
+        parameters = new DataOpenDBParameters();
+        this.desktop = GuineuCore.getDesktop();
+        desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
+                "TODO write description", KeyEvent.VK_O, this, null, null);
 
 
-	}
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Open Database");
-	}
+    public void taskStarted(Task task) {
+        logger.info("Running Open Database");
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
-			logger.info("Finished open database on " + ((OpenFileDBTask) task).getTaskDescription());
-		}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished open database on " + ((OpenFileDBTask) task).getTaskDescription());
+        }
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while open database on .. " + ((OpenFileDBTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+            String msg = "Error while open database on .. " + ((OpenFileDBTask) task).getErrorMessage();
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-		}
-	}
+        }
+    }
 
-	public void actionPerformed(ActionEvent e) {
-		((DataOpenDBParameters)parameters).actualize();
-		ExitCode exitCode = setupParameters();
+    public void actionPerformed(ActionEvent e) {
+        ((DataOpenDBParameters) parameters).actualize();
+        ExitCode exitCode = setupParameters();
 
-		if (exitCode != ExitCode.OK) {
-			return;
-		}
-		Datasets = ((DatasetOpenDBDialog) dialog).getSelectedDataset();
-		DatasetsType = ((DatasetOpenDBDialog) dialog).getSelectedType();
-		runModule(null);
-	}
+        if (exitCode != ExitCode.OK) {
+            return;
+        }
+        Datasets = ((DatasetOpenDBDialog) dialog).getSelectedDataset();
+        DatasetsType = ((DatasetOpenDBDialog) dialog).getSelectedType();
+        runModule();
+    }
 
-	public ExitCode setupParameters() {
-		dialog = new DatasetOpenDBDialog(parameters);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
+    public ExitCode setupParameters() {
+        dialog = new DatasetOpenDBDialog(parameters);
+        dialog.setVisible(true);
+        return dialog.getExitCode();
+    }
 
-	public ParameterSet getParameterSet() {
-		return this.parameters;
-	}
+    public ParameterSet getParameterSet() {
+        return this.parameters;
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		this.parameters = (SimpleParameterSet) parameterValues;
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        this.parameters = (SimpleParameterSet) parameterValues;
+    }
 
-	@Override
-	public String toString() {
-		return "Open Database";
-	}
+    @Override
+    public String toString() {
+        return "Open Database";
+    }
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
-		// prepare a new group of tasks
-		Task tasks[] = new OpenFileDBTask[Datasets.length];
-		for (int i = 0; i < Datasets.length; i++) {
-			tasks[i] = new OpenFileDBTask(Datasets[i], DatasetsType[i], desktop);
-		}
+        // prepare a new group of tasks
+        Task tasks[] = new OpenFileDBTask[Datasets.length];
+        for (int i = 0; i < Datasets.length; i++) {
+            tasks[i] = new OpenFileDBTask(Datasets[i], DatasetsType[i], desktop);
+        }
 
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-		// start the group
-		newGroup.start();
+        return tasks;
 
-		return newGroup;
-
-	}
+    }
 }

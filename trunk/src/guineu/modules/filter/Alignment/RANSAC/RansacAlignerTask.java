@@ -22,7 +22,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
 import guineu.util.components.FileUtils;
 import java.util.ArrayList;

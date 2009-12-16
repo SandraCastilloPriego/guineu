@@ -65,6 +65,10 @@ public abstract class GuineuCore {
 	protected static GuineuModule[] initializedModules;
 	protected static GuineuPreferences preferences;
 
+    public static String getGuineuVersion() {
+        return " 1.01";
+    }
+
 	/**
 	 * Returns a reference to local task controller.
 	 * 
@@ -133,15 +137,15 @@ public abstract class GuineuCore {
 			/*Element preferencesConfigElement = configRoot.element(PREFERENCES_ELEMENT_NAME);
 			if (preferencesConfigElement == null) {
 				preferencesConfigElement = configRoot.addElement(PREFERENCES_ELEMENT_NAME);
-			}
+			}*
 			preferencesConfigElement.clearContent();
 			try {
 				preferences.exportValuesToXML(preferencesConfigElement);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "Could not save preferences", e);
-			}*/
+			}
 
-
+*/
 			// save desktop configuration
 			StorableParameterSet desktopParameters = ((MainWindow) desktop).getParameterSet();
 			Element desktopConfigElement = configRoot.element(DESKTOP_ELEMENT_NAME);
@@ -212,8 +216,8 @@ public abstract class GuineuCore {
 			/*Element preferencesConfigElement = configRoot.element(PREFERENCES_ELEMENT_NAME);
 			if (preferencesConfigElement != null) {
 				preferences.importValuesFromXML(preferencesConfigElement);
-			}*/
-
+			}
+*/
 			StorableParameterSet desktopParameters = (StorableParameterSet) desktop.getParameterSet();
 			Element desktopConfigElement = configRoot.element(DESKTOP_ELEMENT_NAME);
 			if (desktopConfigElement != null) {
@@ -248,7 +252,12 @@ public abstract class GuineuCore {
 			logger.log(Level.SEVERE, "Could not parse configuration file " + file, e);
 		}
 
+    }
+
+	public static GuineuPreferences getPreferences() {
+		return preferences;
 	}
+
 
 	public static void setDesktop(MainWindow mainWindow) {
 		desktop = mainWindow;

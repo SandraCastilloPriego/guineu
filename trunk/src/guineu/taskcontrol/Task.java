@@ -15,41 +15,28 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 package guineu.taskcontrol;
+/**
+ *
+ *
+ */
+public interface Task {
+  
 
+	public String getTaskDescription();
 
-public interface Task extends Runnable {
+	public double getFinishedPercentage();
 
-    /**
-     * WAITING - task is ready and waiting to start
-     * PROCESSING - task is running
-     * FINISHED - task finished succesfully, results can be obtained by getResult()
-     * CANCELED - task was canceled by user
-     * ERROR - task finished with error, error message can be obtained by getErrorMessage()
-     *
-     */
-    public static enum TaskStatus {
-        WAITING, PROCESSING, FINISHED, CANCELED, ERROR
-    };
+	public TaskStatus getStatus();
 
-    public static enum TaskPriority {
-        HIGH, NORMAL, LOW
-    };
+	public String getErrorMessage();
 
-    public String getTaskDescription();
+	public void run();
 
-    public double getFinishedPercentage();
-
-    public TaskStatus getStatus();
-
-    public String getErrorMessage();
-
-    /**
-     * Cancel a running task by user request.
-     * This method must clean up everything and return to 
-     * a state prior to starting the task.
-     *
-     */
-    public void cancel();
+	/**
+	 * Cancel a running task by user request.
+	 */
+	public void cancel();	
 
 }

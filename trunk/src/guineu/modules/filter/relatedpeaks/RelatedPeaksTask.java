@@ -21,6 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 
 /**
  *

@@ -24,8 +24,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -55,11 +55,11 @@ public class VariationCoefficient implements GuineuModule, TaskListener, ActionL
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Coefficient of variation on " + ((VariationCoefficientTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while Coefficient of variation on .. " + ((VariationCoefficientTask) task).getErrorMessage();
             logger.severe(msg);
@@ -74,7 +74,7 @@ public class VariationCoefficient implements GuineuModule, TaskListener, ActionL
             return;
         }
 
-        runModule(null);
+        runModule();
     }
 
     public ExitCode setupParameters() {
@@ -93,17 +93,15 @@ public class VariationCoefficient implements GuineuModule, TaskListener, ActionL
         return "Coefficient of variation";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new VariationCoefficientTask[1];
         tasks[0] = new VariationCoefficientTask(datasets, desktop);
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-        // start the group
-        newGroup.start();
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        return newGroup;
+        return tasks;
 
 
     }

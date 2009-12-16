@@ -24,7 +24,7 @@ import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 
 public class filterConcatenateTask implements Task {
 

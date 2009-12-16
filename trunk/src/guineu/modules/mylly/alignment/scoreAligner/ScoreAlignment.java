@@ -23,8 +23,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -64,11 +64,11 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished Score Alignment on " + ((ScoreAlignmentTask) task).getTaskDescription());
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while Score Alignment on .. " + ((ScoreAlignmentTask) task).getErrorMessage();
 			logger.severe(msg);
@@ -91,7 +91,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule(null);
+			runModule();
 		}
 	}
 
@@ -107,7 +107,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 		return "Score Alignment";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 		// prepare a new group of tasks
 		Task tasks[] = new ScoreAlignmentTask[1];
 		Dataset[] datasets = desktop.getSelectedDataFiles();
@@ -121,12 +121,10 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 		
 		tasks[0] = new ScoreAlignmentTask(newDatasets,parameters);
 
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+		GuineuCore.getTaskController().addTasks(tasks);
 
-		// start the group
-		newGroup.start();
+        return tasks;
 
-		return newGroup;
 
 
 	}

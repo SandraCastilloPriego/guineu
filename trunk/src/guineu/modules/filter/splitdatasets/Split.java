@@ -24,8 +24,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -57,11 +57,11 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Split dataset on " + ((SplitTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while Split dataset on .. " + ((SplitTask) task).getErrorMessage();
             logger.severe(msg);
@@ -76,7 +76,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
             return;
         }
 
-        runModule(null);
+        runModule();
     }
 
     public ExitCode setupParameters() {
@@ -104,19 +104,16 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
         return "Split dataset";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
 
         // prepare a new group of tasks
 
         Task tasks[] = new SplitTask[1];
         tasks[0] = new SplitTask(group1, group2, dataset, desktop);
 
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
-
-        return newGroup;
+        return tasks;
 
 
     }

@@ -24,8 +24,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 
 import java.awt.event.ActionEvent;
@@ -54,11 +54,11 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 	}
 
 	public void taskFinished(Task task) {
-		if (task.getStatus() == Task.TaskStatus.FINISHED) {
+		if (task.getStatus() == TaskStatus.FINISHED) {
 			logger.info("Finished Purge Identification on " + ((purgeIdentificationTask) task).getTaskDescription());
 		}
 
-		if (task.getStatus() == Task.TaskStatus.ERROR) {
+		if (task.getStatus() == TaskStatus.ERROR) {
 
 			String msg = "Error while Purge Identification on .. " + ((purgeIdentificationTask) task).getErrorMessage();
 			logger.severe(msg);
@@ -68,7 +68,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		runModule(null);
+		runModule();
 	}
 
 	public ParameterSet getParameterSet() {
@@ -82,7 +82,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 		return "Purge Identification";
 	}
 
-	public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+	public Task[] runModule() {
 
 		// prepare a new group of tasks
 		Dataset[] datasets = desktop.getSelectedDataFiles();
@@ -91,9 +91,10 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 		for (Dataset dataset : datasets) {
 			tasks[cont++] = new purgeIdentificationTask(dataset, desktop);
 		}
-		TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
-		newGroup.start();
-		return newGroup;
+		GuineuCore.getTaskController().addTasks(tasks);
+
+        return tasks;
+
 
 
 	}

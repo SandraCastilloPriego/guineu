@@ -7,7 +7,7 @@ package guineu.modules.mylly.filter.NameFilter;
 import guineu.main.GuineuCore;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

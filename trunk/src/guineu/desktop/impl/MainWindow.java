@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl;
 
 import guineu.data.Dataset;
@@ -25,7 +24,9 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.impl.TaskControllerImpl;
-import guineu.util.components.TaskProgressWindow;
+import guineu.taskcontrol.impl.TaskProgressWindow;
+import guineu.util.ExceptionUtils;
+import guineu.util.TextUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -46,44 +47,39 @@ import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.border.EtchedBorder;
 
-
-
 /**
  * This class is the main window of application
  * 
  */
 public class MainWindow extends JFrame implements GuineuModule, Desktop,
-        WindowListener{
+        WindowListener {
 
     private DesktopParameters parameters;
-
     private JDesktopPane desktopPane;
-
     private JSplitPane split;
-
     private ItemSelector itemSelector;
-
     private TaskProgressWindow taskList;
-    
     private HelpClass help;
 
     public TaskProgressWindow getTaskList() {
         return taskList;
     }
-
     private MainMenu menuBar;
-
     private Statusbar statusBar;
 
     public MainMenu getMainMenu() {
         return menuBar;
     }
 
-    public void addInternalFrame(JInternalFrame frame){        
-        desktopPane.add(frame); 
-        frame.setVisible(true);        
-        // TODO: adjust frame position
-        
+    public void addInternalFrame(JInternalFrame frame) {
+        try {          
+            desktopPane.add(frame);
+            frame.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    // TODO: adjust frame position
+
     }
 
     /**
@@ -122,27 +118,40 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         setStatusBarText(text, Color.black);
     }
 
-    
+    /**
+     */
     public void displayMessage(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Message",
-                JOptionPane.INFORMATION_MESSAGE);
+        displayMessage("Message", msg, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     */
+    public void displayMessage(String title, String msg) {
+        displayMessage(title, msg, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void displayErrorMessage(String msg) {
-        JOptionPane.showMessageDialog(this, msg, "Sorry",
-                JOptionPane.ERROR_MESSAGE);
+        displayMessage("Error", msg);
+    }
+
+    public void displayErrorMessage(String title, String msg) {
+        displayMessage(title, msg, JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void displayMessage(String title, String msg, int type) {
+        String wrappedMsg = TextUtils.wrapText(msg, 80);
+        JOptionPane.showMessageDialog(this, wrappedMsg, title, type);
     }
 
     public void addMenuItem(GuineuMenu parentMenu, JMenuItem newItem) {
         menuBar.addMenuItem(parentMenu, newItem);
     }
 
-    
     /**
      */
     public void initModule() {
 
-        SwingParameters.initSwingParameters();       
+        SwingParameters.initSwingParameters();
 
         parameters = new DesktopParameters();
 
@@ -175,8 +184,8 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
         // Construct menu
         menuBar = new MainMenu();
-		help = new HelpClass();
-		help.addMenuItem(menuBar);
+        help = new HelpClass();
+        help.addMenuItem(menuBar);
         setJMenuBar(menuBar);
 
         // Initialize window listener for responding to user events
@@ -190,16 +199,19 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
         // Application wants to control closing by itself
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        updateTitle();
 
         setTitle("Guineu");
 
-        taskList = new TaskProgressWindow(
-                (TaskControllerImpl) GuineuCore.getTaskController());
-        desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
+//        taskList = new TaskProgressWindow();
+      //  desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
 
     }
 
-   
+    void updateTitle() {
+        setTitle("Guineu " + GuineuCore.getGuineuVersion());
+    }
+
     public JFrame getMainFrame() {
         return this;
     }
@@ -208,7 +220,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         return help;
     }
 
-   
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
             String toolTip, int mnemonic, ActionListener listener,
             String actionCommand, String icon) {
@@ -216,34 +227,27 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 listener, actionCommand, icon);
     }
 
-    
     public void addMenuSeparator(GuineuMenu parentMenu) {
         menuBar.addMenuSeparator(parentMenu);
 
     }
 
-    
     public JInternalFrame getSelectedFrame() {
-        return desktopPane.getSelectedFrame();        
+        return desktopPane.getSelectedFrame();
     }
 
-    
     public JInternalFrame[] getInternalFrames() {
         return desktopPane.getAllFrames();
     }
 
-   
     public void setStatusBarText(String text, Color textColor) {
         statusBar.setStatusText(text, textColor);
     }
 
-   
-    
     public DesktopParameters getParameterSet() {
         return parameters;
     }
 
-   
     public void setParameters(ParameterSet parameterValues) {
         this.parameters = (DesktopParameters) parameterValues;
     }
@@ -254,19 +258,20 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
     public Dataset[] getSelectedDataFiles() {
         return this.itemSelector.getSelectedDatasets();
-    }	
-    
-    /*public Vector[] getSelectedExperiments() {
-        return this.itemSelector.getSelectedExperiments();
-    }*/
-    
-    public void AddNewFile(Dataset dataset){
-        this.itemSelector.addNewFile(dataset);
-    }	    
-    
-    public void removeData(Dataset file) { 
-        this.itemSelector.removeData(file);
-    }      
+    }
 
-   
+    /*public Vector[] getSelectedExperiments() {
+    return this.itemSelector.getSelectedExperiments();
+    }*/
+    public void AddNewFile(Dataset dataset) {
+        this.itemSelector.addNewFile(dataset);
+    }
+
+    public void removeData(Dataset file) {
+        this.itemSelector.removeData(file);
+    }
+
+    public void displayException(Exception e) {
+        displayErrorMessage(ExceptionUtils.exceptionToString(e));
+    }
 }

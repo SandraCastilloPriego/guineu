@@ -32,7 +32,7 @@ public enum LCMSColumnName {
     VTT("VTT ID", true, "getVTTID", "setVTTID", "^VTT ID.*", ParameterType.STRING),
     ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD", ".*All VTT IDs.*", ParameterType.STRING),
     LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*", ParameterType.INTEGER),
-    NFOUND("Num found", true, "getNumFound", "setNumFound", ".*Num found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*", ParameterType.DOUBLE),
+    NFOUND("Num found", true, "getNumFound", "setNumFound", ".*um found.*|.*umber of detected peaks.*|.*n_found.*|.*Num Found.*", ParameterType.DOUBLE),
     STANDARD("Standard", true, "getStandard", "setStandard", ".*Standard.*", ParameterType.INTEGER),
     FA("FA Composition", true, "getFAComposition", "setFAComposition", ".*FAComposition.*", ParameterType.STRING),
     ALIGNMENT("Alignment", true, "getNumberAlignment", "setNumberAligment", ".*Aligment.*|.*Alignment.*", ParameterType.INTEGER);

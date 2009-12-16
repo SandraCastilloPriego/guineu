@@ -21,6 +21,7 @@ import guineu.database.intro.InDataBase;
 import guineu.database.intro.InOracle;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskStatus;
 
 /**
  *

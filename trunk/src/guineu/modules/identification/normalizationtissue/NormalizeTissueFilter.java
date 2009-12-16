@@ -25,8 +25,8 @@ import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskGroup;
-import guineu.taskcontrol.TaskGroupListener;
+import guineu.taskcontrol.TaskStatus;
+ 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -57,11 +57,11 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == Task.TaskStatus.FINISHED) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
             logger.info("Finished Tissue Normalization Filter on " + ((NormalizeTissueFilterTask) task).getTaskDescription());
         }
 
-        if (task.getStatus() == Task.TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
             String msg = "Error while Tissue Normalization Filter on .. " + ((NormalizeTissueFilterTask) task).getErrorMessage();
             logger.severe(msg);
@@ -76,7 +76,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
             return;
         }
 
-        runModule(null);
+        runModule();
     }
 
     public ExitCode setupParameters() {
@@ -101,18 +101,15 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
         return "Sample Normalization Filter";
     }
 
-    public TaskGroup runModule(TaskGroupListener taskGroupListener) {
+    public Task[] runModule() {
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new NormalizeTissueFilterTask[1];       
         tasks[0] = new NormalizeTissueFilterTask(datasets[0], desktop, standards);
         
-        TaskGroup newGroup = new TaskGroup(tasks, this, taskGroupListener);
+        GuineuCore.getTaskController().addTasks(tasks);
 
-        // start the group
-        newGroup.start();
-
-        return newGroup;
+        return tasks;
 
 
     }

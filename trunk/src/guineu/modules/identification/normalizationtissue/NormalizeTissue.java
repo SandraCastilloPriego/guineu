@@ -16,7 +16,7 @@ package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
-import guineu.taskcontrol.Task.TaskStatus;
+import guineu.taskcontrol.TaskStatus;
 import java.util.Vector;
 
 /**
