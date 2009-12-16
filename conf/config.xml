@@ -98,6 +98,13 @@
     <module class="guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRowFilter"/>  
     <module class="guineu.modules.statistics.foldChanges.Foldtest"/>  
     <module class="guineu.modules.statistics.Ttest.Ttest"/>  
+    <module class="guineu.modules.statistics.PCA.ProjectionPlot"> 
+      <parameters>
+        <parameter name="Coloring type" type="STRING">Color by file</parameter>
+        <parameter name="X-axis component" type="INTEGER">1</parameter>
+        <parameter name="Y-axis component" type="INTEGER">2</parameter>
+      </parameters> 
+    </module>  
     <!-- <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
     <module class="guineu.modules.R.R"/>  
@@ -180,13 +187,13 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>0</x>
+      <x>-3</x>
       <y>26</y>
       <width>-1</width>
       <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
-    <lastProjectDirectory>/home/bicha/Download/167-179GUTsero2.csv</lastProjectDirectory>
+    <lastProjectDirectory>/home/bicha/Download/112Vein-tracer.xls</lastProjectDirectory>
     <lastSaveDirectory>D:\data\xxczxczxcz</lastSaveDirectory>
     <lastMyllyDirectory>D:\data\xxczxczxcz</lastMyllyDirectory>
     <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
