@@ -67,7 +67,6 @@ public class TaskControllerImpl implements TaskController, Runnable {
 		taskControllerThread = new Thread(this, "Task controller thread");
 		taskControllerThread.setPriority(Thread.MIN_PRIORITY);
 		taskControllerThread.start();
-    System.out.print("lalalalalla ");
 		// Create the task progress window and add it to desktop
 		taskWindow = new TaskProgressWindow();
     
