@@ -1,14 +1,43 @@
-#summary One-sentence summary of this page.
+#summary How to setup guineu project in Netbeans? (only for developers).
 
 = Introduction =
 
-Add your content here.
-
+Here is how I have set up guineu project in my Netbeans. I describe the steps very briefly assuming that you either already have experience with Netbeans or at least literate enough with computer programs that you can use any GUI program. For example, I don't tell you the obvious things such as 'press Next button'. If there are some options which I do not mention below, it means that I chose the default options suggested by Netbeans. It is pretty easy though! For instance, I used Netbeans for the first time now!
 
 = Check out the latest sources from SVN =
 
-I used Netbeans for this.
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+I used Netbeans for this task. Following parameters were used:
+
+Repository URL = http://guineu.googlecode.com/svn
+User name = My google accout user name.
+Password = Password allocated to me by google code!
+
+Repository folder = trunk
+
+I unchecked the option "scan for netbeans projects after checkout".
+
+The local folder to which I checked out the "trunk" is "D:\workspace\guineu\trunk"
+
+= Create Project =
+
+New Project > Java > Java Project With Existing Sources.
+
+Project Name: Guineu
+Project folder: D:\workspace\NetBeansProjects\Guineu
+Build script: build.xml
+
+Source package folder: D:\workspace\guineu\trunk\src
+
+= Configure the Project =
+
+To complete the project setup, you need to configure it finally as explained here.
+
+Right click the Guineu project (in Netbeans project tree), select properties and do the following.
+
+Libraries > Compile > Add JAR/folder > D:\workspace\guineu\trunk\*.jar (i.e. select all jar files and click open).
+
+Run > Main class = guineu.main.GuineuClient
+Run > Working directory = D:\workspace\guineu\trunk
+Run > VM Options = -Djava.util.logging.config.file=conf/logging.properties -Xms256m -Xmx512m
+
+Done!
