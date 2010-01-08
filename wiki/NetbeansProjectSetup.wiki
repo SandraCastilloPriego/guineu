@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Here is how I have set up guineu project in my Netbeans. I describe the steps very briefly assuming that you either already have experience with Netbeans or at least literate enough with computer programs that you can use any GUI program. For example, I don't tell you the obvious things such as 'press Next button'. If there are some options which I do not mention below, it means that I chose the default options suggested by Netbeans. It is pretty easy though! For instance, I used Netbeans for the first time now!
+Here is how I have set up guineu project in my Netbeans. I describe the steps very briefly assuming that you either already have experience with Netbeans or at least literate enough with computer programs that you can use any GUI program. For example, I don't tell you the obvious things such as 'press Next button'. If there are some options which I do not mention below, it means that I chose the default options suggested by Netbeans.
 
 = Check out the latest sources from SVN =
 
