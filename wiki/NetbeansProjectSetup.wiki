@@ -22,11 +22,11 @@ The local folder to which I checked out the "trunk" is "D:\workspace\guineu\trun
 
 New Project > Java > Java Project With Existing Sources.
 
-Project Name: Guineu<br>
-Project folder: D:\workspace\NetBeansProjects\Guineu<br>
-Build script: build.xml
+Project Name = Guineu<br>
+Project folder = D:\workspace\NetBeansProjects\Guineu<br>
+Build script = build.xml
 
-Source package folder: D:\workspace\guineu\trunk\src
+Source package folder = D:\workspace\guineu\trunk\src
 
 = Configure the Project =
 
