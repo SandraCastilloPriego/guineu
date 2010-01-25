@@ -34,10 +34,11 @@ To complete the project setup, you need to configure it finally as explained her
 
 Right click the Guineu project (in Netbeans project tree), select properties and do the following.
 
-Libraries > Compile > Add JAR/folder > D:\workspace\guineu\trunk\`*`.jar (i.e. select all jar files and click open).
+Libraries > Compile > Add JAR/folder > D:\workspace\guineu\trunk\lib\`*`.jar (i.e. select all jar files and click open).
 
 Run > Main class = guineu.main.!GuineuClient<br>
 Run > Working directory = D:\workspace\guineu\trunk<br>
 Run > VM Options = -Djava.util.logging.config.file=conf/logging.properties -Xms256m -Xmx512m
+<br>The part "-Xms256m -Xmx512m" is optional, but the rest is mandatory.
 
 Done!
