@@ -39,7 +39,7 @@ public class RTIScoreCalculator implements ScoreCalculator
 	private double rtiPenalty;
 
 	public double calculateScore(Peak path, Peak peak, ScoreAlignmentParameters params)
-	{
+		{
 		if (params != null && params != lastParams)
 		{
 			rtiPenalty = (Double)params.getParameterValue(ScoreAlignmentParameters.rtiPenalty);

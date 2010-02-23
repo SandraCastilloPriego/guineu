@@ -30,8 +30,8 @@ public class ScoreAlignmentParameters extends SimpleParameterSet {
 
 
 	public static final Parameter rt1Lax = new SimpleParameter(
-			ParameterType.DOUBLE, "RT1 Lax:",
-			"RT1 Lax", "", new Double(15.0),
+			ParameterType.DOUBLE, "RT Lax:",
+			"RT Lax", "", new Double(15.0),
 			new Double(0.0), null);
 	public static final Parameter rt2Lax = new SimpleParameter(
 			ParameterType.DOUBLE, "RT2 Lax:",
@@ -72,6 +72,6 @@ public class ScoreAlignmentParameters extends SimpleParameterSet {
 	
 	
 	public ScoreAlignmentParameters() {
-		super(new Parameter[]{rt1Lax, rt2Lax,  rtiLax, rt1Penalty, rt2Penalty, rtiPenalty, minSpectrumMatch, nameMatchBonus, minSimilarity, useConcentration});
+		super(new Parameter[]{rt1Lax, rt2Lax, rtiLax, rt1Penalty, rt2Penalty, rtiPenalty, minSpectrumMatch, nameMatchBonus, minSimilarity, useConcentration});
 	}
 }

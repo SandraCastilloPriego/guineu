@@ -62,8 +62,9 @@ public class SpectrumDotProd implements ScoreCalculator {
 			score = rtiDiff * (Double) params.getParameterValue(ScoreAlignmentParameters.rtiPenalty) +
 					rt1Diff * (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Penalty) +
 					rt2Diff * (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Penalty);
-			if (!path.matchesWithName(peak)) {
-				score += (Double) params.getParameterValue(ScoreAlignmentParameters.nameMatchBonus);
+            //System.out.println(path.matchesWithName(peak)  +" - " +peak.names() );
+			if (path.matchesWithName(peak)) {
+				score -= (Double) params.getParameterValue(ScoreAlignmentParameters.nameMatchBonus);
 			}
 		} else {
 			score = WORST_SCORE;
@@ -89,10 +90,12 @@ public class SpectrumDotProd implements ScoreCalculator {
 	 * @return
 	 */
 	public double compareSpectraVal(Spectrum s1, Spectrum s2) {
-		if (s1.getSortingMode() != Spectrum.SortingMode.REVERSEMASS) {
+		if (s1.getSortingMode() != Spectrum.SortingMode.REVERSEMASS)
+		{
 			s1.sort(Spectrum.SortingMode.REVERSEMASS);
 		}
-		if (s2.getSortingMode() != Spectrum.SortingMode.REVERSEMASS) {
+		if (s2.getSortingMode() != Spectrum.SortingMode.REVERSEMASS)
+		{
 			s2.sort(Spectrum.SortingMode.REVERSEMASS);
 		}
 		int masses1[] = s1.getMasses();
@@ -114,33 +117,29 @@ public class SpectrumDotProd implements ScoreCalculator {
 		double mass1 = masses1[0];
 		double mass2 = masses2[0];
 
-		while (i < len1 || j < len2) {
-			while ((mass1 > mass2 || j == len2) && i < len1) {
+		while(i < len1 || j < len2)
+		{
+			while ((mass1 > mass2 || j == len2) && i < len1)
+			{
 				double relInt1 = int1[i++] / pathMaxIntensity;
 				spec1Sum += dotTerm(mass1, relInt1);
-				if (i < len1) {
-					mass1 = masses1[i];
-				}
+				if (i < len1){mass1 = masses1[i];}
 			}
-			while ((mass2 > mass1 || i == len1) && j < len2) {
+			while((mass2 > mass1 || i == len1) && j < len2)
+			{
 				double relInt2 = int2[j++] / peakMaxIntensity;
 				spec2Sum += dotTerm(mass2, relInt2);
-				if (j < len2) {
-					mass2 = masses2[j];
-				}
+				if (j < len2){mass2 = masses2[j];}
 			}
-			while (mass1 == mass2 && i < len1 && j < len2) {
+			while (mass1 == mass2 && i < len1 && j < len2)
+			{
 				double relInt1 = int1[i++] / pathMaxIntensity;
 				double relInt2 = int2[j++] / peakMaxIntensity;
 				spec1Sum += dotTerm(mass1, relInt1);
 				spec2Sum += dotTerm(mass2, relInt2);
 				bothSpecSum += dotTerm(mass1, Math.sqrt(relInt1 * relInt2));
-				if (i < len1) {
-					mass1 = masses1[i];
-				}
-				if (j < len2) {
-					mass2 = masses2[j];
-				}
+				if (i < len1){mass1 = masses1[i];}
+				if (j < len2){mass2 = masses2[j];}
 			}
 //			if (i == len1 && j == len2){break;}
 		}
