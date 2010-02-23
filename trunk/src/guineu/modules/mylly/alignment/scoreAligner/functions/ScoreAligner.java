@@ -222,8 +222,7 @@ public class ScoreAligner implements Aligner {
 					removePeaks(best, peaksToUse);
 					peaksDone += best.nonEmptyPeaks();
 				}
-				//Now that we've counted how many peaks are done, report our progress
-
+			
 				//Empty the list for further use
 				paths.clear();
 				int currentCol = -1;
@@ -300,7 +299,7 @@ public class ScoreAligner implements Aligner {
 				if (curPeak == null || !c.isValid(curPeak)) {
 					//Either there isn't any peak left or it doesn't fill
 					// requirements of current score calculator (for example,
-					// it doesn't have a name).
+					// it doesn't have a name).               
 					continue;
 				}
 				double score = c.calculateScore(path, curPeak, params);
