@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.logging.Logger;
 import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -64,6 +65,7 @@ public class DatasetOpenDBDialog extends ParameterSetupDialog implements ActionL
 				((JComboBox) field).addActionListener(this);
 			}
 		}
+        this.componentsPanel.add(new JButton("hola"), BorderLayout.EAST);
 
 		this.createDatasetTable();		
 

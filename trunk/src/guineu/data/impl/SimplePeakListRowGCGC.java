@@ -240,8 +240,11 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
     }
 
     public double getDifference() {
-        return this._distValue.distance();
-
+        try {
+            return this._distValue.distance();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public String getSpectrumString() {
@@ -593,7 +596,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 } else {
                     partypes[0] = Object.class;
                 }
-                System.out.println(partypes[0] + " - " + varName + " - " +value);
+                System.out.println(partypes[0] + " - " + varName + " - " + value);
                 Method m = this.getClass().getMethod(varName, partypes);
                 Object[] parameters = new Object[1];
                 parameters[0] = value;

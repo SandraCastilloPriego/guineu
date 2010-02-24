@@ -45,9 +45,7 @@ public class OtherFilesParserCSV implements Parser {
         this.rowsReaded = 0;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleOtherDataset(this.getDatasetName());
-        this.dataset.setType(DatasetType.OTHER);
-
-        this.dataset.setType(null);
+        this.dataset.setType(DatasetType.OTHER);       
         this.LipidClassLib = new Lipidclass();
         countNumberRows();
     }
@@ -79,6 +77,7 @@ public class OtherFilesParserCSV implements Parser {
             setExperimentsName(header);
 
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -91,12 +90,12 @@ public class OtherFilesParserCSV implements Parser {
                 } catch (Exception e) {
                     lipid.setPeak(header[i], " ");
                 }
-
             }
 
             this.dataset.AddRow(lipid);
 
         } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -110,6 +109,7 @@ public class OtherFilesParserCSV implements Parser {
                 this.dataset.AddNameExperiment(header[i]);
             }
         } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 

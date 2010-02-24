@@ -131,10 +131,11 @@ public class FoldTestTask implements Task {
             }
         }
         if (stats1.getN() > 0 && stats2.getN() > 0) {
-            double[] sortValues1 = stats1.getSortedValues();
+            /*double[] sortValues1 = stats1.getSortedValues();
             double[] sortValues2 = stats2.getSortedValues();
 
-            return sortValues1[((int) stats1.getN() / 2)] / sortValues2[((int) stats2.getN() / 2)];
+            return sortValues1[((int) stats1.getN() / 2)] / sortValues2[((int) stats2.getN() / 2)];*/
+            return stats1.getMean()/stats2.getMean();
         } else {
             return 0;
         }
