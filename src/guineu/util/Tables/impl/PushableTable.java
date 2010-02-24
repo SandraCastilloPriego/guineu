@@ -100,22 +100,25 @@ public class PushableTable implements DataTable, ActionListener {
                 try {
                     if (getStandard(Index_row)) {
                         comp.setBackground(Color.yellow);
-                        if (comp.getBackground().getRGB() != Color.yellow.getRGB()||comp.getBackground().getRGB() != Color.ORANGE.getRGB()) {
+                        if (comp.getBackground().getRGB() != Color.yellow.getRGB() || comp.getBackground().getRGB() != Color.ORANGE.getRGB()) {
                             this.repaint();
                         }
-                        if (isCellSelected(Index_row, Index_col) || isDataSelected(Index_row)) {
-                            comp.setBackground(Color.ORANGE);
-                        }
-                        
+                    /* if (isCellSelected(Index_row, Index_col) || isDataSelected(Index_row)) {
+                    comp.setBackground(Color.ORANGE);
+                    }*/
+
                     } else if (isDataSelected(Index_row)) {
                         comp.setBackground(new Color(173, 205, 203));
                         if (comp.getBackground().getRGB() != new Color(173, 205, 203).getRGB()) {
                             this.repaint();
-                        } 
+                        }
                     } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
                         comp.setBackground(new Color(234, 235, 243));
                     } else if (isCellSelected(Index_row, Index_col)) {
                         comp.setBackground(new Color(173, 205, 203));
+                        if (comp.getBackground().getRGB() != new Color(173, 205, 203).getRGB()) {
+                            this.repaint();
+                        }
                     } else {
                         comp.setBackground(Color.white);
                     }

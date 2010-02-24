@@ -26,7 +26,7 @@ package guineu.taskcontrol;
  */
 public interface TaskController {
     
-   public void addTask(Task task);
+    public void addTask(Task task);
 
     public void addTasks(Task tasks[]);
 

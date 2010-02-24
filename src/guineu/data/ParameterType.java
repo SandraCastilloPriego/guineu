@@ -58,6 +58,13 @@ public enum ParameterType {
     /**
      * A list which can be ordered, e.g. by dragging
      */
-    ORDERED_LIST
+    ORDERED_LIST,
+
+    /**
+     * Parameter values represented by TextArea instance
+     */
+    TEXTAREA,
+
+
 
 }
