@@ -31,18 +31,25 @@ public class ReportParameters extends SimpleParameterSet {
 
     final static String[] ionMode = {"ESI+", "ESI-"};
 
-    final static String[] sampleType = {"Serum human", "Serum mouse", "Tissue", "Cells"};
+    final static String[] sampleType = {"Serum human", "Serum mouse", "Tissue", "Cells", "Batch"};
 
     public static final Parameter filename = new SimpleParameter(
             ParameterType.FILE_NAME,
-            "File name",
+            "Input File",
             "File name");
+     public static final Parameter outputFilename = new SimpleParameter(
+            ParameterType.FILE_NAME,
+            "HTML Output File",
+            "HTML Output File name");
     public static final Parameter date = new SimpleParameter(
             ParameterType.STRING, "Date",
             "Date", null,null,null, null);
     public static final Parameter sampleSet = new SimpleParameter(
             ParameterType.STRING, "Sample set",
             "Sample set", null,null,null, null);
+    public static final Parameter injection = new SimpleParameter(
+            ParameterType.STRING, "Injection volume",
+            "Injection volume", "ul",null,null,null);
     public static final Parameter ionModeCombo = new SimpleParameter(
             ParameterType.STRING, "Ion Mode",
             "Ion Mode", null, null, ionMode, null);
@@ -56,7 +63,7 @@ public class ReportParameters extends SimpleParameterSet {
 
 
     public ReportParameters() {
-        super(new Parameter[]{filename, date, sampleSet, ionModeCombo, typeCombo, area});
+        super(new Parameter[]{filename, outputFilename, date, sampleSet, ionModeCombo,injection, typeCombo, area});
     }
 
     
