@@ -30,10 +30,16 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -45,8 +51,9 @@ public class ReportTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private String fileName,  date,  sampleSet,  ionMode,  sampleType,  area ="";
+    private String fileName,  date,  sampleSet,  ionMode,  sampleType,  comments = "",  injection,  outputFile;
     private double totalRows,  processedRows;
+    DescriptiveStatistics Stats[], superStats[];
 
     public ReportTask(Desktop desktop, SimpleParameterSet parameters) {
         this.desktop = desktop;
@@ -54,8 +61,10 @@ public class ReportTask implements Task {
         this.date = (String) parameters.getParameterValue(ReportParameters.date);
         this.sampleSet = (String) parameters.getParameterValue(ReportParameters.sampleSet);
         this.ionMode = (String) parameters.getParameterValue(ReportParameters.ionModeCombo);
+        this.injection = (String) parameters.getParameterValue(ReportParameters.injection) + " ul";
         this.sampleType = (String) parameters.getParameterValue(ReportParameters.typeCombo);
-        this.area = (String) parameters.getParameterValue(ReportParameters.area);
+        this.outputFile = (String) parameters.getParameterValue(ReportParameters.outputFilename);
+        this.comments = (String) parameters.getParameterValue(ReportParameters.area);
         this.processedRows = 0;
     }
 
@@ -84,6 +93,9 @@ public class ReportTask implements Task {
             status = TaskStatus.PROCESSING;
             List<sample> samples = readFile();
             writeDataset(samples);
+            if (this.outputFile != null) {
+                writeHTML(samples);
+            }
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;
@@ -140,161 +152,178 @@ public class ReportTask implements Task {
         return Samples;
     }
 
+    private void writeHTML(List<sample> samples) {
+        try {
+            DecimalFormat formatter = new DecimalFormat("####.##");
+            FileWriter fstream = new FileWriter(outputFile);
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write("<html><title>Quality control form for global lipidomics platform.doc</title>");
+            out.write("<style type=\"text/css\">");
+            out.write("table, td {   border-color: #000;    border-style: solid;}");
+            out.write("table {    border-width: 0 0 1px 1px;    border-spacing: 0;    border-collapse: collapse;}");
+            out.write("td {    margin: 0;    padding: 4px;    border-width: 1px 1px 0 0;   }");
+            out.write(".td1 {    margin: 0;    padding: 4px;    border-top-width: 2px ;  }");
+            out.write("</style>");
+
+
+            out.write("</head><body>");
+            out.write("<br><h1><font color=\"#365F91\" size=\"5\" face=\"Cambria\"><b>Quality control form for global lipidomics platform (UPLC-QTOFMS)</b></font></h1> <br>");
+
+            out.write("<p><font size=\"4\" face=\"Calibri\"><b>Sample set:</b> " + sampleSet + "</font></p>");
+            out.write("<p><font size=\"4\" face=\"Calibri\"><b>Ion mode:</b> " + ionMode + "</font></p>");
+            out.write("<p><font size=\"4\" face=\"Calibri\"><b>Injection volume:</b> " + injection + "</font></p>");
+            out.write("<p><font size=\"4\" face=\"Calibri\"><b>Sample type:</b> " + sampleType + "</font></p><br>");
+
+            out.write("<p><font size=\"4\" face=\"Calibri\"><b>Basic parameters for seronorm control samples &amp; batch standard:</b></font></p>");
+
+
+            out.write("<a name=\"0.1_table01\"></a><div align=\"left\"> <table width=\"899\" border=\"1\" cellspacing=\"0\">");
+            out.write("<tr valign=\"top\" align=\"center\"><td rowspan=\"2\" height=\"15\">");
+            out.write("<font size=\"2\" face=\"Calibri\"><b>Run name</b></font></td>");
+            out.write("<td colspan=\"3\" align=\"center\"><font size=\"2\" face=\"Calibri\"><b>LysoPC</b></font></td>");
+            out.write("<td colspan=\"3\"align=\"center\"><font size=\"2\" face=\"Calibri\"><b>PC</b></font></td>");
+            out.write("<td colspan=\"3\"align=\"center\"><font size=\"2\" face=\"Calibri\"><b>TG</b></font></td>");
+            out.write("<td colspan=\"2\"align=\"center\"><font size=\"2\" face=\"Calibri\"><b></b></font></td></tr>");
+
+            out.write("<tr valign=\"top\" align=\"center\"><td height=\"15\"><font size=\"2\" face=\"Calibri\"><b>RT</b></font></td>");
+            out.write("<td align=\"center\" width=\"200\"><font size=\"2\" face=\"Calibri\"><b>height/area</b></font></td>");
+            out.write("<td align=\"center\" width=\"200\"><font size=\"2\" face=\"Calibri\"><b>LysoPC/LPCD3</b></font></td>");
+
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>RT</b></font></td>");
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>height/area</b></font></td>");
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>PC/PCD6</b></font></td>");
+
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>RT</b></font></td>");
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>height/area</b></font></td>");
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>TG/TGC13</b></font></td>");
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>Date</b></font></td>");
+            out.write("<td align=\"center\"><font size=\"2\" face=\"Calibri\"><b>Time</b></font></td></tr>");
+
+            for (sample s : samples) {
+                out.write("<tr valign=\"top\" align=\"center\"><td height=\"15\"><font size=\"2\" face=\"Calibri\">" + s.sampleName + "</font></td>");
+                out.write(s.getFormat());
+            }
+            out.write("<tr valign=\"top\" align=\"center\"><td1><td class=\"td1\" height=\"15\"><font size=\"2\" face=\"Calibri\"> <b>MEAN</b></font></td></td1>");
+            String format = "<td class=\"td1\"> " + String.valueOf(formatter.format(Stats[0].getMean()).toString()) + " </td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[1].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[2].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[3].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[4].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[5].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[6].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[7].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\">" + formatter.format(Stats[8].getMean()).toString() + "</td>" +
+                    "<td class=\"td1\"></td><td class=\"td1\"></td></tr>";
+            out.write(format);
+            out.write("<tr valign=\"top\" align=\"center\"><td1><td height=\"15\"><font size=\"2\" face=\"Calibri\"> <b>RSD</b></font></td></td1>");
+            format = "<td>" + formatter.format((Stats[0].getStandardDeviation() * 100) / Stats[0].getMean()).toString() + " </td>" +
+                    "<td>" + formatter.format((Stats[1].getStandardDeviation() * 100) / Stats[1].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[2].getStandardDeviation() * 100) / Stats[2].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[3].getStandardDeviation() * 100) / Stats[3].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[4].getStandardDeviation() * 100) / Stats[4].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[5].getStandardDeviation() * 100) / Stats[5].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[6].getStandardDeviation() * 100) / Stats[6].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[7].getStandardDeviation() * 100) / Stats[7].getMean()).toString() + "</td>" +
+                    "<td>" + formatter.format((Stats[8].getStandardDeviation() * 100) / Stats[8].getMean()).toString() + "</td>" +
+                    "<td></td><td></td></tr>";
+            out.write(format);
+
+            out.write("</table></td></tr></table></div>");
+            out.write("<p><font size=\"4\" face=\"Calibri\"><b>Comments: </b>" + comments + "</font></p>");
+            out.write("</body></html>");
+
+
+
+            //Close the output stream
+            out.close();
+        } catch (Exception e) {//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+
+
+    }
+
     private void writeDataset(List<sample> samples) {
+        DecimalFormat formatter = new DecimalFormat("####.##");
+
         SimpleOtherDataset dataset = new SimpleOtherDataset("Summary Report");
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 12; i++) {
             dataset.AddNameExperiment(String.valueOf(i));
         }
-        // row1
-        SimplePeakListRowOther row1 = new SimplePeakListRowOther();
-        row1.setPeak("1", "Date:");
-        row1.setPeak("2", date);
-        dataset.AddRow(row1);
-        // row2
-        SimplePeakListRowOther row2 = new SimplePeakListRowOther();
-        row2.setPeak("1", "SampleSet:");
-        row2.setPeak("2", sampleSet);
-        dataset.AddRow(row2);
-        // row3
-        SimplePeakListRowOther row3 = new SimplePeakListRowOther();
-        row3.setPeak("1", "Ion Mode:");
-        row3.setPeak("2", ionMode);
-        dataset.AddRow(row3);
-        // row4
-        SimplePeakListRowOther row4 = new SimplePeakListRowOther();
-        row4.setPeak("1", "Sample type:");
-        row4.setPeak("2", sampleType);
-        dataset.AddRow(row4);
-        SimplePeakListRowOther rowblank = new SimplePeakListRowOther();
-        dataset.AddRow(rowblank);
-        rowblank = new SimplePeakListRowOther();
-        dataset.AddRow(rowblank);
-        // row5
-        SimplePeakListRowOther row5 = new SimplePeakListRowOther();
-        row5.setPeak("1", "Basic parameters for seronorm control samples & batch standard:");
-        dataset.AddRow(row5);
-        // row6
-        SimplePeakListRowOther row6 = new SimplePeakListRowOther();
-        row6.setPeak("1", "Sample name");
-        row6.setPeak("2", "LysoPC height ratio");
-        row6.setPeak("3", "LysoPC RT");
-        row6.setPeak("4", "PC height ratio");
-        row6.setPeak("5", "PC RT");
-        row6.setPeak("6", "TG height ratio");
-        row6.setPeak("7", "TG RT");
-        dataset.AddRow(row6);
 
-        DescriptiveStatistics Stats[] = new DescriptiveStatistics[6];
-        for (int i = 0; i < 6; i++) {
+        dataset.AddRow(getRow("Date:", date));
+
+        dataset.AddRow(getRow("SampleSet:", sampleSet));
+
+        dataset.AddRow(getRow("Ion Mode:", ionMode));
+
+        dataset.AddRow(getRow("Injection volume:", injection));
+
+        dataset.AddRow(getRow("Sample type:", sampleType));
+
+        dataset.AddRow(getRow("", ""));
+        dataset.AddRow(getRow("", ""));
+
+        dataset.AddRow(getRow("Basic parameters for seronorm control samples & batch standard:", ""));
+
+        dataset.AddRow(this.getTitle());
+
+        Stats = new DescriptiveStatistics[9];
+        for (int i = 0; i < 9; i++) {
             Stats[i] = new DescriptiveStatistics();
         }
         for (sample s : samples) {
-            int cont = 1;
-            SimplePeakListRowOther row = new SimplePeakListRowOther();
-            row.setPeak(String.valueOf(cont++), s.sampleName);
-            row.setPeak(String.valueOf(cont++), s.getLysoPCratio());
-            Stats[0].addValue(Double.valueOf(s.getLysoPCratio()));
-            row.setPeak(String.valueOf(cont++), s.getLysoPCRT());
-            Stats[1].addValue(Double.valueOf(s.getLysoPCRT()));
-            row.setPeak(String.valueOf(cont++), s.getPCratio());
-            Stats[2].addValue(Double.valueOf(s.getPCratio()));
-            row.setPeak(String.valueOf(cont++), s.getPC_50RT());
-            Stats[3].addValue(Double.valueOf(s.getPC_50RT()));
-            row.setPeak(String.valueOf(cont++), s.getTGratio());
-            Stats[4].addValue(Double.valueOf(s.getTGratio()));
-            row.setPeak(String.valueOf(cont++), s.getTGRT());
-            Stats[5].addValue(Double.valueOf(s.getTGRT()));
-            dataset.AddRow(row);
+            dataset.AddRow(s.getRow(Stats));
         }
 
         SimplePeakListRowOther row = new SimplePeakListRowOther();
         row.setPeak("1", "MEAN");
-        for (int i = 0; i < 6; i++) {
-            row.setPeak(String.valueOf(i + 2), String.valueOf(Stats[i].getMean()));
+        for (int i = 0; i < 9; i++) {
+            row.setPeak(String.valueOf(i + 2), formatter.format(Stats[i].getMean()).toString());
         }
         dataset.AddRow(row);
 
         row = new SimplePeakListRowOther();
         row.setPeak("1", "RSD");
-        for (int i = 0; i < 6; i++) {
-            row.setPeak(String.valueOf(i + 2), String.valueOf((Stats[i].getStandardDeviation() * 100) / Stats[i].getMean()));
+        for (int i = 0; i < 9; i++) {
+            row.setPeak(String.valueOf(i + 2), formatter.format((Stats[i].getStandardDeviation() * 100) / Stats[i].getMean()).toString());
         }
         dataset.AddRow(row);
 
-        rowblank = new SimplePeakListRowOther();
-        dataset.AddRow(rowblank);
-        rowblank = new SimplePeakListRowOther();
-        dataset.AddRow(rowblank);
+        dataset.AddRow(getRow("", ""));
+        dataset.AddRow(getRow("", ""));
         // row8
         SimplePeakListRowOther row8 = new SimplePeakListRowOther();
         row8.setPeak("1", "Additional parameters for seronorm control samples & batch standard:");
         dataset.AddRow(row8);
-        // row ..
-        SimplePeakListRowOther row7 = new SimplePeakListRowOther();
-        row7.setPeak("1", "Sample name");
-        row7.setPeak("2", "LysoPC height");
-        row7.setPeak("3", "PC height");
-        row7.setPeak("4", "TG height");
-        row7.setPeak("5", "*LysoPC height");
-        row7.setPeak("6", "*LysoPC RT");
-        row7.setPeak("7", "*PC height");
-        row7.setPeak("8", "*PC RT");
-        row7.setPeak("9", "*TG height");
-        row7.setPeak("10", "*TG RT");
-        dataset.AddRow(row7);
 
-        DescriptiveStatistics superStats[] = new DescriptiveStatistics[9];
+        dataset.AddRow(this.getTitle2());
+
+        superStats = new DescriptiveStatistics[9];
         for (int i = 0; i < 9; i++) {
             superStats[i] = new DescriptiveStatistics();
         }
         for (sample s : samples) {
-            int cont = 1;
-            row = new SimplePeakListRowOther();
-            row.setPeak(String.valueOf(cont++), s.sampleName);
-            row.setPeak(String.valueOf(cont++), s.getlysoPCHeight());
-            superStats[0].addValue(Double.valueOf(s.getlysoPCHeight()));
-            row.setPeak(String.valueOf(cont++), s.getPC_50Height());
-            superStats[1].addValue(Double.valueOf(s.getPC_50Height()));
-            row.setPeak(String.valueOf(cont++), s.getTG_50Height());
-            superStats[2].addValue(Double.valueOf(s.getTG_50Height()));
-            row.setPeak(String.valueOf(cont++), s.getLPCHeight());
-            superStats[3].addValue(Double.valueOf(s.getLPCHeight()));
-            row.setPeak(String.valueOf(cont++), s.getLPCRT());
-            superStats[4].addValue(Double.valueOf(s.getLPCRT()));
-            row.setPeak(String.valueOf(cont++), s.getPCHeight());
-            superStats[5].addValue(Double.valueOf(s.getPCHeight()));
-            row.setPeak(String.valueOf(cont++), s.getPCRT());
-            superStats[6].addValue(Double.valueOf(s.getPCRT()));
-            row.setPeak(String.valueOf(cont++), s.getTGCHeight());
-            superStats[7].addValue(Double.valueOf(s.getTGCHeight()));
-            row.setPeak(String.valueOf(cont++), s.getTGCRT());
-            superStats[8].addValue(Double.valueOf(s.getTGCRT()));
-            dataset.AddRow(row);
+            dataset.AddRow(s.getRow2(superStats));
         }
 
         row = new SimplePeakListRowOther();
         row.setPeak("1", "MEAN");
         for (int i = 0; i < 9; i++) {
-            row.setPeak(String.valueOf(i + 2), String.valueOf(superStats[i].getMean()));
+            row.setPeak(String.valueOf(i + 2), formatter.format(superStats[i].getMean()).toString());
         }
         dataset.AddRow(row);
 
         row = new SimplePeakListRowOther();
         row.setPeak("1", "RSD");
         for (int i = 0; i < 9; i++) {
-            row.setPeak(String.valueOf(i + 2), String.valueOf((superStats[i].getStandardDeviation() * 100) / superStats[i].getMean()));
+            row.setPeak(String.valueOf(i + 2), formatter.format((superStats[i].getStandardDeviation() * 100) / superStats[i].getMean()).toString());
         }
         dataset.AddRow(row);
 
-        rowblank = new SimplePeakListRowOther();
-        dataset.AddRow(rowblank);
-        rowblank = new SimplePeakListRowOther();
-        dataset.AddRow(rowblank);
-        // row9
-        SimplePeakListRowOther row9 = new SimplePeakListRowOther();
-        row9.setPeak("1", "Coments:");
-        row9.setPeak("2", area);
-        dataset.AddRow(row9);
+        dataset.AddRow(getRow("", ""));
+        dataset.AddRow(getRow("", ""));
+        dataset.AddRow(getRow("Comments:", comments));
 
         desktop.AddNewFile(dataset);
 
@@ -307,14 +336,57 @@ public class ReportTask implements Task {
         frame.setVisible(true);
     }
 
+    private SimplePeakListRowOther getRow(String title, String content) {
+        SimplePeakListRowOther row = new SimplePeakListRowOther();
+        row.setPeak("1", title);
+        row.setPeak("2", content);
+        return row;
+    }
+
+    private SimplePeakListRowOther getTitle() {
+        SimplePeakListRowOther row = new SimplePeakListRowOther();
+        row.setPeak("1", "Sample name");
+        row.setPeak("2", "LysoPC RT");
+        row.setPeak("3", "LysoPC height/area");
+        row.setPeak("4", "LysoPC height ratio");
+        row.setPeak("5", "PC RT");
+        row.setPeak("6", "PC height/area");
+        row.setPeak("7", "PC height ratio");
+        row.setPeak("8", "TG RT");
+        row.setPeak("9", "TG height/area");
+        row.setPeak("10", "TG height ratio");
+        row.setPeak("11", "Date");
+        row.setPeak("12", "Time");
+        return row;
+    }
+
+    private SimplePeakListRowOther getTitle2() {
+        SimplePeakListRowOther row = new SimplePeakListRowOther();
+        row.setPeak("1", "Sample name");
+        row.setPeak("2", "LysoPC height");
+        row.setPeak("3", "PC height");
+        row.setPeak("4", "TG height");
+        row.setPeak("5", "*LysoPC height");
+        row.setPeak("6", "*LysoPC RT");
+        row.setPeak("7", "*PC height");
+        row.setPeak("8", "*PC RT");
+        row.setPeak("9", "*TG height");
+        row.setPeak("10", "*TG RT");
+        return row;
+    }
+
     class sample {
 
         String sampleName;
+        String date;
         Data LysoPC, PC_50, TG_50, LPC, PC, TGC;
+        DecimalFormat formatter;
 
         public void setSampleName(String name) {
             String sname = name.substring(name.indexOf("Name:") + 6, name.indexOf("Sample ID"));
             this.sampleName = sname;
+            this.date = sname.substring(sname.lastIndexOf("_") + 1);
+            formatter = new DecimalFormat("####.##");
         }
 
         public void setLysoPC(String[] data) {
@@ -340,9 +412,85 @@ public class ReportTask implements Task {
         public void setTGC(String[] data) {
             TGC = new Data(data);
         }
+        /* row.setPeak("1", "Sample name");
+        row.setPeak("2", "LysoPC RT");
+        row.setPeak("3", "LysoPC height/area");
+        row.setPeak("4", "LysoPC height ratio");
+        row.setPeak("5", "PC RT");
+        row.setPeak("6", "PC height/area");
+        row.setPeak("7", "PC height ratio");
+        row.setPeak("8", "TG RT");
+        row.setPeak("9", "TG height/area");
+        row.setPeak("10", "TG height ratio");
+        row.setPeak("11", "Date");
+        row.setPeak("12", "Time");*/
+
+        private SimplePeakListRowOther getRow(DescriptiveStatistics Stats[]) {
+            SimplePeakListRowOther row = new SimplePeakListRowOther();
+            int cont = 1;
+            row.setPeak(String.valueOf(cont++), sampleName);
+            //Lyso
+            row.setPeak(String.valueOf(cont++), String.valueOf(LysoPC.RT));
+            Stats[0].addValue(LysoPC.RT);
+
+            row.setPeak(String.valueOf(cont++), String.valueOf(LysoPC.heightArea));
+            Stats[1].addValue(LysoPC.heightArea);
+
+            row.setPeak(String.valueOf(cont++), getLysoPCratio());
+            Stats[2].addValue(Double.valueOf(getLysoPCratio()));
+
+            //PC
+            row.setPeak(String.valueOf(cont++), String.valueOf(PC_50.RT));
+            Stats[3].addValue(PC_50.RT);
+
+            row.setPeak(String.valueOf(cont++), String.valueOf(PC_50.heightArea));
+            Stats[4].addValue(PC_50.heightArea);
+
+            row.setPeak(String.valueOf(cont++), getPCratio());
+            Stats[5].addValue(Double.valueOf(getPCratio()));
+
+            //TG
+            row.setPeak(String.valueOf(cont++), String.valueOf(TG_50.RT));
+            Stats[6].addValue(TG_50.RT);
+
+            row.setPeak(String.valueOf(cont++), String.valueOf(TG_50.heightArea));
+            Stats[7].addValue(TG_50.heightArea);
+
+            row.setPeak(String.valueOf(cont++), getTGratio());
+            Stats[8].addValue(Double.valueOf(getTGratio()));
+
+            row.setPeak(String.valueOf(cont++), date);
+            row.setPeak(String.valueOf(cont++), LysoPC.time);
+            return row;
+        }
+
+        private SimplePeakListRowOther getRow2(DescriptiveStatistics superStats[]) {
+            SimplePeakListRowOther row = new SimplePeakListRowOther();
+            int cont = 1;
+            row.setPeak(String.valueOf(cont++), sampleName);
+            row.setPeak(String.valueOf(cont++), getlysoPCHeight());
+            superStats[0].addValue(Double.valueOf(getlysoPCHeight()));
+            row.setPeak(String.valueOf(cont++), getPC_50Height());
+            superStats[1].addValue(Double.valueOf(getPC_50Height()));
+            row.setPeak(String.valueOf(cont++), getTG_50Height());
+            superStats[2].addValue(Double.valueOf(getTG_50Height()));
+            row.setPeak(String.valueOf(cont++), getLPCHeight());
+            superStats[3].addValue(Double.valueOf(getLPCHeight()));
+            row.setPeak(String.valueOf(cont++), getLPCRT());
+            superStats[4].addValue(Double.valueOf(getLPCRT()));
+            row.setPeak(String.valueOf(cont++), getPCHeight());
+            superStats[5].addValue(Double.valueOf(getPCHeight()));
+            row.setPeak(String.valueOf(cont++), getPCRT());
+            superStats[6].addValue(Double.valueOf(getPCRT()));
+            row.setPeak(String.valueOf(cont++), getTGCHeight());
+            superStats[7].addValue(Double.valueOf(getTGCHeight()));
+            row.setPeak(String.valueOf(cont++), getTGCRT());
+            superStats[8].addValue(Double.valueOf(getTGCRT()));
+            return row;
+        }
 
         public String getLysoPCratio() {
-            return String.valueOf(LysoPC.height / LPC.height);
+            return formatter.format(LysoPC.height / LPC.height).toString();
         }
 
         public String getLysoPCRT() {
@@ -350,7 +498,7 @@ public class ReportTask implements Task {
         }
 
         public String getPCratio() {
-            return String.valueOf(PC_50.height / PC.height);
+            return formatter.format(PC_50.height / PC.height).toString();
         }
 
         public String getPC_50RT() {
@@ -358,7 +506,7 @@ public class ReportTask implements Task {
         }
 
         public String getTGratio() {
-            return String.valueOf(TG_50.height / TGC.height);
+            return formatter.format(TG_50.height / TGC.height).toString();
         }
 
         public String getTGRT() {
@@ -400,6 +548,22 @@ public class ReportTask implements Task {
         public String getTGCHeight() {
             return String.valueOf(TGC.height);
         }
+
+        public String getFormat() {
+            String format = "<td>" + String.valueOf(LysoPC.RT) + " </td>" +
+                    "<td>" + String.valueOf(LysoPC.heightArea) + "</td>" +
+                    "<td>" + getLysoPCratio() + "</td>" +
+                    "<td>" + String.valueOf(PC_50.RT) + "</td>" +
+                    "<td>" + String.valueOf(PC_50.heightArea) + "</td>" +
+                    "<td>" + getPCratio() + "</td>" +
+                    "<td>" + String.valueOf(TG_50.RT) + "</td>" +
+                    "<td>" + String.valueOf(TG_50.heightArea) + "</td>" +
+                    "<td>" + getTGratio() + "</td>" +
+                    "<td>" + LysoPC.time + "</td>" +
+                    "<td>" + date + "</td></tr>";
+
+            return format;
+        }
     }
 
     class Data {
@@ -409,15 +573,23 @@ public class ReportTask implements Task {
         double RT;
         double height;
         double area;
-        double Height_area;
+        double heightArea;
         double signalToNoise;
+        String time;
 
         public Data(String[] fields) {
-            this.Name = fields[2];
-            this.trace = Double.valueOf(fields[3]);
-            this.RT = Double.valueOf(fields[4]);
-            this.height = Double.valueOf(fields[5]);
-            this.area = Double.valueOf(fields[6]);
+            try {
+                DecimalFormat formatter = new DecimalFormat("####.##");
+                this.Name = fields[2];
+                this.trace = formatter.parse(fields[3]).doubleValue();
+                this.RT = formatter.parse(fields[4]).doubleValue();
+                this.height = formatter.parse(fields[5]).doubleValue();
+                this.area = formatter.parse(fields[6]).doubleValue();
+                this.heightArea = formatter.parse(fields[7]).doubleValue();
+                this.time = fields[10];
+            } catch (ParseException ex) {
+                Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
