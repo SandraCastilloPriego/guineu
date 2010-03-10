@@ -559,8 +559,8 @@ public class ReportTask implements Task {
                     "<td>" + String.valueOf(TG_50.RT) + "</td>" +
                     "<td>" + String.valueOf(TG_50.heightArea) + "</td>" +
                     "<td>" + getTGratio() + "</td>" +
-                    "<td>" + LysoPC.time + "</td>" +
-                    "<td>" + date + "</td></tr>";
+                    "<td>" + date + "</td>" +
+                    "<td>" + LysoPC.time + "</td></tr>";
 
             return format;
         }
