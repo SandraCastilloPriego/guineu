@@ -380,13 +380,12 @@ public class ReportTask implements Task {
         String sampleName;
         String date;
         Data LysoPC, PC_50, TG_50, LPC, PC, TGC;
-        DecimalFormat formatter;
+        DecimalFormat formatter = new DecimalFormat("####.##");
 
         public void setSampleName(String name) {
             String sname = name.substring(name.indexOf("Name:") + 6, name.indexOf("Sample ID"));
             this.sampleName = sname;
-            this.date = sname.substring(sname.lastIndexOf("_") + 1);
-            formatter = new DecimalFormat("####.##");
+            this.date = sname.substring(sname.lastIndexOf("_") + 1);            
         }
 
         public void setLysoPC(String[] data) {
@@ -412,18 +411,6 @@ public class ReportTask implements Task {
         public void setTGC(String[] data) {
             TGC = new Data(data);
         }
-        /* row.setPeak("1", "Sample name");
-        row.setPeak("2", "LysoPC RT");
-        row.setPeak("3", "LysoPC height/area");
-        row.setPeak("4", "LysoPC height ratio");
-        row.setPeak("5", "PC RT");
-        row.setPeak("6", "PC height/area");
-        row.setPeak("7", "PC height ratio");
-        row.setPeak("8", "TG RT");
-        row.setPeak("9", "TG height/area");
-        row.setPeak("10", "TG height ratio");
-        row.setPeak("11", "Date");
-        row.setPeak("12", "Time");*/
 
         private SimplePeakListRowOther getRow(DescriptiveStatistics Stats[]) {
             SimplePeakListRowOther row = new SimplePeakListRowOther();
@@ -490,7 +477,11 @@ public class ReportTask implements Task {
         }
 
         public String getLysoPCratio() {
-            return formatter.format(LysoPC.height / LPC.height).toString();
+            try {
+                return formatter.format(LysoPC.height / LPC.height).toString();
+            } catch (Exception e) {
+                return String.valueOf(LysoPC.height / LPC.height);
+            }
         }
 
         public String getLysoPCRT() {
@@ -498,7 +489,11 @@ public class ReportTask implements Task {
         }
 
         public String getPCratio() {
-            return formatter.format(PC_50.height / PC.height).toString();
+            try {
+                return formatter.format(PC_50.height / PC.height).toString();
+            } catch (Exception e) {
+                return String.valueOf(PC_50.height / PC.height);
+            }
         }
 
         public String getPC_50RT() {
@@ -506,7 +501,11 @@ public class ReportTask implements Task {
         }
 
         public String getTGratio() {
-            return formatter.format(TG_50.height / TGC.height).toString();
+            try {
+                return formatter.format(TG_50.height / TGC.height).toString();
+            } catch (Exception e) {
+                return String.valueOf(TG_50.height / TGC.height);
+            }
         }
 
         public String getTGRT() {
@@ -588,7 +587,15 @@ public class ReportTask implements Task {
                 this.heightArea = formatter.parse(fields[7]).doubleValue();
                 this.time = fields[10];
             } catch (ParseException ex) {
-                Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
+                this.Name = fields[2];
+                this.trace = Double.valueOf(fields[3]).doubleValue();
+                this.RT = Double.valueOf(fields[4]).doubleValue();
+                this.height = Double.valueOf(fields[5]).doubleValue();
+                this.area = Double.valueOf(fields[6]).doubleValue();
+                this.heightArea = Double.valueOf(fields[7]).doubleValue();
+                this.time = fields[10];
+
+            //Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
