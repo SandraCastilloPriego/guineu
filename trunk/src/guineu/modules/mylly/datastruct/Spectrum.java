@@ -173,6 +173,34 @@ public class Spectrum implements Cloneable {
         return s;
     }
 
+
+    public String toSpecialString() {
+             List<? extends Pair<Integer, Integer>> peaks = getPeakList();
+        java.util.Collections.sort(peaks, intensityComp);
+        int[] peakMasses = new int[peaks.size()];
+        int[] peakIntensities = new int[peaks.size()];
+
+        for (int i = 0; i < peaks.size(); i++) {
+            peakMasses[i] = peaks.get(i).getFirst();
+            peakIntensities[i] = peaks.get(i).getSecond();
+        }
+
+
+        if (peakIntensities == null || peakIntensities.length == 0) {
+            return "EMPTY";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < peakMasses.length; i++) {
+                sb.append(peakMasses[i]).append(" ").append(peakIntensities[i]);
+                if (i != peakMasses.length - 1) {
+                    sb.append(" ");
+                }
+            }
+            return sb.toString();
+        }
+
+    }
+
     @Override
     public String toString() {
         List<? extends Pair<Integer, Integer>> peaks = getPeakList();
