@@ -99,10 +99,10 @@
     <module class="guineu.modules.statistics.foldChanges.Foldtest"/>  
     <module class="guineu.modules.statistics.Ttest.Ttest"/>  
     <module class="guineu.modules.statistics.PCA.ProjectionPlot"> 
-      <parameters>
-        <parameter name="Coloring type" type="STRING">Color by file</parameter>
-        <parameter name="X-axis component" type="INTEGER">1</parameter>
-        <parameter name="Y-axis component" type="INTEGER">2</parameter>
+      <parameters> 
+        <parameter name="Coloring type" type="STRING">Color by file</parameter>  
+        <parameter name="X-axis component" type="INTEGER">1</parameter>  
+        <parameter name="Y-axis component" type="INTEGER">2</parameter> 
       </parameters> 
     </module>  
     <!-- <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
@@ -114,7 +114,7 @@
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"> 
       <parameters>
-        <parameter name="RT1 Lax:" type="DOUBLE">15.0</parameter>
+        <parameter name="RT Lax:" type="DOUBLE">15.0</parameter>
         <parameter name="RT2 Lax:" type="DOUBLE">0.3</parameter>
         <parameter name="RI Lax:" type="DOUBLE">20.0</parameter>
         <parameter name="RT penalty:" type="DOUBLE">5.0</parameter>
@@ -144,6 +144,7 @@
         <parameter name="Filter File: " type="FILE_NAME">PubChem Filter File</parameter>
       </parameters> 
     </module>  
+    <module class="guineu.modules.mylly.filter.GroupIdentification.GroupIdentificationFilter"/>  
     <module class="guineu.modules.mylly.filter.classIdentification.ClassIdentificationFilter"> 
       <parameters>
         <parameter name="Suffix: " type="STRING">-Class Identification Filter</parameter>
@@ -187,15 +188,15 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>-3</x>
-      <y>26</y>
-      <width>-1</width>
-      <height>-1</height>
+      <x>4</x>
+      <y>164</y>
+      <width>1115</width>
+      <height>715</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
     <lastProjectDirectory>/home/bicha/Download/112Vein-tracer.xls</lastProjectDirectory>
     <lastSaveDirectory>D:\data\xxczxczxcz</lastSaveDirectory>
-    <lastMyllyDirectory>D:\data\xxczxczxcz</lastMyllyDirectory>
+    <lastMyllyDirectory>/home/scsandra/Desktop/KTL Serum (064) 201008/064KTLSchiz_SeTw1nr054vtt33_GGT2_rep1run1_201008_1.txt</lastMyllyDirectory>
     <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
     <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
     <parameter name="LCMS Filename" type="FILE_NAME">/home/scsandra/Desktop/processed files/179-167GUT/3-12/167-179GUTsero2.csv</parameter>
