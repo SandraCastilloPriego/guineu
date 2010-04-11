@@ -49,7 +49,7 @@ public class GroupIdentificationFilterTask implements Task {
 	}
 
 	public String getTaskDescription() {
-		return "Filtering files with Similarity Filter... ";
+		return "Filtering files with Group Identifiacion Filter... ";
 	}
 
 	public double getFinishedPercentage() {
