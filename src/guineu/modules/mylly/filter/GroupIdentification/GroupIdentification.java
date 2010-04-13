@@ -21,6 +21,7 @@ package guineu.modules.mylly.filter.GroupIdentification;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import java.io.BufferedReader;
@@ -33,10 +34,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,31 +46,25 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class GroupIdentification {
+    private double progress = 0.0;
 
-    public final static String MAX_SIMILARITY = "maximum similarity";
-    public final static String MEAN_SIMILARITY = "mean similarity";
-    public final static String REMOVE = "Remove";
-    public final static String RENAME = "Rename";
-
-    public GroupIdentification(String SOAPUrl, String SOAPAction) {
-        // System.setProperty("http.proxyHost", "rohto.vtt.fi");
-        //System.setProperty("http.proxyPort", "8000");
+    public GroupIdentification() {
+        System.setProperty("http.proxyHost", "rohto.vtt.fi");
+        System.setProperty("http.proxyPort", "8000");
     }
 
-    private String PredictManyXMLFile(SimplePeakListRowGCGC newRow, String[] miningModels) throws FileNotFoundException, IOException, SAXException {
+    private String PredictManyXMLFile(SimplePeakListRowGCGC newRow) throws FileNotFoundException, IOException, SAXException {
         FileOutputStream fos = new FileOutputStream("temporalFile.xml");
 // XERCES 1 or 2 additionnal classes.
         OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
         of.setIndent(1);
         of.setIndenting(true);
-        of.setDoctype(null, "");
         of.setEncoding("utf-8");
         XMLSerializer serializer = new XMLSerializer(fos, of);
 // SAX2.0 ContentHandler.
         ContentHandler hd = serializer.asContentHandler();
         hd.startDocument();
-// Processing instruction sample.
-//hd.processingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"users.xsl\"");
+
 // USER attributes.
         AttributesImpl atts = new AttributesImpl();
 // USERS tag.
@@ -79,41 +72,35 @@ public class GroupIdentification {
         atts.clear();
         atts.addAttribute("0", "", "xmlns:xsi", "CDATA", "http://www.w3.org/2001/XMLSchema-instance");
         atts.addAttribute("1", "", "xmlns:xsd", "CDATA", "http://www.w3.org/2001/XMLSchema");
-        atts.addAttribute("2", "", "xmlns:soap", "CDATA", "http://www.w3.org/2003/05/soap-envelope");
+        atts.addAttribute("2", "", "xmlns:soap", "CDATA", "http://schemas.xmlsoap.org/soap/envelope/");
         hd.startElement("", "", "soap:Envelope", atts);
         atts.clear();
         hd.startElement("", "", "soap:Body", atts);
         atts.clear();
         atts.addAttribute("", "", "xmlns", "CDATA", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/");
-        hd.startElement("", "", "PredictMany", atts);
+        hd.startElement("", "", "PredictAll4AlkaneRiColumnTypeComposition", atts);
         atts.clear();
-        hd.startElement("", "", "ri", atts);
+        hd.startElement("", "", "Ri", atts);
         String RTI = String.valueOf(newRow.getRTI());
         hd.characters(RTI.toCharArray(), 0, RTI.length());
-        hd.endElement("", "", "ri");
+        hd.endElement("", "", "Ri");
 
         atts.clear();
-        hd.startElement("", "", "spectrum", atts);
+        hd.startElement("", "", "Spectrum", atts);
 
         String spectrum = newRow.getSpectrumString();
         spectrum = spectrum.replace(":", " ");
         spectrum = spectrum.replace(", ", "");
         spectrum = spectrum.replace("[", "");
         spectrum = spectrum.replace("]", "");
-        // String spectrum = newRow.getSpectrum().toSpecialString();
         hd.characters(spectrum.toCharArray(), 0, spectrum.length());
-        hd.endElement("", "", "spectrum");
+        hd.endElement("", "", "Spectrum");
 
         atts.clear();
-        hd.startElement("", "", "MiningModelIds", atts);
-        for (String model : miningModels) {
-            atts.clear();
-            hd.startElement("", "", "guid", atts);
-            hd.characters(model.toCharArray(), 0, model.length());
-            hd.endElement("", "", "guid");
-        }
-        hd.endElement("", "", "MiningModelIds");
-        hd.endElement("", "", "PredictMany");
+        hd.startElement("", "", "ColumnType", atts);
+        hd.characters("MDN35".toCharArray(), 0, 5);
+        hd.endElement("", "", "ColumnType");
+        hd.endElement("", "", "PredictAll4AlkaneRiColumnTypeComposition");
         hd.endElement("", "", "soap:Body");
         hd.endElement("", "", "soap:Envelope");
         hd.endDocument();
@@ -122,7 +109,7 @@ public class GroupIdentification {
         return "temporalFile.xml";
     }
 
-    private BufferedReader getAnswer(String xmlFile2Send, HttpURLConnection httpConn) {
+    private List<String> getAnswer(String xmlFile2Send, HttpURLConnection httpConn) {
         // Open the input file. After we copy it to a byte array, we can see
         // how big it is so that we can set the HTTP Cotent-Length
         // property. (See complete e-mail below for more on this.)
@@ -130,7 +117,7 @@ public class GroupIdentification {
         FileInputStream fin = null;
         try {
 
-            fin = new FileInputStream("temporalFile.xml");
+            fin = new FileInputStream(xmlFile2Send);
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             // Copy the SOAP file to the open connection.
             copy(fin, bout);
@@ -139,7 +126,7 @@ public class GroupIdentification {
             // Set the appropriate HTTP parameters.
             httpConn.setRequestProperty("Content-Length", String.valueOf(b.length));
             httpConn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
-            httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/PredictMany");
+            httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/PredictAll4AlkaneRiColumnTypeComposition");
             httpConn.setRequestMethod("POST");
             httpConn.setDoOutput(true);
             httpConn.setDoInput(true);
@@ -151,22 +138,25 @@ public class GroupIdentification {
             InputStreamReader isr = new InputStreamReader(httpConn.getInputStream());
             BufferedReader in = new BufferedReader(isr);
             String inputLine;
+            List<String> group = new ArrayList<String>();
+            String name = "";
             while ((inputLine = in.readLine()) != null) {
-                System.out.println(inputLine);
+                while (inputLine.contains("<FunctionalGroup>")) {
+                    name = inputLine.substring(inputLine.indexOf("<FunctionalGroup>") + 17, inputLine.indexOf("</FunctionalGroup>"));
+                    if (inputLine.contains("<PredictionGroupIsPresent>true</PredictionGroupIsPresent>")) {
+                        group.add(name);
+                    }
+                    name = "";
+                    inputLine = inputLine.substring(inputLine.indexOf("</Prediction>") + 14);
+                }
             }
             in.close();
-            return in;
+            fin.close();
+            httpConn.disconnect();
+            return group;
 
         } catch (Exception ex) {
             Logger.getLogger(GroupIdentification.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fin.close();
-
-            } catch (IOException ex) {
-                Logger.getLogger(GroupIdentification.class.getName()).log(Level.SEVERE, null, ex);
-
-            }
             return null;
         }
 
@@ -195,122 +185,39 @@ public class GroupIdentification {
         }
     }
 
-    protected SimpleGCGCDataset actualMap(SimpleGCGCDataset input) throws Exception {
-//PredictMany
-        URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx");
-        URLConnection connection = url.openConnection();
-        HttpURLConnection httpConn = (HttpURLConnection) connection;
-
-        List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
-        // for (PeakListRow row : input.getAlignment()) {
-        SimplePeakListRowGCGC newRow = (SimplePeakListRowGCGC) input.getRow(0);// row.clone();
-        String[] miningModels = this.getMiningModels();
-        //String xmlFile = this.PredictManyXMLFile(newRow, miningModels);
-        this.getAnswer("temporalFile.xml", httpConn);
-
-        //  }
-        SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
-        filtered.addAll(als);
-        return filtered;
+    public double getProgress(){
+        return progress;
     }
 
-    public String getName() {
-        return "Filter by similarity";
-    }
-
-    private String[] getMiningModels() throws FileNotFoundException, IOException, SAXException {
-        try {
-            URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/GetMiningModels");
+    protected void actualMap(SimpleGCGCDataset input) throws Exception {
+        int numRows = input.getNumberRows();
+        int count = 0;
+        for (PeakListRow row : input.getAlignment()) {
+            URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx");
             URLConnection connection = url.openConnection();
             HttpURLConnection httpConn = (HttpURLConnection) connection;
-            String file = this.createMiningModelsXML();
-            BufferedReader reader = this.getMiningModelsAnswer("temporalFile2.xml", httpConn);
-            List<String> miningModelsID = new ArrayList<String>();
-            String inputLine;
-            while ((inputLine = reader.readLine()) != null) {
-                if (inputLine.contains("<MiningModelId>")) {
-                    miningModelsID.add(inputLine.substring(inputLine.lastIndexOf("<MiningModelId>") + 15, inputLine.lastIndexOf("</MiningModelId>")));
+            String xmlFile = this.PredictManyXMLFile((SimplePeakListRowGCGC) row);
+            List<String> group = this.getAnswer(xmlFile, httpConn);
+            if (group != null) {
+                List<String> newGroup = new ArrayList<String>();
+                for (String name : group) {
+                    if (!newGroup.contains(name)) {
+                        newGroup.add(name);
+                    }
                 }
-            }
+                String finalGroup = "";
+                for (String name : newGroup) {
+                    finalGroup += name + ",";
+                }
 
-            return miningModelsID.toArray(new String[0]);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(GroupIdentification.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        } catch (RemoteException ex) {
-            Logger.getLogger(GroupIdentification.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+                ((SimplePeakListRowGCGC) row).setMolClass(finalGroup);
+                count++;
+                progress = (double)count/numRows;
+            }
         }
     }
 
-    private String createMiningModelsXML() throws FileNotFoundException, IOException, SAXException {
-        FileOutputStream fos = new FileOutputStream("temporalFile2.xml");
-        // XERCES 1 or 2 additionnal classes.
-        OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-        of.setIndent(1);
-        of.setIndenting(true);
-        of.setDoctype(null, "");
-        of.setEncoding("utf-8");
-        XMLSerializer serializer = new XMLSerializer(fos, of);
-// SAX2.0 ContentHandler.
-        ContentHandler hd = serializer.asContentHandler();
-        hd.startDocument();
-// Processing instruction sample.
-//hd.processingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"users.xsl\"");
-// USER attributes.
-        AttributesImpl atts = new AttributesImpl();
-// USERS tag.
-
-        atts.clear();
-        atts.addAttribute("", "", "xmlns:xsi", "CDATA", "\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\"");
-        hd.startElement("", "", "soap12:Envelope", atts);
-        atts.clear();
-        hd.startElement("", "", "soap12:Body", atts);
-        atts.clear();
-        atts.addAttribute("", "", "xmlns", "CDATA", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/");
-        hd.startElement("", "", "GetMiningModels", atts);
-        hd.endElement("", "", "GetMiningModels");
-        hd.endElement("", "", "soap12:Body");
-        hd.endElement("", "", "soap12:Envelope");
-        hd.endDocument();
-        fos.close();
-
-        return "temporalFile2.xml";
-
-    }
-
-    private BufferedReader getMiningModelsAnswer(String xmlFile2Send, HttpURLConnection httpConn) throws MalformedURLException, RemoteException, FileNotFoundException, IOException {
-        // Open the input file. After we copy it to a byte array, we can see
-        // how big it is so that we can set the HTTP Cotent-Length
-        // property. (See complete e-mail below for more on this.)      
-
-        FileInputStream fin = new FileInputStream(xmlFile2Send);
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        // Copy the SOAP file to the open connection.
-        copy(fin, bout);
-        fin.close();
-        byte[] b = bout.toByteArray();
-        // Set the appropriate HTTP parameters.
-        httpConn.setRequestProperty("Content-Length", String.valueOf(b.length));
-        httpConn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
-        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/GetMiningModels");
-        httpConn.setRequestMethod("POST");
-        httpConn.setDoOutput(true);
-        httpConn.setDoInput(true);
-
-        // Everything's set up; send the XML that was read in to b.
-        OutputStream out = httpConn.getOutputStream();
-        out.write(b);
-        out.close();
-        // Read the response and write it to standard out.
-        InputStreamReader isr = new InputStreamReader(httpConn.getInputStream());
-        BufferedReader in = new BufferedReader(isr);
-        // String inputLine;
-        //while ((inputLine = in.readLine()) != null) {
-        // System.out.println(inputLine);
-        //  }
-        return in;
-
-
+    public String getName() {
+        return "Filter Group Identification";
     }
 }

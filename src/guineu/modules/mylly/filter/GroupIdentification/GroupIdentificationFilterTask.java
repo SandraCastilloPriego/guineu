@@ -17,17 +17,9 @@
  */
 package guineu.modules.mylly.filter.GroupIdentification;
 
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
-import guineu.main.GuineuCore;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,58 +29,48 @@ import java.util.logging.Logger;
  */
 public class GroupIdentificationFilterTask implements Task {
 
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private SimpleGCGCDataset dataset;
-	private SimilarityParameters parameters;
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    private SimpleGCGCDataset dataset;
+    private GroupIdentification filter;
 
-	public GroupIdentificationFilterTask(SimpleGCGCDataset dataset, SimilarityParameters parameters) {
-		this.dataset = dataset;
-		System.out.println(dataset.toString());
-		this.parameters = parameters;
-	}
+    public GroupIdentificationFilterTask(SimpleGCGCDataset dataset) {
+        this.dataset = dataset;
+    }
 
-	public String getTaskDescription() {
-		return "Filtering files with Group Identifiacion Filter... ";
-	}
+    public String getTaskDescription() {
+        return "Filtering files with Group Identifiacion Filter... ";
+    }
 
-	public double getFinishedPercentage() {
-		return 1f;
-	}
+    public double getFinishedPercentage() {
+        if (filter != null) {
+            return filter.getProgress();
+        } else {
+            return 0.0;
+        }
+    }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
 
-	public void run() {
-		status = TaskStatus.PROCESSING;
-		try {
-			
-			GroupIdentification filter = new GroupIdentification("gmd.mpimp-golm.mpg.de", "");
-			SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-		/*	newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
-			newAlignment.setType(DatasetType.GCGCTOF);
-			DataTableModel model = new DatasetGCGCDataModel(newAlignment);
-            DataTable table = new PushableTable(model);
-			table.formatNumbers(newAlignment.getType());
-            DataInternalFrame frame = new DataInternalFrame(newAlignment.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-            GuineuCore.getDesktop().addInternalFrame(frame);
-			GuineuCore.getDesktop().AddNewFile(newAlignment);*/
-			status = TaskStatus.FINISHED;
-		} catch (Exception ex) {
-			Logger.getLogger(GroupIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-			status = TaskStatus.ERROR;
-		}
-	}
-
-	
+    public void run() {
+        status = TaskStatus.PROCESSING;
+        try {
+            filter = new GroupIdentification();
+            filter.actualMap(dataset);
+            status = TaskStatus.FINISHED;
+        } catch (Exception ex) {
+            Logger.getLogger(GroupIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+            status = TaskStatus.ERROR;
+        }
+    }
 }
