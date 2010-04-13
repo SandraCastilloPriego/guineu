@@ -184,7 +184,9 @@ public class GroupIdentificationFilterTask implements Task {
                 while (inputLine.contains("<FunctionalGroup>")) {
                     name = inputLine.substring(inputLine.indexOf("<FunctionalGroup>") + 17, inputLine.indexOf("</FunctionalGroup>"));
                     if (inputLine.contains("<PredictionGroupIsPresent>true</PredictionGroupIsPresent>")) {
-                        group.add(name);
+                        if (!group.contains(name)) {
+                            group.add(name);
+                        }
                     }
                     name = "";
                     inputLine = inputLine.substring(inputLine.indexOf("</Prediction>") + 14);
@@ -236,15 +238,9 @@ public class GroupIdentificationFilterTask implements Task {
             HttpURLConnection httpConn = (HttpURLConnection) connection;
             String xmlFile = this.PredictManyXMLFile((SimplePeakListRowGCGC) row);
             List<String> group = this.getAnswer(xmlFile, httpConn);
-            if (group != null) {
-                List<String> newGroup = new ArrayList<String>();
-                for (String name : group) {
-                    if (!newGroup.contains(name)) {
-                        newGroup.add(name);
-                    }
-                }
+            if (group != null) {               
                 String finalGroup = "";
-                for (String name : newGroup) {
+                for (String name : group) {
                     finalGroup += name + ",";
                 }
 
