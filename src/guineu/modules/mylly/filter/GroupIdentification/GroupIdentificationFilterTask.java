@@ -95,24 +95,24 @@ public class GroupIdentificationFilterTask implements Task {
 
     private String PredictManyXMLFile(SimplePeakListRowGCGC newRow) throws FileNotFoundException, IOException, SAXException {
         FileOutputStream fos = new FileOutputStream("temporalFile.xml");
-// XERCES 1 or 2 additionnal classes.
+        // XERCES 1 or 2 additionnal classes.
         OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
         of.setIndent(1);
         of.setIndenting(true);
         of.setEncoding("utf-8");
         XMLSerializer serializer = new XMLSerializer(fos, of);
-// SAX2.0 ContentHandler.
+        // SAX2.0 ContentHandler.
         ContentHandler hd = serializer.asContentHandler();
         hd.startDocument();
 
-// USER attributes.
+        // USER attributes.
         AttributesImpl atts = new AttributesImpl();
-// USERS tag.
+        // USERS tag.
 
         atts.clear();
-        atts.addAttribute("0", "", "xmlns:xsi", "CDATA", "http://www.w3.org/2001/XMLSchema-instance");
-        atts.addAttribute("1", "", "xmlns:xsd", "CDATA", "http://www.w3.org/2001/XMLSchema");
-        atts.addAttribute("2", "", "xmlns:soap", "CDATA", "http://schemas.xmlsoap.org/soap/envelope/");
+        atts.addAttribute("", "", "xmlns:xsi", "CDATA", "http://www.w3.org/2001/XMLSchema-instance");
+        atts.addAttribute("", "", "xmlns:xsd", "CDATA", "http://www.w3.org/2001/XMLSchema");
+        atts.addAttribute("", "", "xmlns:soap", "CDATA", "http://schemas.xmlsoap.org/soap/envelope/");
         hd.startElement("", "", "soap:Envelope", atts);
         atts.clear();
         hd.startElement("", "", "soap:Body", atts);
@@ -233,12 +233,19 @@ public class GroupIdentificationFilterTask implements Task {
             if (status == TaskStatus.CANCELED) {
                 break;
             }
+
+            if (((SimplePeakListRowGCGC) row).getMolClass() != null &&
+                    ((SimplePeakListRowGCGC) row).getMolClass().length() != 0 &&
+                    !((SimplePeakListRowGCGC) row).getMolClass().contains("NA")) {
+                count++;
+                continue;
+            }
             URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx");
             URLConnection connection = url.openConnection();
             HttpURLConnection httpConn = (HttpURLConnection) connection;
             String xmlFile = this.PredictManyXMLFile((SimplePeakListRowGCGC) row);
             List<String> group = this.getAnswer(xmlFile, httpConn);
-            if (group != null) {               
+            if (group != null) {
                 String finalGroup = "";
                 for (String name : group) {
                     finalGroup += name + ",";
