@@ -99,7 +99,8 @@ class MainMenu extends JMenuBar implements ActionListener {
         myllyToolsMenu = new JMenu("Tools");
         myllyToolsMenu.setMnemonic(KeyEvent.VK_G);
         myllyMenu.add(myllyToolsMenu);
-
+        myllyMenu.addSeparator();
+        
         JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop()).getDesktopPane();
         windowsMenu = new JWindowsMenu(mainDesktopPane);
         CascadingWindowPositioner positioner = new CascadingWindowPositioner(
