@@ -135,7 +135,7 @@
     </module>  
     <module class="guineu.modules.mylly.filter.calculateDeviations.CalculateDeviations"> 
       <parameters>
-        <parameter name="Name Filter File: " type="FILE_NAME">Name Filter File</parameter>
+        <parameter name="Name Filter File: " type="FILE_NAME">/home/scsandra/Desktop/main peaks.txt</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.pubChem.PubChemFilter"> 
@@ -172,7 +172,14 @@
         <parameter name="Minimun similarity required:" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.mylly.filter.linearNormalizer.LinearNormalizerFilter"/> 
+    <module class="guineu.modules.mylly.filter.linearNormalizer.LinearNormalizerFilter"/>  
+    <module class="guineu.modules.mylly.filter.NonPolarComponents.removeNonPolarFilter"/>  
+    <module class="guineu.modules.mylly.filter.tools.PrepareDeviationFile.RTIFile"> 
+      <parameters>
+        <parameter name="Input File: " type="FILE_NAME">/home/scsandra/Desktop/RI_list.txt</parameter>
+        <parameter name="Output File: " type="FILE_NAME">/home/scsandra/Desktop/data.xml</parameter>
+      </parameters> 
+    </module> 
   </modules>  
   <desktop>
     <format type="m/z">
@@ -188,10 +195,10 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>4</x>
-      <y>164</y>
-      <width>1115</width>
-      <height>715</height>
+      <x>0</x>
+      <y>25</y>
+      <width>-1</width>
+      <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
     <lastProjectDirectory>/home/bicha/Download/112Vein-tracer.xls</lastProjectDirectory>
