@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import guineu.data.Dataset;
 import java.io.FileOutputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -31,18 +30,16 @@ public class RTIFileTask implements Task {
 
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
-    private Dataset dataset;
     private String fileName;
     private String outputFileName;
 
-    public RTIFileTask(Dataset dataset, RTIFileParameters parameters) {
-        this.dataset = dataset;
+    public RTIFileTask(RTIFileParameters parameters) {       
         fileName = (String) parameters.getParameterValue(RTIFileParameters.fileNames);
         outputFileName = (String) parameters.getParameterValue(RTIFileParameters.outputFileNames);
     }
 
     public String getTaskDescription() {
-        return "Filtering files with Calculate Deviations... ";
+        return "Filtering files with Prepare RTI File... ";
     }
 
     public double getFinishedPercentage() {

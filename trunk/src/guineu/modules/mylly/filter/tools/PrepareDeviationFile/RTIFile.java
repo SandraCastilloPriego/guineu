@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
-import guineu.data.Dataset;
 
 /**
  *
@@ -47,23 +46,23 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
 	public void initModule() {
 		parameters = new RTIFileParameters();
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Calculate Deviations ..",
+		desktop.addMenuItem(GuineuMenu.MYLLYTOOLS, "Prepare RTI File ..",
 				"TODO write description", KeyEvent.VK_D, this, null, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Running Calculate Deviations");
+		logger.info("Running Prepare RTI File");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Calculate Deviations ");
+			logger.info("Finished Prepare RTI File ");
 		}
 
 		if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Calculate Deviations .. ";
+			String msg = "Error while Prepare RTI File .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
@@ -97,19 +96,14 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
 	}
 
 	public String toString() {
-		return "Calculate Deviations";
+		return "Prepare RTI File";
 	}
 
-	public Task[] runModule() {
-
-		Dataset[] AlignmentFiles = desktop.getSelectedDataFiles();
-
-
+	public Task[] runModule() {		
 		// prepare a new group of tasks
-		Task tasks[] = new RTIFileTask[AlignmentFiles.length];
-		for (int i = 0; i < AlignmentFiles.length; i++) {
-			tasks[i] = new RTIFileTask(AlignmentFiles[i], parameters);
-		}
+		Task tasks[] = new RTIFileTask[1];
+		tasks[0] = new RTIFileTask(parameters);
+		
 		GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;
