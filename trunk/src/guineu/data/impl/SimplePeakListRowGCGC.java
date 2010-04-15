@@ -94,6 +94,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         this.ID = -1;
         this.control = true;
         this.row = new ArrayList<GCGCDatum>();
+        this._distValue = new DistValue(0);
     }
 
     public int getID() {
@@ -288,7 +289,11 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
     }
 
     public void setDifference(double difference) {
-        this._distValue.setDistance(difference);
+        if (_distValue == null) {
+            this._distValue = new DistValue(difference);
+        } else {
+            this._distValue.setDistance(difference);
+        }
     }
 
     public void setSpectrumString(String spectra) {
@@ -596,7 +601,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 } else {
                     partypes[0] = Object.class;
                 }
-                System.out.println(partypes[0] + " - " + varName + " - " + value);
+                // System.out.println(partypes[0] + " - " + varName + " - " + value);
                 Method m = this.getClass().getMethod(varName, partypes);
                 Object[] parameters = new Object[1];
                 parameters[0] = value;

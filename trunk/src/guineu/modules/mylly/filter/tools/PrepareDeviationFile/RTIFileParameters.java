@@ -15,9 +15,29 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.desktop;
+package guineu.modules.mylly.filter.tools.PrepareDeviationFile;
 
-public enum GuineuMenu {
-    FILE, CONFIGURATION, DATABASE, FILTER, ALIGNMENT, IDENTIFICATION,
-    IDENTIFICATIONSUBMENU, NORMALIZATION, IDENTIFICATIONFILTERS, STATISTICS, MSMS, MYLLY, REPORT, HELP, MYLLYTOOLS
-};
+import guineu.data.Parameter;
+import guineu.data.ParameterType;
+import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimpleParameterSet;
+
+/**
+ *
+ * @author scsandra
+ */
+public class RTIFileParameters extends SimpleParameterSet {
+
+
+ public static final Parameter fileNames = new SimpleParameter(
+            ParameterType.FILE_NAME, "Input File: ",
+            "Input File", null, "Input File", null);
+
+  public static final Parameter outputFileNames = new SimpleParameter(
+            ParameterType.FILE_NAME, "Output File: ",
+            "Output File", null, "Output File", null);
+	
+	public RTIFileParameters() {
+		super(new Parameter[]{fileNames, outputFileNames});
+	}
+}
