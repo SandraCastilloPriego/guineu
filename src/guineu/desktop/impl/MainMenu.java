@@ -37,7 +37,7 @@ import javax.swing.ImageIcon;
  */
 class MainMenu extends JMenuBar implements ActionListener {
 
-    private JMenu fileMenu, /*msmsMenu, */  myllyMenu,  identificationSubMenu,  normalizationMenu,  identificationFilterMenu,  databaseMenu,  filterMenu,  alignmentMenu,  identificationMenu,  helpMenu,  statisticsMenu,  configurationMenu,  reportMenu;
+    private JMenu fileMenu, /*msmsMenu, */  myllyMenu,  myllyToolsMenu,  identificationSubMenu,  normalizationMenu,  identificationFilterMenu,  databaseMenu,  filterMenu,  alignmentMenu,  identificationMenu,  helpMenu,  statisticsMenu,  configurationMenu,  reportMenu;
     private JWindowsMenu windowsMenu;
     private JMenuItem hlpAbout;
 
@@ -94,7 +94,11 @@ class MainMenu extends JMenuBar implements ActionListener {
 
         myllyMenu = new JMenu("GCGC-Tof Files");
         myllyMenu.setMnemonic(KeyEvent.VK_G);
-        add(myllyMenu);
+        this.add(myllyMenu);
+
+        myllyToolsMenu = new JMenu("Tools");
+        myllyToolsMenu.setMnemonic(KeyEvent.VK_G);
+        myllyMenu.add(myllyToolsMenu);
 
         JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop()).getDesktopPane();
         windowsMenu = new JWindowsMenu(mainDesktopPane);
@@ -152,6 +156,9 @@ class MainMenu extends JMenuBar implements ActionListener {
             break;*/
             case MYLLY:
                 myllyMenu.add(newItem);
+                break;
+            case MYLLYTOOLS:
+                myllyToolsMenu.add(newItem);
                 break;
             case HELP:
                 helpMenu.add(newItem);
@@ -228,6 +235,9 @@ class MainMenu extends JMenuBar implements ActionListener {
             case MYLLY:
                 myllyMenu.addSeparator();
                 break;
+            case MYLLYTOOLS:
+                myllyToolsMenu.addSeparator();
+                break;
             case HELP:
                 helpMenu.addSeparator();
                 break;
@@ -241,7 +251,7 @@ class MainMenu extends JMenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         Object src = e.getSource();
-       
+
 
         // Help->About
         if (src == hlpAbout) {

@@ -17,12 +17,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.Pair;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -62,8 +69,7 @@ public class CalculateDeviationsTask implements Task {
 
     public void run() {
         status = TaskStatus.PROCESSING;
-        try {
-
+        try {           
             List<Pair<List<String>, Double>> representativies = this.makeRepresentativeList(new File(fileName), "\\t");
             findRepresentavies(representativies, (SimpleGCGCDataset) dataset);
             status = TaskStatus.FINISHED;
@@ -72,7 +78,7 @@ public class CalculateDeviationsTask implements Task {
             status = TaskStatus.ERROR;
         }
     }
-
+   
     private void findRepresentavies(
             List<Pair<List<String>, Double>> peaks, SimpleGCGCDataset al) {
         Map<Integer, Double> representatives = new HashMap<Integer, Double>();
@@ -93,9 +99,12 @@ public class CalculateDeviationsTask implements Task {
 
         int i = 0;
         for (PeakListRow ar : al.getAlignment()) {
-            Double diff = representatives.get(i++);
-            if (diff != null) {
-                ar.setVar("setDifference", diff);				
+            try {
+                Double diff = representatives.get(i++);
+                if (diff != null) {
+                    ar.setVar("setDifference", diff);
+                }
+            } catch (Exception e) {
             }
         }
 
@@ -103,6 +112,14 @@ public class CalculateDeviationsTask implements Task {
 
     @SuppressWarnings("empty-statement")
     public List<Pair<List<String>, Double>> makeRepresentativeList(File f, String sep) throws IOException {
+        if (f.getName().contains("xml")) {
+            try {
+                return makeXMLRepresentativeList(f);
+            } catch (Exception ex) {
+                Logger.getLogger(CalculateDeviationsTask.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         List<Pair<List<String>, Double>> l = new ArrayList<Pair<List<String>, Double>>();
         BufferedReader br = new BufferedReader(new FileReader(f));
         int[] indices;
@@ -130,6 +147,37 @@ public class CalculateDeviationsTask implements Task {
             if (error) {
 //				throw new IOException("Line was malformed:\n" + line);
                 //just skip the line
+            }
+        }
+        return l;
+    }
+
+    private List<Pair<List<String>, Double>> makeXMLRepresentativeList(File f) throws ParserConfigurationException, ParserConfigurationException, SAXException, IOException {
+        List<Pair<List<String>, Double>> l = new ArrayList<Pair<List<String>, Double>>();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(f);
+        doc.getDocumentElement().normalize();
+        NodeList nodeLst = doc.getElementsByTagName("Metabolite");
+        for (int s = 0; s < nodeLst.getLength(); s++) {
+            Node MetaboliteNode = nodeLst.item(s);
+            List<String> names = new ArrayList<String>();
+            if (MetaboliteNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element MetaboliteElement = (Element) MetaboliteNode;
+                NodeList firstNameList = MetaboliteElement.getElementsByTagName("Name");
+                for (int i = 0; i < firstNameList.getLength(); i++) {
+                    Element firstNameElement = (Element) firstNameList.item(i);
+                    NodeList textFNList = firstNameElement.getChildNodes();
+                    names.add(((Node) textFNList.item(0)).getNodeValue().trim());
+                }
+                NodeList firstRIList = MetaboliteElement.getElementsByTagName("RI");
+                Element RIElement = (Element) firstRIList.item(0);
+
+                NodeList textLNList = RIElement.getChildNodes();
+
+                Pair<List<String>, Double> pair = new Pair<List<String>, Double>(names,
+                        Double.parseDouble(((Node) textLNList.item(0)).getNodeValue().trim()));
+                l.add(pair);
             }
         }
         return l;
