@@ -69,7 +69,7 @@ public class CalculateDeviationsTask implements Task {
 
     public void run() {
         status = TaskStatus.PROCESSING;
-        try {           
+        try {
             List<Pair<List<String>, Double>> representativies = this.makeRepresentativeList(new File(fileName), "\\t");
             findRepresentavies(representativies, (SimpleGCGCDataset) dataset);
             status = TaskStatus.FINISHED;
@@ -78,7 +78,7 @@ public class CalculateDeviationsTask implements Task {
             status = TaskStatus.ERROR;
         }
     }
-   
+
     private void findRepresentavies(
             List<Pair<List<String>, Double>> peaks, SimpleGCGCDataset al) {
         Map<Integer, Double> representatives = new HashMap<Integer, Double>();
@@ -89,7 +89,7 @@ public class CalculateDeviationsTask implements Task {
             double rti = idealPeak.getSecond();
 
             for (PeakListRow ar : al.getAlignment()) {
-                if (names.contains(ar.getVar("getName"))) {
+                if (names.contains(ar.getVar("getName")) || names.contains(ar.getVar("getCAS"))) {
                     double diff = Math.abs(rti - (Double) ar.getVar("getRTI"));
                     representatives.put(i, diff);
                 }
@@ -102,7 +102,9 @@ public class CalculateDeviationsTask implements Task {
             try {
                 Double diff = representatives.get(i++);
                 if (diff != null) {
-                    ar.setVar("setDifference", diff);
+                    if (ar.getVar("getDifference") == null || (Double) ar.getVar("getDifference") == 0.0) {
+                        ar.setVar("setDifference", diff);
+                    }
                 }
             } catch (Exception e) {
             }
@@ -170,6 +172,12 @@ public class CalculateDeviationsTask implements Task {
                     NodeList textFNList = firstNameElement.getChildNodes();
                     names.add(((Node) textFNList.item(0)).getNodeValue().trim());
                 }
+
+                NodeList firstCASList = MetaboliteElement.getElementsByTagName("CAS");
+                Element CASElement = (Element) firstCASList.item(0);
+                NodeList textCASLNList = CASElement.getChildNodes();
+                names.add(((Node) textCASLNList.item(0)).getNodeValue().trim());
+
                 NodeList firstRIList = MetaboliteElement.getElementsByTagName("RI");
                 Element RIElement = (Element) firstRIList.item(0);
 

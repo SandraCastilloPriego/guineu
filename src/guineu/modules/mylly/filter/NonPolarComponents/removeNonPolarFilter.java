@@ -46,7 +46,7 @@ public class removeNonPolarFilter implements GuineuModule, TaskListener, ActionL
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.MYLLY, "Remove Non-Polar Compounds..",
-                "TODO write description", KeyEvent.VK_I, this, null, null);
+                "TODO write description", KeyEvent.VK_N, this, null, null);
 
     }
 
