@@ -86,6 +86,8 @@ public class removeNonPolarFilterTask implements Task {
                     if(doubleValue < 250){
                         removedRows.add(row);
                     }
+                }else{
+                    removedRows.add(row);
                 }
 
             }
