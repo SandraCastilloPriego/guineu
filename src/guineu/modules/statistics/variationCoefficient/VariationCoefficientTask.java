@@ -120,8 +120,8 @@ public class VariationCoefficientTask implements Task {
 	}
 
 	private double getvariationCoefficient(Dataset dataset) {
-		DescriptiveStatistics superStats = DescriptiveStatistics.newInstance();
-		DescriptiveStatistics stats = DescriptiveStatistics.newInstance();
+		DescriptiveStatistics superStats = new DescriptiveStatistics();
+		DescriptiveStatistics stats = new DescriptiveStatistics();
 		for (PeakListRow row : dataset.getRows()) {
 			stats.clear();
 			for (String experimentName : dataset.getNameExperiments()) {
