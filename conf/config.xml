@@ -17,7 +17,7 @@
     <module class="guineu.modules.file.openExperimentsData.OpenFile"/>  
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
-    <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/>  
+    <!-- <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
     <module class="guineu.modules.file.exit.ExitProgram"/>  
     <!-- <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"> 
@@ -54,6 +54,7 @@
         <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
+    <module class="guineu.modules.filter.report.qualityReport.Report"/> 
     <module class="guineu.modules.filter.report.RTShift.Report"> 
       <parameters>
         <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
