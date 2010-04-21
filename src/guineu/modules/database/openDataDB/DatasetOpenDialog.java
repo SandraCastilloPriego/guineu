@@ -24,11 +24,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -41,7 +42,8 @@ public class DatasetOpenDialog extends JFrame {
 
     private ExitCode exitCode = ExitCode.UNKNOWN;
     private int size = 50;
-    private CheckNode rootNode;
+    private List<Rule> rules;
+    private List<newParameterDialog> parameters;
 
     /** Creates new form DatasetOpenDialog */
     public DatasetOpenDialog() {
@@ -54,6 +56,8 @@ public class DatasetOpenDialog extends JFrame {
         this.parameterContiner.add(parameter);
         parameter.setVisible(true);
 
+        rules = new ArrayList<Rule>();
+        parameters = new ArrayList<newParameterDialog>();
     }
 
     ExitCode getExitCode() {
@@ -73,6 +77,7 @@ public class DatasetOpenDialog extends JFrame {
         jLabel1 = new javax.swing.JLabel();
         logicCB = new javax.swing.JComboBox();
         addParameterButton = new javax.swing.JButton();
+        applyRulesButton = new javax.swing.JButton();
         parameterScroll = new javax.swing.JScrollPane();
         parameterContiner = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -103,6 +108,14 @@ public class DatasetOpenDialog extends JFrame {
             }
         });
         jPanel1.add(addParameterButton);
+
+        applyRulesButton.setText("Apply Rules");
+        applyRulesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyRulesButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(applyRulesButton);
 
         getContentPane().add(jPanel1);
 
@@ -169,24 +182,35 @@ public class DatasetOpenDialog extends JFrame {
         this.parameterContiner.revalidate();
 }//GEN-LAST:event_addParameterButtonActionPerformed
 
+    private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyRulesButtonActionPerformed
+        for (newParameterDialog parameter : parameters) {
+            Rule rule = new Rule();
+            rule.type = parameter.getType();
+            rule.value = parameter.getValue();
+            rule.value = parameter.getLogic();
+            rules.add(rule);
+        }
+
+
+}//GEN-LAST:event_applyRulesButtonActionPerformed
+
+    class Rule {
+        String type;
+        String value;
+        String logic;
+    }
+
     private void createTree() {
         DataBase db = new DBask();
         String rows[][] = db.get_dataset();
         String rootName = "Data";
-
-
-
-        rootNode = new CheckNode(rootName);
+        CheckNode rootNode = new CheckNode(rootName);
 
         CheckNode datasetNode = new CheckNode("Datasets");
 
         for (String[] row : rows) {
-            // Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(row[0]));
-            CheckNode node = new CheckNode((Object) row[1]);
-            /*for(String sampleName : sampleNames){
-            node.add(new CheckNode(sampleName));
-            }*/
-
+            String name = row[0] + " - " + row[2] + " - " + row[1] + " - " + row[3];
+            CheckNode node = new CheckNode(name);
             datasetNode.add(node);
         }
 
@@ -235,16 +259,20 @@ public class DatasetOpenDialog extends JFrame {
                 if (row == 0 || row == 1) {
                     tree.revalidate();
                     tree.repaint();
-                } else
-                {
-                    System.out.println("entra");
-                    DataBase db = new DBask();
-                    Vector<String> sampleNames = db.get_samplenames(0);
-                    for (String sampleName : sampleNames) {
-                        node.add(new CheckNode(sampleName));
+                } else {
+                    try {
+                        DataBase db = new DBask();
+                        String[] data = node.toString().split(" - ");
+                        Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
+                        for (String sampleName : sampleNames) {
+                            CheckNode childNode = new CheckNode(sampleName);
+                            childNode.setSelected(true);
+                            node.add(childNode);
+                        }
+                        tree.revalidate();
+                        tree.repaint();
+                    } catch (Exception exception) {
                     }
-                    tree.revalidate();
-                    tree.repaint();
                 }
             }
         }
@@ -253,6 +281,7 @@ public class DatasetOpenDialog extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane SPResults;
     private javax.swing.JButton addParameterButton;
+    private javax.swing.JButton applyRulesButton;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel jLabel1;

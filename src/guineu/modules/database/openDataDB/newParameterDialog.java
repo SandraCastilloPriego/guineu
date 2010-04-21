@@ -48,6 +48,19 @@ public class newParameterDialog extends javax.swing.JPanel {
         this.logicLabel.setText(label);
     }
 
+    public String getValue(){
+        return this.valueParameterCB.getSelectedItem().toString();
+    }
+
+    public String getType(){
+        return this.typeParameterCB.getSelectedItem().toString();
+    }
+
+    public String getLogic(){
+        return this.logicLabel.getText();
+    }
+
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -57,7 +70,7 @@ public class newParameterDialog extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        removeButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         logicLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -70,9 +83,9 @@ public class newParameterDialog extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(600, 24));
         setLayout(new java.awt.GridLayout(1, 0));
 
-        jButton1.setText("Remove");
-        jButton1.setPreferredSize(new java.awt.Dimension(52, 26));
-        add(jButton1);
+        removeButton.setText("Remove");
+        removeButton.setPreferredSize(new java.awt.Dimension(52, 26));
+        add(removeButton);
 
         jPanel1.setBackground(new java.awt.Color(254, 254, 254));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -109,12 +122,13 @@ public class newParameterDialog extends javax.swing.JPanel {
             this.valueParameterCB.setModel(organismModel);
         }
 }//GEN-LAST:event_typeParameterCBActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel logicLabel;
+    public javax.swing.JButton removeButton;
     private javax.swing.JComboBox typeParameterCB;
     private javax.swing.JComboBox valueParameterCB;
     // End of variables declaration//GEN-END:variables
