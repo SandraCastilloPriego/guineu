@@ -27,7 +27,6 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -44,7 +43,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
     private int[] Datasets;
     private String[] DatasetsType;
     SimpleParameterSet parameters;
-    ParameterSetupDialog dialog;
+    DatasetOpenDialog dialog;
 
     public void initModule() {
         parameters = new DataOpenDBParameters();
@@ -80,13 +79,13 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
         if (exitCode != ExitCode.OK) {
             return;
         }
-        Datasets = ((DatasetOpenDBDialog) dialog).getSelectedDataset();
-        DatasetsType = ((DatasetOpenDBDialog) dialog).getSelectedType();
+       // Datasets = ((DatasetOpenDBDialog) dialog).getSelectedDataset();
+       // DatasetsType = ((DatasetOpenDBDialog) dialog).getSelectedType();
         runModule();
     }
 
     public ExitCode setupParameters() {
-        dialog = new DatasetOpenDBDialog(parameters);
+        dialog = new DatasetOpenDialog();
         dialog.setVisible(true);
         return dialog.getExitCode();
     }
