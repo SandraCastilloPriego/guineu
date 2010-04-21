@@ -18,7 +18,6 @@
 package guineu.modules.database.openDataDB;
 
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -41,12 +40,10 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     private int[] Datasets;
-    private String[] DatasetsType;
-    SimpleParameterSet parameters;
+    private String[] DatasetsType;  
     DatasetOpenDialog dialog;
 
-    public void initModule() {
-        parameters = new DataOpenDBParameters();
+    public void initModule() {        
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
                 "TODO write description", KeyEvent.VK_O, this, null, null);
@@ -72,8 +69,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
-        ((DataOpenDBParameters) parameters).actualize();
+    public void actionPerformed(ActionEvent e) {       
         ExitCode exitCode = setupParameters();
 
         if (exitCode != ExitCode.OK) {
@@ -91,11 +87,10 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
     }
 
     public ParameterSet getParameterSet() {
-        return this.parameters;
+        return null;
     }
 
-    public void setParameters(ParameterSet parameterValues) {
-        this.parameters = (SimpleParameterSet) parameterValues;
+    public void setParameters(ParameterSet parameterValues) {        
     }
 
     @Override
