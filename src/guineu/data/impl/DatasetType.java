@@ -23,7 +23,7 @@ package guineu.data.impl;
  */
 public enum DatasetType {
 
-    LCMS, GCGCTOF, EXPERIMENTINFO, OTHER;
+    LCMS, GCGCTOF, EXPERIMENTINFO, OTHER, QUALITYCONTROL;
     }
 
 ;
