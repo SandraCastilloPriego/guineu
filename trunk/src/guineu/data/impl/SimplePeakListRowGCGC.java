@@ -36,10 +36,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author SCSANDRA
- */
+
 public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListRow {
 
     private final static Comparator<Entry<String[], Integer>> comp = new Comparator<Entry<String[], Integer>>() {
