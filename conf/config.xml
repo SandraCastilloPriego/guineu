@@ -5,11 +5,11 @@
   <modules> 
     <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  
     <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
-      <parameters>
-        <parameter name="Project" type="STRING"/>
-        <parameter name="Study" type="STRING"/>
-        <parameter name="Type of Experiment" type="STRING"/>
-        <parameter name="Open" type="MULTIPLE_SELECTION">Sample Information,Project Information,Study Information,Dataset Information</parameter>
+      <parameters> 
+        <parameter name="Project" type="STRING"/>  
+        <parameter name="Study" type="STRING"/>  
+        <parameter name="Type of Experiment" type="STRING"/>  
+        <parameter name="Open" type="MULTIPLE_SELECTION">Sample Information,Project Information,Study Information,Dataset Information</parameter> 
       </parameters> 
     </module>  
     <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  
@@ -54,7 +54,18 @@
         <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.filter.report.qualityReport.Report"/> 
+    <module class="guineu.modules.filter.report.qualityReport.Report"> 
+      <parameters>
+        <parameter name="Input File" type="FILE_NAME"/>
+        <parameter name="HTML Output File" type="FILE_NAME"/>
+        <parameter name="Date" type="STRING"/>
+        <parameter name="Sample set" type="STRING"/>
+        <parameter name="Ion Mode" type="STRING"/>
+        <parameter name="Injection volume" type="STRING"/>
+        <parameter name="Sample type" type="STRING"/>
+        <parameter name="Comments" type="TEXTAREA"/>
+      </parameters> 
+    </module>  
     <module class="guineu.modules.filter.report.RTShift.Report"> 
       <parameters>
         <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
@@ -88,6 +99,7 @@
       </parameters> 
     </module>  
     <module class="guineu.modules.identification.identification.Identification"/>  
+    <module class="guineu.modules.identification.AdductSearch.AdductSearch"/>  
     <!-- <module class="guineu.modules.identification.identificationNeg.Identification"/> -->  
     <module class="guineu.modules.identification.simplelipidname.SimpleLipidNameFilter"/>  
     <module class="guineu.modules.identification.purgeIdentification.purgeIdentification"/>  
@@ -180,7 +192,8 @@
         <parameter name="Input File: " type="FILE_NAME">/home/scsandra/Desktop/RI_list.txt</parameter>
         <parameter name="Output File: " type="FILE_NAME">/home/scsandra/Desktop/data.xml</parameter>
       </parameters> 
-    </module> 
+    </module>  
+    <module class="guineu.modules.mylly.filter.ConcentrationsFromMass.ConcentrationsFromMassFilter"/> 
   </modules>  
   <desktop>
     <format type="m/z">
@@ -196,15 +209,15 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>0</x>
-      <y>25</y>
+      <x>1152</x>
+      <y>0</y>
       <width>-1</width>
       <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
     <lastProjectDirectory>/home/bicha/Download/112Vein-tracer.xls</lastProjectDirectory>
     <lastSaveDirectory>D:\data\xxczxczxcz</lastSaveDirectory>
-    <lastMyllyDirectory>/home/scsandra/Desktop/KTL Serum (064) 201008/064KTLSchiz_SeTw1nr054vtt33_GGT2_rep1run1_201008_1.txt</lastMyllyDirectory>
+    <lastMyllyDirectory>/mnt/home/scsandra/Desktop/KTL Serum (064) 201008/064KTLSchiz_SeTw1nr054vtt33_GGT2_rep1run1_201008_1.txt</lastMyllyDirectory>
     <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
     <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
     <parameter name="LCMS Filename" type="FILE_NAME">/home/scsandra/Desktop/processed files/179-167GUT/3-12/167-179GUTsero2.csv</parameter>
