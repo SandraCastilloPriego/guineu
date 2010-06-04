@@ -22,7 +22,7 @@ import guineu.data.ParameterType;
 public enum LCMSColumnName {
 
     SELECTION("Selection", true, "isSelected", "setSelectionMode", "", ParameterType.BOOLEAN),
-    ID("Id", true, "getID", "setID", "^ID.*", ParameterType.INTEGER),
+    ID("Id", true, "getID", "setID", "^ID.*|^Id", ParameterType.INTEGER),
     MZ("Average m/z", true, "getMZ", "setMZ", ".*Average M/Z.*|.*Average m/z.*|.*row m/z.*", ParameterType.DOUBLE),
     RT("Average Retention time", true, "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*|.*Average Retention time.*", ParameterType.DOUBLE),
     NAME("Name", true, "getName", "setName", ".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|", ParameterType.STRING),

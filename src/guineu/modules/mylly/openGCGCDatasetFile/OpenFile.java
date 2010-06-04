@@ -18,6 +18,7 @@
 package guineu.modules.mylly.openGCGCDatasetFile;
 
 import guineu.data.ParameterSet;
+import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.desktop.impl.DesktopParameters;
@@ -28,6 +29,7 @@ import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
+import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -41,11 +43,11 @@ import java.util.logging.Logger;
 public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private String FilePath;
+    private Desktop desktop;   
+    private SimpleParameterSet parameters;
 
     public void initModule() {
-
+        parameters = new OpenFileParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Aligned Dataset..",
                 "TODO write description", KeyEvent.VK_D, this, null, "icons/spectrumicon.png");
@@ -69,6 +71,17 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         }
     }
 
+
+    public ExitCode setupParameters() {
+        try {
+            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
+            dialog.setVisible(true);
+            return dialog.getExitCode();
+        } catch (Exception exception) {
+            return ExitCode.CANCEL;
+        }
+    }
+
     public void actionPerformed(ActionEvent e) {
         ExitCode exitCode = setupParameters();
         if (exitCode != ExitCode.OK) {
@@ -78,7 +91,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         runModule();
     }
 
-    public ExitCode setupParameters() {
+  /*  public ExitCode setupParameters() {
         DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
         String lastPath = deskParameters.getLastOpenProjectPath();
         if (lastPath == null) {
@@ -92,13 +105,14 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         } catch (Exception e) {
         }
         return ExitCode.OK;
-    }
+    }*/
 
     public ParameterSet getParameterSet() {
-        return null;
+         return parameters;
     }
 
     public void setParameters(ParameterSet parameterValues) {
+        parameters = (SimpleParameterSet) parameterValues;
     }
 
     public String toString() {
@@ -106,11 +120,12 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
     }
 
     public Task[] runModule() {
-
+        String path = (String) parameters.getParameterValue(OpenFileParameters.fileName);
+        int numColumns = (Integer) parameters.getParameterValue(OpenFileParameters.numColumns);
         // prepare a new group of tasks
-        if (FilePath != null) {
+        if (path != null) {
             Task tasks[] = new OpenFileTask[1];
-            tasks[0] = new OpenFileTask(FilePath, desktop);
+            tasks[0] = new OpenFileTask(path, numColumns, desktop);
 
             GuineuCore.getTaskController().addTasks(tasks);
 

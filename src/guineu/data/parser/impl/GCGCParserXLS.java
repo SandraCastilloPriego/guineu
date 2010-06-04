@@ -41,11 +41,12 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
     private Vector<String> head;
     private HSSFWorkbook book;
     private String sheetName;
-    private int numberRows,  rowsReaded;
+    private int numberRows,  rowsReaded, numColumns;
 
-    public GCGCParserXLS(String DatasetName, String sheetName) {
+    public GCGCParserXLS(String DatasetName, String sheetName, int numColumns) {
         this.numberRows = 0;
         this.rowsReaded = 0;
+        this.numColumns = numColumns;
         this.DatasetName = DatasetName;
         this.sheetName = sheetName;
         this.dataset = new SimpleGCGCDataset(this.getDatasetName());
@@ -63,8 +64,10 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 sheet = book.getSheetAt(0);
             }
 
-            int initRow = this.getRowInit(sheet);
+          //  int initRow = this.getRowInit(sheet);
 
+            int initRow = numColumns;
+            
             if (initRow > -1) {
                 numberRows = this.getNumberRows(initRow, sheet);
                 HSSFRow row = sheet.getRow(initRow);
@@ -100,18 +103,21 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
     }
 
     private Object getType(String data, ParameterType type) {
-        switch (type) {
-            case BOOLEAN:
-                return new Boolean(data);
-            case INTEGER:
-                return Integer.valueOf(data);
-            case DOUBLE:
-                return Double.valueOf(data);
-            case STRING:
-                return data;
+        try {
+            switch (type) {
+                case BOOLEAN:
+                    return new Boolean(data);
+                case INTEGER:
+                    return Integer.valueOf(data);
+                case DOUBLE:
+                    return Double.valueOf(data);
+                case STRING:
+                    return data;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
         }
-
-        return null;
     }
 
     /**
@@ -207,7 +213,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 regExpression += value.getRegularExpression() + "|";
             }
 
-            for (int i = 0; i < header.size(); i++) {
+            for (int i = numColumns; i < header.size(); i++) {
                 if (!header.elementAt(i).matches(regExpression)) {
                     this.dataset.AddNameExperiment(header.elementAt(i));
                 }

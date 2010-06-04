@@ -39,7 +39,6 @@ public class Spectrum implements Cloneable {
         REVERSEMASS, REVERSEINTENSITY, INTENSITY
     }
     final private static Spectrum nullSpectrum = new Spectrum();
-
     //First comes the fragment mass, then intensity
     protected int _intensities[];
     protected int _masses[];
@@ -50,41 +49,41 @@ public class Spectrum implements Cloneable {
         _masses = new int[0];
     }
 
-	 public Spectrum(String spectrum) {
-		int[][] data = this.get_spectrum(spectrum);
-		 _intensities = new int[data.length];
-         _masses = new int[data.length];
+    public Spectrum(String spectrum) {
+        int[][] data = this.get_spectrum(spectrum);
+        _intensities = new int[data.length];
+        _masses = new int[data.length];
 
-		for(int i = 0; i < data.length; i++){
-			_intensities[i] = data[i][0];
-			_masses[i] = data[i][1];
-		}
        
+        for (int i = 0; i < data.length; i++) {
+            _intensities[i] = data[i][1];
+            _masses[i] = data[i][0];
+        }
+
     }
 
-	 public int[][] get_spectrum(String spectrum) {
+    public int[][] get_spectrum(String spectrum) {
 
-		if (spectrum == null) {
-			return null;
-		}
-		int[][] num = new int[spectrum.split(",").length][];
+        if (spectrum == null) {
+            return null;
+        }
+        int[][] num = new int[spectrum.split(",").length][];
 
-		for (int i = 0; i < num.length; i++) {
-			num[i] = new int[2];
-		}
-		Pattern sp = Pattern.compile("\\d\\d?\\d?\\d?");
-		Matcher matcher = sp.matcher(spectrum);
-		int i = 0;
-		while (matcher.find()) {
-			num[i][0] = Integer.parseInt(spectrum.substring(matcher.start(), matcher.end()));
-			matcher.find();
-			num[i][1] = Integer.parseInt(spectrum.substring(matcher.start(), matcher.end()));
-			i++;
-		}
+        for (int i = 0; i < num.length; i++) {
+            num[i] = new int[2];
+        }
+        Pattern sp = Pattern.compile("\\d\\d?\\d?\\d?");
+        Matcher matcher = sp.matcher(spectrum);
+        int i = 0;
+        while (matcher.find()) {
+            num[i][0] = Integer.parseInt(spectrum.substring(matcher.start(), matcher.end()));
+            matcher.find();
+            num[i][1] = Integer.parseInt(spectrum.substring(matcher.start(), matcher.end()));
+            i++;
+        }
 
-		return num;
-	}
-
+        return num;
+    }
 
     /**
      *
@@ -173,34 +172,7 @@ public class Spectrum implements Cloneable {
         return s;
     }
 
-
-    public String toSpecialString() {
-             List<? extends Pair<Integer, Integer>> peaks = getPeakList();
-        java.util.Collections.sort(peaks, intensityComp);
-        int[] peakMasses = new int[peaks.size()];
-        int[] peakIntensities = new int[peaks.size()];
-
-        for (int i = 0; i < peaks.size(); i++) {
-            peakMasses[i] = peaks.get(i).getFirst();
-            peakIntensities[i] = peaks.get(i).getSecond();
-        }
-
-
-        if (peakIntensities == null || peakIntensities.length == 0) {
-            return "EMPTY";
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < peakMasses.length; i++) {
-                sb.append(peakMasses[i]).append(" ").append(peakIntensities[i]);
-                if (i != peakMasses.length - 1) {
-                    sb.append(" ");
-                }
-            }
-            return sb.toString();
-        }
-
-    }
-
+   
     @Override
     public String toString() {
         List<? extends Pair<Integer, Integer>> peaks = getPeakList();

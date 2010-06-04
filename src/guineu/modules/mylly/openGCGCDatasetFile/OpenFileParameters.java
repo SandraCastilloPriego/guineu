@@ -15,24 +15,27 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.data;
 
-/**
- *
- * @author scsandra
- */
-public enum IdentificationType {
+package guineu.modules.mylly.openGCGCDatasetFile;
 
-    MSMS("MS-MS"),
-    MS("MS"),
-    UNKNOWN("No Identification");
-    private final String columnName;
+import guineu.data.Parameter;
+import guineu.data.ParameterType;
+import guineu.data.impl.SimpleParameter;
+import guineu.data.impl.SimpleParameterSet;
 
-    IdentificationType(String columnName) {
-        this.columnName = columnName;
+
+public class OpenFileParameters extends SimpleParameterSet{	
+	
+    public static final Parameter fileName = new SimpleParameter(
+            ParameterType.FILE_NAME, "File Name: ",
+            "File Name", null, "File Name", null);
+
+    public static final Parameter numColumns = new SimpleParameter(
+            ParameterType.INTEGER, "Number of fixed Columns",
+            "Number of fixed Columns", new Integer(10));
+    
+    public OpenFileParameters() {
+        super(new Parameter[] { fileName, numColumns });
     }
 
-    public String toString() {
-        return this.columnName;
-    }
 }

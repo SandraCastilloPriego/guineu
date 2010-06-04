@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.ConcentrationsFromMass;
+package guineu.modules.mylly.filter.GroupIdentification2;
 
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
@@ -37,30 +37,30 @@ import guineu.data.impl.SimpleGCGCDataset;
  *
  * @author scsandra
  */
-public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener, ActionListener {
+public class GroupIdentificationFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Getting Concentrations..",
-				"TODO write description", KeyEvent.VK_E, this, null, null);
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Identification Filter..",
+				"TODO write description", KeyEvent.VK_N, this, null, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Getting Concentrations");
+		logger.info("Name Identification Filter");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Getting Concentrations ");
+			logger.info("Finished Group Identification Filter ");
 		}
 
 		if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Getting Concentrations .. ";
+			String msg = "Error while Group Identification Filtering .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
@@ -83,7 +83,7 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
 	}
 
 	public String toString() {
-		return "Getting Concentrations";
+		return "Name Identification Filter";
 	}
 
 	public Task[] runModule() {
@@ -91,9 +91,9 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
 		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
 		// prepare a new group of tasks
-		Task tasks[] = new ConcentrationsFromMassFilterTask[DataFiles.length];
+		Task tasks[] = new GroupIdentificationFilterTask[DataFiles.length];
 		for (int cont = 0; cont < DataFiles.length; cont++) {
-			tasks[cont] = new ConcentrationsFromMassFilterTask((SimpleGCGCDataset)DataFiles[cont]);
+			tasks[cont] = new GroupIdentificationFilterTask((SimpleGCGCDataset)DataFiles[cont]);
 		}
 		GuineuCore.getTaskController().addTasks(tasks);
 

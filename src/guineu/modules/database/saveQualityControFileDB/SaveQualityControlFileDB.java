@@ -15,96 +15,77 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.openDataDB;
+package guineu.modules.database.saveQualityControFileDB;
 
+import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.dialogs.ExitCode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
+public class SaveQualityControlFileDB implements GuineuModule, TaskListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private int[] Datasets;
-    private String[] DatasetsType;  
-    DatasetOpenDialog dialog;
+    private Dataset Dataset;
 
-    public void initModule() {        
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
-                "TODO write description", KeyEvent.VK_O, this, null, null);
+    public SaveQualityControlFileDB(Dataset Dataset) {
+        this.Dataset = Dataset;
+    }
+
+    public void initModule() {
+        runModule();
     }
 
     public void taskStarted(Task task) {
-        logger.info("Running Open Database");
+        logger.info("Running Save Dataset into Database");
     }
 
     public void taskFinished(Task task) {
         if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished open database on " + ((OpenFileDBTask) task).getTaskDescription());
+            logger.info("Finished Save Dataset" + ((SaveQualityControlFileDBTask) task).getTaskDescription());
         }
 
         if (task.getStatus() == TaskStatus.ERROR) {
 
-            String msg = "Error while open database on .. " + ((OpenFileDBTask) task).getErrorMessage();
+            String msg = "Error while save Dataset on .. " + ((SaveQualityControlFileDBTask) task).getErrorMessage();
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
         }
     }
 
-    public void actionPerformed(ActionEvent e) {       
-        ExitCode exitCode = setupParameters();
-
-        if (exitCode != ExitCode.OK) {
-            return;
-        }       
-        runModule();
-    }
-
-    public ExitCode setupParameters() {
-        dialog = new DatasetOpenDialog();
-        dialog.setVisible(true);
-        return dialog.getExitCode();
-    }
-
     public ParameterSet getParameterSet() {
         return null;
     }
 
-    public void setParameters(ParameterSet parameterValues) {        
+    public void setParameters(ParameterSet parameterValues) {
     }
 
     @Override
     public String toString() {
-        return "Open Database";
+        return "Save Dataset";
     }
 
     public Task[] runModule() {
 
         // prepare a new group of tasks
-        Task tasks[] = new OpenFileDBTask[Datasets.length];
-        for (int i = 0; i < Datasets.length; i++) {
-            tasks[i] = new OpenFileDBTask(Datasets[i], DatasetsType[i], desktop);
-        }
+        Task tasks[] = new SaveQualityControlFileDBTask[1];
 
+        tasks[0] = new SaveQualityControlFileDBTask(Dataset);
         GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;
 
     }
+    
 }
+

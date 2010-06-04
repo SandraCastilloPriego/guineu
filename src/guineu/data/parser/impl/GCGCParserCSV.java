@@ -38,12 +38,13 @@ public class GCGCParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleGCGCDataset dataset;
-    private int rowsNumber;
+    private int rowsNumber, numColumns;
     private int rowsReaded;
 
-    public GCGCParserCSV(String datasetPath) {
+    public GCGCParserCSV(String datasetPath, int numColumns) {
         this.rowsNumber = 0;
         this.rowsReaded = 0;
+        this.numColumns = numColumns;
         this.datasetPath = datasetPath;
         this.dataset = new SimpleGCGCDataset(this.getDatasetName());
         this.dataset.setType(DatasetType.GCGCTOF);
@@ -71,31 +72,34 @@ public class GCGCParserCSV implements Parser {
 
             reader.readHeaders();
             String[] header = reader.getHeaders();
-			setExperimentsName(header);
+            setExperimentsName(header);
 
             while (reader.readRecord()) {
                 getData(reader.getValues(), header);
                 rowsReaded++;
-            }          
+            }
 
         } catch (Exception e) {
-           // e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
     private Object getType(String data, ParameterType type) {
-        switch (type) {
-            case BOOLEAN:
-                return new Boolean(data);
-            case INTEGER:
-                return Integer.valueOf(data);
-            case DOUBLE:
-                return Double.valueOf(data);
-            case STRING:
-                return data;
+        try {
+            switch (type) {
+                case BOOLEAN:
+                    return new Boolean(data);
+                case INTEGER:
+                    return Integer.valueOf(data);
+                case DOUBLE:
+                    return Double.valueOf(data);
+                case STRING:
+                    return data;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
         }
-
-        return null;
     }
 
     private void getData(String[] sdata, String[] header) {
@@ -113,15 +117,10 @@ public class GCGCParserCSV implements Parser {
                     }
                 }
 
-                if(!isfound){
+                if (!isfound && i >= numColumns) {
                     try {
                         metabolite.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
-                        if (sdata[i].matches("DETECTED")) {
-                            metabolite.setPeak(header[i], 1.0);
-                        } else {							
-                            metabolite.setPeak(header[i], 0.0);
-                        }
                     }
                 }
                 if (metabolite.getName() == null || metabolite.getName().isEmpty()) {
@@ -132,7 +131,7 @@ public class GCGCParserCSV implements Parser {
             this.dataset.addAlignmentRow(metabolite);
 
         } catch (Exception exception) {
-			exception.printStackTrace();
+            exception.printStackTrace();
         }
     }
 
@@ -140,24 +139,24 @@ public class GCGCParserCSV implements Parser {
         return this.dataset;
     }
 
-	private Spectrum getSpectrum(String string) {
-		Spectrum newSpectrum = new Spectrum(string);
-		return newSpectrum;
-	}
+    private Spectrum getSpectrum(String string) {
+        Spectrum newSpectrum = new Spectrum(string);
+        return newSpectrum;
+    }
 
-	private void setExperimentsName(String[] header) {
+    private void setExperimentsName(String[] header) {
         try {
-            
+
             String regExpression = "";
             for (GCGCColumnName value : GCGCColumnName.values()) {
                 regExpression += value.getRegularExpression() + "|";
             }
-            for (int i = 0; i < header.length; i++) {
+            for (int i = numColumns; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
                     this.dataset.AddNameExperiment(header[i]);
-                } 
+                }
             }
-           
+
         } catch (Exception exception) {
         }
     }

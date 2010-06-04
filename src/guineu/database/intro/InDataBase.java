@@ -21,6 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.impl.Bexperiments;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;
@@ -39,6 +40,8 @@ public interface InDataBase {
     public void lcms(Connection conn, SimpleLCMSDataset lcms_known, String tipe, String author, String DatasetName, String parameters, String study) throws IOException;
 
     public void gcgctof(Connection conn, SimpleGCGCDataset lcms_known, String tipe, String author, String DatasetName, String study) throws IOException;
+
+    public void qualityControlFiles(Connection conn, SimpleOtherDataset qualityDataset) throws IOException;
 
     public void WriteExcelFile(Dataset lcms_known, String path, SimpleParameterSet parameters);
 

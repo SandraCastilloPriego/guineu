@@ -295,8 +295,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
     public void setSpectrumString(String spectra) {
         this.spectra = spectra;
-        Spectrum newSpectrum = new Spectrum(spectra);
-        this.spectrum = newSpectrum;
+        this.spectrum = new Spectrum(spectra);
     }
 
     public String getMolClass() {
@@ -487,6 +486,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
     public void setSpectrum(Spectrum spectrum) {
         this.spectrum = spectrum;
+        this.spectra = spectrum.toString();
     }
 
     public void setDistValue(DistValue val) {

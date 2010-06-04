@@ -21,18 +21,18 @@ import guineu.data.ParameterType;
 
 public enum GCGCColumnName {
 
-    SELECTION("Selection", true, "isSelected", "setSelectionMode", "", ParameterType.BOOLEAN),
+    SELECTION("Selection", true, "isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
     ID("ID", true, "getID", "setID", "^ID.*", ParameterType.INTEGER),
     RT1("RT1", true, "getRT1", "setRT1", ".*RT1.*", ParameterType.DOUBLE),
     RT2("RT2", true, "getRT2", "setRT2", ".*RT2.*", ParameterType.DOUBLE),
-    RTI("RTI", true, "getRTI", "setRTI", ".*RTI.*", ParameterType.DOUBLE),
-    NFOUND("N Found", true, "getNumFound", "setNumFound", ".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*", ParameterType.DOUBLE),
-    CAS("Cas Number", true, "getCAS", "setCAS", ".*CAS.*", ParameterType.STRING),
+    RTI("RTI", true, "getRTI", "setRTI", ".*RTI.*|RI", ParameterType.DOUBLE),
+    NFOUND("N Found", true, "getNumFound", "setNumFound", ".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*|.*N Found.*", ParameterType.DOUBLE),
+    CAS("Cas Number", true, "getCAS", "setCAS", ".*CAS.*|:*Cas Number.*", ParameterType.STRING),
     MAXSIM("Max similarity", true, "getMaxSimilarity", "setMaxSimilarity", ".*Max sim.*|.*Max Similarity.*", ParameterType.DOUBLE),
     MEANSIM("Mean similarity", true, "getMeanSimilarity", "setMeanSimilarity", ".*Mean sim.*|.*Mean Sim.*", ParameterType.DOUBLE),
     SIMSTD("Similarity std dev", true, "getSimilaritySTDDev", "setSimilaritySTDDev", ".*Similarity std dev.*", ParameterType.DOUBLE),
     NAME("Metabolite name", true, "getName", "setName", ".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|", ParameterType.STRING),
-    ALLNAMES("Metabolite all names", true, "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*", ParameterType.STRING),
+    ALLNAMES("Metabolite all names", true, "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*|.*Metabolite all names.*", ParameterType.STRING),
     CLASS("Class", true, "getMolClass", "setMolClass", ".*Class.*", ParameterType.STRING),
     PUBCHEM("Pubchem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*", ParameterType.STRING),
     MASS("Mass", true, "getMass", "setMass", ".*Mass.*", ParameterType.DOUBLE),
