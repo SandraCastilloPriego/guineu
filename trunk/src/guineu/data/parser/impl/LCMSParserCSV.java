@@ -89,7 +89,7 @@ public class LCMSParserCSV implements Parser {
         switch (type) {
             case BOOLEAN:
                 return new Boolean(data);
-            case INTEGER:
+            case INTEGER:               
                 return Integer.valueOf(data);
             case DOUBLE:
                 return Double.valueOf(data);

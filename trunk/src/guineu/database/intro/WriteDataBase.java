@@ -25,6 +25,7 @@ import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.database.ask.DBask;
+import guineu.modules.filter.report.qualityReport.SimpleQualityControlDataset;
 import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -35,6 +36,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -352,5 +356,69 @@ public class WriteDataBase {
         }
 
 
+    }
+
+    public int TableQUALITYC(Connection conn, SimpleQualityControlDataset QCDataset) {
+        try {
+            int QC_ID = -1;
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("INSERT INTO QualityC (SAMPLESET, DATE, ION_MODE, INJECTION_VOLUME, SAMPLE_TYPE, COMMENTS) VALUES ( '" + QCDataset.getSampleSet() + "', '" + QCDataset.getDate() + "', '" + QCDataset.getIonMode() + "', '" + QCDataset.getInjection() + "', '" + QCDataset.getSampleType() + "', '" + QCDataset.getComments() + "') ");
+
+            ResultSet r = statement.executeQuery("SELECT * FROM QualityC ORDER BY DATASETID desc");
+            if (r.next()) {
+                QC_ID = r.getInt("QC_ID");
+            }
+            statement.close();
+            return QC_ID;
+        } catch (SQLException ex) {
+            Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
+    }
+
+    public void TableQCSample(Connection conn, SimpleQualityControlDataset QCDataset, int QC_ID) {
+        try {
+            Statement statement = conn.createStatement();
+            for (PeakListRow row : QCDataset.getRowsDB()) {
+                Object[] peaks = row.getPeaks();
+                DateFormat dfm = new SimpleDateFormat("dd-MM-yy");
+                  try {
+                    statement.executeUpdate("INSERT INTO QCSample (QC_ID," +
+                            "SAMPLE_NAME, LYSOPC_RT, LYSOPC_HEIGHT/AREA, LYSOPC_HEIGHT_RATIO, PC_RT, PC_HEIGHT/AREA, " +
+                            "PC_HEIGHT_RATIO, TG_RT,TG_HEIGHT/AREA, DATE, LYSOPC_HEIGH, PC_HEIGHT,TG_HEIGHT," +
+                            "S_LYSOPC_HEIGHT, S_LYSOPC_RT, S_PC_HEIGHT, S_PC_RT, S_TG_HEIGHT, S_TG_RT)" +
+                            " VALUES ( '" + QC_ID +
+                            "', '" + peaks[0] +
+                            "', '" + peaks[1] +
+                            "', '" + peaks[2] +
+                            "', '" + peaks[3] +
+                            "', '" + peaks[4] +
+                            "', '" + peaks[5] +
+                            "', '" + peaks[6] +
+                            "', '" + peaks[7] +
+                            "', '" + peaks[8] +
+                            "', '" + dfm.parse(peaks[9].toString()).toString() +
+                            "', '" + peaks[10] +
+                            "', '" + peaks[12] +
+                            "', '" + peaks[13] +
+                            "', '" + peaks[14] +
+                            "', '" + peaks[15] +
+                            "', '" + peaks[16] +
+                            "', '" + peaks[17] +
+                            "', '" + peaks[18] +
+                            "', '" + peaks[19] + "') ");
+
+                } catch (Exception se) {
+                    System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
+                    se.printStackTrace();
+                }
+
+            }
+            statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
     }
 }

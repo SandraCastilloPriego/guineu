@@ -38,7 +38,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Add parameter"/>
+            <Property name="text" type="java.lang.String" value="Add parameter:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="logicCB">
@@ -58,7 +58,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="addParameterButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="OK"/>
+            <Property name="text" type="java.lang.String" value="Add"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[70, 26]"/>
             </Property>
@@ -140,6 +140,11 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
       <SubComponents>
+        <Component class="javax.swing.JCheckBox" name="combineDatasetsCB">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Combine datasets"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JButton" name="okButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="OK"/>

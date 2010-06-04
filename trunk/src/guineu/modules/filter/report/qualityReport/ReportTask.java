@@ -18,6 +18,7 @@
 package guineu.modules.filter.report.qualityReport;
 
 import com.csvreader.CsvReader;
+import guineu.data.PeakListRow;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimpleParameterSet;
@@ -38,8 +39,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -51,8 +50,8 @@ public class ReportTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private String fileName,  date,  sampleSet,  ionMode,  sampleType,  comments = "",  injection,  outputFile;
-    private double totalRows,  processedRows;
+    private String fileName, date, sampleSet, ionMode, sampleType, comments = "", injection, outputFile;
+    private double totalRows, processedRows;
     DescriptiveStatistics Stats[], superStats[];
 
     public ReportTask(Desktop desktop, SimpleParameterSet parameters) {
@@ -246,7 +245,9 @@ public class ReportTask implements Task {
     private void writeDataset(List<sample> samples) {
         DecimalFormat formatter = new DecimalFormat("####.##");
 
-        SimpleOtherDataset dataset = new SimpleOtherDataset("Summary Report");
+        SimpleOtherDataset dataset = new SimpleQualityControlDataset("Summary Report");
+        ((SimpleQualityControlDataset) dataset).setParameters(date, sampleSet, ionMode, injection, sampleType, comments);
+
         for (int i = 1; i <= 12; i++) {
             dataset.AddNameExperiment(String.valueOf(i));
         }
@@ -273,7 +274,9 @@ public class ReportTask implements Task {
             Stats[i] = new DescriptiveStatistics();
         }
         for (sample s : samples) {
-            dataset.AddRow(s.getRow(Stats));
+            PeakListRow row = s.getRow(Stats);
+            dataset.AddRow(row);
+            ((SimpleQualityControlDataset) dataset).setRow(row);
         }
 
         SimplePeakListRowOther row = new SimplePeakListRowOther();
@@ -304,7 +307,9 @@ public class ReportTask implements Task {
             superStats[i] = new DescriptiveStatistics();
         }
         for (sample s : samples) {
-            dataset.AddRow(s.getRow2(superStats));
+            PeakListRow row2 = s.getRow2(superStats);
+            dataset.AddRow(row2);
+            ((SimpleQualityControlDataset) dataset).setAdditionalRow(row2);
         }
 
         row = new SimplePeakListRowOther();
@@ -385,7 +390,7 @@ public class ReportTask implements Task {
         public void setSampleName(String name) {
             String sname = name.substring(name.indexOf("Name:") + 6, name.indexOf("Sample ID"));
             this.sampleName = sname;
-            this.date = sname.substring(sname.lastIndexOf("_") + 1);            
+            this.date = sname.substring(sname.lastIndexOf("_") + 1);
         }
 
         public void setLysoPC(String[] data) {
@@ -595,7 +600,7 @@ public class ReportTask implements Task {
                 this.heightArea = Double.valueOf(fields[7]).doubleValue();
                 this.time = fields[10];
 
-            //Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(ReportTask.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

@@ -22,12 +22,13 @@ import guineu.database.ask.DataBase;
 import guineu.util.dialogs.ExitCode;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -38,7 +39,7 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author scsandra
  */
-public class DatasetOpenDialog extends JFrame {
+public class DatasetOpenDialog extends JFrame implements ActionListener {
 
     private ExitCode exitCode = ExitCode.UNKNOWN;
     private int size = 50;
@@ -50,14 +51,12 @@ public class DatasetOpenDialog extends JFrame {
         initComponents();
         this.createTree();
         newParameterDialog parameter = new newParameterDialog();
-        DefaultComboBoxModel none = new DefaultComboBoxModel(new String[]{"All"});
-        parameter.setTypeModel(none);
-        parameter.setValueModel(none);
         this.parameterContiner.add(parameter);
+        parameter.removeButton.setVisible(false);
         parameter.setVisible(true);
-
         rules = new ArrayList<Rule>();
         parameters = new ArrayList<newParameterDialog>();
+
     }
 
     ExitCode getExitCode() {
@@ -83,6 +82,7 @@ public class DatasetOpenDialog extends JFrame {
         jPanel2 = new javax.swing.JPanel();
         SPResults = new javax.swing.JScrollPane();
         buttonsPanel = new javax.swing.JPanel();
+        combineDatasetsCB = new javax.swing.JCheckBox();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -92,14 +92,14 @@ public class DatasetOpenDialog extends JFrame {
 
         jPanel1.setPreferredSize(new java.awt.Dimension(120, 46));
 
-        jLabel1.setText("Add parameter");
+        jLabel1.setText("Add parameter:");
         jPanel1.add(jLabel1);
 
         logicCB.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AND", "OR", "NOT", "XOR" }));
         logicCB.setPreferredSize(new java.awt.Dimension(100, 24));
         jPanel1.add(logicCB);
 
-        addParameterButton.setText("OK");
+        addParameterButton.setText("Add");
         addParameterButton.setPreferredSize(new java.awt.Dimension(70, 26));
         addParameterButton.setRequestFocusEnabled(false);
         addParameterButton.addActionListener(new java.awt.event.ActionListener() {
@@ -138,6 +138,9 @@ public class DatasetOpenDialog extends JFrame {
         buttonsPanel.setOpaque(false);
         buttonsPanel.setPreferredSize(new java.awt.Dimension(647, 48));
 
+        combineDatasetsCB.setText("Combine datasets");
+        buttonsPanel.add(combineDatasetsCB);
+
         okButton.setText("OK");
         okButton.setPreferredSize(new java.awt.Dimension(70, 26));
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -175,6 +178,8 @@ public class DatasetOpenDialog extends JFrame {
         newParameterDialog parameter = new newParameterDialog();
         String label = "   " + this.logicCB.getSelectedItem().toString();
         parameter.setLogicLabel(label);
+        parameter.removeButton.addActionListener(this);
+        this.parameters.add(parameter);
         this.parameterContiner.add(parameter);
         size += 30;
         this.parameterContiner.setPreferredSize(new Dimension(100, size));
@@ -194,7 +199,21 @@ public class DatasetOpenDialog extends JFrame {
 
 }//GEN-LAST:event_applyRulesButtonActionPerformed
 
+    public void actionPerformed(ActionEvent evt) {
+        Object source = evt.getSource();
+        for (newParameterDialog dialog : this.parameters) {
+            if (source.equals(dialog.removeButton)) {
+                this.parameters.remove(dialog);
+                this.parameterContiner.remove(dialog);
+                this.parameterContiner.revalidate();
+                this.parameterContiner.repaint();
+                break;
+            }
+        }
+    }
+
     class Rule {
+
         String type;
         String value;
         String logic;
@@ -206,16 +225,30 @@ public class DatasetOpenDialog extends JFrame {
         String rootName = "Data";
         CheckNode rootNode = new CheckNode(rootName);
 
-        CheckNode datasetNode = new CheckNode("Datasets");
+        CheckNode projectNode = new CheckNode("Projects");
+
+       /* String[] projectList = db.getProjectList();
+        for (String project : projectList) {
+            projectNode.add(new CheckNode(project));
+        }
+
+        projectNode.add(new CheckNode("No project assigned"));
+        rootNode.add(projectNode);*/
+
+
+
+         CheckNode datasetNode = new CheckNode("Datasets");
 
         for (String[] row : rows) {
-            String name = row[0] + " - " + row[2] + " - " + row[1] + " - " + row[3];
-            CheckNode node = new CheckNode(name);
-            datasetNode.add(node);
+        String name = row[0] + " - " + row[2] + " - " + row[1] + " - " + row[3];
+        CheckNode node = new CheckNode(name);
+        datasetNode.add(node);
         }
 
 
         rootNode.add(datasetNode);
+
+
 
         JTree tree = new JTree(rootNode);
         tree.setCellRenderer(new CheckRenderer());
@@ -227,6 +260,11 @@ public class DatasetOpenDialog extends JFrame {
         this.SPResults.setViewportView((Component) tree);
 
 
+    }
+
+    enum Levels {
+
+        DATA, PROJECTS, STUDIES, DATASETS
     }
 
     class NodeSelectionListener extends MouseAdapter {
@@ -247,18 +285,16 @@ public class DatasetOpenDialog extends JFrame {
                 CheckNode node = (CheckNode) path.getLastPathComponent();
                 boolean isSelected = !(node.isSelected());
                 node.setSelected(isSelected);
-                if (node.getSelectionMode() == CheckNode.DIG_IN_SELECTION) {
-                    if (isSelected) {
-                        tree.expandPath(path);
-                    } else {
-                        tree.collapsePath(path);
-                    }
+                /* if (node.getSelectionMode() == CheckNode.DIG_IN_SELECTION) {
+                if (isSelected) {
+                tree.expandPath(path);
+                } else {
+                tree.collapsePath(path);
                 }
+                }*/
                 ((DefaultTreeModel) tree.getModel()).nodeChanged(node);
-                // I need revalidate if node is root.  but why?
-                if (row == 0 || row == 1) {
-                    tree.revalidate();
-                    tree.repaint();
+                System.out.print(node.getLevel());
+                if (node.getLevel() == Levels.PROJECTS.ordinal()) {
                 } else {
                     try {
                         DataBase db = new DBask();
@@ -284,6 +320,7 @@ public class DatasetOpenDialog extends JFrame {
     private javax.swing.JButton applyRulesButton;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JCheckBox combineDatasetsCB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

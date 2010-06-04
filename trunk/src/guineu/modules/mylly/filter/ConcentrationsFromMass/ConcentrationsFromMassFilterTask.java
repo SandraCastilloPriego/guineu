@@ -79,17 +79,29 @@ public class ConcentrationsFromMassFilterTask implements Task {
                     int intensity = 0;
 
                     Spectrum sp = ((SimplePeakListRowGCGC) row).getSpectrum();
-                    
+
                     for (ComparablePair<Integer, Integer> list : sp.getPeakList()) {
+                        System.out.println("first: " + list.getFirst());
                         if (list.getFirst() == ((SimplePeakListRowGCGC) row).getMass()) {
                             intensity = list.getSecond();
+                            System.out.println("second: " + list.getSecond());
+                            break;
                         }
                     }
+                     System.out.println("---");
 
                     for (String name : newDataset.getNameExperiments()) {
+                        double newConcentration = 0;
                         double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
-                        double newConcentration = (999 * concentration) / intensity;
-                        ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
+                        double constant = concentration / intensity;
+                        for (ComparablePair<Integer, Integer> list : sp.getPeakList()) {
+                            newConcentration += (list.getSecond() * constant);
+                        }
+                        if (newConcentration != Double.POSITIVE_INFINITY) {
+                            ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
+                        }else{
+                             ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                        }
                     }
                 }
             }

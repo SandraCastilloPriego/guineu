@@ -31,7 +31,7 @@ public class SimpleOtherDataset implements Dataset {
     String datasetName;
     Vector<PeakListRow> PeakList;
     Vector<String> nameExperiments;
-    DatasetType type;
+    protected DatasetType type;
 	String infoDataset = "";
 
     public SimpleOtherDataset(String datasetName) {
@@ -146,5 +146,6 @@ public class SimpleOtherDataset implements Dataset {
 	public void setInfo(String info) {
 		this.infoDataset = info;
 	}
+
     
 }

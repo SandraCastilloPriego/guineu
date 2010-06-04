@@ -8,8 +8,6 @@ import guineu.modules.filter.Alignment.data.AlignStructMol;
 
 import guineu.desktop.Desktop;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.math.stat.regression.SimpleRegression;
 
 public class Alignment {

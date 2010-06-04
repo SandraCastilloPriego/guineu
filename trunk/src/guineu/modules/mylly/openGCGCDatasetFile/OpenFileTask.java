@@ -39,16 +39,18 @@ import java.io.IOException;
 public class OpenFileTask implements Task {
 
     private String fileDir;
+    private int numColumns;
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
     private Parser parser;
 
-    public OpenFileTask(String fileDir, Desktop desktop) {
+    public OpenFileTask(String fileDir, int numColumns, Desktop desktop) {
         if (fileDir != null) {
             this.fileDir = fileDir;
         }
         this.desktop = desktop;
+        this.numColumns = numColumns;
     }
 
     public String getTaskDescription() {
@@ -90,12 +92,12 @@ public class OpenFileTask implements Task {
         try {
             if (fileDir.matches(".*xls")) {
                 try {
-                    Parser parserName = new GCGCParserXLS(fileDir, null);
+                    Parser parserName = new GCGCParserXLS(fileDir, null, numColumns);
                     String[] sheetsNames = ((GCGCParserXLS) parserName).getSheetNames(fileDir);
                     for (String Name : sheetsNames) {
                         try {
                             if (status != TaskStatus.CANCELED) {
-                                parser = new GCGCParserXLS(fileDir, Name);
+                                parser = new GCGCParserXLS(fileDir, Name, numColumns);
                                 parser.fillData();
                                 this.open(parser);
                             }
@@ -109,7 +111,7 @@ public class OpenFileTask implements Task {
             } else if (fileDir.matches(".*csv")) {
                 try {
                     if (status != TaskStatus.CANCELED) {
-                        parser = new GCGCParserCSV(fileDir);
+                        parser = new GCGCParserCSV(fileDir, numColumns);
                         parser.fillData();
                         this.open(parser);
                     }

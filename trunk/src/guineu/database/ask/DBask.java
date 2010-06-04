@@ -85,25 +85,14 @@ public class DBask implements DataBase {
 		return null;
 	}
 
-	public static String[] getProjectList() {
+	public String[] getProjectList() {
 		Statement st = null;
-		Connection conn = null;
-		String[] noProjects = {"No Projects"};
-		try {
-			OracleDataSource oracleDataSource;
-			oracleDataSource = new OracleDataSource();
-			oracleDataSource.setURL("jdbc:oracle:thin:@sboracle1.ad.vtt.fi:1521:BfxDB");
-			oracleDataSource.setUser("sandra");
-			oracleDataSource.setPassword("sandra");
-			conn = oracleDataSource.getConnection();
-
-		} catch (Exception exception) {
-			return noProjects;
-		}
+        String[] noProjects = {"No Projects"};		
 		List<String> projectNames = new ArrayList<String>();
-		projectNames.add("All projects");
+		
 
 		try {
+            Connection conn = this.connect();
 			st = conn.createStatement();
 			ResultSet r = st.executeQuery("SELECT NAME FROM PROJECTS");
 

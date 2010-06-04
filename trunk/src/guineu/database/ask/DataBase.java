@@ -61,4 +61,5 @@ public interface DataBase {
     public void getLCMSRows(int ID, SimpleLCMSDataset dataset);
 
 	public void get_samplenames(int datasetID, SimpleLCMSDataset dataset);
+    public String[] getProjectList();
 }
