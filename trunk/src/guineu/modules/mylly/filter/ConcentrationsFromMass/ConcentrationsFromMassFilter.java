@@ -44,23 +44,23 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
 
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Getting Concentrations..",
-				"TODO write description", KeyEvent.VK_E, this, null, null);
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Recalculation of the intensities..",
+				"Recalculates the intensities of peaks with mass information.", KeyEvent.VK_E, this, null, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("Getting Concentrations");
+		logger.info("Recalculating intensities");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Getting Concentrations ");
+			logger.info("Finished Recalculating intensities ");
 		}
 
 		if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Getting Concentrations .. ";
+			String msg = "Error while Recalculating intensities .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
@@ -83,7 +83,7 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
 	}
 
 	public String toString() {
-		return "Getting Concentrations";
+		return "Recalculating intensities";
 	}
 
 	public Task[] runModule() {

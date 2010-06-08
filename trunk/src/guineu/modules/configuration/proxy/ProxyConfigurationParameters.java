@@ -15,27 +15,28 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-package guineu.modules.mylly.openGCGCDatasetFile;
+package guineu.modules.configuration.proxy;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 
+/**
+ *
+ * @author scsandra
+ */
+public class ProxyConfigurationParameters extends SimpleParameterSet {
 
-public class OpenFileParameters extends SimpleParameterSet{	
-	
-    public static final Parameter fileName = new SimpleParameter(
-            ParameterType.FILE_NAME, "File Name: ",
-            "File Name", null, "File Name", null);
+    public static final Parameter proxy = new SimpleParameter(
+            ParameterType.STRING, "Proxy server:",
+            "Leave it blank if you have direct connection", (Object) "");
 
-    public static final Parameter numColumns = new SimpleParameter(
-            ParameterType.INTEGER, "Number of fixed Columns",
-            "Number of columns before the columns corresponding to the samples", new Integer(10));
-    
-    public OpenFileParameters() {
-        super(new Parameter[] { fileName, numColumns });
+    public static final Parameter port = new SimpleParameter(
+            ParameterType.STRING, "Port:",
+            "Leave it blank if you have direct connection", (Object) "");
+
+    public ProxyConfigurationParameters() {
+        super(new Parameter[]{proxy, port});
     }
-
 }

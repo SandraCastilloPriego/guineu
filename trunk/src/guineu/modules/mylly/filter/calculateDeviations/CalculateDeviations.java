@@ -48,7 +48,7 @@ public class CalculateDeviations implements GuineuModule, TaskListener, ActionLi
 		parameters = new CalculateDeviationsParameters();
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Calculate Deviations ..",
-				"TODO write description", KeyEvent.VK_D, this, null, null);
+				"Calculation of the difference of each compound RTI with a list of RTI that the user has to provide.", KeyEvent.VK_D, this, null, null);
 
 	}
 

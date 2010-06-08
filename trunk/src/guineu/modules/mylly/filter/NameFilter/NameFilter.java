@@ -49,7 +49,7 @@ public class NameFilter implements GuineuModule, TaskListener, ActionListener {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuSeparator(GuineuMenu.MYLLY);
         desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
-                "TODO write description", KeyEvent.VK_O, this, null, null);
+                "Filter basen on compound names", KeyEvent.VK_O, this, null, null);
 
     }
 

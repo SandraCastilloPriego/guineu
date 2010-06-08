@@ -49,7 +49,7 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 		parameters = new SimilarityParameters();
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Similarity Filter..",
-				"TODO write description", KeyEvent.VK_S, this, null, null);
+				"Compound with low similarity are removed or renamed as unknown", KeyEvent.VK_S, this, null, null);
 
 	}
 

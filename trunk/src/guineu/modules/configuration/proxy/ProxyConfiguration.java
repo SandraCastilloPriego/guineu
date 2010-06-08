@@ -15,123 +15,102 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.openGCGCDatasetFile;
+package guineu.modules.configuration.proxy;
 
 import guineu.data.ParameterSet;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
+import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author scsandra
  */
-public class OpenFile implements GuineuModule, TaskListener, ActionListener {
+public class ProxyConfiguration implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;   
+    private Desktop desktop;
     private SimpleParameterSet parameters;
 
     public void initModule() {
-        parameters = new OpenFileParameters();
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Aligned Local File..",
-                "Open multiple aligned peak list in CVS or Excel format", KeyEvent.VK_D, this, null, "icons/spectrumicon.png");
+        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Proxy Configuration..",
+                "Proxy configuration", KeyEvent.VK_G, this, null, null);
+        parameters = new ProxyConfigurationParameters();
+
     }
 
     public void taskStarted(Task task) {
-        logger.info("Running Open File");
+        logger.info("Proxy configuration");
     }
 
     public void taskFinished(Task task) {
         if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished open file on " + ((OpenFileTask) task).getTaskDescription());
+            logger.info("Finished Proxy configuration ");
         }
 
         if (task.getStatus() == TaskStatus.ERROR) {
 
-            String msg = "Error while open file on .. " + ((OpenFileTask) task).getErrorMessage();
+            String msg = "Error while Proxy configuration  .. ";
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
         }
     }
 
+    public void actionPerformed(ActionEvent e) {
+
+        ExitCode exitCode = setupParameters();
+        if (exitCode != ExitCode.OK) {
+            return;
+        }       
+        ((DesktopParameters) desktop.getParameterSet()).setProxyParameters((ProxyConfigurationParameters) parameters);
+        runModule();
+    }
 
     public ExitCode setupParameters() {
         try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
+            ParameterSetupDialog dialog = new ParameterSetupDialog("Proxy configuration parameters", parameters);
             dialog.setVisible(true);
+
             return dialog.getExitCode();
         } catch (Exception exception) {
             return ExitCode.CANCEL;
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
-        }
-
-        runModule();
-    }
-
-  /*  public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
-        if (lastPath == null) {
-            lastPath = "";
-        }
-        File lastFilePath = new File(lastPath);
-        DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-        dialog.setVisible(true);
-        try {
-            this.FilePath = dialog.getCurrentDirectory();
-        } catch (Exception e) {
-        }
-        return ExitCode.OK;
-    }*/
-
     public ParameterSet getParameterSet() {
-         return parameters;
+        return parameters;
     }
 
     public void setParameters(ParameterSet parameterValues) {
-        parameters = (SimpleParameterSet) parameterValues;
+        parameters = (ProxyConfigurationParameters) parameterValues;
     }
 
     public String toString() {
-        return "Open File";
+        return "Proxy configuration";
     }
 
     public Task[] runModule() {
-        String path = (String) parameters.getParameterValue(OpenFileParameters.fileName);
-        int numColumns = (Integer) parameters.getParameterValue(OpenFileParameters.numColumns);
-        // prepare a new group of tasks
-        if (path != null) {
-            Task tasks[] = new OpenFileTask[1];
-            tasks[0] = new OpenFileTask(path, numColumns, desktop);
-
-            GuineuCore.getTaskController().addTasks(tasks);
-
-            return tasks;
-
-        } else {
-            return null;
+        JInternalFrame[] frames = desktop.getInternalFrames();
+        for (int i = 0; i < frames.length; i++) {
+            try {
+            } catch (Exception e) {
+            }
         }
-
+        return null;
     }
 }
