@@ -46,7 +46,7 @@ public class removeNonPolarFilter implements GuineuModule, TaskListener, ActionL
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.MYLLY, "Remove Non-Polar Compounds..",
-                "Removes all the compounds in which spectra the peak with mass 73 doesn't exist or is lower than 250.", KeyEvent.VK_N, this, null, null);
+                "Filtering of all compounds in which spectra the peak with mass 73 doesn't exist or is lower than 250.", KeyEvent.VK_N, this, null, null);
 
     }
 
