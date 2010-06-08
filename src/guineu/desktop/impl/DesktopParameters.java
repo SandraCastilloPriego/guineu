@@ -20,6 +20,7 @@ package guineu.desktop.impl;
 import guineu.data.StorableParameterSet;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.main.GuineuCore;
+import guineu.modules.configuration.proxy.ProxyConfigurationParameters;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsViewParameters;
 import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
@@ -67,6 +68,7 @@ public class DesktopParameters implements StorableParameterSet,
 	private String lastMyllyPath = " ";
 	private SimpleParameterSet LCMSViewParameters,  GCGCViewParameters;
 	private SimpleParameterSet SaveLCMSParameters, SaveGCGCParameters, SaveOtherParameters;
+        private SimpleParameterSet proxy;
 
 	DesktopParameters() {
 		this(new NumberFormatter(FormatterType.NUMBER, "0.000"),
@@ -90,6 +92,14 @@ public class DesktopParameters implements StorableParameterSet,
 		mainWindow.addComponentListener(this);
 
 	}
+
+        public SimpleParameterSet getProxyParameters(){
+            return proxy;
+        }
+
+        public void setProxyParameters(ProxyConfigurationParameters proxy){
+            this.proxy = proxy;
+        }
 
 	public SimpleParameterSet getViewLCMSParameters() {
 		return LCMSViewParameters;

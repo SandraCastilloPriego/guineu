@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.pubChem;
+package guineu.modules.mylly.filter.NameGolmIdentification;
 
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
@@ -26,44 +26,41 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
  
 import guineu.taskcontrol.TaskListener;
-import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.data.impl.SimpleGCGCDataset;
 
 /**
  *
  * @author scsandra
  */
-public class PubChemFilter implements GuineuModule, TaskListener, ActionListener {
+public class NameGolmIdentificationFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
-	private PubChemParameters parameters;
 
-	public void initModule() {
-		parameters = new PubChemParameters();
+	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "PubChem ID Filter..",
-				"Addition of the PubChem ID to the compounds present in a file created by the user. ", KeyEvent.VK_P, this, null, null);
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Identification Filter..",
+				"Connection with the Golm database to get the possible names identification based on the spectra.", KeyEvent.VK_N, this, null, null);
 
 	}
 
 	public void taskStarted(Task task) {
-		logger.info("PubChem ID Filter");
+		logger.info("Name Identification Filter");
 	}
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished PubChem ID Filter ");
+			logger.info("Finished Group Identification Filter ");
 		}
 
 		if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while PubChem ID Filtering .. ";
+			String msg = "Error while Group Identification Filtering .. ";
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 
@@ -72,47 +69,36 @@ public class PubChemFilter implements GuineuModule, TaskListener, ActionListener
 
 	public void actionPerformed(ActionEvent e) {
 		try {
-			setupParameters(parameters);
+			runModule();
 		} catch (Exception exception) {
 		}
-	}
-
-	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(PubChemParameters) currentParameters);
-		dialog.setVisible(true);
-
-		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule();
-		}
-	}
+	}	
 
 	public ParameterSet getParameterSet() {
-		return this.parameters;
+		return null;
 	}
 
 	public void setParameters(ParameterSet parameterValues) {
-		parameters = (PubChemParameters) parameters;
+		
 	}
 
 	public String toString() {
-		return "PubChem ID Filter";
+		return "Name Identification Filter";
 	}
 
 	public Task[] runModule() {
 
-		Dataset[] datasets = desktop.getSelectedDataFiles();
-
+		Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
 		// prepare a new group of tasks
-		Task tasks[] = new PubChemFilterTask[datasets.length];
-		for (int i = 0; i < datasets.length; i++) {
-			tasks[i] = new PubChemFilterTask(datasets[i], parameters);
+		Task tasks[] = new NameGolmIdentificationFilterTask[DataFiles.length];
+		for (int cont = 0; cont < DataFiles.length; cont++) {
+			tasks[cont] = new NameGolmIdentificationFilterTask((SimpleGCGCDataset)DataFiles[cont]);
 		}
 		GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;
+
 
 
 	}

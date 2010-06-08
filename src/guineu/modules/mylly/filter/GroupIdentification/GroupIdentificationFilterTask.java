@@ -22,6 +22,9 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.desktop.impl.DesktopParameters;
+import guineu.main.GuineuCore;
+import guineu.modules.configuration.proxy.ProxyConfigurationParameters;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
@@ -57,8 +60,14 @@ public class GroupIdentificationFilterTask implements Task {
     private double progress = 0.0;
 
     public GroupIdentificationFilterTask(SimpleGCGCDataset dataset) {
-        System.setProperty("http.proxyHost", "rohto.vtt.fi");
-        System.setProperty("http.proxyPort", "8000");
+
+        // proxy configuration
+        ProxyConfigurationParameters proxy = (ProxyConfigurationParameters) ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getProxyParameters();
+        String proxystr = (String) proxy.getParameterValue(ProxyConfigurationParameters.proxy);
+        if (!proxystr.isEmpty()) {
+            System.setProperty("http.proxyHost", proxystr);
+            System.setProperty("http.proxyPort", (String) proxy.getParameterValue(ProxyConfigurationParameters.port));
+        }
         this.dataset = dataset;
     }
 
@@ -242,6 +251,11 @@ public class GroupIdentificationFilterTask implements Task {
             }
             URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx");
             URLConnection connection = url.openConnection();
+            if (!connection.getAllowUserInteraction()) {
+                GuineuCore.getDesktop().displayErrorMessage("Please check the proxy configuration in this program.");
+                status = TaskStatus.ERROR;
+                break;
+            }
             HttpURLConnection httpConn = (HttpURLConnection) connection;
             String xmlFile = this.PredictManyXMLFile((SimplePeakListRowGCGC) row);
             List<String> group = this.getAnswer(xmlFile, httpConn);

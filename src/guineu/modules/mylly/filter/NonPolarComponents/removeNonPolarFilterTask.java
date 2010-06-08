@@ -18,16 +18,10 @@
 package guineu.modules.mylly.filter.NonPolarComponents;
 
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 

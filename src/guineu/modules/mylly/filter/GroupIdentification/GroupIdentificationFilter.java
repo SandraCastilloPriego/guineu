@@ -45,7 +45,7 @@ public class GroupIdentificationFilter implements GuineuModule, TaskListener, Ac
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Group Identification Filter..",
-				"TODO write description", KeyEvent.VK_S, this, null, null);
+				"Connection with the Golm database to get the substructure identification based on the spectra.", KeyEvent.VK_S, this, null, null);
 
 	}
 

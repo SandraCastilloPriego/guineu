@@ -55,7 +55,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuSeparator(GuineuMenu.MYLLY);
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Score Alignment..",
-				"TODO write description", KeyEvent.VK_S, this, null, "icons/alignment.png");
+				"Alignment algorithm based on RT and spectra similarity", KeyEvent.VK_S, this, null, "icons/alignment.png");
 
 	}
 

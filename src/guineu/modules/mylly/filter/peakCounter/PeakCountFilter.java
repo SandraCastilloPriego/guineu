@@ -48,7 +48,7 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 		parameters = new PeakCountParameters();
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Peak Count Filter..",
-				"TODO write description", KeyEvent.VK_C, this, null, null);
+				"Compounds are removed depending on the number of samples where they were found.", KeyEvent.VK_C, this, null, null);
 
 	}
 

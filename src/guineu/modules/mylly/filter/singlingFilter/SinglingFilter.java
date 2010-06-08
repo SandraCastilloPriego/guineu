@@ -49,7 +49,7 @@ public class SinglingFilter implements GuineuModule, TaskListener, ActionListene
 		parameters = new SinglingParameters();
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Leave Only Uniques Filter..",
-				"TODO write description", KeyEvent.VK_U, this, null, null);
+				"Certain compounds are removed from the peak list depending its similarity or if they are identified as unknown.", KeyEvent.VK_U, this, null, null);
 
 	}
 

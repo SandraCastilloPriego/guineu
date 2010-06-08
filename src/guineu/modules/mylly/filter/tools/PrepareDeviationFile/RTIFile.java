@@ -47,7 +47,7 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
 		parameters = new RTIFileParameters();
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MYLLYTOOLS, "Prepare RTI File ..",
-				"TODO write description", KeyEvent.VK_D, this, null, null);
+				"Change of the format of the RTI file (which contains RTI information about some compounds) to XML format.", KeyEvent.VK_D, this, null, null);
 
 	}
 
