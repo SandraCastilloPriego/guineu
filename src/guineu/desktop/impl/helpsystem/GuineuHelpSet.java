@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2008 VTT Biotechnology
+ * Copyright 2007-2010 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,9 +15,20 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.desktop;
 
-public enum GuineuMenu {
-    FILE, CONFIGURATION, DATABASE, FILTER, ALIGNMENT, IDENTIFICATION,
-    IDENTIFICATIONSUBMENU, NORMALIZATION, IDENTIFICATIONFILTERS, STATISTICS, MSMS, MYLLY, REPORT, HELPSYSTEM, MYLLYTOOLS
-};
+package guineu.desktop.impl.helpsystem;
+
+
+import javax.help.HelpSet;
+
+public class GuineuHelpSet extends HelpSet {
+
+	public GuineuHelpSet() {
+		super();
+	}
+	
+	public void addTOCView( GuienuTOCView TOCView){
+		this.addView(TOCView);
+	}
+
+}

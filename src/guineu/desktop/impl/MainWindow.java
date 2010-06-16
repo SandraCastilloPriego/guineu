@@ -21,9 +21,9 @@ import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
+import guineu.desktop.impl.helpsystem.GuineuHelpSet;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.taskcontrol.impl.TaskProgressWindow;
 import guineu.util.ExceptionUtils;
 import guineu.util.TextUtils;
@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import javax.help.HelpBroker;
 import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -53,12 +54,12 @@ import javax.swing.border.EtchedBorder;
 public class MainWindow extends JFrame implements GuineuModule, Desktop,
         WindowListener {
 
+    static final String aboutHelpID = "guineu/desktop/help/AboutGuineu.html";
     private DesktopParameters parameters;
     private JDesktopPane desktopPane;
     private JSplitPane split;
     private ItemSelector itemSelector;
     private TaskProgressWindow taskList;
-    private HelpClass help;
 
     public TaskProgressWindow getTaskList() {
         return taskList;
@@ -77,7 +78,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         } catch (Exception e) {
             e.printStackTrace();
         }
-    // TODO: adjust frame position
+        // TODO: adjust frame position
 
     }
 
@@ -174,7 +175,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 
         desktopPane.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-       // desktopPane.setBackground(new Color(237, 249, 255));
+        // desktopPane.setBackground(new Color(237, 249, 255));
         Container c = getContentPane();
         c.setLayout(new BorderLayout());
         c.add(split, BorderLayout.CENTER);
@@ -184,8 +185,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
         // Construct menu
         menuBar = new MainMenu();
-        help = new HelpClass();
-        help.addMenuItem(menuBar);
         setJMenuBar(menuBar);
 
         // Initialize window listener for responding to user events
@@ -204,7 +203,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         setTitle("Guineu");
 
 //        taskList = new TaskProgressWindow();
-    //  desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
+        //  desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
 
     }
 
@@ -214,10 +213,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
     public JFrame getMainFrame() {
         return this;
-    }
-
-    public HelpClass getHelp() {
-        return help;
     }
 
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
@@ -273,5 +268,17 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
     public void displayException(Exception e) {
         displayErrorMessage(ExceptionUtils.exceptionToString(e));
+    }
+
+    public void showAboutDialog() {
+        GuineuHelpSet hs = GuineuCore.getHelpImpl().getHelpSet();
+        if (hs == null) {
+            return;
+        }
+
+        HelpBroker hb = hs.createHelpBroker();
+        hs.setHomeID(aboutHelpID);
+
+        hb.setDisplayed(true);
     }
 }

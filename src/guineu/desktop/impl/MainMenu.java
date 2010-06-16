@@ -24,12 +24,12 @@ import javax.swing.JDesktopPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 import ca.guydavis.swing.desktop.CascadingWindowPositioner;
 import ca.guydavis.swing.desktop.JWindowsMenu;
 import guineu.desktop.GuineuMenu;
+import guineu.desktop.impl.helpsystem.GuineuHelpSet;
 import guineu.main.GuineuCore;
-import guineu.util.GUIUtils;
+import javax.help.HelpBroker;
 import javax.swing.ImageIcon;
 
 /**
@@ -37,7 +37,7 @@ import javax.swing.ImageIcon;
  */
 class MainMenu extends JMenuBar implements ActionListener {
 
-    private JMenu fileMenu, /*msmsMenu, */  myllyMenu,  myllyToolsMenu,  identificationSubMenu,  normalizationMenu,  identificationFilterMenu,  databaseMenu,  filterMenu,  alignmentMenu,  identificationMenu,  helpMenu,  statisticsMenu,  configurationMenu,  reportMenu;
+    private JMenu fileMenu, /*msmsMenu, */ myllyMenu, myllyToolsMenu, identificationSubMenu, normalizationMenu, identificationFilterMenu, databaseMenu, filterMenu, alignmentMenu, identificationMenu, helpMenu, statisticsMenu, configurationMenu, reportMenu;
     private JWindowsMenu windowsMenu;
     private JMenuItem hlpAbout;
 
@@ -100,7 +100,7 @@ class MainMenu extends JMenuBar implements ActionListener {
         myllyToolsMenu.setMnemonic(KeyEvent.VK_G);
         myllyMenu.add(myllyToolsMenu);
         myllyMenu.addSeparator();
-        
+
         JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop()).getDesktopPane();
         windowsMenu = new JWindowsMenu(mainDesktopPane);
         CascadingWindowPositioner positioner = new CascadingWindowPositioner(
@@ -113,8 +113,9 @@ class MainMenu extends JMenuBar implements ActionListener {
         helpMenu.setMnemonic(KeyEvent.VK_H);
         this.add(helpMenu);
 
-        hlpAbout = GUIUtils.addMenuItem(helpMenu, "About Guineu...", this,
-                KeyEvent.VK_A);
+        hlpAbout = addMenuItem(GuineuMenu.HELPSYSTEM, "About Guineu..",
+                "About Guineu..", KeyEvent.VK_A, this,
+                null, null);
     }
 
     public void addMenuItem(GuineuMenu parentMenu, JMenuItem newItem) {
@@ -161,21 +162,17 @@ class MainMenu extends JMenuBar implements ActionListener {
             case MYLLYTOOLS:
                 myllyToolsMenu.add(newItem);
                 break;
-            case HELP:
+            case HELPSYSTEM:
                 helpMenu.add(newItem);
                 break;
         }
     }
 
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-            String toolTip, int mnemonic, ActionListener listener,
-            String actionCommand, String icon) {
-        JMenuItem newItem = null;
-        if (icon != null) {
-            newItem = new JMenuItem(text, new ImageIcon(icon));
-        } else {
-            newItem = new JMenuItem(text);
-        }
+            String toolTip, int mnemonic,
+            ActionListener listener, String actionCommand, String icon) {
+
+        JMenuItem newItem = new JMenuItem(text);
         if (listener != null) {
             newItem.addActionListener(listener);
         }
@@ -187,14 +184,17 @@ class MainMenu extends JMenuBar implements ActionListener {
         }
         if (mnemonic > 0) {
             newItem.setMnemonic(mnemonic);
-            newItem.setAccelerator(KeyStroke.getKeyStroke(mnemonic,
-                    ActionEvent.CTRL_MASK));
+        }
+
+        if (icon != null) {
+            newItem.setIcon(new ImageIcon(icon));
         }
         addMenuItem(parentMenu, newItem);
         return newItem;
 
     }
 
+   
     public void addMenuSeparator(GuineuMenu parentMenu) {
         switch (parentMenu) {
             case FILE:
@@ -239,7 +239,7 @@ class MainMenu extends JMenuBar implements ActionListener {
             case MYLLYTOOLS:
                 myllyToolsMenu.addSeparator();
                 break;
-            case HELP:
+            case HELPSYSTEM:
                 helpMenu.addSeparator();
                 break;
 
@@ -250,15 +250,10 @@ class MainMenu extends JMenuBar implements ActionListener {
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
-
         Object src = e.getSource();
-
-
-        // Help->About
         if (src == hlpAbout) {
-            AboutDialog dialog = new AboutDialog();
-            dialog.setVisible(true);
+            MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
+            mainWindow.showAboutDialog();
         }
-
     }
 }

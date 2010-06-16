@@ -32,6 +32,7 @@ import javax.swing.JMenuItem;
  * 
  */
 public interface Desktop extends GuineuModule {
+
     /**
      * Returns a reference to main application window
      * 
@@ -41,7 +42,7 @@ public interface Desktop extends GuineuModule {
 
     /**
      * Creates a new menu item in the main application menu.
-     * 
+     *
      * @param parentMenu GuineuMenu where to create the new item
      * @param text Item text
      * @param toolTip Item's tooltip
@@ -51,7 +52,8 @@ public interface Desktop extends GuineuModule {
      * @return Newly created JMenuItem
      */
     public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-            String toolTip, int mnemonic, ActionListener listener, String actionCommand, String icon);
+            String toolTip, int mnemonic,
+            ActionListener listener, String actionCommand, String icon);
 
     /**
      * Adds a separator to a given Guineu menu
@@ -96,7 +98,6 @@ public interface Desktop extends GuineuModule {
      */
     public void setStatusBarText(String text, Color textColor);
 
-
     /**
      * Displays a message box with a given text
      *
@@ -132,7 +133,7 @@ public interface Desktop extends GuineuModule {
      *
      */
     public void displayException(Exception e);
-    
+
     /**
      * Returns array of currently selected raw data files in GUI
      * 
@@ -140,9 +141,9 @@ public interface Desktop extends GuineuModule {
      */
     public Dataset[] getSelectedDataFiles();
 
-    public void AddNewFile(Dataset dataset);   
+    public void AddNewFile(Dataset dataset);
 
     public void removeData(Dataset file);
 
-	public JDesktopPane getDesktopPane();
+    public JDesktopPane getDesktopPane();
 }

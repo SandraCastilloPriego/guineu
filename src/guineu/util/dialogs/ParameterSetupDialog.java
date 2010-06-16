@@ -60,6 +60,7 @@ import guineu.util.GUIUtils;
 import guineu.util.Range;
 import guineu.util.components.DragOrderedJList;
 import guineu.util.components.ExtendedCheckBox;
+import guineu.util.components.HelpButton;
 import javax.swing.JTextArea;
 
 /**
@@ -91,14 +92,12 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
     public static final int TEXTFIELD_COLUMNS = 10;
     private ExitCode exitCode = ExitCode.UNKNOWN;
     private String helpID;
-
     // Parameters and their representation in the dialog
     private SimpleParameterSet parameterSet;
     private Hashtable<Parameter, JComponent> parametersAndComponents;
     private Hashtable<Parameter, Object> autoValues;
-
     // Buttons
-    private JButton btnOK,  btnCancel,  btnAuto,  btnHelp;
+    private JButton btnOK, btnCancel, btnAuto, btnHelp;
     /**
      * Derived classed may add their components to these panels. Both panels use
      * BorderLayout. mainPanel containts componentPanel in the CENTER position
@@ -106,7 +105,7 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
      * NORTH position and buttons in the SOUTH position. Other positions are
      * free to use by derived (specialized) dialogs.
      */
-    protected JPanel componentsPanel,  mainPanel;
+    protected JPanel componentsPanel, mainPanel;
 
     /**
      * Constructor
@@ -196,6 +195,10 @@ public class ParameterSetupDialog extends JDialog implements ActionListener {
                     this);
         }
 
+        if (helpID != null) {
+            btnHelp = new HelpButton(helpID);
+            pnlButtons.add(btnHelp);
+        }
 
         // Panel collecting all labels, fields and units
         JPanel labelsAndFields = GUIUtils.makeTablePanel(
