@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2008 VTT Biotechnology
+ * Copyright 2007-2010 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -52,8 +52,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 
 	public void initModule() {
 		parameters = new ScoreAlignmentParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuSeparator(GuineuMenu.MYLLY);
+		this.desktop = GuineuCore.getDesktop();		
 		desktop.addMenuItem(GuineuMenu.MYLLY, "Score Alignment..",
 				"Alignment algorithm based on RT and spectra similarity", KeyEvent.VK_S, this, null, "icons/alignment.png");
 

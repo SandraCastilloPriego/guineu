@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008 VTT Biotechnology
+    Copyright 2007-2010 VTT Biotechnology
 
     This file is part of MULLU.
 
@@ -25,7 +25,6 @@ import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 
-//import src.graphics.DB.MysqlAsk;
 
 
 /**

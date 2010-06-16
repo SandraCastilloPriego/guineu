@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2008 VTT Biotechnology
+ * Copyright 2007-2010 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -27,6 +27,7 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
+import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
@@ -43,11 +44,12 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     private OpenGCGCFileParameters parameters;
+    final String helpID = GUIUtils.generateHelpID(this);
 
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Files..",
+        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Files..",
                 "Open single peak list in CVS format", KeyEvent.VK_G, this, null, "icons/pickedpeakicon.png");
         parameters = new OpenGCGCFileParameters();
     }
@@ -85,7 +87,7 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
         }
         final ParameterSetupDialog dialog = new ParameterSetupDialog(
                 "Please set parameter values for " + toString(),
-                (OpenGCGCFileParameters) currentParameters);
+                (OpenGCGCFileParameters) currentParameters, helpID);
         dialog.setVisible(true);
 
         if (dialog.getExitCode() == ExitCode.OK) {
