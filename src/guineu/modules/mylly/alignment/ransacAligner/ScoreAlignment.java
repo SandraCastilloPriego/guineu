@@ -24,7 +24,7 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
- 
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -36,6 +36,7 @@ import guineu.data.Dataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.util.GUIUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,85 +47,86 @@ import java.util.List;
  */
 public class ScoreAlignment implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private ScoreAlignmentParameters parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private ScoreAlignmentParameters parameters;
+    final String helpID = GUIUtils.generateHelpID(this);
 
-	public void initModule() {
-		parameters = new ScoreAlignmentParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Ransac Alignment..",
-				"TODO write description", KeyEvent.VK_S, this, null, "icons/alignment.png");
+    public void initModule() {
+        parameters = new ScoreAlignmentParameters();
+        this.desktop = GuineuCore.getDesktop();
+        desktop.addMenuItem(GuineuMenu.MYLLY, "Ransac Alignment..",
+                "TODO write description", KeyEvent.VK_S, this, null, "icons/alignment.png");
 
-	}
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Ransac Alignment");
-	}
+    public void taskStarted(Task task) {
+        logger.info("Running Ransac Alignment");
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Score Alignment on " + ((ScoreAlignmentTask) task).getTaskDescription());
-		}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Score Alignment on " + ((ScoreAlignmentTask) task).getTaskDescription());
+        }
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Score Alignment on .. " + ((ScoreAlignmentTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+            String msg = "Error while Score Alignment on .. " + ((ScoreAlignmentTask) task).getErrorMessage();
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-		}
-	}
+        }
+    }
 
-	public void actionPerformed(ActionEvent e) {		
-		try {
-			setupParameters(parameters);
-		} catch (Exception exception) {
-		}
-	}
+    public void actionPerformed(ActionEvent e) {
+        try {
+            setupParameters(parameters);
+        } catch (Exception exception) {
+        }
+    }
 
-	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(ScoreAlignmentParameters) currentParameters);
-		dialog.setVisible(true);
+    public void setupParameters(ParameterSet currentParameters) {
+        final ParameterSetupDialog dialog = new ParameterSetupDialog(
+                "Please set parameter values for " + toString(),
+                (ScoreAlignmentParameters) currentParameters, helpID);
+        dialog.setVisible(true);
 
-		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule();
-		}
-	}
+        if (dialog.getExitCode() == ExitCode.OK) {
+            runModule();
+        }
+    }
 
-	public ParameterSet getParameterSet() {
-		return this.parameters;
-	}
+    public ParameterSet getParameterSet() {
+        return this.parameters;
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		 parameters = (ScoreAlignmentParameters) parameters;
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        parameters = (ScoreAlignmentParameters) parameters;
+    }
 
-	public String toString() {
-		return "Score Alignment";
-	}
+    public String toString() {
+        return "Score Alignment";
+    }
 
-	public Task[] runModule() {
-		// prepare a new group of tasks
-		Task tasks[] = new ScoreAlignmentTask[1];
-		Dataset[] datasets = desktop.getSelectedDataFiles();
-		List<GCGCData> newDatasets = new ArrayList<GCGCData>();
-			
-		for(int i = 0; i < datasets.length; i++){
-			GCGCDatum[][] datum = ((SimpleGCGCDataset)datasets[i]).toArray();
-			List<GCGCDatum> datumList = Arrays.asList(datum[0]);			
-			newDatasets.add(new GCGCData(datumList, datumList.get(0).getColumnName()));
-		}		
-		
-		tasks[0] = new ScoreAlignmentTask(newDatasets,parameters);
+    public Task[] runModule() {
+        // prepare a new group of tasks
+        Task tasks[] = new ScoreAlignmentTask[1];
+        Dataset[] datasets = desktop.getSelectedDataFiles();
+        List<GCGCData> newDatasets = new ArrayList<GCGCData>();
 
-		GuineuCore.getTaskController().addTasks(tasks);
+        for (int i = 0; i < datasets.length; i++) {
+            GCGCDatum[][] datum = ((SimpleGCGCDataset) datasets[i]).toArray();
+            List<GCGCDatum> datumList = Arrays.asList(datum[0]);
+            newDatasets.add(new GCGCData(datumList, datumList.get(0).getColumnName()));
+        }
+
+        tasks[0] = new ScoreAlignmentTask(newDatasets, parameters);
+
+        GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;
 
 
 
-	}
+    }
 }

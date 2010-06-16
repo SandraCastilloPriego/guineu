@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import guineu.data.Dataset;
+import guineu.util.GUIUtils;
 import java.util.logging.Logger;
 
 /**
@@ -44,6 +45,7 @@ public class SinglingFilter implements GuineuModule, TaskListener, ActionListene
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 	private SinglingParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
 	public void initModule() {
 		parameters = new SinglingParameters();
@@ -81,7 +83,7 @@ public class SinglingFilter implements GuineuModule, TaskListener, ActionListene
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(SinglingParameters) currentParameters);
+				(SinglingParameters) currentParameters, helpID);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {

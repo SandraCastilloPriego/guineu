@@ -24,7 +24,7 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
- 
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.util.GUIUtils;
 
 /**
  *
@@ -40,80 +41,81 @@ import guineu.data.Dataset;
  */
 public class ClassIdentificationFilter implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private ClassIdentificationParameters parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private ClassIdentificationParameters parameters;
+    final String helpID = GUIUtils.generateHelpID(this);
 
-	public void initModule() {
-		parameters = new ClassIdentificationParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Class Identification Filter..",
-				"Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_C, this, null, null);
+    public void initModule() {
+        parameters = new ClassIdentificationParameters();
+        this.desktop = GuineuCore.getDesktop();
+        desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Class Identification Filter..",
+                "Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_C, this, null, null);
 
-	}
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Class Identification Filter");
-	}
+    public void taskStarted(Task task) {
+        logger.info("Class Identification Filter");
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Class Identification Filter ");
-		}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Class Identification Filter ");
+        }
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Class Identification Filtering .. ";
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+            String msg = "Error while Class Identification Filtering .. ";
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-		}
-	}
+        }
+    }
 
-	public void actionPerformed(ActionEvent e) {
-		try {
-			setupParameters(parameters);
-		} catch (Exception exception) {
-		}
-	}
+    public void actionPerformed(ActionEvent e) {
+        try {
+            setupParameters(parameters);
+        } catch (Exception exception) {
+        }
+    }
 
-	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(ClassIdentificationParameters) currentParameters);
-		dialog.setVisible(true);
+    public void setupParameters(ParameterSet currentParameters) {
+        final ParameterSetupDialog dialog = new ParameterSetupDialog(
+                "Please set parameter values for " + toString(),
+                (ClassIdentificationParameters) currentParameters, helpID);
+        dialog.setVisible(true);
 
-		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule();
-		}
-	}
+        if (dialog.getExitCode() == ExitCode.OK) {
+            runModule();
+        }
+    }
 
-	public ParameterSet getParameterSet() {
-		return this.parameters;
-	}
+    public ParameterSet getParameterSet() {
+        return this.parameters;
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		parameters = (ClassIdentificationParameters) parameters;
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        parameters = (ClassIdentificationParameters) parameters;
+    }
 
-	public String toString() {
-		return "Class Identification Filter";
-	}
+    public String toString() {
+        return "Class Identification Filter";
+    }
 
-	public Task[] runModule() {
+    public Task[] runModule() {
 
-		Dataset[] datasets = desktop.getSelectedDataFiles();
+        Dataset[] datasets = desktop.getSelectedDataFiles();
 
 
-		// prepare a new group of tasks
-		Task tasks[] = new ClassIdentificationFilterTask[datasets.length];
-		for (int i = 0; i < datasets.length; i++) {
-			tasks[i] = new ClassIdentificationFilterTask(datasets[i], parameters);
-		}
-		GuineuCore.getTaskController().addTasks(tasks);
+        // prepare a new group of tasks
+        Task tasks[] = new ClassIdentificationFilterTask[datasets.length];
+        for (int i = 0; i < datasets.length; i++) {
+            tasks[i] = new ClassIdentificationFilterTask(datasets[i], parameters);
+        }
+        GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;
 
 
-	}
+    }
 }

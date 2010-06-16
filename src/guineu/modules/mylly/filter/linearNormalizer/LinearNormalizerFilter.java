@@ -40,7 +40,7 @@ import guineu.data.Dataset;
 public class LinearNormalizerFilter implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;	
+	private Desktop desktop;
 
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
