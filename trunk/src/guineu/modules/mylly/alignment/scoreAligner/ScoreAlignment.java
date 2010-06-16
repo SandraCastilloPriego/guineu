@@ -36,6 +36,7 @@ import guineu.data.Dataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.util.GUIUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 	private ScoreAlignmentParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
 	public void initModule() {
 		parameters = new ScoreAlignmentParameters();
@@ -86,7 +88,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(ScoreAlignmentParameters) currentParameters);
+				(ScoreAlignmentParameters) currentParameters, helpID);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {

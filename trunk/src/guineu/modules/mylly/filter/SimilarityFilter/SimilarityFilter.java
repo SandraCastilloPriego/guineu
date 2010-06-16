@@ -34,6 +34,7 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleGCGCDataset;
+import guineu.util.GUIUtils;
 
 /**
  *
@@ -44,6 +45,7 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 	private SimilarityParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
 	public void initModule() {
 		parameters = new SimilarityParameters();
@@ -81,7 +83,7 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(SimilarityParameters) currentParameters);
+				(SimilarityParameters) currentParameters, helpID);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {

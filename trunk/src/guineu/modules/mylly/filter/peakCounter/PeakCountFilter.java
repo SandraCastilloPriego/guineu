@@ -34,6 +34,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.util.GUIUtils;
 /**
  *
  * @author scsandra
@@ -43,6 +44,7 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 	private PeakCountParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
 	public void initModule() {
 		parameters = new PeakCountParameters();
@@ -80,7 +82,7 @@ public class PeakCountFilter implements GuineuModule, TaskListener, ActionListen
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(PeakCountParameters) currentParameters);
+				(PeakCountParameters) currentParameters, helpID);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {

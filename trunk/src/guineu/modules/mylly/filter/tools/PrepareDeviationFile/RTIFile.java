@@ -26,6 +26,7 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
  
 import guineu.taskcontrol.TaskListener;
+import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
@@ -42,6 +43,7 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 	private RTIFileParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
 	public void initModule() {
 		parameters = new RTIFileParameters();
@@ -79,7 +81,7 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
 	public void setupParameters(ParameterSet currentParameters) {
 		final ParameterSetupDialog dialog = new ParameterSetupDialog(
 				"Please set parameter values for " + toString(),
-				(RTIFileParameters) currentParameters);
+				(RTIFileParameters) currentParameters, helpID);
 		dialog.setVisible(true);
 
 		if (dialog.getExitCode() == ExitCode.OK) {
