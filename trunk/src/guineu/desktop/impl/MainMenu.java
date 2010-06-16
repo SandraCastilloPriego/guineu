@@ -27,9 +27,7 @@ import javax.swing.JMenuItem;
 import ca.guydavis.swing.desktop.CascadingWindowPositioner;
 import ca.guydavis.swing.desktop.JWindowsMenu;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.helpsystem.GuineuHelpSet;
 import guineu.main.GuineuCore;
-import javax.help.HelpBroker;
 import javax.swing.ImageIcon;
 
 /**
@@ -37,7 +35,11 @@ import javax.swing.ImageIcon;
  */
 class MainMenu extends JMenuBar implements ActionListener {
 
-    private JMenu fileMenu, /*msmsMenu, */ myllyMenu, myllyToolsMenu, identificationSubMenu, normalizationMenu, identificationFilterMenu, databaseMenu, filterMenu, alignmentMenu, identificationMenu, helpMenu, statisticsMenu, configurationMenu, reportMenu;
+    private JMenu fileMenu, /*msmsMenu, */ myllyMenu, myllyToolsMenu,
+            lcmsIdentificationSubMenu, gcgcIdentificationSubMenu, normalizationMenu,
+            identificationFilterMenu, databaseMenu, filterMenu, alignmentMenu,
+            identificationMenu, helpMenu, statisticsMenu, configurationMenu,
+            reportMenu;
     private JWindowsMenu windowsMenu;
     private JMenuItem hlpAbout;
 
@@ -63,22 +65,26 @@ class MainMenu extends JMenuBar implements ActionListener {
         alignmentMenu.setMnemonic(KeyEvent.VK_A);
         filterMenu.add(alignmentMenu);
 
-        identificationMenu = new JMenu("LC-MS Identification");
+        identificationMenu = new JMenu("Identification");
         identificationMenu.setMnemonic(KeyEvent.VK_I);
         this.add(identificationMenu);
 
-        identificationSubMenu = new JMenu("Identification");
-        identificationSubMenu.setMnemonic(KeyEvent.VK_I);
-        identificationMenu.add(identificationSubMenu);
+        lcmsIdentificationSubMenu = new JMenu("LC-MS");
+        lcmsIdentificationSubMenu.setMnemonic(KeyEvent.VK_L);
+        identificationMenu.add(lcmsIdentificationSubMenu);
+
+        gcgcIdentificationSubMenu = new JMenu("GCxGC-MS");
+        gcgcIdentificationSubMenu.setMnemonic(KeyEvent.VK_G);
+        identificationMenu.add(gcgcIdentificationSubMenu);
 
         identificationFilterMenu = new JMenu("Identification Filters");
-        identificationFilterMenu.setMnemonic(KeyEvent.VK_F);
-        identificationMenu.add(identificationFilterMenu);
+        identificationFilterMenu.setMnemonic(KeyEvent.VK_I);
+        lcmsIdentificationSubMenu.add(identificationFilterMenu);
 
 
         normalizationMenu = new JMenu("Normalization");
         normalizationMenu.setMnemonic(KeyEvent.VK_N);
-        identificationMenu.add(normalizationMenu);
+        lcmsIdentificationSubMenu.add(normalizationMenu);
 
         statisticsMenu = new JMenu("Statistics");
         statisticsMenu.setMnemonic(KeyEvent.VK_S);
@@ -92,7 +98,7 @@ class MainMenu extends JMenuBar implements ActionListener {
         msmsMenu.setMnemonic(KeyEvent.VK_M);
         add(msmsMenu);*/
 
-        myllyMenu = new JMenu("GCGC-Tof Files");
+        myllyMenu = new JMenu("GCxGC-MS");
         myllyMenu.setMnemonic(KeyEvent.VK_G);
         this.add(myllyMenu);
 
@@ -138,8 +144,11 @@ class MainMenu extends JMenuBar implements ActionListener {
             case IDENTIFICATION:
                 identificationMenu.add(newItem);
                 break;
-            case IDENTIFICATIONSUBMENU:
-                identificationSubMenu.add(newItem);
+            case LCMSIDENTIFICATIONSUBMENU:
+                lcmsIdentificationSubMenu.add(newItem);
+                break;
+            case GCGCIDENTIFICATIONSUBMENU:
+                gcgcIdentificationSubMenu.add(newItem);
                 break;
             case IDENTIFICATIONFILTERS:
                 identificationFilterMenu.add(newItem);
@@ -194,7 +203,6 @@ class MainMenu extends JMenuBar implements ActionListener {
 
     }
 
-   
     public void addMenuSeparator(GuineuMenu parentMenu) {
         switch (parentMenu) {
             case FILE:
@@ -215,8 +223,11 @@ class MainMenu extends JMenuBar implements ActionListener {
             case IDENTIFICATION:
                 identificationMenu.addSeparator();
                 break;
-            case IDENTIFICATIONSUBMENU:
-                identificationSubMenu.addSeparator();
+            case LCMSIDENTIFICATIONSUBMENU:
+                lcmsIdentificationSubMenu.addSeparator();
+                break;
+            case GCGCIDENTIFICATIONSUBMENU:
+                gcgcIdentificationSubMenu.addSeparator();
                 break;
             case IDENTIFICATIONFILTERS:
                 identificationFilterMenu.addSeparator();

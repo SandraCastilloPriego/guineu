@@ -56,7 +56,7 @@ public class AdductSearch implements GuineuModule, ActionListener {
         this.desktop = GuineuCore.getDesktop();
 
         parameters = new AdductSearchParameters();
-        desktop.addMenuItem(GuineuMenu.IDENTIFICATIONSUBMENU, MODULE_NAME,
+        desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, MODULE_NAME,
                 "Identification of adduct peaks by mass difference and same retention time", KeyEvent.VK_A, this, null, null);
     }
 
