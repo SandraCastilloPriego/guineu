@@ -3,81 +3,86 @@
     <head>
         <title>Open GCGC-Tof Files - Open one sample file</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" type="text/css" href="guineu/desktop/impl/helpsystem/HelpStyles.css">
+        <link rel="stylesheet" type="text/css" href="/guineu/desktop/impl/helpsystem/HelpStyles.css">
     </head>
     <body>
         <h1>Open one sample file</h1>
+        <h2>Description</h2>
+        <p>
+            This module opens text files which contain GCGC-tof data.
+        </p>
+        <p>
+            The order of the columns is not important but their name should be
+            always the same.
+        </p>
 
-    </body>
+        <p>
+            The text files should contain this columns:
+        </p>
 
+        <p>
+        <table width=100% border=1>
+            <tr>
+                <td>Name</td>
+                <td>R.T. (s)</td>
+                <td>Retention Index</td>
+                <td>CAS</td>
+                <td>Sample Concentration</td>
+                <td>Quant Masses</td>
+                <td>UniqueMass</td>
+                <td>Quant S/N</td>
+                <td>Area</td>
+                <td>Similarity</td>
+                <td>Weight</td>
+                <td>Classifications</td>
+                <td>Type</td>
+                <td>Spectra</td>
+            </tr>
+            <tr>
+                <td>cis-3-Hexenal</td>
+                <td>270 , 1.690</td>
+                <td>996.11</td>
+                <td>6789-80-6</td>
+                <td><BR></td>
+                <td>Dt</td>
+                <td>55</td>
+                <td>100.93</td>
+                <td>267525</td>
+                <td>755</td>
+                <td>98</td>
+                <td><BR></td>
+                <td>Unknown</td>
+                <td>55:999 57:319 69:276 ..</td>
+            </tr>
+            <tr>
+                <td>Unknown 1</td>
+                <td>275 , 0.110</td>
+                <td>999.08</td>
+                <td>16587-45-4</td>
+                <td><BR></td>
+                <td>Dt</td>
+                <td>175</td>
+                <td>52.77</td>
+                <td>163655</td>
+                <td>423</td>
+                <td>190</td>
+                <td>Class - 1</td>
+                <td>Unknown</td>
+                <td>74:999 175:590 50:552 ..</td>
+            </tr>
+        </table>
+    </p>
     <h4>Method parameters</h4>
-
-    <p>
-        The CVS files should contain this columns:
-
-
-
-    <table width=100% border=1>
-        <tr>
-            <td>Name</td>
-            <td>R.T. (s)</td>
-            <td>Retention Index</td>
-            <td>CAS</td>
-            <td>Sample Concentration</td>
-            <td>Quant Masses</td>
-            <td>UniqueMass</td>
-            <td>Quant S/N</td>
-            <td>Area</td>
-            <td>Similarity</td>
-            <td>Weight</td>
-            <td>Classifications</td>
-            <td>Type</td>
-            <td>Spectra</td>
-        </tr>
-        <tr>
-            <td>cis-3-Hexenal
-            </td>
-            <td>270 , 1.690</td>
-            <td>996.11</td>
-            <td>6789-80-6</td>
-            <td><BR></td>
-            <td>Dt</td>
-            <td>55</td>
-            <td>100.93</td>
-            <td>267525</td>
-            <td>755</td>
-            <td>98</td>
-            <td><BR></td>
-            <td>Unknown</td>
-            <td>55:999 57:319 69:276 ..</td>
-        </tr>
-        <tr>
-            <td>Unknown 1</td>
-            <td>275 , 0.110</td>
-            <td>999.08</td>
-            <td>16587-45-4</td>
-            <td><BR></td>
-            <td>Dt</td>
-            <td>175</td>
-            <td>52.77</td>
-            <td>163655</td>
-            <td>423</td>
-            <td>190</td>
-            <td>Class - 1</td>
-            <td>Unknown</td>
-            <td>74:999 175:590 50:552 ..</td>
-        </tr>
-
-    </table>
-
     <dl>
         <dt>Separator</dt>
-        <dd>CVS files can have differents separators of the fields. The most common is "," but
-            "\t" is also very common.</dd>
+        <dd>The files can have different separators between its fields. This
+            separator can be "," , "space" or "\t". "\t" is the separator used by
+            defect.</dd>
         <dt>Filter out peaks with classification</dt>
         <dd>When this parameter is checked, all the compounds with anything written
             in the column "Classification" will be ignore.</dd>
         <dt>GCGC files</dt>
         <dd>Selection of all the files that should be opened</dd>
     </dl>
+</body>
 </html>

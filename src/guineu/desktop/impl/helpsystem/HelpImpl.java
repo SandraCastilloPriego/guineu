@@ -63,7 +63,7 @@ public class HelpImpl {
             hs = new GuineuHelpSet();
             hs.setLocalMap(helpMap);
 
-            GuienuTOCView myTOC = new GuienuTOCView(hs, "TOC",
+            GuineuTOCView myTOC = new GuineuTOCView(hs, "TOC",
                     "Table Of Contents", helpMap, file);
 
             hs.setTitle("Guineu");
