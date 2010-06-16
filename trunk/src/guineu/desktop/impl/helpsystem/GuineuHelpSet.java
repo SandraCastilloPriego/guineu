@@ -27,7 +27,7 @@ public class GuineuHelpSet extends HelpSet {
 		super();
 	}
 	
-	public void addTOCView( GuienuTOCView TOCView){
+	public void addTOCView( GuineuTOCView TOCView){
 		this.addView(TOCView);
 	}
 
