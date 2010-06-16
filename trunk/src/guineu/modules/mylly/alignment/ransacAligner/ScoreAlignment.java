@@ -91,6 +91,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
                 (ScoreAlignmentParameters) currentParameters, helpID);
         dialog.setVisible(true);
 
+
         if (dialog.getExitCode() == ExitCode.OK) {
             runModule();
         }
