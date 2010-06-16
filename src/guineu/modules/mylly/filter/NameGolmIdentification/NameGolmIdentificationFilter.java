@@ -44,7 +44,7 @@ public class NameGolmIdentificationFilter implements GuineuModule, TaskListener,
 
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Name Identification Filter..",
+		desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Name Identification Filter..",
 				"Connection with the Golm database to get the possible names identification based on the spectra.", KeyEvent.VK_N, this, null, null);
 
 	}

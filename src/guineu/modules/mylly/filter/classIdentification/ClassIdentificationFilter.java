@@ -47,8 +47,8 @@ public class ClassIdentificationFilter implements GuineuModule, TaskListener, Ac
 	public void initModule() {
 		parameters = new ClassIdentificationParameters();
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Class Identification Filter..",
-				"Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_I, this, null, null);
+		desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Class Identification Filter..",
+				"Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_C, this, null, null);
 
 	}
 
