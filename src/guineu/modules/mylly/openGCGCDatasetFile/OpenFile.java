@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2008 VTT Biotechnology
+ * Copyright 2007-2010 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -27,6 +27,7 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
+import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
@@ -41,13 +42,15 @@ import java.util.logging.Logger;
 public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;   
+    private Desktop desktop;
     private SimpleParameterSet parameters;
+    final String helpID = GUIUtils.generateHelpID(this);
 
     public void initModule() {
         parameters = new OpenFileParameters();
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.MYLLY, "Open GCGC Aligned Local File..",
+        desktop.addMenuSeparator(GuineuMenu.FILE);
+        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Aligned Local File..",
                 "Open multiple aligned peak list in CVS or Excel format", KeyEvent.VK_D, this, null, "icons/spectrumicon.png");
     }
 
@@ -69,10 +72,9 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         }
     }
 
-
     public ExitCode setupParameters() {
         try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
+            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters, helpID);
             dialog.setVisible(true);
             return dialog.getExitCode();
         } catch (Exception exception) {
@@ -88,25 +90,9 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
         runModule();
     }
-
-  /*  public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
-        if (lastPath == null) {
-            lastPath = "";
-        }
-        File lastFilePath = new File(lastPath);
-        DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-        dialog.setVisible(true);
-        try {
-            this.FilePath = dialog.getCurrentDirectory();
-        } catch (Exception e) {
-        }
-        return ExitCode.OK;
-    }*/
-
+   
     public ParameterSet getParameterSet() {
-         return parameters;
+        return parameters;
     }
 
     public void setParameters(ParameterSet parameterValues) {
