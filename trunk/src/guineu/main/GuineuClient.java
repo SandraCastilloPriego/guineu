@@ -18,6 +18,7 @@
 package guineu.main;
 
 import guineu.desktop.impl.MainWindow;
+import guineu.desktop.impl.helpsystem.HelpImpl;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import java.util.Iterator;
 import java.util.Vector;
@@ -40,7 +41,6 @@ public class GuineuClient extends GuineuCore implements Runnable {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Vector<GuineuModule> moduleSet;
-
     // make GuineuClient a singleton
     private static GuineuClient client = new GuineuClient();
 
@@ -95,6 +95,7 @@ public class GuineuClient extends GuineuCore implements Runnable {
             TaskControllerImpl taskControllerr = new TaskControllerImpl();
             //IOControllerImpl ioController=new IOControllerImpl();
             desktop = new MainWindow();
+            help = new HelpImpl();
 
             // save static references to GuineuCore
             GuineuCore.taskController = taskControllerr;
@@ -102,9 +103,9 @@ public class GuineuClient extends GuineuCore implements Runnable {
             GuineuCore.desktop = desktop;
 
             logger.finer("Initializing core classes");
- desktop.initModule();
+            desktop.initModule();
             taskControllerr.initModule();
-           
+
 
             logger.finer("Loading modules");
 

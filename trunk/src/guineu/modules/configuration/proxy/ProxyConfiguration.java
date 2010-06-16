@@ -27,6 +27,7 @@ import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
+import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
@@ -44,8 +45,10 @@ public class ProxyConfiguration implements GuineuModule, TaskListener, ActionLis
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     private SimpleParameterSet parameters;
+    final String helpID = GUIUtils.generateHelpID(this);
 
     public void initModule() {
+
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Proxy Configuration..",
                 "Proxy configuration", KeyEvent.VK_G, this, null, null);
@@ -76,14 +79,14 @@ public class ProxyConfiguration implements GuineuModule, TaskListener, ActionLis
         ExitCode exitCode = setupParameters();
         if (exitCode != ExitCode.OK) {
             return;
-        }       
+        }
         ((DesktopParameters) desktop.getParameterSet()).setProxyParameters((ProxyConfigurationParameters) parameters);
         runModule();
     }
 
     public ExitCode setupParameters() {
         try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Proxy configuration parameters", parameters);
+            ParameterSetupDialog dialog = new ParameterSetupDialog("Proxy configuration parameters", parameters, helpID);
             dialog.setVisible(true);
 
             return dialog.getExitCode();

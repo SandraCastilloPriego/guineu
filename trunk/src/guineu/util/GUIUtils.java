@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.util;
 
 import java.awt.Container;
@@ -140,17 +139,22 @@ public class GUIUtils {
             ActionListener listener, String actionCommand, int mnemonic,
             boolean setAccelerator) {
         JMenuItem item = new JMenuItem(text);
-        if (listener != null)
+        if (listener != null) {
             item.addActionListener(listener);
-        if (actionCommand != null)
+        }
+        if (actionCommand != null) {
             item.setActionCommand(actionCommand);
-        if (mnemonic > 0)
+        }
+        if (mnemonic > 0) {
             item.setMnemonic(mnemonic);
-        if (setAccelerator)
+        }
+        if (setAccelerator) {
             item.setAccelerator(KeyStroke.getKeyStroke(mnemonic,
                     ActionEvent.CTRL_MASK));
-        if (menu != null)
+        }
+        if (menu != null) {
             menu.add(item);
+        }
         return item;
     }
 
@@ -218,16 +222,21 @@ public class GUIUtils {
             Icon icon, ActionListener listener, String actionCommand,
             int mnemonic, String toolTip) {
         JButton button = new JButton(text, icon);
-        if (listener != null)
+        if (listener != null) {
             button.addActionListener(listener);
-        if (actionCommand != null)
+        }
+        if (actionCommand != null) {
             button.setActionCommand(actionCommand);
-        if (mnemonic > 0)
+        }
+        if (mnemonic > 0) {
             button.setMnemonic(mnemonic);
-        if (toolTip != null)
+        }
+        if (toolTip != null) {
             button.setToolTipText(toolTip);
-        if (component != null)
+        }
+        if (component != null) {
             component.add(button);
+        }
         return button;
     }
 
@@ -259,13 +268,16 @@ public class GUIUtils {
             ActionListener listener, String actionCommand) {
         JPanel panel = new JPanel();
         JButton button = new JButton(text);
-        if (listener != null)
+        if (listener != null) {
             button.addActionListener(listener);
-        if (actionCommand != null)
+        }
+        if (actionCommand != null) {
             button.setActionCommand(actionCommand);
+        }
         panel.add(button);
-        if (component != null)
+        if (component != null) {
             component.add(panel);
+        }
         return button;
     }
 
@@ -323,10 +335,12 @@ public class GUIUtils {
     public static JLabel addLabel(Container component, String text, Icon icon,
             int horizontalAlignment, Font font) {
         JLabel label = new JLabel(text, icon, horizontalAlignment);
-        if (component != null)
+        if (component != null) {
             component.add(label);
-        if (font != null)
+        }
+        if (font != null) {
             label.setFont(font);
+        }
         return label;
     }
 
@@ -362,10 +376,12 @@ public class GUIUtils {
      */
     public static JSeparator addSeparator(Container component, int margin) {
         JSeparator separator = new JSeparator();
-        if (margin > 0)
+        if (margin > 0) {
             addMargin(separator, margin);
-        if (component != null)
+        }
+        if (component != null) {
             component.add(separator);
+        }
         return separator;
     }
 
@@ -424,7 +440,7 @@ public class GUIUtils {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(0, 0, 5, 5);
 
-        for (int row = 0; row < rows; row++)
+        for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
 
                 constraints.gridx = col;
@@ -434,6 +450,7 @@ public class GUIUtils {
                 panel.add(component);
                 layout.setConstraints(component, constraints);
             }
+        }
 
         /*
          * Create one extra invisible component, which is vertically expandable.
@@ -450,4 +467,12 @@ public class GUIUtils {
         return panel;
     }
 
+    public static String generateHelpID(Object obj) {
+        return generateHelpID(obj.getClass());
+    }
+
+    public static String generateHelpID(Class<?> cl) {
+        String helpID = cl.getPackage().getName().replace('.', '/') + "/help/" + cl.getSimpleName() + ".html";
+        return helpID;
+    }
 }
