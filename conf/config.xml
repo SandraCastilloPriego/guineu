@@ -3,7 +3,7 @@
 <configuration> 
   <nodes local="2"/>  
   <modules> 
-    <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  
+    <!-- <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  -->
     <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
       <parameters> 
         <parameter name="Project" type="STRING"/>  
@@ -13,7 +13,9 @@
       </parameters> 
     </module>  
     <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  
-    <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
+    <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>   
+    <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
+    <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
     <module class="guineu.modules.file.openExperimentsData.OpenFile"/>  
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
@@ -30,6 +32,7 @@
         <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
       </parameters> 
     </module>  
+    <module class="guineu.modules.configuration.proxy.ProxyConfiguration"/> 
     <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"> 
       <parameters>
         <parameter name="Peak list name" type="STRING">Aligned peak list</parameter>
@@ -98,7 +101,7 @@
         <parameter name="MSMS Identification" type="BOOLEAN">false</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.identification.identification.Identification"/>  
+    <!-- <module class="guineu.modules.identification.identification.Identification"/>  -->
     <module class="guineu.modules.identification.AdductSearch.AdductSearch"/>  
     <!-- <module class="guineu.modules.identification.identificationNeg.Identification"/> -->  
     <module class="guineu.modules.identification.simplelipidname.SimpleLipidNameFilter"/>  
@@ -122,9 +125,7 @@
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
     <module class="guineu.modules.R.R"/>  
     <!-- <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
-    <module class="guineu.modules.msms.open.OpenFile"/>  
-    <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
-    <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
+    <module class="guineu.modules.msms.open.OpenFile"/> 
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"> 
       <parameters>
         <parameter name="RT Lax:" type="DOUBLE">15.0</parameter>
@@ -158,6 +159,7 @@
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.GroupIdentification.GroupIdentificationFilter"/>  
+    <module class="guineu.modules.mylly.filter.NameGolmIdentification.NameGolmIdentificationFilter"/> 
     <module class="guineu.modules.mylly.filter.classIdentification.ClassIdentificationFilter"> 
       <parameters>
         <parameter name="Suffix: " type="STRING">-Class Identification Filter</parameter>
