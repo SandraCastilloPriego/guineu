@@ -31,75 +31,70 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ClassIdentification {
 
-	private List<String[]> rules;
-	private double numberRowProcessed = 0;
+    private List<String[]> rules;
+    private double numberRowProcessed = 0;
+    private SimpleGCGCDataset input;
 
-	private SimpleGCGCDataset input;
+    public ClassIdentification() {
+        this.rules = new ArrayList<String[]>();
+    }
 
+    public String getName() {
+        return "Class Identification";
+    }
 
-	public ClassIdentification() {
-		this.rules = new ArrayList<String[]>();
-	}
+    public double getProgress() {
+        return (double) (numberRowProcessed / (double) input.getAlignment().size());
+    }
 
-	public String getName() {
-		return "Class Identification";
-	}
+    public void createCorrector(File rulesFile) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(rulesFile));
+        CsvReader reader = new CsvReader(br);
 
-	public double getProgress(){		
-		return (double)(numberRowProcessed / (double) input.getAlignment().size());
-	}
+        while (reader.readRecord()) {
+            String data[] = reader.getValues();
+            try {
+                this.rules.add(data);
+            } catch (Exception e) {
+            }
+        }
 
-	public void createCorrector(File rulesFile) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(rulesFile));
-		CsvReader reader = new CsvReader(br);
+    }
 
-		while (reader.readRecord()) {
-			String data[] = reader.getValues();
-			try {			
-				this.rules.add(data);
-			} catch (Exception e) {
-			}
-		}
+    public SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
+        //we don't want to apply this filter in the peaks with Quant Mass
+        this.input = input;
+        List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 
-	}
+        for (PeakListRow row : input.getAlignment()) {
+            SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC) row.clone();
+            this.setRules(clonedRow);
+            als.add(clonedRow);
+            this.numberRowProcessed++;
+        }
+        SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
+        filtered.addAll(als);
+        return filtered;
+    }
 
-	public SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
-		//we don't want to apply this filter in the peaks with Quant Mass		
-		this.input = input;
-		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
-
-		for (PeakListRow row : input.getAlignment()) {
-				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC)row.clone();
-				this.setRules(clonedRow);				
-				als.add(clonedRow);
-				this.numberRowProcessed++;
-		}
-		SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
-		filtered.addAll(als);
-		return filtered;
-	}
-
-	private void setRules(SimplePeakListRowGCGC clonedRow) {
-		Spectrum spectra = clonedRow.getSpectrum();
+    private void setRules(SimplePeakListRowGCGC clonedRow) {
+        Spectrum spectra = clonedRow.getSpectrum();
         spectra.sort(SortingMode.INTENSITY);
-		List<ComparablePair<Integer, Integer>> spectrumRow = spectra.getPeakList();
-		for(String[] rule: this.rules){
-			Rules r = new Rules( clonedRow, spectrumRow,  rule[1]);
-			if(r.getResult()){
-				String rowClass = clonedRow.getMolClass();
-				if(rowClass != null && !rowClass.isEmpty()){
-					rowClass += " \\\\ ";
-					rowClass += rule[0];
-				}else{
-					rowClass = rule[0];
-				}
-				clonedRow.setMolClass(rowClass);
-			}
-		}
-	}
-
-
+        List<ComparablePair<Integer, Integer>> spectrumRow = spectra.getPeakList();
+        for (String[] rule : this.rules) {
+            Rules r = new Rules(clonedRow, spectrumRow, rule[1]);
+            if (r.getResult()) {
+                String rowClass = clonedRow.getMolClass();
+                if (rowClass != null && !rowClass.isEmpty()) {
+                    rowClass += " \\\\ ";
+                    rowClass += rule[0];
+                } else {
+                    rowClass = rule[0];
+                }
+                clonedRow.setMolClass(rowClass);
+            }
+        }
+    }
 }
