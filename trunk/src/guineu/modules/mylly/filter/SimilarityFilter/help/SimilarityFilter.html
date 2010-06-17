@@ -9,26 +9,27 @@
         <h1>Similarity Filter</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
+            This algorithm filters all compounds that have less similarity than the user-defined similarity.
         </p>
         <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
+            The user can choose between two kinds of similarity (maximum and mean) and the filter can
+            delete the compounds or rename them to "unknown".
         </p>
-
-        <p>
-            These files should contain this columns:
-        </p>
-        <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
-        </p>
+        
+        
         <h4>Method parameters</h4>
         <dl>
-            <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
+            <dt>Suffix</dt>
+            <dd>This text will be added to the name of the filtered version of the data set so
+                that the user will be able to distinguish between both.</dd>
+            <dt>Similarity used</dt>
+            <dd>There are two options: maximum similarity (by defect) and mean similarity. One of
+                these two similarities is used by the algorithm to filter the compounds.</dd>
+            <dt>Action</dt>
+            <dd>Compounds that meet the filtering criteria may be deleted or renamed to "unknown"
+                by the algorithm </dd>
+            <dt>Minimum similarity required</dt>
+            <dd>The user has to set the similarity threshold.</dd>
         </dl>
 
     </body>
