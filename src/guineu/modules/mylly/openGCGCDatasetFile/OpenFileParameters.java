@@ -31,7 +31,7 @@ public class OpenFileParameters extends SimpleParameterSet{
             "File Name", null, "File Name", null);
 
     public static final Parameter numColumns = new SimpleParameter(
-            ParameterType.INTEGER, "Number of Columns for Parameters",
+            ParameterType.INTEGER, "Number of Columns for Parameters: ",
             "Number of columns before the columns corresponding to the samples", new Integer(10));
     
     public OpenFileParameters() {

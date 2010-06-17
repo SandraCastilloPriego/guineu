@@ -89,7 +89,7 @@ public class CalculateDeviationsTask implements Task {
             double rti = idealPeak.getSecond();
 
             for (PeakListRow ar : al.getAlignment()) {
-                if (names.contains(ar.getVar("getName")) || names.contains(ar.getVar("getCAS"))) {
+                if (names.contains((String)ar.getVar("getName")) || names.contains((String)ar.getVar("getCAS"))) {
                     double diff = Math.abs(rti - (Double) ar.getVar("getRTI"));
                     representatives.put(i, diff);
                 }
@@ -147,8 +147,6 @@ public class CalculateDeviationsTask implements Task {
                 error = true;
             }
             if (error) {
-//				throw new IOException("Line was malformed:\n" + line);
-                //just skip the line
             }
         }
         return l;
