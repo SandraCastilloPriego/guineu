@@ -30,8 +30,8 @@ public class CalculateDeviationsParameters extends SimpleParameterSet {
 
 
  public static final Parameter fileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "Name Filter File: ",
-            "Name Filter File", null, "Name Filter File", null);
+            ParameterType.FILE_NAME, "File Name: ",
+            "Name of the File", null, "Name of the File", null);
 	
 	
 	public CalculateDeviationsParameters() {

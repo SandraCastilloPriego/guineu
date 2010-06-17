@@ -9,26 +9,31 @@
         <h1>Calculate Deviations Filter</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
+            This module can work with two different types of files. The basic one is a text file
+            which has "\t" as a separator of each field.
+        </p> 
+        <p>
+            This file should contain this fields:
         </p>
         <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
+            <img src="DeviationsFile.png" name="Deviation file">
         </p>
 
         <p>
-            These files should contain this columns:
+            The second type of file is in XML format:
         </p>
         <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
+            <img src="DeviationsXMLFile.png" name="Deviation XML file">
+        </p>
+
+        <p>
+            The algorithm uses the information of the above files to find the right
+            compounds and calculate the deviation in the retention time index.
         </p>
         <h4>Method parameters</h4>
         <dl>
             <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
+            <dd>The path where the file should be found.</dd>
         </dl>
 
     </body>
