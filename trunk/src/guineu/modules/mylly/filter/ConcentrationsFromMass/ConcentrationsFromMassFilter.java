@@ -44,10 +44,10 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
 
 	public void initModule() {		
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Recalculation of the intensities..",
+		desktop.addMenuItem(GuineuMenu.MYLLY, "Recalculate intensities..",
 				"Recalculation of the intensities of peaks with mass information.", KeyEvent.VK_E, this, null, null);
 
-	}
+        }
 
 	public void taskStarted(Task task) {
 		logger.info("Recalculating intensities");
@@ -89,7 +89,7 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
 	public Task[] runModule() {
 
 		Dataset[] DataFiles = desktop.getSelectedDataFiles();
-
+            
 		// prepare a new group of tasks
 		Task tasks[] = new ConcentrationsFromMassFilterTask[DataFiles.length];
 		for (int cont = 0; cont < DataFiles.length; cont++) {

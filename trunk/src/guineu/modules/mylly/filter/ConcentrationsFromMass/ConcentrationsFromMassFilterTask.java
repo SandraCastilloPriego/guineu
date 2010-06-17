@@ -31,6 +31,8 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,36 +74,43 @@ public class ConcentrationsFromMassFilterTask implements Task {
     public void run() {
         status = TaskStatus.PROCESSING;
         try {
+
             SimpleGCGCDataset newDataset = (SimpleGCGCDataset) dataset.clone();
+            newDataset.setDatasetName(newDataset.getDatasetName() + "- Filtered");
             for (PeakListRow row : newDataset.getAlignment()) {
                 if (((SimplePeakListRowGCGC) row).getMass() >= 0) {
 
-                    int intensity = 0;
-
-                    Spectrum sp = ((SimplePeakListRowGCGC) row).getSpectrum();
-
-                    for (ComparablePair<Integer, Integer> list : sp.getPeakList()) {
-                        System.out.println("first: " + list.getFirst());
-                        if (list.getFirst() == ((SimplePeakListRowGCGC) row).getMass()) {
-                            intensity = list.getSecond();
-                            System.out.println("second: " + list.getSecond());
-                            break;
+                    String compoundName = (String) row.getVar("getName");
+                    List<StandardCompoundsEnum> values = new ArrayList<StandardCompoundsEnum>();
+                    for (StandardCompoundsEnum s : StandardCompoundsEnum.values()) {
+                        if (compoundName.compareTo(s.getName()) == 0) {
+                            values.add(s);
                         }
                     }
-                     System.out.println("---");
-
-                    for (String name : newDataset.getNameExperiments()) {
-                        double newConcentration = 0;
-                        double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
-                        double constant = concentration / intensity;
-                        for (ComparablePair<Integer, Integer> list : sp.getPeakList()) {
-                            newConcentration += (list.getSecond() * constant);
+                    StandardCompoundsEnum val = null;
+                    if (values.size() > 0) {
+                        val = values.get(0);
+                        if (values.size() > 1) {
+                            double mass = (Double) row.getVar("getMass");
+                            for (StandardCompoundsEnum s : values) {
+                                if (mass == s.getMass()) {
+                                    val = s;
+                                }
+                            }
                         }
-                        if (newConcentration != Double.POSITIVE_INFINITY) {
-                            ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
-                        }else{
-                             ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                    }
+                    if (val != null) {
+                        for (String name : newDataset.getNameExperiments()) {
+                            double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
+                            double newConcentration = val.getSumIntensity() * (concentration / val.getIntensity());
+                            if (newConcentration != Double.POSITIVE_INFINITY) {
+                                ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
+                            } else {
+                                ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                            }
                         }
+                    } else {
+                        ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
                     }
                 }
             }
