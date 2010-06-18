@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Documentation of the project.
 = Index =
 
 [https://code.google.com/p/guineu/wiki/openFile.html 1. GCxGC-MS Open Files - Open one sample file]
