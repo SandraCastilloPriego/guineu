@@ -76,29 +76,29 @@ public class Singling {
 			_unknownsList = new ArrayList<SimplePeakListRowGCGC>();
 		}
 
-		public void addAlignment(SimplePeakListRowGCGC peak) {
-			if (peak.getMaxSimilarity() < _minSimilarity) {
+		public void addAlignment(SimplePeakListRowGCGC row) {
+			if (row.getMaxSimilarity() < _minSimilarity) {
 				return;
 			}
 
-			if (peak.getName().contains(GCGCDatum.UNKOWN_NAME)) {
+			if (row.getName().contains(GCGCDatum.UNKOWN_NAME)) {
 				if (!_filterUnknowns) {
-					_unknownsList.add(peak);
+					_unknownsList.add(row);
 				}
 				return;
 			}
 
-			Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC> pair = _peaks.get(peak.getName());
-			if (!_peaks.containsKey(peak.getName())) {
+			Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC> pair = _peaks.get(row.getName());
+			if (!_peaks.containsKey(row.getName())) {
 				pair = new Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>(null, null);
-				_peaks.put(peak.getName(), pair);
+				_peaks.put(row.getName(), pair);
 			}
 
 			//First of pair, the one with most peaks
 			boolean setFirst = false;
 			if (pair.getFirst() != null) {
-				int peakCountDiff = (int) (peak.nonNullPeakCount() - pair.getFirst().nonNullPeakCount());
-				if (peakCountDiff > 0 || (peakCountDiff == 0 && peak.getMaxSimilarity() >
+				int peakCountDiff = (int) (row.nonNullPeakCount() - pair.getFirst().nonNullPeakCount());
+				if (peakCountDiff > 0 || (peakCountDiff == 0 && row.getMaxSimilarity() >
 						pair.getFirst().getMaxSimilarity())) {
 					setFirst = true;
 				}
@@ -106,38 +106,38 @@ public class Singling {
 				setFirst = true;
 			}
 			if (setFirst) {
-				pair.setFirst(peak);
+				pair.setFirst(row);
 			}
 
 			//Second of pair, the closest to ideal by RTI alignment.
-			boolean distanceLess = (pair.getSecond() == null) || peak.getDistValue().compareTo(pair.getSecond().getDistValue()) < 0;
+			boolean distanceLess = (pair.getSecond() == null) || row.getDistValue().compareTo(pair.getSecond().getDistValue()) < 0;
 
-			boolean similarityMore = (pair.getSecond() == null) || peak.getDistValue().compareTo(pair.getSecond().getDistValue()) == 0 &&
-					peak.getMaxSimilarity() > pair.getSecond().getMaxSimilarity();
+			boolean similarityMore = (pair.getSecond() == null) || row.getDistValue().compareTo(pair.getSecond().getDistValue()) == 0 &&
+					row.getMaxSimilarity() > pair.getSecond().getMaxSimilarity();
 
 			boolean setSecond = _containsMainPeaks && (distanceLess || similarityMore);
 			if (setSecond) {
-				pair.setSecond(peak);
+				pair.setSecond(row);
 			}
 
 		}
 
 		public List<SimplePeakListRowGCGC> getAlignmentRows() {
-			ArrayList<SimplePeakListRowGCGC> peaks = _containsMainPeaks ? new ArrayList<SimplePeakListRowGCGC>(2 * _peaks.size()) : new ArrayList<SimplePeakListRowGCGC>(_peaks.size());
+			ArrayList<SimplePeakListRowGCGC> rows = _containsMainPeaks ? new ArrayList<SimplePeakListRowGCGC>(2 * _peaks.size()) : new ArrayList<SimplePeakListRowGCGC>(_peaks.size());
 
 			for (Map.Entry<String, Pair<SimplePeakListRowGCGC, SimplePeakListRowGCGC>> peak : _peaks.entrySet()) {
 				SimplePeakListRowGCGC first = peak.getValue().getFirst();
-				peaks.add(first);
+				rows.add(first);
 				SimplePeakListRowGCGC second = peak.getValue().getSecond();
 
 				if (_containsMainPeaks && !(first.equals(second))) {
-					peaks.add(second);
+					rows.add(second);
 				}
 			}
 			for (SimplePeakListRowGCGC row : _unknownsList) {
-				peaks.add(row);
+				rows.add(row);
 			}
-			return peaks;
+			return rows;
 		}
 	}
 
