@@ -1,7 +1,7 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
     <head>
-        <title>GCxGC-MS Filter - RTI Preparation File</title>
+        <title>GCxGC-MS Tool - RTI Preparation File</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" type="text/css" href="/guineu/desktop/impl/helpsystem/HelpStyles.css">
     </head>
@@ -9,26 +9,17 @@
         <h1>RTI Preparation File</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
+            this module opens a text format file which contains information about the
+            retention time index of some compounds and transform it in a XML format file.
+            The XML file can be used by the "Calculate deviations" filter.
         </p>
-        <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
-        </p>
-
-        <p>
-            These files should contain this columns:
-        </p>
-        <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
-        </p>
+        
         <h4>Method parameters</h4>
         <dl>
-            <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
+            <dt>Input file</dt>
+            <dd>Path where the input file should be found.</dd>
+            <dt>Output file</dt>
+            <dd>Path where the output file should be saved.</dd>
         </dl>
 
     </body>
