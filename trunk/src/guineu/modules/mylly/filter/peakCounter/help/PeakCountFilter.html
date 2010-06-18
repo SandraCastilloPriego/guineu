@@ -9,26 +9,18 @@
         <h1>Peak Count Filter</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
+            This module deletes all rows in a selected peak list that contains less
+            peaks than the number set by the user.
         </p>
-        <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
-        </p>
-
-        <p>
-            These files should contain this columns:
-        </p>
-        <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
-        </p>
+        
         <h4>Method parameters</h4>
         <dl>
-            <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
+            <dt>Suffix</dt>
+            <dd>This text will be added to the name of the filtered version of the data set so
+                that the user will be able to distinguish between both.</dd>
+            <dt>Peak Count less than ... samples</dt>
+            <dd>Minimum number of peaks presents for each compound.</dd>
+
         </dl>
 
     </body>
