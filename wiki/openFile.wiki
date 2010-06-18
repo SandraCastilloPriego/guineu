@@ -1,13 +1,11 @@
-#summary One-sentence summary of this page.
+= Description =
 
-= Introduction =
+This module opens text files which contain GCxGC-MS data.
 
-Add your content here.
+The order of the columns is not important but their name should be always the same.
 
+The text files should contain this columns:
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Name* || *R.T (s)* || *Retention Index* || *CAS* || *Sample Concentration* || *Quant Masses* || *UniqueMass* || *Quant S/N* || *Area* || *Similarity* || *Weight* || *Classifications* || *Type* || *Spectra* ||
+|| cis-3-Hexenal || 270 , 1.690 ||996.11 || 6789-80-6 ||  || Dt || 55 || 100.93 || 267525 || 755 || 98 ||  || Unknown ||55:999 57:319 69:276 ..||
+|| Unknown 1 || 275 , 0.110 || 999.08 || 16587-45-4 || || Dt || 175 || 52.77 || 163655 || 423 || 190 || Class - 1 || Unknown || 74:999 175:590 50:552 .. ||
