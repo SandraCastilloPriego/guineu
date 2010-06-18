@@ -30,58 +30,51 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * Corrects RTIs for all peaks based on give list on alkanes.
- * @author jmjarkko
- *
- */
+
 public class PubChem {
 
-	Hashtable<String, String[]> pubchemNames;
+    Hashtable<String, String[]> pubchemNames;
 
-	public PubChem() {
-		this.pubchemNames = new Hashtable<String, String[]>();
-	}
+    public PubChem() {
+        this.pubchemNames = new Hashtable<String, String[]>();
+    }
 
-	public String getName() {
-		return "Filter by peak name";
-	}
+    public String getName() {
+        return "PubChem ID Filter";
+    }
 
-	public void createCorrector(File pubChemFile) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(pubChemFile));
-		CsvReader reader = new CsvReader(br);
+    public void createCorrector(File pubChemFile) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(pubChemFile));
+        CsvReader reader = new CsvReader(br);
 
-		while (reader.readRecord()) {
-			String data[] = reader.getValues();
-			try {		
-				this.pubchemNames.put(data[3], data);
-			} catch (Exception e) {
-			}
-		}
+        while (reader.readRecord()) {
+            String data[] = reader.getValues();
+            try {
+                this.pubchemNames.put(data[3], data);
+            } catch (Exception e) {
+            }
+        }
 
-	}
+    }
 
-	public SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
-		//we don't want to apply this filter in the peaks with Quant Mass		
+    public SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
+        List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
 
-		List<SimplePeakListRowGCGC> als = new ArrayList<SimplePeakListRowGCGC>();
-
-		for (PeakListRow row : input.getAlignment()) {
-		
-			if (this.pubchemNames.containsKey(row.getVar("getName"))) {
-				SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC) row.clone();
-				String[] data = this.pubchemNames.get(row.getVar("getName"));
-				clonedRow.setPubChemID(data[1]);
-				clonedRow.setCAS(data[0]);
-				clonedRow.setName(data[2]);
-				als.add(clonedRow);
-			}else{
-				als.add((SimplePeakListRowGCGC) row.clone());
-			}
-
-		}
-		SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
-		filtered.addAll(als);
-		return filtered;
-	}
+        for (PeakListRow row : input.getAlignment()) {
+            if (this.pubchemNames.containsKey((String) row.getVar("getName"))) {
+                SimplePeakListRowGCGC clonedRow = (SimplePeakListRowGCGC) row.clone();
+                String[] data = this.pubchemNames.get((String) row.getVar("getName"));
+                clonedRow.setPubChemID(data[1]);
+                clonedRow.setCAS(data[0]);
+                clonedRow.setName(data[2]);
+                als.add(clonedRow);
+            } else {
+                als.add((SimplePeakListRowGCGC) row.clone());
+            }
+        }
+        
+        SimpleGCGCDataset filtered = new SimpleGCGCDataset(input.getColumnNames(), input.getParameters(), input.getAligner());
+        filtered.addAll(als);
+        return filtered;
+    }
 }
