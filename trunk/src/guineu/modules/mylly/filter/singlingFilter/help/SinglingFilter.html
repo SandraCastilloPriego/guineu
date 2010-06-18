@@ -9,26 +9,21 @@
         <h1>Singling Filter</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
-        </p>
-        <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
-        </p>
-
-        <p>
-            These files should contain this columns:
-        </p>
-        <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
-        </p>
+            The algorithm chooses between the compounds with the same name the one which contains the largest
+            peak and also the peak nearest to the ideal based on its similarity. This two characteristics can
+            correspond to the same peak and in that case the algorithm will leave only this peak and filter out
+            the rest with the same name.
+        </p>        
+       
         <h4>Method parameters</h4>
         <dl>
-            <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
+            <dt>Suffix</dt>
+            <dd>This text will be added to the name of the filtered version of the data set so
+                that the user will be able to distinguish between both.</dd>
+            <dt>Filter Unknowns Peaks</dt>
+            <dd>Remove the compounds identify as unknown.</dd>
+            <dt>Minimun similarity required</dt>
+            <dd>Minimum value of similarity below which compounds will be deleted.</dd>
         </dl>
 
     </body>
