@@ -1,7 +1,7 @@
 #summary One-sentence summary of this page.
 = Index =
 
-[../../openFile.html 1. GCxGC-MS Open Files - Open one sample file]
+[https://code.google.com/p/guineu/wiki/openFile.html 1. GCxGC-MS Open Files - Open one sample file]
 
 = Introduction =
 
