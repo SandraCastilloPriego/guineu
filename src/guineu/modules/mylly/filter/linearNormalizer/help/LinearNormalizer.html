@@ -9,27 +9,28 @@
         <h1>Linear Normalizer</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
+            This algorithm normalize the intensities of the compounds using one or more
+            standards compounds.
         </p>
         <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
+            The normalization algorithm will be different depending on the numbers
+            of standards selected by the user.        
+            If there is only one selected standard, its amount will be fix to 100 and the
+            rest of intensities will be change according with the standard:
         </p>
+        <br>
+        <center>
+            <b>[100 * Compound intensity]/[Standard intensity]
+            </b>
+        </center>
+
 
         <p>
-            These files should contain this columns:
+            In the case that more than one standard have been selected, the algorithm will
+            select the most appropriate standard for each row and it will be used to do the
+            normalization as is explained above.
+            The selection of the standard is based on the similarity of the first retention time.
         </p>
-        <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
-        </p>
-        <h4>Method parameters</h4>
-        <dl>
-            <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
-        </dl>
 
     </body>
 </html>
