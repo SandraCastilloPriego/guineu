@@ -2,7 +2,7 @@
 Copyright 2007-2010 VTT Biotechnology
 This file is part of GUINEU.
  */
-package guineu.modules.file.introExperimentsDB;
+package guineu.modules.database.introExperimentsDB;
 
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
