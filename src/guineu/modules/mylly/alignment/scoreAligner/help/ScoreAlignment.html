@@ -12,19 +12,20 @@
             This algorithm aligns the compounds of different peak lists, creating a new peak list with
             multiple samples.
         </p>
-        <p>
+
         <h3>Algorithm</h3>
-        The alignment algorith first goes through all files, creating a list of peaks
-        for each of the files. These lists are then used to construct alignment paths
-        using the algorithm presented below. A list of alignment paths A is the constructed
-        and sorted based on scoring of each individual alignment path. Starting with the path
-        of lowest score, alignment paths are added to the list of actual alignments L. As an
-        alignment path P is added to this list L, it is removed from A, and A is then purged
-        of alignment paths that contain peaks found in P. Peaks in P are then also removed
-        from list of peaks in all files.
-    </p>
-    <h3>Pseudocode</h3>
-    <pre><code>
+        <p>
+            The alignment algorith first goes through all files, creating a list of peaks
+            for each of the files. These lists are then used to construct alignment paths
+            using the algorithm presented below. A list of alignment paths A is the constructed
+            and sorted based on scoring of each individual alignment path. Starting with the path
+            of lowest score, alignment paths are added to the list of actual alignments L. As an
+            alignment path P is added to this list L, it is removed from A, and A is then purged
+            of alignment paths that contain peaks found in P. Peaks in P are then also removed
+            from list of peaks in all files.
+        </p>
+        <h3>Pseudocode</h3>
+        <pre><code>
 1:<b>procedure</b> CREATEPATH(<i>row, col, files, params</i>)
 2:      <i>path <- emptyAlignmentPath</i>
 3:      add <i>files[row][col]</i> to <i>path</i>
@@ -52,40 +53,40 @@
 25:<b>end procedure</b>
 </code></pre>
 
-    <p>Equation to calculate the similarity between one peak and the current
-        alignment path:</p>
+        <p>Equation to calculate the similarity between one peak and the current
+            alignment path:</p>
 
-    <p>
-        ƒ(<i>s<sub><small>1</small></sub></i>, <i>s<sub><small>2</small></sub></i>) = ∑ ((<i>m<sub><small>1</small></sub></i><i>m<sub><small>2</small></sub></i>)<sup><small>j</small></sup>(<i>I<sub><small>1</small></sub></i>, <i>I<sub><small>2</small></sub></i>)<sup><small>k</small></sup>)<sup><small>2</small></sup>
-        / ∑ <i>m<sub><small>1</small></sub><sup><small>2j</small></sup>I<sub><small>1</small></sub></i><sup><small>2k</small></sup> ∑ <i>m<sub><small>2</small></sub><sup><small>2j</small></sup>I<sub><small>2</small></sub></i><sup><small>2k</small></sup>
-    </p>
-    <p>
+        <p>
+            ƒ(<i>s<sub><small>1</small></sub></i>, <i>s<sub><small>2</small></sub></i>) = ∑ ((<i>m<sub><small>1</small></sub></i><i>m<sub><small>2</small></sub></i>)<sup><small>j</small></sup>(<i>I<sub><small>1</small></sub></i>, <i>I<sub><small>2</small></sub></i>)<sup><small>k</small></sup>)<sup><small>2</small></sup>
+            / ∑ <i>m<sub><small>1</small></sub><sup><small>2j</small></sup>I<sub><small>1</small></sub></i><sup><small>2k</small></sup> ∑ <i>m<sub><small>2</small></sub><sup><small>2j</small></sup>I<sub><small>2</small></sub></i><sup><small>2k</small></sup>
+        </p>
+        <p>
 
-    </p>
-    <h4>Method parameters</h4>
-    <dl>
-        <dt>RT Lax</dt>
-        <dd></dd>
-        <dt>RT2 Lax</dt>
-        <dd></dd>
-        <dt>RTI Lax</dt>
-        <dd></dd>
-        <dt>RT penalty</dt>
-        <dd></dd>
-        <dt>RT2 penalty</dt>
-        <dd></dd>
-        <dt>RTI penalty</dt>
-        <dd></dd>
-        <dt>Minimum Spectrum Match</dt>
-        <dd></dd>
-        <dt>Bonus for matching names</dt>
-        <dd></dd>
-        <dt>Drop peaks with similarity less than</dt>
-        <dd></dd>
-        <dt>Use Concentrations</dt>
-        <dd></dd>
-    </dl>
+        </p>
+        <h4>Method parameters</h4>
+        <dl>
+            <dt>RT Lax</dt>
+            <dd></dd>
+            <dt>RT2 Lax</dt>
+            <dd></dd>
+            <dt>RTI Lax</dt>
+            <dd></dd>
+            <dt>RT penalty</dt>
+            <dd></dd>
+            <dt>RT2 penalty</dt>
+            <dd></dd>
+            <dt>RTI penalty</dt>
+            <dd></dd>
+            <dt>Minimum Spectrum Match</dt>
+            <dd></dd>
+            <dt>Bonus for matching names</dt>
+            <dd></dd>
+            <dt>Drop peaks with similarity less than</dt>
+            <dd></dd>
+            <dt>Use Concentrations</dt>
+            <dd></dd>
+        </dl>
 
-</body>
+    </body>
 </html>
 
