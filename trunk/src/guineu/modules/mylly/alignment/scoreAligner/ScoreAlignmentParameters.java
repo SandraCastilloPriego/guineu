@@ -46,7 +46,7 @@ public class ScoreAlignmentParameters extends SimpleParameterSet {
 			"RT2 penalty", "", new Double(35.0),
 			new Double(0.0), null);
 	public static final Parameter minSpectrumMatch = new SimpleParameter(
-			ParameterType.DOUBLE, "Minimun Spectrum Match:",
+			ParameterType.DOUBLE, "Minimum Spectrum Match:",
 			"Minimun Spectrum Match", "", new Double(0.75),
 			new Double(0.0), null);
 	public static final Parameter nameMatchBonus = new SimpleParameter(
