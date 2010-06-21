@@ -9,28 +9,83 @@
         <h1>Score Alignment</h1>
         <h2>Description</h2>
         <p>
-            this module opens files which have been already aligned with Guineu
-            and contain the imformation of more than one sample.
+            This algorithm aligns the compounds of different peak lists, creating a new peak list with
+            multiple samples.
         </p>
         <p>
-            CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to
-            the parameters is not important.
-        </p>
+        <h3>Algorithm</h3>
+        The alignment algorith first goes through all files, creating a list of peaks
+        for each of the files. These lists are then used to construct alignment paths
+        using the algorithm presented below. A list of alignment paths A is the constructed
+        and sorted based on scoring of each individual alignment path. Starting with the path
+        of lowest score, alignment paths are added to the list of actual alignments L. As an
+        alignment path P is added to this list L, it is removed from A, and A is then purged
+        of alignment paths that contain peaks found in P. Peaks in P are then also removed
+        from list of peaks in all files.
+    </p>
+    <h3>Pseudocode</h3>
+    <pre><code>
+1:<b>procedure</b> CREATEPATH(<i>row, col, files, params</i>)
+2:      <i>path <- emptyAlignmentPath</i>
+3:      add <i>files[row][col]</i> to <i>path</i>
+4:      <b>for</b> <i>i</i> <- <i>cols</i> + 1 to <i>ncols(files)</i> <b>do</b>
+5:          <i>best</i> <- <i>nil, score<sub>best</sub></i> <- <i></i>∞
+6:          <b>for all</b> compounds <i>c</i> in column <i>i</i> of files <b>do</b>
+7:              <i>score</i> <- ∞
+8:              <i>∆<sub>RT1</sub></i> <- |c.RT1 - <i>path</i>.RT1|
+9:              <i>∆<sub>RT2</sub></i> <- |c.RT2 - <i>path</i>.RT2|
+10:             <i>∆<sub>RTI</sub></i> <- |c.RTI - <i>path</i>.RTI|
+11:             <b>if</b> All ∆<sub>RTI<sub>x</sub></sub> < <i>params.max<sub>RT<sub>x</sub></sub></i> <b>then</b>
+12:                 sim <- ƒ(<i>path,c</i>) (see equation after the pseudocode)
+13:                 <b>if</b> <i>sim</i> < <i>params.min<sub>similarity</sub></i> <b>then</b>
+14:                    <i>score</i> <- <i>∆<sub>RT1</sub></i> + <i>∆<sub>RT2</sub></i> + <i>∆<sub>RTI</sub></i>
+15:                 <b>end if</b>
+16:             <b>end if</b>
+17:             <b>if</b> <i>score</i> < <i>score<sub>best</sub> <b>then</b>
+18:                 <i>best</i> <- <i>c</i>
+19:                 <i>score<sub>best</sub></i> <- <i>score</i>
+20:             <b>end if</b>
+21:         <b>end for</b>
+22:         add <i>best</i> to <i>path</i>
+23:     <b>end for</b>
+24:     <b>return</b> <i>path</i>
+25:<b>end procedure</b>
+</code></pre>
 
-        <p>
-            These files should contain this columns:
-        </p>
-        <p>
-            <img src="AlignedFile.png" name="GCxGC-MS file">
-        </p>
-        <h4>Method parameters</h4>
-        <dl>
-            <dt>File Name</dt>
-            <dd>The path where the file shoulg be found.</dd>
-            <dt>Number of Columns for Parameters</dt>
-            <dd>Number of columns before the columns corresponding to the samples</dd>
-        </dl>
+    <p>Equation to calculate the similarity between one peak and the current
+        alignment path:</p>
 
-    </body>
+    <p>
+        ƒ(<i>s<sub><small>1</small></sub></i>, <i>s<sub><small>2</small></sub></i>) = ∑ ((<i>m<sub><small>1</small></sub></i><i>m<sub><small>2</small></sub></i>)<sup><small>j</small></sup>(<i>I<sub><small>1</small></sub></i>, <i>I<sub><small>2</small></sub></i>)<sup><small>k</small></sup>)<sup><small>2</small></sup>
+        / ∑ <i>m<sub><small>1</small></sub><sup><small>2j</small></sup>I<sub><small>1</small></sub></i><sup><small>2k</small></sup> ∑ <i>m<sub><small>2</small></sub><sup><small>2j</small></sup>I<sub><small>2</small></sub></i><sup><small>2k</small></sup>
+    </p>
+    <p>
+
+    </p>
+    <h4>Method parameters</h4>
+    <dl>
+        <dt>RT Lax</dt>
+        <dd></dd>
+        <dt>RT2 Lax</dt>
+        <dd></dd>
+        <dt>RTI Lax</dt>
+        <dd></dd>
+        <dt>RT penalty</dt>
+        <dd></dd>
+        <dt>RT2 penalty</dt>
+        <dd></dd>
+        <dt>RTI penalty</dt>
+        <dd></dd>
+        <dt>Minimum Spectrum Match</dt>
+        <dd></dd>
+        <dt>Bonus for matching names</dt>
+        <dd></dd>
+        <dt>Drop peaks with similarity less than</dt>
+        <dd></dd>
+        <dt>Use Concentrations</dt>
+        <dd></dd>
+    </dl>
+
+</body>
 </html>
 
