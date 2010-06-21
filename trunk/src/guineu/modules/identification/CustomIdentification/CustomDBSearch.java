@@ -85,7 +85,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
 
     }
 
-     public Task[] runModule(Dataset[] peakLists,
+    public Task[] runModule(Dataset[] peakLists,
             ParameterSet parameters) {
 
         if (peakLists == null) {

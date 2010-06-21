@@ -15,18 +15,15 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.identification.CustomIdentification;
 
-
 public enum FieldItem {
-	
+
     FIELD_ID("ID"),
     FIELD_MZ("m/z"),
     FIELD_RT("Retention time"),
     FIELD_NAME("Identity"),
     FIELD_FORMULA("Formula");
-     
     private final String name;
 
     FieldItem(String name) {
@@ -36,9 +33,8 @@ public enum FieldItem {
     public String getName() {
         return this.name;
     }
-    
-    public String toString(){
-    	return this.name;
-    }
 
+    public String toString() {
+        return this.name;
+    }
 }
