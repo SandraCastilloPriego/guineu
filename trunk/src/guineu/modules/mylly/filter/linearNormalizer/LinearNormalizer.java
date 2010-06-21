@@ -52,6 +52,9 @@ public class LinearNormalizer {
 			sort(tempRows);
 			_standards = tempRows;
 
+                        // after sorting the standards by RT, it creates a list with the average of
+                        // the retention time 1 of one standard and the next standard. It will be use
+                        // and delimitation to choose the standard that will be used for each row.
 			for (int i = 0; i < tempRows.size(); i++) {
 				double curPoint = tempRows.get(i).getRT1();
 				double nextPoint = (i == tempRows.size() - 1 ? Double.POSITIVE_INFINITY : tempRows.get(i + 1).getRT1());
