@@ -23,4 +23,4 @@
  * Filtering
 
 * Development
-  * [NetbeansProjectSetup NetBeans Project Setup]
+ * [NetbeansProjectSetup NetBeans Project Setup]
