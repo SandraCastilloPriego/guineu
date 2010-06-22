@@ -6,12 +6,12 @@
    * [openFile Open one sample file]
    * [openMultipleFile Open multiple sample file]
    * [saveFile Save data set file]
- * Alignment
+ * [GCGCAlignment Alignment]
   * [ScoreAlignment Score Alignment]
- * Identificiation
+ * [GCGCIdentification Identificiation]
   * [GroupIdentification Group Identification]
   * [NameIdentification Name Identification]
- * Filtering
+ * [GCGCFiltering Filtering]
   * [NameFilter  Name Filter]
 
 * LC-MS Algorithms
