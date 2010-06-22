@@ -15,7 +15,7 @@
 
         <h3>Algorithm</h3>
         <p>
-            The alignment algorith first goes through all files, creating a list of peaks
+            The alignment algorithm first goes through all files, creating a list of peaks
             for each of the files. These lists are then used to construct alignment paths
             using the algorithm presented below. A list of alignment paths A is the constructed
             and sorted based on scoring of each individual alignment path. Starting with the path
@@ -57,8 +57,8 @@
             alignment path:</p>
 
         <p>
-            ƒ(<i>s<sub><small>1</small></sub></i>, <i>s<sub><small>2</small></sub></i>) = ∑ ((<i>m<sub><small>1</small></sub></i><i>m<sub><small>2</small></sub></i>)<sup><small>j</small></sup>(<i>I<sub><small>1</small></sub></i>, <i>I<sub><small>2</small></sub></i>)<sup><small>k</small></sup>)<sup><small>2</small></sup>
-            / ∑ <i>m<sub><small>1</small></sub><sup><small>2j</small></sup>I<sub><small>1</small></sub></i><sup><small>2k</small></sup> ∑ <i>m<sub><small>2</small></sub><sup><small>2j</small></sup>I<sub><small>2</small></sub></i><sup><small>2k</small></sup>
+            ƒ(<i>s<sub><small>1</small></sub></i>, <i>s<sub><small>2</small></sub></i>) = [∑ ((<i>m<sub><small>1</small></sub></i><i>m<sub><small>2</small></sub></i>)<sup><small>j</small></sup>(<i>I<sub><small>1</small></sub></i>, <i>I<sub><small>2</small></sub></i>)<sup><small>k</small></sup>)<sup><small>2</small></sup>]
+            / [∑ <i>m<sub><small>1</small></sub><sup><small>2j</small></sup>I<sub><small>1</small></sub></i><sup><small>2k</small></sup> ∑ <i>m<sub><small>2</small></sub><sup><small>2j</small></sup>I<sub><small>2</small></sub></i><sup><small>2k</small></sup>]
         </p>
         <p>
 
@@ -66,25 +66,25 @@
         <h4>Method parameters</h4>
         <dl>
             <dt>RT Lax</dt>
-            <dd></dd>
+            <dd>Maximum difference allowed between the retention time of the path and the retention time of the candidate peak.</dd>
             <dt>RT2 Lax</dt>
-            <dd></dd>
+            <dd>Maximum difference allowed between the second retention time of the path and the second retention time of the candidate peak.</dd>
             <dt>RTI Lax</dt>
-            <dd></dd>
+            <dd>Maximum difference allowed between the retention time index of the path and the retention time index of the candidate peak.</dd>
             <dt>RT penalty</dt>
-            <dd></dd>
+            <dd>This value is used to calculate the path score.<br> <b> <i>score</i> = <i>∆<sub>RT1</sub></i> * <i>RT penalty</i> + <i>∆<sub>RT2</sub></i> * <i>RT2 penalty</i> + <i>∆<sub>RTI</sub></i> * <i>RTI penalty</i></b></dd>
             <dt>RT2 penalty</dt>
-            <dd></dd>
+            <dd>This value is used to calculate the path score.<br><b><i>score</i> = <i>∆<sub>RT1</sub></i> * <i>RT penalty</i> + <i>∆<sub>RT2</sub></i> * <i>RT2 penalty</i> + <i>∆<sub>RTI</sub></i> * <i>RTI penalty</i></b></dd>
             <dt>RTI penalty</dt>
-            <dd></dd>
+            <dd>This value is used to calculate the path score. <br><b><i>score</i> = <i>∆<sub>RT1</sub></i> * <i>RT penalty</i> + <i>∆<sub>RT2</sub></i> * <i>RT2 penalty</i> + <i>∆<sub>RTI</sub></i> * <i>RTI penalty</i></b></dd>
             <dt>Minimum Spectrum Match</dt>
-            <dd></dd>
+            <dd>Minimum similarity value between path and candidate peak spectra.</dd>
             <dt>Bonus for matching names</dt>
-            <dd></dd>
+            <dd>When the name of the path and the name of the peak are equal the score gets a bonus.</dd>
             <dt>Drop peaks with similarity less than</dt>
-            <dd></dd>
+            <dd>The algorithm doesn't take into account the peaks with less similarity than this value.</dd>
             <dt>Use Concentrations</dt>
-            <dd></dd>
+            <dd>Use concentrations instead of areas.</dd>
         </dl>
 
     </body>
