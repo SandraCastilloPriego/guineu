@@ -22,5 +22,5 @@
 * General Algorithms
  * Filtering
 
- * Development
+* Development
   * [NetbeansProjectSetup NetBeans Project Setup]
