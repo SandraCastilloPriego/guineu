@@ -7,25 +7,26 @@ This module deletes all compounds whose name is on a list of names created by th
 The list of names must be in a text format file and each name must be in different rows.
 
 Example of the content of the file:
-
+ {{{
 Tetracosane
- Tetradecane
- Tetratriacontane
- Triacontane
- Tricosane
- Tridecane
- Tritriacontane
- Undecane
- *Benzoic acid, TMS
- *3-Phenylpropionic acid, TMS
- *4-Hydroxybenzoic acid, TMS
- *3-Hydroxyphenylacetic acid, TMS
- *3-Hydroxybenzoic acid, TMS
- *2-Hydroxyphenylpropionic acid, TMS
- *3-Hydroxyphenylpropionic acid, TMS
- *4-Hydroxyphenylpropionic acid, TMS
- *3,4-Dihydroxybenzoic acid, TMS
- *3,4-Dihydroxyphenylacetic acid, TMS
+Tetradecane
+Tetratriacontane
+Triacontane
+Tricosane
+Tridecane
+Tritriacontane
+Undecane
+*Benzoic acid, TMS
+*3-Phenylpropionic acid, TMS
+*4-Hydroxybenzoic acid, TMS
+*3-Hydroxyphenylacetic acid, TMS
+*3-Hydroxybenzoic acid, TMS
+*2-Hydroxyphenylpropionic acid, TMS
+*3-Hydroxyphenylpropionic acid, TMS
+*4-Hydroxyphenylpropionic acid, TMS
+*3,4-Dihydroxybenzoic acid, TMS
+*3,4-Dihydroxyphenylacetic acid, TMS
+}}}
 
 ==== Method parameters ====
 
