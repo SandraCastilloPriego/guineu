@@ -11,7 +11,8 @@ The alignment algorithm first goes through all files, creating a list of peaks f
 === Pseudocode ===
 
 {{{
-` 1:*procedure* CREATEPATH(_row, col, files, params_)
+`
+ 1:*procedure* CREATEPATH(_row, col, files, params_)
  2:      _path <- emptyAlignmentPath_
  3:      add _files[row][col]_ to _path_
  4:      *for* _i_ <- _cols_ + 1 to _ncols(files)_ *do*
@@ -53,13 +54,14 @@ _RTI Lax_
     Maximum difference allowed between the retention time index of the path and the retention time index of the candidate peak.
 _RT penalty_
     This value is used to calculate the path score.
-* _score_ = _∆,,RT1,,_ * _RT penalty_ + _∆,,RT2,,_ * _RT2 penalty_ + _∆,,RTI,,_ * _RTI penalty_*
+* _score_ = _∆,,RT1,,_  _RT penalty_ + _∆,,RT2,,_  _RT2 penalty_ + _∆,,RTI,,_ _RTI penalty_*
 _RT2 penalty_
     This value is used to calculate the path score.
-*_score_ = _∆,,RT1,,_ * _RT penalty_ + _∆,,RT2,,_ * _RT2 penalty_ + _∆,,RTI,,_ * _RTI penalty_*
+*_score_ = _∆,,RT1,,_  _RT penalty_ + _∆,,RT2,,_  _RT2 penalty_ + _∆,,RTI,,_  _RTI penalty_*
 _RTI penalty_
     This value is used to calculate the path score.
-*_score_ = _∆,,RT1,,_ * _RT penalty_ + _∆,,RT2,,_ * _RT2 penalty_ + _∆,,RTI,,_ * _RTI penalty_*
+*_score_ = _∆,,RT1,,_  _RT penalty_ + _∆,,RT2,,_  _RT2 penalty_ + _∆,,RTI,,_  _RTI penalty_*
+
 _Minimum Spectrum Match_
     Minimum similarity value between path and candidate peak spectra.
 _Bonus for matching names_
