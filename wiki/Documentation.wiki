@@ -15,4 +15,4 @@
 
 [NameIdentification 5. Name Identification]
 ==== Filtering ====
-[openMultipleFile  Open multiple sample file]
+[NameFilter  6. Name Filter]
