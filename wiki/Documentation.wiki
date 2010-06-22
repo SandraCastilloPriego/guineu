@@ -16,6 +16,8 @@
 
 * LC-MS Algorithms
  * File
+ * Identification
+ * Filtering
 
 * General Algorithms
  * Filtering
