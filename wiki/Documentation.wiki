@@ -2,7 +2,7 @@
 = Index =
 
 * GCxGC-MS Algorithms
- * File
+ * [GCGCFile File]
    * [openFile Open one sample file]
    * [openMultipleFile Open multiple sample file]
    * [saveFile Save data set file]
