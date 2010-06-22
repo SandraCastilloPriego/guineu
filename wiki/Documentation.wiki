@@ -2,9 +2,9 @@
 = Index =
 
 == GCxGC-MS ==
-    === Open Files ===
+ === Open Files ===
    [openFile 1. Open one sample file]
 
    [openMultipleFile 2. Open multiple sample file]
-    === Alignment ===
+ === Alignment ===
    [ScoreAlignment 3. Score Alignment]
