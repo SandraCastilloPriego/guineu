@@ -1,6 +1,8 @@
 #summary Documentation of the project.
 = Index =
 
-[https://code.google.com/p/guineu/wiki/openFile 1. GCxGC-MS Open Files - Open one sample file]
-
-[https://code.google.com/p/guineu/wiki/ScoreAlignment 2. GCxGC-MS Alignment - Score Alignment]
+== GCxGC-MS ==
+    === Open Files ===
+        [https://code.google.com/p/guineu/wiki/openFile Open one sample file]
+    === Alignment ===
+        [https://code.google.com/p/guineu/wiki/ScoreAlignment Score Alignment]
