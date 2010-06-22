@@ -15,21 +15,21 @@ The alignment algorithm first goes through all files, creating a list of peaks f
  2:      path <- emptyAlignmentPath
  3:      add files[row][col] to path
  4:      for i <- cols + 1 to ncols(files) do
- 5:          best <- nil, score,,best,, <- ∞
+ 5:          best <- nil, scorebest <- ∞
  6:          for all compounds c in column i of files do
  7:              score <- ∞
- 8:              ∆,,RT1,, <- |c.RT1 - path.RT1|
- 9:              ∆,,RT2,, <- |c.RT2 - path.RT2|
- 10:             ∆,,RTI,, <- |c.RTI - path.RTI|
- 11:             if All ∆,,RTI,,x,,,, < params.max,,RT,,x,,,, then
+ 8:              ∆RT1 <- |c.RT1 - path.RT1|
+ 9:              ∆RT2 <- |c.RT2 - path.RT2|
+ 10:             ∆RTI <- |c.RTI - path.RTI|
+ 11:             if All ∆RTIx < params.maxRTx then
  12:                 sim <- ƒ(path,c) (see equation after the pseudocode)
- 13:                 if sim < params.min,,similarity,, then
- 14:                    score <- ∆,,RT1,, + ∆,,RT2,, + ∆,,RTI,,
+ 13:                 if sim < params.minsimilarity then
+ 14:                    score <- ∆RT1 + ∆RT2 + ∆RTI
  15:                 end if
  16:             end if
  17:             if score < score,,best,, then
  18:                 best <- c
- 19:                 score,best,, <- score
+ 19:                 scorebest <- score
  20:             end if
  21:         end for
  22:         add best to path
