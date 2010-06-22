@@ -13,3 +13,7 @@
   * [NameIdentification Name Identification]
  * Filtering
   * [NameFilter  Name Filter]
+* LC-MS Algorithms
+ * File
+* General Algorithms
+ * Filtering
