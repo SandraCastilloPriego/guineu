@@ -1,0 +1,5 @@
+= Group Identification =
+
+== Description ==
+
+This module uses the [http://gmd.mpimp-golm.mpg.de/ Golm metabolome Database] web services to identify the functional groups of the compounds.

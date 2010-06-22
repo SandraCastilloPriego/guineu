@@ -2,9 +2,17 @@
 = Index =
 
 == GCxGC-MS ==
-=== Open Files ===
+==== File ====
 [openFile 1. Open one sample file]
 
 [openMultipleFile 2. Open multiple sample file]
-=== Alignment ===
-[ScoreAlignment 3. Score Alignment]
+
+[saveFile 3. Save data set file]
+==== Alignment ====
+[ScoreAlignment 4. Score Alignment]
+==== Identification ====
+[GroupIdentification 5. Group Identification]
+
+[NameIdentification 5. Name Identification]
+==== Filtering ====
+[openMultipleFile  Open multiple sample file]
