@@ -8,7 +8,7 @@ CVS or Excel formats are supported by this algorithm. The order of the columns c
 
 These files should contain these columns:
 
-[https://code.google.com/p/guineu/wiki/AlignedFile.png]
+[https://code.google.com/p/guineu/wiki/AlignedFile.png Image]
 
 ==== Method parameters ====
 
