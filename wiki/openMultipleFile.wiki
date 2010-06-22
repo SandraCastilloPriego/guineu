@@ -1,0 +1,18 @@
+= Open multiple sample file =
+
+== Description ==
+
+this module opens files which have been already aligned with Guineu and contain the imformation of more than one sample.
+
+CVS or Excel formats are supported by this algorithm. The order of the columns corresponding to the parameters is not important.
+
+These files should contain these columns:
+
+[https://code.google.com/p/guineu/source/browse/wiki/AlignedFile.png Image]
+
+==== Method parameters ====
+
+_File Name_
+    The path where the file should be found.
+_Number of Columns for Parameters_
+    Number of columns before the columns corresponding to the samples
