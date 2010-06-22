@@ -2,17 +2,17 @@
 = Index =
 
 * GCxGC-MS Algorithms
- * [GCGCFile File]
-   * [openFile Open one sample file]
-   * [openMultipleFile Open multiple sample file]
-   * [saveFile Save data set file]
+ * [GCGC/GCGCFile File]
+   * [GCGC/openFile Open one sample file]
+   * [GCGC/openMultipleFile Open multiple sample file]
+   * [GCGC/saveFile Save data set file]
  * Alignment
-  * [ScoreAlignment Score Alignment]
+  * [GCGC/ScoreAlignment Score Alignment]
  * Identificiation
-  * [GroupIdentification Group Identification]
-  * [NameIdentification Name Identification]
+  * [GCGC/GroupIdentification Group Identification]
+  * [GCGC/NameIdentification Name Identification]
  * Filtering
-  * [NameFilter  Name Filter]
+  * [GCGC/NameFilter  Name Filter]
 
 * LC-MS Algorithms
  * File
