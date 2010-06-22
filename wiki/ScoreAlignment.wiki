@@ -11,33 +11,31 @@ The alignment algorithm first goes through all files, creating a list of peaks f
 === Pseudocode ===
 
 {{{
-`
- 1:*procedure* CREATEPATH(_row, col, files, params_)
- 2:      _path <- emptyAlignmentPath_
- 3:      add _files[row][col]_ to _path_
- 4:      *for* _i_ <- _cols_ + 1 to _ncols(files)_ *do*
- 5:          _best_ <- _nil, score,,best,,_ <- __∞
- 6:          *for all* compounds _c_ in column _i_ of files *do*
- 7:              _score_ <- ∞
- 8:              _∆,,RT1,,_ <- |c.RT1 - _path_.RT1|
- 9:              _∆,,RT2,,_ <- |c.RT2 - _path_.RT2|
- 10:             _∆,,RTI,,_ <- |c.RTI - _path_.RTI|
- 11:             *if* All ∆,,RTI,,x,,,, < _params.max,,RT,,x,,,,_ *then*
- 12:                 sim <- ƒ(_path,c_) (see equation after the pseudocode)
- 13:                 *if* _sim_ < _params.min,,similarity,,_ *then*
- 14:                    _score_ <- _∆,,RT1,,_ + _∆,,RT2,,_ + _∆,,RTI,,_
- 15:                 *end if*
- 16:             *end if*
- 17:             *if* _score_ < _score,,best,, *then*
- 18:                 _best_ <- _c_
- 19:                 _score,,best,,_ <- _score_
- 20:             *end if*
- 21:         *end for*
- 22:         add _best_ to _path_
- 23:     *end for*
- 24:     *return* _path_
- 25:*end procedure*
- _`
+ 1:procedure CREATEPATH(row, col, files, params)
+ 2:      path <- emptyAlignmentPath
+ 3:      add files[row][col] to path
+ 4:      for i <- cols + 1 to ncols(files) do
+ 5:          best <- nil, score,,best,, <- ∞
+ 6:          for all compounds c in column i of files do
+ 7:              score <- ∞
+ 8:              ∆,,RT1,, <- |c.RT1 - path.RT1|
+ 9:              ∆,,RT2,, <- |c.RT2 - path.RT2|
+ 10:             ∆,,RTI,, <- |c.RTI - path.RTI|
+ 11:             if All ∆,,RTI,,x,,,, < params.max,,RT,,x,,,, then
+ 12:                 sim <- ƒ(path,c) (see equation after the pseudocode)
+ 13:                 if sim < params.min,,similarity,, then
+ 14:                    score <- ∆,,RT1,, + ∆,,RT2,, + ∆,,RTI,,
+ 15:                 end if
+ 16:             end if
+ 17:             if score < score,,best,, then
+ 18:                 best <- c
+ 19:                 score,best,, <- score
+ 20:             end if
+ 21:         end for
+ 22:         add best to path
+ 23:     end for
+ 24:     return path
+ 25:end procedure
 }}}
 
 Equation to calculate the similarity between one peak and the current alignment path:
