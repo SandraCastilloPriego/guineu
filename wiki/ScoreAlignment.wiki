@@ -55,9 +55,11 @@ _RTI Lax_
 _RT penalty_
     This value is used to calculate the path score.
 * _score_ = _∆,,RT1,,_  _RT penalty_ + _∆,,RT2,,_  _RT2 penalty_ + _∆,,RTI,,_ _RTI penalty_*
+
 _RT2 penalty_
     This value is used to calculate the path score.
 *_score_ = _∆,,RT1,,_  _RT penalty_ + _∆,,RT2,,_  _RT2 penalty_ + _∆,,RTI,,_  _RTI penalty_*
+
 _RTI penalty_
     This value is used to calculate the path score.
 *_score_ = _∆,,RT1,,_  _RT penalty_ + _∆,,RT2,,_  _RT2 penalty_ + _∆,,RTI,,_  _RTI penalty_*
