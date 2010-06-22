@@ -3,6 +3,7 @@
 
 == GCxGC-MS ==
     === Open Files ===
-        [https://code.google.com/p/guineu/wiki/openFile Open one sample file]
+        [https://code.google.com/p/guineu/wiki/openFile 1. Open one sample file]
+        [https://code.google.com/p/guineu/wiki/openMultipleFile 1. Open multiple sample file]
     === Alignment ===
-        [https://code.google.com/p/guineu/wiki/ScoreAlignment Score Alignment]
+        [https://code.google.com/p/guineu/wiki/ScoreAlignment 3. Score Alignment]
