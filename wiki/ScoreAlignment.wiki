@@ -1,0 +1,70 @@
+= Score Alignment =
+
+== Description ==
+
+This algorithm aligns the compounds of different peak lists, creating a new peak list with multiple samples.
+
+=== Algorithm ===
+
+The alignment algorithm first goes through all files, creating a list of peaks for each of the files. These lists are then used to construct alignment paths using the algorithm presented below. A list of alignment paths A is the constructed and sorted based on scoring of each individual alignment path. Starting with the path of lowest score, alignment paths are added to the list of actual alignments L. As an alignment path P is added to this list L, it is removed from A, and A is then purged of alignment paths that contain peaks found in P. Peaks in P are then also removed from list of peaks in all files.
+
+=== Pseudocode ===
+
+{{{
+` 1:*procedure* CREATEPATH(_row, col, files, params_)
+ 2:      _path <- emptyAlignmentPath_
+ 3:      add _files[row][col]_ to _path_
+ 4:      *for* _i_ <- _cols_ + 1 to _ncols(files)_ *do*
+ 5:          _best_ <- _nil, score,,best,,_ <- __∞
+ 6:          *for all* compounds _c_ in column _i_ of files *do*
+ 7:              _score_ <- ∞
+ 8:              _∆,,RT1,,_ <- |c.RT1 - _path_.RT1|
+ 9:              _∆,,RT2,,_ <- |c.RT2 - _path_.RT2|
+ 10:             _∆,,RTI,,_ <- |c.RTI - _path_.RTI|
+ 11:             *if* All ∆,,RTI,,x,,,, < _params.max,,RT,,x,,,,_ *then*
+ 12:                 sim <- ƒ(_path,c_) (see equation after the pseudocode)
+ 13:                 *if* _sim_ < _params.min,,similarity,,_ *then*
+ 14:                    _score_ <- _∆,,RT1,,_ + _∆,,RT2,,_ + _∆,,RTI,,_
+ 15:                 *end if*
+ 16:             *end if*
+ 17:             *if* _score_ < _score,,best,, *then*
+ 18:                 _best_ <- _c_
+ 19:                 _score,,best,,_ <- _score_
+ 20:             *end if*
+ 21:         *end for*
+ 22:         add _best_ to _path_
+ 23:     *end for*
+ 24:     *return* _path_
+ 25:*end procedure*
+ _`
+}}}
+
+Equation to calculate the similarity between one peak and the current alignment path:
+
+ƒ(_s,,1,,_, _s,,2,,_) = [∑ ((_m,,1,,__m,,2,,_)^j^(_I,,1,,_, _I,,2,,_)^k^)^2^] / [∑ _m,,1,,^2j^I,,1,,_^2k^ ∑ _m,,2,,^2j^I,,2,,_^2k^]
+
+==== Method parameters ====
+
+_RT Lax_
+    Maximum difference allowed between the retention time of the path and the retention time of the candidate peak.
+_RT2 Lax_
+    Maximum difference allowed between the second retention time of the path and the second retention time of the candidate peak.
+_RTI Lax_
+    Maximum difference allowed between the retention time index of the path and the retention time index of the candidate peak.
+_RT penalty_
+    This value is used to calculate the path score.
+* _score_ = _∆,,RT1,,_ * _RT penalty_ + _∆,,RT2,,_ * _RT2 penalty_ + _∆,,RTI,,_ * _RTI penalty_*
+_RT2 penalty_
+    This value is used to calculate the path score.
+*_score_ = _∆,,RT1,,_ * _RT penalty_ + _∆,,RT2,,_ * _RT2 penalty_ + _∆,,RTI,,_ * _RTI penalty_*
+_RTI penalty_
+    This value is used to calculate the path score.
+*_score_ = _∆,,RT1,,_ * _RT penalty_ + _∆,,RT2,,_ * _RT2 penalty_ + _∆,,RTI,,_ * _RTI penalty_*
+_Minimum Spectrum Match_
+    Minimum similarity value between path and candidate peak spectra.
+_Bonus for matching names_
+    When the name of the path and the name of the peak are equal the score gets a bonus.
+_Drop peaks with similarity less than_
+    The algorithm doesn't take into account the peaks with less similarity than this value.
+_Use Concentrations_
+    Use concentrations instead of areas.

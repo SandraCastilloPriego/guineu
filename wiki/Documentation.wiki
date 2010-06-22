@@ -2,3 +2,4 @@
 = Index =
 
 [https://code.google.com/p/guineu/wiki/openFile 1. GCxGC-MS Open Files - Open one sample file]
+[https://code.google.com/p/guineu/wiki/ScoreAlignment 1. GCxGC-MS Alignment - Score Alignment]
