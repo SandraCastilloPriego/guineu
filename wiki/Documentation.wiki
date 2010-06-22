@@ -1,18 +1,15 @@
 #summary Documentation of the project.
 = Index =
 
-== GCxGC-MS ==
-==== File ====
-[openFile 1. Open one sample file]
-
-[openMultipleFile 2. Open multiple sample file]
-
-[saveFile 3. Save data set file]
-==== Alignment ====
-[ScoreAlignment 4. Score Alignment]
-==== Identification ====
-[GroupIdentification 5. Group Identification]
-
-[NameIdentification 5. Name Identification]
-==== Filtering ====
-[NameFilter  6. Name Filter]
+* [Documentation GCxGC-MS Algorithms]
+ * [Documentation File]
+   * [openFile 1. Open one sample file]
+   * [openMultipleFile 2. Open multiple sample file]
+   * [saveFile 3. Save data set file]
+ * [Alignment Alignment]
+  * [ScoreAlignment 4. Score Alignment]
+ * [Identification Identificiation]
+  * [GroupIdentification 5. Group Identification]
+  * [NameIdentification 5. Name Identification]
+ * [Filtering Filtering]
+  * [NameFilter  6. Name Filter]
