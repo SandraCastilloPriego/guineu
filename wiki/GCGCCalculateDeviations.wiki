@@ -7,9 +7,9 @@ This module can work with two different types of files. The basic one is a text 
 This file should contain these fields:
 
 ||  || Name1 || Name2 || Name3 || Name4 || RT || RI ||
-||*Alanine, 2TMS||l-Alanine, N-(trimethylsilyl)-, trimethylsilyl ester||N,O-Bis-(trimethylsilyl)alanine||Alanine, 2TMS|| ||400 , 1.35||1117,7||
-||*Arginine (monohydrochlorid), TMS||L-ARGININMONOHYDROCHLORID TMS||Arginine, TMS|| || ||1005 , 1.78||1634,8||
-||*Aspartic acid, 3TMS||L-Aspartic acid, N-(trimethylsilyl)-, bis(trimethylsilyl) ester||ASPARTIC ACID-TRITMS||N,N,o'-Tris-(trimethylsilyl)aspartic acid||Aspartic acid, 3TMS||900 , 1.69||1539,9||
+||Alanine, 2TMS||l-Alanine, N-(trimethylsilyl)-, trimethylsilyl ester||N,O-Bis-(trimethylsilyl)alanine||Alanine, 2TMS|| ||400 , 1.35||1117,7||
+||Arginine (monohydrochlorid), TMS||L-ARGININMONOHYDROCHLORID TMS||Arginine, TMS|| || ||1005 , 1.78||1634,8||
+||Aspartic acid, 3TMS||L-Aspartic acid, N-(trimethylsilyl)-, bis(trimethylsilyl) ester||ASPARTIC ACID-TRITMS||N,N,o'-Tris-(trimethylsilyl)aspartic acid||Aspartic acid, 3TMS||900 , 1.69||1539,9||
 
 The second type of file is in XML format:
 
