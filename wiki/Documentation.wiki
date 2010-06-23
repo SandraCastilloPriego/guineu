@@ -31,7 +31,7 @@
 * General Algorithms
  * Filtering
  * [Statistics Statistics]
-  * [StatisticsProjectionPlot Projection Plots]
+   * [StatisticsProjectionPlot Projection Plots]
 
 * Development
  * [NetbeansProjectSetup NetBeans Project Setup]
