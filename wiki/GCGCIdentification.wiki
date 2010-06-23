@@ -1,8 +1,8 @@
 =GCxGC-MS Algorithms=
 ==Identification==
 
-[GroupIdentification Group Identification]
+[GCGCGroupIdentification Group Identification]
 
-[NameIdentification Name Identification]
+[GCGCNameIdentification Name Identification]
 
 [GCGCClassIdentification Class Identification]
