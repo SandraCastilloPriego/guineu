@@ -17,6 +17,8 @@
   * [GCGCRecalculateIntensities Recalculate Intensities]
   * [GCGCSimilarityFilter Similarity Filter]
   * [GCGCCalculateDeviations Calculate Deviations Filter]
+  * [GCGCLinearNormalizer Linear Normalizer]
+  * [GCGCPeakCountFilter Peak Count Filter]
 
 * LC-MS Algorithms
  * File
