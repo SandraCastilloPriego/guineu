@@ -1,4 +1,10 @@
 =GCxGC-MS Algorithms=
 ==Filtering==
 
-[NameFilter  Name Filter]
+[GCGCNameFilter  Name Filter]
+
+[GCGCRecalculateIntensities  Recalculate Intensities]
+
+[GCGCSimilarityFilter Similarity Filter]
+
+[GCGCCalculateDeviations Calculate Deviations Filter]

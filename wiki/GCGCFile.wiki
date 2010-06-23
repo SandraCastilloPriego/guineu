@@ -1,8 +1,8 @@
 =GCxGC-MS Algorithms=
 ==File==
 
-[openFile Open one sample file]
+[GCGCopenFile Open one sample file]
 
-[openMultipleFile Open multiple sample file]
+[GCGCopenMultipleFile Open multiple sample file]
 
-[saveFile Save data set file]
+[GCGCsaveFile Save data set file]
