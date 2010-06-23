@@ -12,3 +12,5 @@
 [GCGCLinearNormalizer Linear Normalizer]
 
 [GCGCPeakCountFilter Peak Count Filter]
+
+[GCGCPubChemFilter PubChem Filter]
