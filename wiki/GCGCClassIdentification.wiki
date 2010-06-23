@@ -6,7 +6,18 @@ the algorithm identifies the class of each compound based on its spectra and usi
 
 The format of the file which contains the rules should be CVS file, and it should be like this:
 
-[ClassIdentification.png]
+{{{
+Alkanes,(Ordinal(57)<=2)&(Ordinal(71)<=2)&(Retention(2)>=1)&(Retention(2)<=5.5)
+Alkenes and cyloalkanes,((Ordinal(55)=1)|(Ordinal(69)=1))&(Intensity(55)>0)&(Intensity(69)>0)&(((Relative(56)>15)+(Relative(57)>15)+(Relative(70)>15)+(Relative(83)>15)+(Relative(97)>15))>=3)&(Retention(2)>=1)&(Retention(2)<2)
+n-Akane acids,(Ordinal(60)=1)&(Ordinal(73)=2)
+Alkyl-substituted benzenes,(Relative(91)>15)&(Relative(77)>5)&((Retention(2)>2)|(Retention(1)<28.33))|((Relative(77)>25)&(Retention(2)<2)&(Retention(1)<28.33))
+Polar benzenes,(Relative(77)>25)&(Retention(2)>2)
+Partly hydrated naphthalenes and alkanyl-substituted benzenes,(Relative(91)>15)&(Relative(77)>5)&(Relative(128)>10)&(Retention(2)>2)
+Naphthalene and alkyl-substituted naphthalenes,(((Relative(128)>15)&(Relative(77)>5))|((Relative(141)>50)|(Relative(155)>50)|(Relative(169)>50)))&(Retention(2)>2)
+2,3-Butaneidol,(Ordinal(45)<3)
+Decane,(Ordinal(57)<3)&(Retention(1)<2.3)
+Undecane ,(Ordinal(57)<3)&(Retention(1)<2.3)&(Retention(2)<1.8)
+}}}
 
 === Theory ===
 
@@ -39,7 +50,7 @@ CLIC provides logical-and (&), logical-or (|), and logical-negation (!) operatio
 <EqualityExpression> ::= <RelationalExpression>
     |   <EqualityExpression><EqualityOperator><RelationalExpression>
 <EqualityOperator> ::= = | !=
-<RelationalExpression ::= <AdditiveExpression>
+<RelationalExpression> ::= <AdditiveExpression>
     |   <RelationalExpresssion><RelationalOperator><AdditiveOperator>
 <RelationalOperator> ::= < | <= | > | >=
 <AdditiveExpression> ::= <MultiplicativeExpression>
@@ -53,14 +64,14 @@ CLIC provides logical-and (&), logical-or (|), and logical-negation (!) operatio
     |   <Function>
     |   <Number>
 <UnaryOperator> ::= + | - | !
-<Function> ::= *Retention* | *Intensity* | *Ordinal* | *Percent* | *Relative*
+<Function> ::= Retention | Intensity | Ordinal | Percent | Relative
 <Number> ::= <Integer>
     |   <Integer>.
     |   <Integer>.<Integer>
     |   .<Integer>
 <Integer> ::= <Digit>
     |   <Integer><Digit>
-<Digit> ::= *0* | *1* | *2* | *3* | *4* | *5* | *6* | *7* | *8* | *9* 
+<Digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
 }}}
 
 ==== Method parameters ====
