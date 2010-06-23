@@ -14,3 +14,7 @@
 [GCGCPeakCountFilter Peak Count Filter]
 
 [GCGCPubChemFilter PubChem Filter]
+
+[GCGCSinglingFilter Singling Filter]
+
+[GCGCRTIPreparationFile RTI Preparation File]

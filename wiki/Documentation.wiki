@@ -20,6 +20,8 @@
   * [GCGCLinearNormalizer Linear Normalizer]
   * [GCGCPeakCountFilter Peak Count Filter]
   * [GCGCPubChemFilter PubChem Filter]
+  * [GCGCSinglingFilter Singling Filter]
+  * [GCGCRTIPreparationFile RTI Preparation File]
 
 * LC-MS Algorithms
  * File
