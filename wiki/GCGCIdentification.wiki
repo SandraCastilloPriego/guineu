@@ -4,3 +4,5 @@
 [GroupIdentification Group Identification]
 
 [NameIdentification Name Identification]
+
+[GCGCClassIdentification Class Identification]

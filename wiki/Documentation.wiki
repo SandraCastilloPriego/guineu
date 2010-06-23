@@ -11,6 +11,7 @@
  * [GCGCIdentification Identificiation]
   * [GCGCGroupIdentification Group Identification]
   * [GCGCNameIdentification Name Identification]
+  * [GCGCClassIdentification Class Identification]
  * [GCGCFiltering Filtering]
   * [GCGCNameFilter Name Filter]
   * [GCGCRecalculateIntensities Recalculate Intensities]

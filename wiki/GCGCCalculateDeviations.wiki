@@ -52,4 +52,4 @@ The algorithm uses the information of the above files to find the right compound
 ==== Method parameters ====
 
 _File Name_
-    The path where the file should be found.
+    Path where the file should be found.
