@@ -1,6 +1,6 @@
-= PubChem Filter =
+=PubChem Filter=
 
-== Description ==
+==Description==
 
 The algorithm opens a file which should contain the pubChem ID of different compounds and assigns each ID to the correspondent compound in the peak list.
 
