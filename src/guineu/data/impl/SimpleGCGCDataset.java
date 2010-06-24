@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Collections;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import java.util.Hashtable;
 import java.util.Vector;
 
 /**
@@ -42,6 +43,7 @@ public class SimpleGCGCDataset implements Dataset {
     private String datasetName;
     private DatasetType type;
     private String infoDataset = "";
+    private Hashtable<String, Parameters> parameters;
 
     public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
         this.nameExperiments = new Vector<String>();
@@ -53,6 +55,18 @@ public class SimpleGCGCDataset implements Dataset {
         this.params = parameters;
         this.aligner = aligner;
         datasetName = "Alignment";
+        this.parameters = new Hashtable<String, Parameters>();
+    }
+
+    public void addParameter(String experimentName, String parameterName, String parameterValue) {
+        if (parameters.containsKey(experimentName)) {
+            Parameters p = parameters.get(experimentName);
+            p.addParameter(parameterName, parameterValue);
+        } else {
+            Parameters p = new Parameters();
+            p.addParameter(parameterName, parameterValue);
+            parameters.put(experimentName, p);
+        }
     }
 
     public SimpleGCGCDataset(String datasetName) {
@@ -263,5 +277,18 @@ public class SimpleGCGCDataset implements Dataset {
 
     public void setInfo(String info) {
         this.infoDataset = info;
+    }
+
+    class Parameters {
+
+        Hashtable<String, String> parameters;
+
+        public Parameters() {
+            parameters = new Hashtable<String, String>();
+        }
+
+        public void addParameter(String parameterName, String parameterValue) {
+            parameters.put(parameterName, parameterValue);
+        }
     }
 }

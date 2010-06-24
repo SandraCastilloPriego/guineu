@@ -17,9 +17,9 @@
  */
 package guineu.data.impl;
 
-
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import java.util.Hashtable;
 import java.util.Vector;
 
 /**
@@ -32,13 +32,26 @@ public class SimpleOtherDataset implements Dataset {
     Vector<PeakListRow> PeakList;
     Vector<String> nameExperiments;
     protected DatasetType type;
-	String infoDataset = "";
+    String infoDataset = "";
+    private Hashtable<String, Parameters> parameters;
 
     public SimpleOtherDataset(String datasetName) {
         this.datasetName = datasetName;
         this.PeakList = new Vector<PeakListRow>();
         this.nameExperiments = new Vector<String>();
+        this.parameters = new Hashtable<String, Parameters>();
         type = DatasetType.OTHER;
+    }
+
+    public void addParameter(String experimentName, String parameterName, String parameterValue) {
+        if (parameters.containsKey(experimentName)) {
+            Parameters p = parameters.get(experimentName);
+            p.addParameter(parameterName, parameterValue);
+        } else {
+            Parameters p = new Parameters();
+            p.addParameter(parameterName, parameterValue);
+            parameters.put(experimentName, p);
+        }
     }
 
     public String getDatasetName() {
@@ -89,30 +102,30 @@ public class SimpleOtherDataset implements Dataset {
         this.type = type;
     }
 
-    public boolean containtName(String Name){
-        for(String name: this.nameExperiments){
-            if(name.compareTo(Name) == 0){
+    public boolean containtName(String Name) {
+        for (String name : this.nameExperiments) {
+            if (name.compareTo(Name) == 0) {
                 return true;
             }
-            if(name.matches(".*"+Name+".*")){
+            if (name.matches(".*" + Name + ".*")) {
                 return true;
             }
-            if(Name.matches(".*"+name+".*")){
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public boolean containRowName(String Name){
-        for(PeakListRow row : this.getRows()){
-            if(((String)row.getPeak("Name")).contains(Name) || Name.contains((CharSequence) row.getPeak("Name"))){
+            if (Name.matches(".*" + name + ".*")) {
                 return true;
             }
         }
         return false;
     }
-    
+
+    public boolean containRowName(String Name) {
+        for (PeakListRow row : this.getRows()) {
+            if (((String) row.getPeak("Name")).contains(Name) || Name.contains((CharSequence) row.getPeak("Name"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public SimpleOtherDataset clone() {
         SimpleOtherDataset newDataset = new SimpleOtherDataset(this.datasetName);
@@ -125,7 +138,7 @@ public class SimpleOtherDataset implements Dataset {
         newDataset.setType(this.type);
         return newDataset;
     }
-  
+
     public void removeRow(PeakListRow row) {
         try {
             this.PeakList.removeElement(row);
@@ -139,13 +152,24 @@ public class SimpleOtherDataset implements Dataset {
         this.nameExperiments.insertElementAt(datasetName, position);
     }
 
-	public String getInfo() {
-		return infoDataset;
-	}
+    public String getInfo() {
+        return infoDataset;
+    }
 
-	public void setInfo(String info) {
-		this.infoDataset = info;
-	}
+    public void setInfo(String info) {
+        this.infoDataset = info;
+    }
 
-    
+    class Parameters {
+
+        Hashtable<String, String> parameters;
+
+        public Parameters() {
+            parameters = new Hashtable<String, String>();
+        }
+
+        public void addParameter(String parameterName, String parameterValue) {
+            parameters.put(parameterName, parameterValue);
+        }
+    }
 }

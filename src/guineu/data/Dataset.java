@@ -54,4 +54,7 @@ public interface Dataset {
 	public String getInfo();
 
 	public void setInfo(String info);
+
+        public void addParameter(String experimentName, String parameterName, String parameterValue);
+
 }
