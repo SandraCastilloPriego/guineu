@@ -14,6 +14,7 @@ import guineu.data.Dataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -29,7 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
@@ -40,12 +41,12 @@ import javax.swing.ListSelectionModel;
 public class ParameterDialog extends JDialog implements ActionListener {
 
     private JButton btnAddParameter, btnDeleteParameter, btnOK, btnCancel, btnHelp;
+    private JTextField tField;
     private ExitCode exitCode = ExitCode.UNKNOWN;
-    private AddParameterDialog addDialog;
     private ParameterDataModel model;
     private Clipboard system;
     private StringSelection stsel;
-    private String rowstring,  value;
+    private String rowstring, value;
     private Vector<register> registers;
     private Dataset dataset;
     int indexRegister = 0;
@@ -60,18 +61,21 @@ public class ParameterDialog extends JDialog implements ActionListener {
         setTableProperties();
 
         if (dataset != null) {
-            model = new ParameterDataModel("Samples", dataset.getNameExperiments());
+            model = new ParameterDataModel(dataset);
             this.table.setModel(model);
         }
+        tField = new JTextField("");
+        tField.setPreferredSize(new Dimension(100, 25));
         btnAddParameter = new JButton("Add Parameter");
         btnAddParameter.addActionListener(this);
         btnDeleteParameter = new JButton("Delete Parameter");
         btnDeleteParameter.addActionListener(this);
-        btnOK = new JButton("OK");
+        btnOK = new JButton("Save");
         btnOK.addActionListener(this);
         btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(this);
         btnHelp = new HelpButton(helpID);
+        btnPanel.add(tField);
         btnPanel.add(btnAddParameter);
         btnPanel.add(btnDeleteParameter);
         btnPanel.add(btnOK);
@@ -137,10 +141,19 @@ public class ParameterDialog extends JDialog implements ActionListener {
         }
 
         if (src == btnAddParameter) {
-            this.getParameterName();
+            model.addColumn(tField.getText());
+            table.createDefaultColumnsFromModel();
         }
 
+        if (src == btnDeleteParameter) {
+            model.addParameters(dataset);
+            dataset.deleteParameter(table.getColumnName(table.getSelectedColumn()));
+            model = new ParameterDataModel(dataset);
+            table.setModel(model);
+            table.validate();
+        }
 
+        //table behavior
         if (e.getActionCommand().compareTo("Copy") == 0) {
             StringBuffer sbf = new StringBuffer();
             // Check to ensure we have selected only a contiguous block of
@@ -185,7 +198,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
                 newRegister = new register(startRow, rst1.countTokens() + 1, startCol, st2.countTokens());
                 newRegister.getValues();
-            } catch (Exception ex) {                
+            } catch (Exception ex) {
             }
 
             try {
@@ -260,42 +273,6 @@ public class ParameterDialog extends JDialog implements ActionListener {
         return exitCode;
     }
 
-    private void getParameterName() {
-        addDialog = new AddParameterDialog();
-        addDialog.addWindowListener(new WindowListener() {
-
-            public void windowOpened(WindowEvent arg0) {
-            }
-
-            public void windowClosing(WindowEvent arg0) {
-            }
-
-            public void windowClosed(WindowEvent arg0) {
-                ExitCode exitCodeAdd = addDialog.getExitCode();
-                if (exitCodeAdd == ExitCode.OK) {
-                    addParameter(addDialog.getParameterName());
-                }
-            }
-
-            public void windowIconified(WindowEvent arg0) {
-            }
-
-            public void windowDeiconified(WindowEvent arg0) {
-            }
-
-            public void windowActivated(WindowEvent arg0) {
-            }
-
-            public void windowDeactivated(WindowEvent arg0) {
-            }
-        });
-        addDialog.setVisible(true);
-    }
-
-    private void addParameter(String parameterName) {
-        this.model.addColumn(parameterName);
-        this.table.createDefaultColumnsFromModel();
-    }
 
     public void setTableProperties() {
 
@@ -317,7 +294,8 @@ public class ParameterDialog extends JDialog implements ActionListener {
         table.registerKeyboardAction(this, "Delete", delete, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Back", registerBack, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Forward", registerForward, JComponent.WHEN_FOCUSED);
-        system = Toolkit.getDefaultToolkit().getSystemClipboard();
+        system =
+                Toolkit.getDefaultToolkit().getSystemClipboard();
     }
 
     class register {

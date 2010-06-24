@@ -34,12 +34,15 @@ public class SimpleOtherDataset implements Dataset {
     protected DatasetType type;
     String infoDataset = "";
     private Hashtable<String, Parameters> parameters;
+    private Vector<String> parameterNames;
 
     public SimpleOtherDataset(String datasetName) {
         this.datasetName = datasetName;
         this.PeakList = new Vector<PeakListRow>();
         this.nameExperiments = new Vector<String>();
         this.parameters = new Hashtable<String, Parameters>();
+        this.parameterNames = new Vector<String>();
+        this.parameterNames.addElement("Samples");
         type = DatasetType.OTHER;
     }
 
@@ -52,6 +55,32 @@ public class SimpleOtherDataset implements Dataset {
             p.addParameter(parameterName, parameterValue);
             parameters.put(experimentName, p);
         }
+        if (!this.parameterNames.contains(parameterName)) {
+            parameterNames.addElement(parameterName);
+        }
+    }
+
+    public void deleteParameter(String parameterName) {
+        for (String experimentName : nameExperiments) {
+            if (parameters.containsKey(experimentName)) {
+                Parameters p = parameters.get(experimentName);
+                p.deleteParameter(parameterName);
+            }
+        }
+        this.parameterNames.remove(parameterName);
+    }
+
+    public String getParametersValue(String experimentName, String parameterName) {
+        if (parameters.containsKey(experimentName)) {
+            Parameters p = parameters.get(experimentName);
+            return p.getParameter(parameterName);
+        } else {
+            return null;
+        }
+    }
+
+    public Vector<String> getParametersName() {
+        return parameterNames;
     }
 
     public String getDatasetName() {
@@ -169,7 +198,23 @@ public class SimpleOtherDataset implements Dataset {
         }
 
         public void addParameter(String parameterName, String parameterValue) {
-            parameters.put(parameterName, parameterValue);
+            if (parameterName != null && parameterValue != null) {
+                parameters.put(parameterName, parameterValue);
+            }
+        }
+
+        public void deleteParameter(String parameterName) {
+            if (parameters.containsKey(parameterName)) {
+                parameters.remove(parameterName);
+            }
+        }
+
+        public String getParameter(String parameterName) {
+            if (parameters.containsKey(parameterName)) {
+                return parameters.get(parameterName);
+            } else {
+                return null;
+            }
         }
     }
 }

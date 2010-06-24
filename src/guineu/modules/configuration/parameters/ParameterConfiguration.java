@@ -22,20 +22,16 @@ import guineu.data.ParameterSet;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
-import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
-import javax.swing.JInternalFrame;
 
 /**
  *
@@ -76,24 +72,9 @@ public class ParameterConfiguration implements GuineuModule, TaskListener, Actio
     }
 
     public void actionPerformed(ActionEvent e) {
-
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
-        }       
-        runModule();
-    }
-
-    public ExitCode setupParameters() {
-        try {
-            Dataset dataset = desktop.getSelectedDataFiles()[0];
-            ParameterDialog dialog = new ParameterDialog("Proxy configuration parameters", parameters, helpID, dataset);
-            dialog.setVisible(true);
-
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
+        Dataset dataset = desktop.getSelectedDataFiles()[0];
+        ParameterDialog dialog = new ParameterDialog("Proxy configuration parameters", parameters, helpID, dataset);
+        dialog.setVisible(true);
     }
 
     public ParameterSet getParameterSet() {
@@ -106,15 +87,5 @@ public class ParameterConfiguration implements GuineuModule, TaskListener, Actio
 
     public String toString() {
         return "Parameters configuration";
-    }
-
-    public Task[] runModule() {
-        JInternalFrame[] frames = desktop.getInternalFrames();
-        for (int i = 0; i < frames.length; i++) {
-            try {
-            } catch (Exception e) {
-            }
-        }
-        return null;
     }
 }

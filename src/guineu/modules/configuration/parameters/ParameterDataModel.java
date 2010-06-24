@@ -32,15 +32,27 @@ public class ParameterDataModel extends AbstractTableModel {
     private int numColumns;
     private int numRows;
 
-    public ParameterDataModel(String Name, Vector<String> sampleNames) {
-        if (sampleNames != null) {
-            String[] col = sampleNames.toArray(new String[0]);
-            rows = new Vector<String[]>();
+    public ParameterDataModel(Dataset dataset) {
+        
+        // Column names
+        columns = dataset.getParametersName();
+        numColumns = columns.size();
+        // First column with the name of the samples
+        String[] col = dataset.getNameExperiments().toArray(new String[0]);
+        rows = new Vector<String[]>();
+        rows.addElement(col);
+        numRows = dataset.getNameExperiments().size();
+
+        // Parameter columns
+        for (int i = 1 ; i < dataset.getParametersName().size(); i++) {
+            String parameterName = dataset.getParametersName().elementAt(i);
+            col = new String[dataset.getNameExperiments().size()];
+
+            for(int e = 0; e < dataset.getNameExperiments().size(); e++){
+                String experimentName = dataset.getNameExperiments().elementAt(e);
+                col[e] = dataset.getParametersValue(experimentName, parameterName);
+            }
             rows.addElement(col);
-            columns = new Vector<String>();
-            columns.addElement(Name);
-            numColumns = 1;
-            numRows = rows.get(0).length;
         }
     }
 
@@ -49,7 +61,6 @@ public class ParameterDataModel extends AbstractTableModel {
         String[] newCol = new String[numRows];
         rows.addElement(newCol);
         numColumns++;
-        this.fireTableDataChanged();
     }
 
     public int getColumnCount() {
@@ -66,10 +77,11 @@ public class ParameterDataModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int columnIndex) {
-        String str = columns.elementAt(columnIndex);
-        /* if (columnIndex == sortCol && columnIndex != 0)
-        str += isSortAsc ? " >>" : " <<";*/
-        return str;
+        try {
+            return columns.elementAt(columnIndex);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -122,10 +134,10 @@ public class ParameterDataModel extends AbstractTableModel {
         this.numColumns = count;
     }
 
-    void addParameters(Dataset dataset) {
-        for(int i = 1; i < this.getColumnCount(); i++){
+    public void addParameters(Dataset dataset) {
+        for (int i = 1; i < this.getColumnCount(); i++) {
             String parameterName = this.getColumnName(i);
-            for(int e = 0; e < this.rows.elementAt(i).length; e++){
+            for (int e = 0; e < this.rows.elementAt(i).length; e++) {
                 String experimentName = this.rows.elementAt(0)[e];
                 String parameterValue = this.rows.elementAt(i)[e];
                 dataset.addParameter(experimentName, parameterName, parameterValue);
