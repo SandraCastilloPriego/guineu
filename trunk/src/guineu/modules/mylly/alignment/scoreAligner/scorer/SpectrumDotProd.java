@@ -56,11 +56,18 @@ public class SpectrumDotProd implements ScoreCalculator {
 			return WORST_SCORE;
 		}
 		double comparison = compareSpectraVal(path.getSpectrum(), peak.getSpectrum());
-		if (comparison > (Double) params.getParameterValue(ScoreAlignmentParameters.minSpectrumMatch)) {
+                /*System.out.println("path names: " + path.names());
+                System.out.println("peak names: " + peak.names());
+                System.out.println("path spectra: " + path.getSpectrum());
+                System.out.println("peak spectra: " + peak.getSpectrum());
+                System.out.println("Spectra comparation Value: " + comparison);
+                System.out.println("-------------------------------------");*/
+
+                if (comparison > (Double) params.getParameterValue(ScoreAlignmentParameters.minSpectrumMatch)) {
 			score = rtiDiff * (Double) params.getParameterValue(ScoreAlignmentParameters.rtiPenalty) +
 					rt1Diff * (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Penalty) +
 					rt2Diff * (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Penalty);
-            //System.out.println(path.matchesWithName(peak)  +" - " +peak.names() );
+            
 			if (path.matchesWithName(peak)) {
 				score -= (Double) params.getParameterValue(ScoreAlignmentParameters.nameMatchBonus);
 			}

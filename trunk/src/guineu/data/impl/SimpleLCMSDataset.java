@@ -20,6 +20,7 @@ package guineu.data.impl;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -32,14 +33,27 @@ public class SimpleLCMSDataset implements Dataset {
     private String datasetName;
     private List<PeakListRow> peakList;
     private Vector<String> nameExperiments;
+    private Hashtable<String, Parameters> parameters;
     private DatasetType type;
-	private String infoDataset = "";
-  
+    private String infoDataset = "";
+
     public SimpleLCMSDataset(String datasetName) {
         this.datasetName = datasetName;
         this.peakList = new ArrayList<PeakListRow>();
         this.nameExperiments = new Vector<String>();
+        this.parameters = new Hashtable<String, Parameters>();
         type = DatasetType.LCMS;
+    }
+
+    public void addParameter(String experimentName, String parameterName, String parameterValue) {
+        if(parameters.containsKey(experimentName)){
+            Parameters p = parameters.get(experimentName);
+            p.addParameter(parameterName, parameterValue);
+        }else{
+            Parameters p = new Parameters();
+            p.addParameter(parameterName, parameterValue);
+            parameters.put(experimentName, p);
+        }
     }
 
     public String getDatasetName() {
@@ -103,7 +117,6 @@ public class SimpleLCMSDataset implements Dataset {
         return newDataset;
     }
 
-    
     public void removeRow(PeakListRow row) {
         try {
             this.peakList.remove(row);
@@ -116,15 +129,27 @@ public class SimpleLCMSDataset implements Dataset {
         this.nameExperiments.insertElementAt(nameExperiment, position);
     }
 
-	public String toString(){
-		return this.getDatasetName();
-	}
+    public String toString() {
+        return this.getDatasetName();
+    }
 
-	public String getInfo() {
-		return infoDataset;
-	}
+    public String getInfo() {
+        return infoDataset;
+    }
 
-	public void setInfo(String info) {
-		this.infoDataset = info;
-	}
+    public void setInfo(String info) {
+        this.infoDataset = info;
+    }
+
+    class Parameters {
+        Hashtable<String, String> parameters;
+
+        public Parameters() {
+            parameters = new Hashtable<String, String>();
+        }
+
+        public void addParameter(String parameterName, String parameterValue) {
+            parameters.put(parameterName, parameterValue);
+        }
+    }
 }

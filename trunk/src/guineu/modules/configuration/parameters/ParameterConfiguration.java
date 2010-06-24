@@ -15,8 +15,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.configuration.proxy;
+package guineu.modules.configuration.parameters;
 
+import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
@@ -34,12 +35,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author scsandra
  */
-public class ProxyConfiguration implements GuineuModule, TaskListener, ActionListener {
+public class ParameterConfiguration implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
@@ -49,24 +51,24 @@ public class ProxyConfiguration implements GuineuModule, TaskListener, ActionLis
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Proxy Configuration..",
-                "Proxy configuration", KeyEvent.VK_G, this, null, null);
-        parameters = new ProxyConfigurationParameters();
+        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Parameters Configuration..",
+                "Parameters configuration", KeyEvent.VK_P, this, null, null);
+        parameters = new ParametersConfigurationParameters();
 
     }
 
     public void taskStarted(Task task) {
-        logger.info("Proxy configuration");
+        logger.info("Parameters configuration");
     }
 
     public void taskFinished(Task task) {
         if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Proxy configuration ");
+            logger.info("Finished Parameters configuration ");
         }
 
         if (task.getStatus() == TaskStatus.ERROR) {
 
-            String msg = "Error while Proxy configuration  .. ";
+            String msg = "Error while Parameters configuration  .. ";
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
@@ -78,13 +80,14 @@ public class ProxyConfiguration implements GuineuModule, TaskListener, ActionLis
         ExitCode exitCode = setupParameters();
         if (exitCode != ExitCode.OK) {
             return;
-        }
-        ((DesktopParameters) desktop.getParameterSet()).setProxyParameters((ProxyConfigurationParameters) parameters);
+        }       
+        runModule();
     }
 
     public ExitCode setupParameters() {
         try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Proxy configuration parameters", parameters, helpID);
+            Dataset dataset = desktop.getSelectedDataFiles()[0];
+            ParameterDialog dialog = new ParameterDialog("Proxy configuration parameters", parameters, helpID, dataset);
             dialog.setVisible(true);
 
             return dialog.getExitCode();
@@ -98,10 +101,20 @@ public class ProxyConfiguration implements GuineuModule, TaskListener, ActionLis
     }
 
     public void setParameters(ParameterSet parameterValues) {
-        parameters = (ProxyConfigurationParameters) parameterValues;
+        parameters = (ParametersConfigurationParameters) parameterValues;
     }
 
     public String toString() {
-        return "Proxy configuration";
+        return "Parameters configuration";
+    }
+
+    public Task[] runModule() {
+        JInternalFrame[] frames = desktop.getInternalFrames();
+        for (int i = 0; i < frames.length; i++) {
+            try {
+            } catch (Exception e) {
+            }
+        }
+        return null;
     }
 }
