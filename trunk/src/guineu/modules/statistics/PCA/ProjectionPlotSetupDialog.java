@@ -154,10 +154,10 @@ public class ProjectionPlotSetupDialog extends JDialog implements
         availableColoringStyles[1] = ProjectionPlotParameters.ColoringTypeByFile;
         parametersInCombo[0] = null;
         parametersInCombo[1] = null;
-        //for (int i = 0; i < projectParameters.length; i++) {
-         //   availableColoringStyles[2] = "Color by parameter " + projectParameters[i].getName();
-          //  parametersInCombo[2] = projectParameters[i];
-       // }
+       /* for (int i = 0; i < projectParameters.length; i++) {
+            availableColoringStyles[2] = "Color by parameter " + projectParameters[i].getName();
+            parametersInCombo[2] = projectParameters[i];
+        }*/
         comboColoringMethod = new JComboBox(availableColoringStyles);
         if (parameterSet.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeSingleColor) {
             comboColoringMethod.setSelectedItem(ProjectionPlotParameters.ColoringTypeSingleColor);
