@@ -19,6 +19,7 @@ package guineu.modules.configuration.parameters;
 
 import guineu.data.Dataset;
 import java.util.*;
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 public class ParameterDataModel extends AbstractTableModel {
@@ -31,9 +32,11 @@ public class ParameterDataModel extends AbstractTableModel {
     private Vector<String[]> rows; //content all data
     private int numColumns;
     private int numRows;
+    private JTable table;
 
-    public ParameterDataModel(Dataset dataset) {
-        
+    public ParameterDataModel(Dataset dataset, JTable table) {
+        this.table = table;
+
         // Column names
         columns = dataset.getParametersName();
         numColumns = columns.size();
@@ -44,11 +47,11 @@ public class ParameterDataModel extends AbstractTableModel {
         numRows = dataset.getNameExperiments().size();
 
         // Parameter columns
-        for (int i = 1 ; i < dataset.getParametersName().size(); i++) {
+        for (int i = 1; i < dataset.getParametersName().size(); i++) {
             String parameterName = dataset.getParametersName().elementAt(i);
             col = new String[dataset.getNameExperiments().size()];
 
-            for(int e = 0; e < dataset.getNameExperiments().size(); e++){
+            for (int e = 0; e < dataset.getNameExperiments().size(); e++) {
                 String experimentName = dataset.getNameExperiments().elementAt(e);
                 col[e] = dataset.getParametersValue(experimentName, parameterName);
             }
@@ -96,6 +99,13 @@ public class ParameterDataModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int row, int column) {
         try {
+            int[] trows = table.getSelectedRows();
+            int[] tcolumns = table.getSelectedColumns();
+            for (int trow : trows) {
+                for (int tcolumn : tcolumns) {
+                    rows.elementAt(tcolumn)[trow] = aValue.toString();
+                }
+            }
             rows.elementAt(column)[row] = aValue.toString();
             fireTableCellUpdated(row, column);
         } catch (Exception e) {

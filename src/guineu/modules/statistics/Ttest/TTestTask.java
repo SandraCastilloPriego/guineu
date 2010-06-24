@@ -43,14 +43,16 @@ public class TTestTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private double progress = 0.0f;
-    private String[] group1,  group2;
+    private String[] group1, group2;
     private Dataset dataset;
+    private String parameter;
 
-    public TTestTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop) {
+    public TTestTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop, String parameter) {
         this.group1 = group1;
         this.group2 = group2;
         this.dataset = dataset;
         this.desktop = desktop;
+        this.parameter = parameter;
 
     }
 
@@ -114,16 +116,30 @@ public class TTestTask implements Task {
     public double Ttest(int mol) throws IllegalArgumentException, MathException {
         DescriptiveStatistics stats1 = new DescriptiveStatistics();
         DescriptiveStatistics stats2 = new DescriptiveStatistics();
-        for (int i = 0; i < group1.length; i++) {
-            try {
-                stats1.addValue((Double) this.dataset.getRow(mol).getPeak(group1[i]));
-            } catch (Exception e) {
+        String parameter1 = "";
+
+        if (parameter == null) {
+            for (int i = 0; i < group1.length; i++) {
+                try {
+                    stats1.addValue((Double) this.dataset.getRow(mol).getPeak(group1[i]));
+                } catch (Exception e) {
+                }
             }
-        }
-        for (int i = 0; i < group2.length; i++) {
-            try {
-                stats2.addValue((Double) this.dataset.getRow(mol).getPeak(group2[i]));
-            } catch (Exception e) {
+            for (int i = 0; i < group2.length; i++) {
+                try {
+                    stats2.addValue((Double) this.dataset.getRow(mol).getPeak(group2[i]));
+                } catch (Exception e) {
+                }
+            }
+        } else {
+            parameter1 = dataset.getParametersValue(dataset.getNameExperiments().firstElement(), parameter);
+          
+            for(String sampleName : dataset.getNameExperiments()){
+                if(dataset.getParametersValue(sampleName, parameter).equals(parameter1)){
+                    stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                }else{
+                    stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                }
             }
         }
         TTestImpl ttest = new TTestImpl();
