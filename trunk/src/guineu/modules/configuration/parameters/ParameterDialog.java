@@ -52,7 +52,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
     int indexRegister = 0;
 
     /** Creates new form ParameterDialog */
-    public ParameterDialog(String title, SimpleParameterSet parameters, String helpID, Dataset dataset) {
+    public ParameterDialog(String title, String helpID, Dataset dataset) {
         registers = new Vector<register>();
         this.dataset = dataset;
 
