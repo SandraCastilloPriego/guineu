@@ -11,7 +11,6 @@
 package guineu.modules.configuration.parameters;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
 import java.awt.Dimension;
@@ -22,8 +21,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.KeyListener;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -61,7 +59,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
         setTableProperties();
 
         if (dataset != null) {
-            model = new ParameterDataModel(dataset);
+            model = new ParameterDataModel(dataset, table);
             this.table.setModel(model);
         }
         tField = new JTextField("");
@@ -148,10 +146,12 @@ public class ParameterDialog extends JDialog implements ActionListener {
         if (src == btnDeleteParameter) {
             model.addParameters(dataset);
             dataset.deleteParameter(table.getColumnName(table.getSelectedColumn()));
-            model = new ParameterDataModel(dataset);
+            model = new ParameterDataModel(dataset, table);
             table.setModel(model);
             table.validate();
         }
+
+
 
         //table behavior
         if (e.getActionCommand().compareTo("Copy") == 0) {
@@ -294,8 +294,8 @@ public class ParameterDialog extends JDialog implements ActionListener {
         table.registerKeyboardAction(this, "Delete", delete, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Back", registerBack, JComponent.WHEN_FOCUSED);
         table.registerKeyboardAction(this, "Forward", registerForward, JComponent.WHEN_FOCUSED);
-        system =
-                Toolkit.getDefaultToolkit().getSystemClipboard();
+        system = Toolkit.getDefaultToolkit().getSystemClipboard();
+       
     }
 
     class register {
