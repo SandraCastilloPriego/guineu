@@ -33,6 +33,7 @@ public class SimpleLCMSDataset implements Dataset {
     private String datasetName;
     private List<PeakListRow> peakList;
     private Vector<String> nameExperiments;
+    private Vector<String> parameterNames;
     private Hashtable<String, Parameters> parameters;
     private DatasetType type;
     private String infoDataset = "";
@@ -42,18 +43,46 @@ public class SimpleLCMSDataset implements Dataset {
         this.peakList = new ArrayList<PeakListRow>();
         this.nameExperiments = new Vector<String>();
         this.parameters = new Hashtable<String, Parameters>();
+        this.parameterNames = new Vector<String>();
+        this.parameterNames.addElement("Samples");
         type = DatasetType.LCMS;
     }
 
     public void addParameter(String experimentName, String parameterName, String parameterValue) {
-        if(parameters.containsKey(experimentName)){
+        if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
             p.addParameter(parameterName, parameterValue);
-        }else{
+        } else {
             Parameters p = new Parameters();
             p.addParameter(parameterName, parameterValue);
             parameters.put(experimentName, p);
         }
+        if (!this.parameterNames.contains(parameterName)) {
+            parameterNames.addElement(parameterName);
+        }
+    }
+   
+    public void deleteParameter(String parameterName) {
+        for (String experimentName : nameExperiments) {
+            if (parameters.containsKey(experimentName)) {
+                Parameters p = parameters.get(experimentName);
+                p.deleteParameter(parameterName);
+            }
+        }
+        this.parameterNames.remove(parameterName);
+    }
+
+    public String getParametersValue(String experimentName, String parameterName) {
+        if (parameters.containsKey(experimentName)) {
+            Parameters p = parameters.get(experimentName);
+            return p.getParameter(parameterName);
+        } else {
+            return null;
+        }
+    }
+
+    public Vector<String> getParametersName() {
+        return parameterNames;
     }
 
     public String getDatasetName() {
@@ -142,6 +171,7 @@ public class SimpleLCMSDataset implements Dataset {
     }
 
     class Parameters {
+
         Hashtable<String, String> parameters;
 
         public Parameters() {
@@ -149,7 +179,23 @@ public class SimpleLCMSDataset implements Dataset {
         }
 
         public void addParameter(String parameterName, String parameterValue) {
-            parameters.put(parameterName, parameterValue);
+            if (parameterName != null && parameterValue != null) {
+                parameters.put(parameterName, parameterValue);
+            }
+        }
+
+        public void deleteParameter(String parameterName) {
+            if (parameters.containsKey(parameterName)) {
+                parameters.remove(parameterName);
+            }
+        }
+
+        public String getParameter(String parameterName) {
+            if (parameters.containsKey(parameterName)) {
+                return parameters.get(parameterName);
+            } else {
+                return null;
+            }
         }
     }
 }

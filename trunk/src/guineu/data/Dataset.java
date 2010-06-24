@@ -23,38 +23,43 @@ import java.util.Vector;
 
 public interface Dataset {
 
-	public Dataset clone();
+    public Dataset clone();
 
-	public String getDatasetName();
+    public String getDatasetName();
 
-	public Vector<String> getNameExperiments();
+    public Vector<String> getNameExperiments();
 
-	public int getNumberCols();
+    public int getNumberCols();
 
-	public int getNumberRows();	
+    public int getNumberRows();
 
-	public void setDatasetName(String name);
+    public void setDatasetName(String name);
 
-	public DatasetType getType();
+    public DatasetType getType();
 
-	public void setType(DatasetType type);
+    public void setType(DatasetType type);
 
-	public PeakListRow getRow(int row);
+    public PeakListRow getRow(int row);
 
-	public void removeRow(PeakListRow row);
+    public void removeRow(PeakListRow row);
 
-	public void AddNameExperiment(String nameExperiment);
+    public void AddNameExperiment(String nameExperiment);
 
-	public void AddNameExperiment(String nameExperiment, int position);
+    public void AddNameExperiment(String nameExperiment, int position);
 
-	public List<PeakListRow> getRows();
+    public List<PeakListRow> getRows();
 
-	public void AddRow(PeakListRow peakListRow);
+    public void AddRow(PeakListRow peakListRow);
 
-	public String getInfo();
+    public String getInfo();
 
-	public void setInfo(String info);
+    public void setInfo(String info);
 
-        public void addParameter(String experimentName, String parameterName, String parameterValue);
+    public void addParameter(String experimentName, String parameterName, String parameterValue);
 
+    public void deleteParameter(String parameterName);
+
+    public Vector<String> getParametersName();
+
+    public String getParametersValue(String experimentName, String parameterName);
 }

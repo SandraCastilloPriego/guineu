@@ -44,6 +44,7 @@ public class SimpleGCGCDataset implements Dataset {
     private DatasetType type;
     private String infoDataset = "";
     private Hashtable<String, Parameters> parameters;
+    private Vector<String> parameterNames;
 
     public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
         this.nameExperiments = new Vector<String>();
@@ -56,6 +57,8 @@ public class SimpleGCGCDataset implements Dataset {
         this.aligner = aligner;
         datasetName = "Alignment";
         this.parameters = new Hashtable<String, Parameters>();
+        this.parameterNames = new Vector<String>();
+        this.parameterNames.addElement("Samples");
     }
 
     public void addParameter(String experimentName, String parameterName, String parameterValue) {
@@ -67,6 +70,32 @@ public class SimpleGCGCDataset implements Dataset {
             p.addParameter(parameterName, parameterValue);
             parameters.put(experimentName, p);
         }
+        if (!this.parameterNames.contains(parameterName)) {
+            parameterNames.addElement(parameterName);
+        }
+    }
+
+    public void deleteParameter(String parameterName) {
+        for (String experimentName : nameExperiments) {
+            if (parameters.containsKey(experimentName)) {
+                Parameters p = parameters.get(experimentName);
+                p.deleteParameter(parameterName);
+            }
+        }
+        this.parameterNames.remove(parameterName);
+    }
+
+    public String getParametersValue(String experimentName, String parameterName) {
+        if (parameters.containsKey(experimentName)) {
+            Parameters p = parameters.get(experimentName);
+            return p.getParameter(parameterName);
+        } else {
+            return null;
+        }
+    }
+
+    public Vector<String> getParametersName() {
+        return parameterNames;
     }
 
     public SimpleGCGCDataset(String datasetName) {
@@ -288,7 +317,23 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         public void addParameter(String parameterName, String parameterValue) {
-            parameters.put(parameterName, parameterValue);
+            if (parameterName != null && parameterValue != null) {
+                parameters.put(parameterName, parameterValue);
+            }
+        }
+
+        public void deleteParameter(String parameterName) {
+            if (parameters.containsKey(parameterName)) {
+                parameters.remove(parameterName);
+            }
+        }
+
+        public String getParameter(String parameterName) {
+            if (parameters.containsKey(parameterName)) {
+                return parameters.get(parameterName);
+            } else {
+                return null;
+            }
         }
     }
 }
