@@ -40,17 +40,14 @@ import java.util.logging.Logger;
 public class ParameterConfiguration implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private SimpleParameterSet parameters;
+    private Desktop desktop;  
     final String helpID = GUIUtils.generateHelpID(this);
 
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Parameters Configuration..",
-                "Parameters configuration", KeyEvent.VK_P, this, null, null);
-        parameters = new ParametersConfigurationParameters();
-
+                "Parameters configuration", KeyEvent.VK_P, this, null, null); 
     }
 
     public void taskStarted(Task task) {
@@ -73,16 +70,16 @@ public class ParameterConfiguration implements GuineuModule, TaskListener, Actio
 
     public void actionPerformed(ActionEvent e) {
         Dataset dataset = desktop.getSelectedDataFiles()[0];
-        ParameterDialog dialog = new ParameterDialog("Proxy configuration parameters", parameters, helpID, dataset);
+        ParameterDialog dialog = new ParameterDialog("Proxy configuration parameters", helpID, dataset);
         dialog.setVisible(true);
     }
 
     public ParameterSet getParameterSet() {
-        return parameters;
+        return null;
     }
 
     public void setParameters(ParameterSet parameterValues) {
-        parameters = (ParametersConfigurationParameters) parameterValues;
+       
     }
 
     public String toString() {
