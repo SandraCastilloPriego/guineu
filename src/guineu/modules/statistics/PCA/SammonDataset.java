@@ -86,11 +86,10 @@ public class SammonDataset extends AbstractXYDataset implements
             numberOfGroups = selectedRawDataFiles.size();
         }
 
-        if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
-            // Group files with same parameter value to same group
-        /*    MZmineProject project = MZmineCore.getCurrentProject();
+    /*    if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
+            // Group files with same parameter value to same group           
             Vector<Object> availableParameterValues = new Vector<Object>();
-            for (RawDataFile rawDataFile : selectedRawDataFiles) {
+            for (String rawDataFile : selectedRawDataFiles) {
                 Object paramValue = project.getParameterValue(selectedParameter, rawDataFile);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
@@ -103,8 +102,8 @@ public class SammonDataset extends AbstractXYDataset implements
             }
             parameterValuesForGroups = availableParameterValues.toArray();
 
-            numberOfGroups = parameterValuesForGroups.length;*/
-        }
+            numberOfGroups = parameterValuesForGroups.length;
+        }*/
 
     }
 
