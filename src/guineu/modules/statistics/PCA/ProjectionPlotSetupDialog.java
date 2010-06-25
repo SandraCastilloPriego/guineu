@@ -65,7 +65,7 @@ public class ProjectionPlotSetupDialog extends JDialog implements
     private JComboBox comboColoringMethod;
     private JComboBox comboXAxisComponent;
     private JComboBox comboYAxisComponent;
-    private Parameter[] parametersInCombo;
+    private String[] parametersInCombo;
     private Vector<ExtendedCheckBox<String>> rawDataFileCheckBoxes;
     private Vector<ExtendedCheckBox<PeakListRow>> peakCheckBoxes;
     private JButton btnSelectAllFiles,  btnDeselectAllFiles,  btnSelectAllPeaks,  btnDeselectAllPeaks,  btnOK,  btnCancel;
@@ -147,17 +147,17 @@ public class ProjectionPlotSetupDialog extends JDialog implements
         constraints.gridy = 1;
         layout.setConstraints(comp, constraints);
 
-       // Parameter projectParameters[] = GuineuCore.getCurrentProject().getParameters();
-        Object availableColoringStyles[] = new Object[2];
-        parametersInCombo = new Parameter[2];
+        String projectParameters[] = peakList.getParametersName().toArray(new String[0]);
+        Object availableColoringStyles[] = new Object[3];
+        parametersInCombo = new String[3];
         availableColoringStyles[0] = ProjectionPlotParameters.ColoringTypeSingleColor;
         availableColoringStyles[1] = ProjectionPlotParameters.ColoringTypeByFile;
         parametersInCombo[0] = null;
         parametersInCombo[1] = null;
-       /* for (int i = 0; i < projectParameters.length; i++) {
-            availableColoringStyles[2] = "Color by parameter " + projectParameters[i].getName();
+        for (int i = 1; i < projectParameters.length; i++) {
+            availableColoringStyles[2] = "Color by parameter " + projectParameters[i];
             parametersInCombo[2] = projectParameters[i];
-        }*/
+        }
         comboColoringMethod = new JComboBox(availableColoringStyles);
         if (parameterSet.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeSingleColor) {
             comboColoringMethod.setSelectedItem(ProjectionPlotParameters.ColoringTypeSingleColor);
@@ -354,8 +354,8 @@ public class ProjectionPlotSetupDialog extends JDialog implements
                 parameterSet.setParameterValue(
                         ProjectionPlotParameters.coloringType,
                         ProjectionPlotParameters.ColoringTypeByParameterValue);
-                Parameter selectedParameter = parametersInCombo[comboColoringMethod.getSelectedIndex()];
-                parameterSet.setSelectedParameter(selectedParameter);
+                String selectedParameter = parametersInCombo[comboColoringMethod.getSelectedIndex()];
+               // parameterSet.setSelectedParameter(selectedParameter);
             }
 
             

@@ -40,7 +40,7 @@ public class PCADataset extends AbstractXYDataset implements
     private double[] component1Coords;
     private double[] component2Coords;
     private ProjectionPlotParameters parameters;
-    private Parameter selectedParameter;
+    private String selectedParameter;
     private Vector<String> selectedRawDataFiles;
     private List<PeakListRow> selectedRows;
     private int[] groupsForSelectedRawDataFiles;
@@ -89,27 +89,22 @@ public class PCADataset extends AbstractXYDataset implements
 
         if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
             // Group files with same parameter value to same group
-          /*  MZmineProject project = MZmineCore.getCurrentProject();
-            
+            Vector<Object> availableParameterValues = new Vector<Object>();
             for (String rawDataFile : selectedRawDataFiles) {
-                Object paramValue = project.getParameterValue(
-                        selectedParameter, rawDataFile);
+                String paramValue = parameters.getParameterValue(rawDataFile);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
                 }
-            }*/
+            }
 
-            /*for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                Object paramValue = project.getParameterValue(
-                        selectedParameter, selectedRawDataFiles[ind]);
+            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
+                String paramValue =  parameters.getParameterValue(selectedRawDataFiles.elementAt(ind));
                 groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
-            }*/
-            Vector<Object> availableParameterValues = new Vector<Object>();
+            }
             parameterValuesForGroups = availableParameterValues.toArray();
 
             numberOfGroups = parameterValuesForGroups.length;
         }
-
     }
 
     public String toString() {

@@ -60,7 +60,7 @@ public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
 		case FileNameAndParameterValue:
 			String ret = dataset.getRawDataFile(item).toString() + "\n";
 
-			ret += parameters.getSelectedParameter().getName() + ": ";
+			ret += parameters.getSelectedParameter() + ": ";
 			
 			int groupNumber = dataset.getGroupNumber(item);
 			Object paramValue = dataset.getGroupParameterValue(groupNumber);

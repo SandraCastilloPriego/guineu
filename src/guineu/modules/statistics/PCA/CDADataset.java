@@ -15,10 +15,8 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.statistics.PCA;
 
-import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
@@ -40,7 +38,7 @@ public class CDADataset extends AbstractXYDataset implements
     private double[] component1Coords;
     private double[] component2Coords;
     private ProjectionPlotParameters parameters;
-    private Parameter selectedParameter;
+    private String selectedParameter;
     private Vector<String> selectedRawDataFiles;
     private List<PeakListRow> selectedRows;
     private int[] groupsForSelectedRawDataFiles;
@@ -87,27 +85,27 @@ public class CDADataset extends AbstractXYDataset implements
             numberOfGroups = selectedRawDataFiles.size();
         }
 
+
         if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
             // Group files with same parameter value to same group
-      /*      GuineuProject project = GuineuCore.getCurrentProject();
             Vector<Object> availableParameterValues = new Vector<Object>();
             for (String rawDataFile : selectedRawDataFiles) {
-                Object paramValue = project.getParameterValue(
-                        selectedParameter, rawDataFile);
+                String paramValue = parameters.getParameterValue(rawDataFile);
+                System.out.println(rawDataFile + " - " + paramValue);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
                 }
             }
 
             for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                Object paramValue = project.getParameterValue(
-                        selectedParameter, selectedRawDataFiles.get(ind));
+                String paramValue = parameters.getParameterValue(selectedRawDataFiles.elementAt(ind));
                 groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
             }
             parameterValuesForGroups = availableParameterValues.toArray();
 
-            numberOfGroups = parameterValuesForGroups.length;*/
+            numberOfGroups = parameterValuesForGroups.length;
         }
+
 
     }
 
