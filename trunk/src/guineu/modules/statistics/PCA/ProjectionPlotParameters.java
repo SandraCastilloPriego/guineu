@@ -57,7 +57,7 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
 
 	private Dataset sourcePeakList;
 
-	private Parameter selectedParameter; // Parameter used when coloring by
+	private String selectedParameter; // Parameter used when coloring by
 	// parameter value
 	private Vector<String> selectedDataFiles;
 	private List<PeakListRow> selectedRows;
@@ -69,15 +69,11 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
 		this.selectedDataFiles = sourcePeakList.getNameExperiments();
 		this.selectedRows = sourcePeakList.getRows();
 
-		selectedParameter = new SimpleParameter(
-			ParameterType.STRING, "parameters",
-			"parameters", sourcePeakList.getParametersName().firstElement(),
-			sourcePeakList.getParametersName().toArray(new String[0]));
-	}
+        }
 
 	private ProjectionPlotParameters(Dataset sourcePeakList,
 			Object coloringTypeValue, Object xAxisComponentNumber, Object yAxisComponentNumber,
-			Parameter selectedParameter, Vector<String> selectedDataFiles,
+			String selectedParameter, Vector<String> selectedDataFiles,
 			List<PeakListRow> selectedRows) {
 
 		this();
@@ -114,13 +110,17 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
 		this.selectedDataFiles = selectedDataFiles;
 	}
 
-	public Parameter getSelectedParameter() {
+	public String getSelectedParameter() {
 		return selectedParameter;
 	}
 
-	public void setSelectedParameter(Parameter selectedParameter) {
+	public void setSelectedParameter(String selectedParameter) {
 		this.selectedParameter = selectedParameter;
 	}
+
+        public String getParameterValue(String sampleName){
+            return this.sourcePeakList.getParametersValue(sampleName, selectedParameter);
+        }
 
 	public List<PeakListRow> getSelectedRows() {
 		return selectedRows;

@@ -191,7 +191,7 @@ public class SimpleLCMSDataset implements Dataset {
         }
 
         public String getParameter(String parameterName) {
-            if (parameters.containsKey(parameterName)) {
+            if (parameterName != null && parameters.containsKey(parameterName)) {
                 return parameters.get(parameterName);
             } else {
                 return null;
