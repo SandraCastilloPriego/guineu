@@ -18,7 +18,6 @@
 
 package guineu.modules.statistics.PCA;
 
-import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
