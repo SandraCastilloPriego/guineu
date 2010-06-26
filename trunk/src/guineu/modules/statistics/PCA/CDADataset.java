@@ -38,7 +38,6 @@ public class CDADataset extends AbstractXYDataset implements
     private double[] component1Coords;
     private double[] component2Coords;
     private ProjectionPlotParameters parameters;
-    private String selectedParameter;
     private Vector<String> selectedRawDataFiles;
     private List<PeakListRow> selectedRows;
     private int[] groupsForSelectedRawDataFiles;
@@ -58,7 +57,6 @@ public class CDADataset extends AbstractXYDataset implements
         this.xAxisDimension = (Integer) parameters.getParameterValue(ProjectionPlotParameters.xAxisComponent);
         this.yAxisDimension = (Integer) parameters.getParameterValue(ProjectionPlotParameters.yAxisComponent);
 
-        selectedParameter = parameters.getSelectedParameter();
         selectedRawDataFiles = parameters.getSelectedDataFiles();
         selectedRows = parameters.getSelectedRows();
 

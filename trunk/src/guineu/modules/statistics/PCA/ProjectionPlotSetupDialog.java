@@ -19,7 +19,6 @@
 package guineu.modules.statistics.PCA;
 
 import guineu.data.Dataset;
-import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
@@ -355,7 +354,7 @@ public class ProjectionPlotSetupDialog extends JDialog implements
                         ProjectionPlotParameters.coloringType,
                         ProjectionPlotParameters.ColoringTypeByParameterValue);
                 String selectedParameter = parametersInCombo[comboColoringMethod.getSelectedIndex()];
-               // parameterSet.setSelectedParameter(selectedParameter);
+                parameterSet.setSelectedParameter(selectedParameter);
             }
 
             
