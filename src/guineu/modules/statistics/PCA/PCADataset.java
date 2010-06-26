@@ -18,7 +18,6 @@
 
 package guineu.modules.statistics.PCA;
 
-import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
@@ -40,7 +39,6 @@ public class PCADataset extends AbstractXYDataset implements
     private double[] component1Coords;
     private double[] component2Coords;
     private ProjectionPlotParameters parameters;
-    private String selectedParameter;
     private Vector<String> selectedRawDataFiles;
     private List<PeakListRow> selectedRows;
     private int[] groupsForSelectedRawDataFiles;
@@ -60,7 +58,6 @@ public class PCADataset extends AbstractXYDataset implements
         this.xAxisPC = (Integer) parameters.getParameterValue(ProjectionPlotParameters.xAxisComponent);
         this.yAxisPC = (Integer) parameters.getParameterValue(ProjectionPlotParameters.yAxisComponent);
 
-        selectedParameter = parameters.getSelectedParameter();
         selectedRawDataFiles = parameters.getSelectedDataFiles();
         selectedRows = parameters.getSelectedRows();
 
