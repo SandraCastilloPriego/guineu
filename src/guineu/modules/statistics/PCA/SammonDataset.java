@@ -87,14 +87,14 @@ public class SammonDataset extends AbstractXYDataset implements
             // Group files with same parameter value to same group           
             Vector<Object> availableParameterValues = new Vector<Object>();
             for (String rawDataFile : selectedRawDataFiles) {
-                String paramValue = parameters.getParameterValue(rawDataFile);
+                String paramValue = parameters.getParamValue(rawDataFile);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
                 }
             }
 
             for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                String paramValue =  parameters.getParameterValue(selectedRawDataFiles.elementAt(ind));
+                String paramValue =  parameters.getParamValue(selectedRawDataFiles.elementAt(ind));
                 groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
             }
             parameterValuesForGroups = availableParameterValues.toArray();

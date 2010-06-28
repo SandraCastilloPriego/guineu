@@ -118,7 +118,7 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
 		this.selectedParameter = selectedParameter;
 	}
 
-        public String getParameterValue(String sampleName){
+        public String getParamValue(String sampleName){
             return this.sourcePeakList.getParametersValue(sampleName, selectedParameter);
         }
 
