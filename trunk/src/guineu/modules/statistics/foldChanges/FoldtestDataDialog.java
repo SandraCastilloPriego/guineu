@@ -1,13 +1,24 @@
 /*
- * TtestDataDialog.java
+ * Copyright 2007-2010 VTT Biotechnology
+ * This file is part of Guineu.
  *
- * Created on 14 September 2008, 13:10
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.statistics.foldChanges;
 
-import guineu.data.Dataset;
 import guineu.modules.statistics.Ttest.*;
+import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.util.logging.Logger;
@@ -18,31 +29,47 @@ import javax.swing.JDialog;
  * @author  SCSANDRA
  */
 public class FoldtestDataDialog extends JDialog {
+
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Dataset dataset;
     private TtestDataModel group1, group2, from;
     private ExitCode exit = ExitCode.UNKNOWN;
-    
+
     /** Creates new form TtestDataDialog */
     public FoldtestDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
-				"Please select a experiment groups to do the fold test...", true);
+                "Please select a experiment groups to do the t-test...", true);
 
         logger.finest("Displaying experiment open dialog");
-        this.dataset = dataset;        
+        this.dataset = dataset;
         initComponents();
-        try{
+
+        for (String parameters : dataset.getParametersName()) {
+            if (!parameters.equals("Samples")) {
+                this.jComboBox1.addItem(parameters);
+            }
+        }
+
+        try {
             this.from = new TtestDataModel("Experiment Names");
             this.group1 = new TtestDataModel("Group1 - Experiment Names");
-            this.group2 = new TtestDataModel("WT - Experiment Names");
+            this.group2 = new TtestDataModel("Group2 - Experiment Names");
             this.jTablefrom.setModel(from);
             this.jTablefrom.createToolTip();
-            this.jTablegroup1.setModel(group1);            
+            this.jTablegroup1.setModel(group1);
             this.jTablegroup2.setModel(group2);
             this.setValuesTable();
-        }catch(Exception exception){}
+        } catch (Exception exception) {
+        }
     }
-    
+
+    public String getParameter() {
+        if (this.jCheckBox1.isSelected()) {
+            return (String) jComboBox1.getSelectedItem();
+        }
+        return null;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -65,6 +92,9 @@ public class FoldtestDataDialog extends JDialog {
         jButtonizq1 = new javax.swing.JButton();
         jButtonder1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jComboBox1 = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         jButtonOK = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
@@ -146,7 +176,7 @@ public class FoldtestDataDialog extends JDialog {
 
             },
             new String [] {
-                "WT - Experiment Name"
+                "Group 2 - Experiment Name"
             }
         ) {
             Class[] types = new Class [] {
@@ -206,7 +236,7 @@ public class FoldtestDataDialog extends JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -214,10 +244,15 @@ public class FoldtestDataDialog extends JDialog {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(238, 238, 238)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         jLabel1.setText("Select the groups of experiments");
+
+        jCheckBox1.setText("Use Parameters");
+        jPanel5.add(jCheckBox1);
+
+        jPanel5.add(jComboBox1);
 
         jButtonOK.setText("Ok");
         jButtonOK.addActionListener(new java.awt.event.ActionListener() {
@@ -225,7 +260,6 @@ public class FoldtestDataDialog extends JDialog {
                 jButtonOKActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonOK);
 
         jButtonClose.setText("Cancel");
         jButtonClose.addActionListener(new java.awt.event.ActionListener() {
@@ -233,37 +267,64 @@ public class FoldtestDataDialog extends JDialog {
                 jButtonCloseActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonClose);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jButtonOK)
+                .addGap(5, 5, 5)
+                .addComponent(jButtonClose))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jButtonOK))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jButtonClose)))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(730, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(173, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     private void jButtonOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOKActionPerformed
         exit = ExitCode.OK;
         dispose();
@@ -275,10 +336,10 @@ public class FoldtestDataDialog extends JDialog {
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     private void jButtonizq2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonizq2ActionPerformed
-        int[] selRows = this.jTablefrom.getSelectedRows();        
-        for(int i = 0; i < selRows.length; i++){
-            if(!this.from.getValueAt(selRows[i], 0).isEmpty()){               
-                this.group2.addRows((String)this.from.getValueAt(selRows[i], 0));                
+        int[] selRows = this.jTablefrom.getSelectedRows();
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.from.getValueAt(selRows[i], 0).isEmpty()) {
+                this.group2.addRows((String) this.from.getValueAt(selRows[i], 0));
                 this.from.removeRow(selRows[i]);
             }
         }
@@ -289,9 +350,9 @@ public class FoldtestDataDialog extends JDialog {
 
     private void jButtonder2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonder2ActionPerformed
         int[] selRows = this.jTablegroup2.getSelectedRows();
-        for(int i = 0; i < selRows.length; i++){
-            if(!this.group2.getValueAt(selRows[i], 0).isEmpty()){
-                this.from.addRows((String)this.group2.getValueAt(selRows[i], 0));         
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.group2.getValueAt(selRows[i], 0).isEmpty()) {
+                this.from.addRows((String) this.group2.getValueAt(selRows[i], 0));
                 this.group2.removeRow(selRows[i]);
             }
         }
@@ -301,10 +362,10 @@ public class FoldtestDataDialog extends JDialog {
 }//GEN-LAST:event_jButtonder2ActionPerformed
 
     private void jButtonizq1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonizq1ActionPerformed
-        int[] selRows = this.jTablefrom.getSelectedRows();        
-        for(int i = 0; i < selRows.length; i++){
-            if(!this.from.getValueAt(selRows[i], 0).isEmpty()){               
-                this.group1.addRows((String)this.from.getValueAt(selRows[i], 0));                
+        int[] selRows = this.jTablefrom.getSelectedRows();
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.from.getValueAt(selRows[i], 0).isEmpty()) {
+                this.group1.addRows((String) this.from.getValueAt(selRows[i], 0));
                 this.from.removeRow(selRows[i]);
             }
         }
@@ -315,9 +376,9 @@ public class FoldtestDataDialog extends JDialog {
 
     private void jButtonder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonder1ActionPerformed
         int[] selRows = this.jTablegroup1.getSelectedRows();
-        for(int i = 0; i < selRows.length; i++){
-            if(!this.group1.getValueAt(selRows[i], 0).isEmpty()){
-                this.from.addRows((String)this.group1.getValueAt(selRows[i], 0));         
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.group1.getValueAt(selRows[i], 0).isEmpty()) {
+                this.from.addRows((String) this.group1.getValueAt(selRows[i], 0));
                 this.group1.removeRow(selRows[i]);
             }
         }
@@ -325,27 +386,26 @@ public class FoldtestDataDialog extends JDialog {
         this.jTablefrom.revalidate();
         this.jTablegroup1.revalidate();
     }//GEN-LAST:event_jButtonder1ActionPerformed
-    
-    public ExitCode getExitCode(){
+
+    public ExitCode getExitCode() {
         return exit;
     }
-    
-    public String[] getGroup1(){
+
+    public String[] getGroup1() {
         String[] sgroup1 = new String[this.jTablegroup1.getRowCount()];
-        for(int i = 0; i < this.jTablegroup1.getRowCount(); i++){
+        for (int i = 0; i < this.jTablegroup1.getRowCount(); i++) {
             sgroup1[i] = this.jTablegroup1.getValueAt(i, 0).toString();
         }
         return sgroup1;
     }
-    
-    public String[] getGroup2(){
+
+    public String[] getGroup2() {
         String[] sgroup2 = new String[this.jTablegroup2.getRowCount()];
-        for(int i = 0; i < this.jTablegroup2.getRowCount(); i++){
+        for (int i = 0; i < this.jTablegroup2.getRowCount(); i++) {
             sgroup2[i] = this.jTablegroup2.getValueAt(i, 0).toString();
         }
         return sgroup2;
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonOK;
@@ -353,11 +413,14 @@ public class FoldtestDataDialog extends JDialog {
     private javax.swing.JButton jButtonder2;
     private javax.swing.JButton jButtonizq1;
     private javax.swing.JButton jButtonizq2;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -366,10 +429,9 @@ public class FoldtestDataDialog extends JDialog {
     private javax.swing.JTable jTablegroup2;
     // End of variables declaration//GEN-END:variables
 
-    private void setValuesTable() {        
-        for(String experimentName : dataset.getNameExperiments()){
+    private void setValuesTable() {
+        for (String experimentName : dataset.getNameExperiments()) {
             this.from.addRows(experimentName);
         }
     }
-    
 }

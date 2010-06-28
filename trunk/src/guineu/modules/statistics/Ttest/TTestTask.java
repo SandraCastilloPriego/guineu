@@ -28,6 +28,7 @@ import guineu.util.Tables.impl.PushableTable;
 import guineu.util.components.FileUtils;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
+import java.util.Vector;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math.stat.descriptive.StatisticalSummary;
@@ -132,14 +133,42 @@ public class TTestTask implements Task {
                 }
             }
         } else {
-            parameter1 = dataset.getParametersValue(dataset.getNameExperiments().firstElement(), parameter);
-          
-            for(String sampleName : dataset.getNameExperiments()){
-                if(dataset.getParametersValue(sampleName, parameter).equals(parameter1)){
-                    stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
-                }else{
-                    stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+
+            // Determine groups for selected raw data files
+            int[] groupsForSelectedRawDataFiles = new int[this.dataset.getNumberCols()];
+
+            for (int ind = 0; ind < this.dataset.getNumberCols(); ind++) {
+                groupsForSelectedRawDataFiles[ind] = ind;
+            }
+
+            Vector<String> availableParameterValues = new Vector<String>();
+            for (String rawDataFile : dataset.getNameExperiments()) {
+                String paramValue = dataset.getParametersValue(rawDataFile, parameter);
+                if (!availableParameterValues.contains(paramValue)) {
+                    availableParameterValues.add(paramValue);
                 }
+            }
+
+            for (int ind = 0; ind < dataset.getNumberCols(); ind++) {
+                String paramValue = dataset.getParametersValue(dataset.getNameExperiments().elementAt(ind), parameter);
+                groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
+            }
+
+            int numberOfGroups = availableParameterValues.size();
+
+            if (numberOfGroups > 1) {
+                parameter1 = availableParameterValues.firstElement();
+                String parameter2 = availableParameterValues.elementAt(1);
+
+                for (String sampleName : dataset.getNameExperiments()) {
+                    if (dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
+                        stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                    } else if (dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
+                        stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                    }
+                }
+            } else {
+                return -1;
             }
         }
         TTestImpl ttest = new TTestImpl();
