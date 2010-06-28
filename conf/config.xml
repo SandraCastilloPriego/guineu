@@ -16,7 +16,7 @@
     <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>   
     <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
-    <module class="guineu.modules.file.openExperimentsData.OpenFile"/>  
+    <!--<module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
     <!-- <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
@@ -33,6 +33,7 @@
       </parameters> 
     </module>  
     <module class="guineu.modules.configuration.proxy.ProxyConfiguration"/> 
+    <module class="guineu.modules.configuration.parameters.ParameterConfiguration"/> 
     <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"> 
       <parameters>
         <parameter name="Peak list name" type="STRING">Aligned peak list</parameter>
@@ -71,28 +72,28 @@
     </module>  
     <module class="guineu.modules.filter.report.RTShift.Report"> 
       <parameters>
-        <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
-        <parameter name="Save report" type="FILE_NAME">/home/bicha/Desktop/guineu/report/rt</parameter>
+        <parameter name="Run list file name" type="FILE_NAME">/</parameter>
+        <parameter name="Save report" type="FILE_NAME">/</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.filter.report.intensitiesReport.Report"> 
       <parameters>
-        <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
-        <parameter name="Save report" type="FILE_NAME">/home/bicha/Desktop/guineu/report/intensities/heights</parameter>
+        <parameter name="Run list file name" type="FILE_NAME">/</parameter>
+        <parameter name="Save report" type="FILE_NAME">/</parameter>
         <parameter name="Use area " type="BOOLEAN">false</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.filter.report.areaVSheight.Report"> 
       <parameters>
-        <parameter name="Run list file name" type="FILE_NAME">/home/bicha/Desktop/guineu/runList.csv</parameter>
-        <parameter name="Save report" type="FILE_NAME">/home/bicha/Desktop/guineu/report/NewFolder</parameter>
+        <parameter name="Run list file name" type="FILE_NAME">/</parameter>
+        <parameter name="Save report" type="FILE_NAME">/</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  
     <module class="guineu.modules.filter.dataselection.DataSelection"/>  
     <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch"> 
       <parameters>
-        <parameter name="Database file" type="FILE_NAME">/home/scsandra/Desktop/identification/theoretical_pos_with_RT.csv</parameter>
+        <parameter name="Database file" type="FILE_NAME">/</parameter>
         <parameter name="Field separator" type="STRING">,</parameter>
         <parameter name="Field order" type="ORDERED_LIST">ID,m/z,Retention time,Identity,Formula</parameter>
         <parameter name="Ignore first line" type="BOOLEAN">true</parameter>
@@ -149,7 +150,7 @@
     </module>  
     <module class="guineu.modules.mylly.filter.calculateDeviations.CalculateDeviations"> 
       <parameters>
-        <parameter name="Name Filter File: " type="FILE_NAME">/home/scsandra/Desktop/main peaks.txt</parameter>
+        <parameter name="Name Filter File: " type="FILE_NAME">/</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.pubChem.PubChemFilter"> 
@@ -191,8 +192,8 @@
     <module class="guineu.modules.mylly.filter.NonPolarComponents.removeNonPolarFilter"/>  
     <module class="guineu.modules.mylly.filter.tools.PrepareDeviationFile.RTIFile"> 
       <parameters>
-        <parameter name="Input File: " type="FILE_NAME">/home/scsandra/Desktop/RI_list.txt</parameter>
-        <parameter name="Output File: " type="FILE_NAME">/home/scsandra/Desktop/data.xml</parameter>
+        <parameter name="Input File: " type="FILE_NAME">/</parameter>
+        <parameter name="Output File: " type="FILE_NAME">/</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.ConcentrationsFromMass.ConcentrationsFromMassFilter"/> 
@@ -217,12 +218,12 @@
       <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
-    <lastProjectDirectory>/home/bicha/Download/112Vein-tracer.xls</lastProjectDirectory>
-    <lastSaveDirectory>D:\data\xxczxczxcz</lastSaveDirectory>
-    <lastMyllyDirectory>/mnt/home/scsandra/Desktop/KTL Serum (064) 201008/064KTLSchiz_SeTw1nr054vtt33_GGT2_rep1run1_201008_1.txt</lastMyllyDirectory>
+    <lastProjectDirectory>/</lastProjectDirectory>
+    <lastSaveDirectory>/</lastSaveDirectory>
+    <lastMyllyDirectory>/</lastMyllyDirectory>
     <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
     <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
-    <parameter name="LCMS Filename" type="FILE_NAME">/home/scsandra/Desktop/processed files/179-167GUT/3-12/167-179GUTsero2.csv</parameter>
+    <parameter name="LCMS Filename" type="FILE_NAME">/</parameter>
     <parameter name="LCMS type" type="STRING">csv</parameter>
     <parameter name="Export LCMS elements" type="MULTIPLE_SELECTION">Average m/z,Average Retention time,Name,Num found,Standard</parameter>
     <parameter name="GCGC Filename" type="FILE_NAME"/>
