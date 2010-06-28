@@ -17,10 +17,13 @@
  */
 package guineu.modules.identification.normalizationserum;
 
+import guineu.data.PeakListRow;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.TaskStatus;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -121,7 +124,10 @@ public class NormalizeSerum {
                     try {
                         String lipid = this.getLipidName(i);
                         if (lipid != null) {
-                            lipid = lipid.substring(0, lipid.indexOf("("));
+                            try {
+                                lipid = lipid.substring(0, lipid.indexOf("("));
+                            } catch (Exception exception) {
+                            }
 
                             try {
                                 Double valueNormalized = (Double) dataset.getRow(i).getPeak(experimentName);
@@ -202,6 +208,36 @@ public class NormalizeSerum {
      * @return
      */
     private int getStdIndex(String lipid) {
+        // In the case the lipid is identified as an adduct, the program search the
+        // main peak to get the standard class and change the name to the field "lipid"
+        int newRow = -1;
+        if (lipid.matches(".*adduct.*")) {
+            double num = 0;
+            Pattern adduct = Pattern.compile("\\d+.\\d+");
+            Matcher matcher = adduct.matcher(lipid);
+            if (matcher.find()) {
+                num = Double.valueOf(lipid.substring(matcher.start(), matcher.end()));
+            }
+            double difference = Double.POSITIVE_INFINITY;
+            int counter = 0;
+            for (PeakListRow row : dataset.getRows()) {
+                double mzRow = ((SimplePeakListRowLCMS) row).getMZ();
+                double dif = Math.abs(num - mzRow);
+                if (dif < difference) {
+                    difference = dif;
+                    lipid = ((SimplePeakListRowLCMS) row).getName();
+                    newRow = counter;
+                }
+                counter++;
+            }
+        }
+
+        // In the case the main lipid is unknown or another adduct..
+        if (lipid.matches(".*unknown.*") || lipid.matches(".*adduct.*") && newRow >= 0) {
+            lipid = this.getUnknownName(newRow);
+        }
+
+
         if (lipid.matches(stdMol.other)) {
             return 6;
         } else if (lipid.matches(stdMol.other1)) {
