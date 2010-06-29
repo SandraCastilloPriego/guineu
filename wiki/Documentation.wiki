@@ -1,4 +1,3 @@
-#sidebar TableOfContents
 = Index =
 
 * GCxGC-MS Algorithms
@@ -32,6 +31,8 @@
 
 * General Algorithms
  * [GeneralFile File]
+  * [GeneralOpenOtherFile Open Other Files]
+  * [GeneralOpenMassLynxFile Open Mass Lynx Files]
  * [GeneralFiltering Filtering]
  * [DataAnalisys Data Analysis]
   * [DAProjectionPlot Projection Plots]

@@ -1,2 +1,6 @@
 =General Algorithms=
 ==File==
+
+[GeneralOpenOtherFile Open Other Files]
+
+[GeneralOpenMassLynxFile Open Mass Lynx Files]
