@@ -4,3 +4,9 @@
 [DAProjectionPlot Projection Plots]
 
 [DACoefficientVariation Coefficient of Variation]
+
+[DATTest T-test]
+
+[DAFoldTest Fold Changes Test]
+
+[DAMedia Calculate Media]
