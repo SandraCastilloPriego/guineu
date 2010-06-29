@@ -25,7 +25,7 @@
 
 
 * LC-MS Algorithms
- * [LCMSFile File]
+ * [LCMSFile File2]
   * [LCMSOpenFile Open LC-MS File]
   * [LCMSSaveFile Save LC-MS File]
  * [LCMSIdentification Identification]
@@ -34,7 +34,7 @@
 
 
 * General Algorithms
- * [GeneralFile File]
+ * [GeneralFile File3]
   * [GeneralOpenOtherFile Open Other Files]
   * [GeneralOpenMassLynxFile Open Mass Lynx Files]
  * [GeneralFiltering Filtering]
