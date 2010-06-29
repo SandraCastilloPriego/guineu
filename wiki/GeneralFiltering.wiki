@@ -1,2 +1,8 @@
 =General Algorithms=
 ==Filtering==
+
+[GeneralFilteringTranspose Transpose Data Set]
+
+[GeneralFilteringChangeUnits Change Units]
+
+[GeneralFilteringSplit Split Data Set]
