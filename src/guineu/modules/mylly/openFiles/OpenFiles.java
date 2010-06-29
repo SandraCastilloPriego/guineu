@@ -51,6 +51,7 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Files..",
                 "Open single peak list in CVS format", KeyEvent.VK_G, this, null, "icons/pickedpeakicon.png");
+        desktop.addMenuSeparator(GuineuMenu.FILE);
         parameters = new OpenGCGCFileParameters();
     }
 

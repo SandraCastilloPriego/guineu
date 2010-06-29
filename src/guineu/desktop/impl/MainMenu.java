@@ -55,13 +55,13 @@ class MainMenu extends JMenuBar implements ActionListener {
 
         databaseMenu = new JMenu("Database");
         databaseMenu.setMnemonic(KeyEvent.VK_D);
-        add(databaseMenu);
+       // add(databaseMenu);
 
         filterMenu = new JMenu("Filter");
         filterMenu.setMnemonic(KeyEvent.VK_L);
         this.add(filterMenu);
 
-        alignmentMenu = new JMenu("Alignment");
+        alignmentMenu = new JMenu("LC-MS Alignment");
         alignmentMenu.setMnemonic(KeyEvent.VK_A);
         filterMenu.add(alignmentMenu);
 
@@ -79,12 +79,12 @@ class MainMenu extends JMenuBar implements ActionListener {
 
         identificationFilterMenu = new JMenu("Identification Filters");
         identificationFilterMenu.setMnemonic(KeyEvent.VK_I);
-        lcmsIdentificationSubMenu.add(identificationFilterMenu);
+      //  lcmsIdentificationSubMenu.add(identificationFilterMenu);
 
 
         normalizationMenu = new JMenu("Normalization");
         normalizationMenu.setMnemonic(KeyEvent.VK_N);
-        lcmsIdentificationSubMenu.add(normalizationMenu);
+     //   lcmsIdentificationSubMenu.add(normalizationMenu);
 
         statisticsMenu = new JMenu("Data analysis");
         statisticsMenu.setMnemonic(KeyEvent.VK_S);
@@ -92,7 +92,7 @@ class MainMenu extends JMenuBar implements ActionListener {
 
         reportMenu = new JMenu("LC-MS Reports");
         reportMenu.setMnemonic(KeyEvent.VK_R);
-        this.add(reportMenu);
+       // this.add(reportMenu);
 
         /* msmsMenu = new JMenu("MS/MS Filters");
         msmsMenu.setMnemonic(KeyEvent.VK_M);
