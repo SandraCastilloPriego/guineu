@@ -24,8 +24,8 @@
   * [GCGCRTIPreparationFile RTI Preparation File]
 
 * LC-MS Algorithms
- * [File LCMSFile]
-    * [LCMSOpenFile Open LC-MS File]
+ * [LCMSFile File]
+  * [LCMSOpenFile Open LC-MS File]
  * Identification
  * Filtering
 
