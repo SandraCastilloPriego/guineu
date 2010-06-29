@@ -30,8 +30,8 @@
 
 * General Algorithms
  * Filtering
- * [Statistics Statistics]
-  * [StatisticsProjectionPlot Projection Plots]
+ * [DataAnalisys Data Analysis]
+  * [DAProjectionPlot Projection Plots]
 
 * Development
  * [NetbeansProjectSetup NetBeans Project Setup]
