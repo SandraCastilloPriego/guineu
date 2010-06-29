@@ -3,8 +3,8 @@
 <configuration> 
   <nodes local="2"/>  
   <modules> 
-    <!-- <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  -->
-    <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
+    <!-- DATABASE SAVE FILE: <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  -->
+    <!-- DATABASE OPEN FILE: <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
       <parameters> 
         <parameter name="Project" type="STRING"/>  
         <parameter name="Study" type="STRING"/>  
@@ -12,16 +12,16 @@
         <parameter name="Open" type="MULTIPLE_SELECTION">Sample Information,Project Information,Study Information,Dataset Information</parameter> 
       </parameters> 
     </module>  
-    <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  
+    DATABASE DELETE FILE: <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  -->
     <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>   
     <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
-    <!--<module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->
+    <!-- OPEN EXPERIMENT DATA: <module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
-    <!-- <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
+    <!-- OPEN MASS LYNX FILES: <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
     <module class="guineu.modules.file.exit.ExitProgram"/>  
-    <!-- <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
+    <!-- DATABASE SAVE FILE: <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"> 
       <parameters>
         <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
@@ -48,17 +48,17 @@
     <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering"/>  
     <module class="guineu.modules.filter.Alignment.centering.median.MedianCentering"/>  
     <module class="guineu.modules.filter.Alignment.normalizationSTD.STDNormalization"/>  
-    <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  
+   <!-- CONCATETANE FILTER: <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  -->
     <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
     <module class="guineu.modules.filter.splitdatasets.Split"/>  
-    <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/>  
+   <!-- RELATED PEAKS FILTER: <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/> --> 
     <module class="guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilter"> 
       <parameters>
         <parameter name="Multiply by" type="DOUBLE">0.0</parameter>
         <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.filter.report.qualityReport.Report"> 
+   <!-- QUALITY REPORTS: <module class="guineu.modules.filter.report.qualityReport.Report"> 
       <parameters>
         <parameter name="Input File" type="FILE_NAME"/>
         <parameter name="HTML Output File" type="FILE_NAME"/>
@@ -89,7 +89,7 @@
         <parameter name="Save report" type="FILE_NAME">/</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  
+    <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  -->
     <module class="guineu.modules.filter.dataselection.DataSelection"/>  
     <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch"> 
       <parameters>
@@ -102,15 +102,15 @@
         <parameter name="MSMS Identification" type="BOOLEAN">false</parameter>
       </parameters> 
     </module>  
-    <!-- <module class="guineu.modules.identification.identification.Identification"/>  -->
+    <!-- DATABASE IDENTIFICATION: <module class="guineu.modules.identification.identification.Identification"/>  -->
     <module class="guineu.modules.identification.AdductSearch.AdductSearch"/>  
-    <!-- <module class="guineu.modules.identification.identificationNeg.Identification"/> -->  
+    <!-- DATABASE ESI NEGATIVE IDENTIFICATION: <module class="guineu.modules.identification.identificationNeg.Identification"/> -->  
     <module class="guineu.modules.identification.simplelipidname.SimpleLipidNameFilter"/>  
     <module class="guineu.modules.identification.purgeIdentification.purgeIdentification"/>  
-    <module class="guineu.modules.identification.normalizationserum.NormalizeSerumFilter"/>  
-    <module class="guineu.modules.identification.normalizationtissue.NormalizeTissueFilter"/>  
-    <!-- <module class="guineu.modules.identification.normalizationNOMIS.NormalizeNOMISFilter"/> -->  
-    <!-- <module class="guineu.modules.identification.normalizationNOMIS2.NormalizeNOMISFilter"/> -->  
+    <!-- SERUM NORMALIZATION: <module class="guineu.modules.identification.normalizationserum.NormalizeSerumFilter"/> -->
+    <!-- TISSUE NORMALIZATION: <module class="guineu.modules.identification.normalizationtissue.NormalizeTissueFilter"/>  -->
+    <!-- NOMIS NORMALIZATION: <module class="guineu.modules.identification.normalizationNOMIS.NormalizeNOMISFilter"/> -->  
+    <!-- NOMIS NORMALIZATION: <module class="guineu.modules.identification.normalizationNOMIS2.NormalizeNOMISFilter"/> -->  
     <module class="guineu.modules.statistics.variationCoefficient.VariationCoefficient"/>  
     <module class="guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRowFilter"/>  
     <module class="guineu.modules.statistics.foldChanges.Foldtest"/>  
@@ -122,11 +122,11 @@
         <parameter name="Y-axis component" type="INTEGER">2</parameter> 
       </parameters> 
     </module>  
-    <!-- <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
+    <!-- UPGMA MODULE: <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
-    <module class="guineu.modules.R.R"/>  
-    <!-- <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
-    <module class="guineu.modules.msms.open.OpenFile"/> 
+    <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->
+    <!-- STANDARD VARIATION MODULE: <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
+    <!-- OPEN MSMS FILE:<module class="guineu.modules.msms.open.OpenFile"/> -->
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"> 
       <parameters>
         <parameter name="RT Lax:" type="DOUBLE">15.0</parameter>
