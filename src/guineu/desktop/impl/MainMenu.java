@@ -86,7 +86,7 @@ class MainMenu extends JMenuBar implements ActionListener {
         normalizationMenu.setMnemonic(KeyEvent.VK_N);
         lcmsIdentificationSubMenu.add(normalizationMenu);
 
-        statisticsMenu = new JMenu("Statistics");
+        statisticsMenu = new JMenu("Data analysis");
         statisticsMenu.setMnemonic(KeyEvent.VK_S);
         this.add(statisticsMenu);
 

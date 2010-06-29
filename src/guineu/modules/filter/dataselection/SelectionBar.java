@@ -15,17 +15,10 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.filter.dataselection;
 
-
-
-
-import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import javax.swing.JTable;
 
@@ -34,16 +27,17 @@ import javax.swing.JTable;
  * @author  scsandra
  */
 public class SelectionBar extends javax.swing.JPanel {
-    
+
     /** Creates new form SelectionBar */
     private Desktop desktop;
     private JTable selectedTable;
+
     public SelectionBar(Desktop desktop) {
         this.desktop = desktop;
         initComponents();
-        
+
     }
-   
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -218,28 +212,37 @@ public class SelectionBar extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNoneActionPerformed
-        JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-        for(int i = 0; i < table.getRowCount(); i++){
-            table.setValueAt(new Boolean(false), i, 0);
+        try {
+            JTable table = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
+            for (int i = 0; i < table.getRowCount(); i++) {
+                table.setValueAt(new Boolean(false), i, 0);
+            }
+            table.repaint();
+        } catch (Exception exception) {
         }
-        table.repaint();
 }//GEN-LAST:event_jButtonNoneActionPerformed
 
     private void jButtonSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelectActionPerformed
-       select();
+        select();
 }//GEN-LAST:event_jButtonSelectActionPerformed
 
     private void jButtonAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAllActionPerformed
-        JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-        for(int i = 0; i < table.getRowCount(); i++){
-            table.setValueAt(new Boolean(true), i, 0);
+        try {
+            JTable table = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
+            for (int i = 0; i < table.getRowCount(); i++) {
+                table.setValueAt(new Boolean(true), i, 0);
+            }
+            table.repaint();
+        } catch (Exception exception) {
         }
-        table.repaint();
 }//GEN-LAST:event_jButtonAllActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.desktop.getMainFrame().remove(this);
-        this.desktop.getMainFrame().validate();
+        try {
+            this.desktop.getMainFrame().remove(this);
+            this.desktop.getMainFrame().validate();
+        } catch (Exception exception) {
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -247,46 +250,54 @@ public class SelectionBar extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseClicked
-        if(selectedTable == null || selectedTable != ((DataInternalFrame)desktop.getSelectedFrame()).getTable()){
-            selectedTable = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-            this.jComboBox1.removeAllItems();
-            for(int i = 0; i < selectedTable.getColumnCount(); i++){
-                this.jComboBox1.addItem(selectedTable.getColumnName(i));
+        try {
+            if (selectedTable == null || selectedTable != ((DataInternalFrame) desktop.getSelectedFrame()).getTable()) {
+                selectedTable = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
+                this.jComboBox1.removeAllItems();
+                for (int i = 0; i < selectedTable.getColumnCount(); i++) {
+                    this.jComboBox1.addItem(selectedTable.getColumnName(i));
+                }
+                this.jComboBox1.revalidate();
             }
-            this.jComboBox1.revalidate();
+        } catch (Exception exception) {
         }
-
     }//GEN-LAST:event_jTextField1MouseClicked
 
     private void jButtonDeleteRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteRowsActionPerformed
-        JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable(); 
-        ((DataTableModel)table.getModel()).removeRows();	
-        
+        try {
+            JTable table = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
+            ((DataTableModel) table.getModel()).removeRows();
+        } catch (Exception exception) {
+        }
 }//GEN-LAST:event_jButtonDeleteRowsActionPerformed
 
     private void jButtonInvertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInvertActionPerformed
-        JTable table = ((DataInternalFrame)desktop.getSelectedFrame()).getTable();
-        for(int i = 0; i < table.getRowCount(); i++){
-            if((Boolean)table.getValueAt(i, 0)){
-                table.setValueAt(new Boolean(false), i, 0);
-            }else{
-                table.setValueAt(new Boolean(true), i, 0);
+        try {
+            JTable table = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
+            for (int i = 0; i < table.getRowCount(); i++) {
+                if ((Boolean) table.getValueAt(i, 0)) {
+                    table.setValueAt(new Boolean(false), i, 0);
+                } else {
+                    table.setValueAt(new Boolean(true), i, 0);
+                }
             }
+            table.repaint();
+        } catch (Exception exception) {
         }
-        table.repaint();
 }//GEN-LAST:event_jButtonInvertActionPerformed
-   
-    
-    private void select(){        
-        int index = this.jComboBox1.getSelectedIndex();
-        for(int i = 0; i < selectedTable.getRowCount(); i++){
-            if(selectedTable.getValueAt(i, index).toString().matches(".*"+this.jTextField1.getText()+".*")){
-                selectedTable.setValueAt(new Boolean(true), i, 0);
+
+    private void select() {
+        try {
+            int index = this.jComboBox1.getSelectedIndex();
+            for (int i = 0; i < selectedTable.getRowCount(); i++) {
+                if (selectedTable.getValueAt(i, index).toString().matches(".*" + this.jTextField1.getText() + ".*")) {
+                    selectedTable.setValueAt(new Boolean(true), i, 0);
+                }
             }
+            selectedTable.repaint();
+        } catch (Exception exception) {
         }
-        selectedTable.repaint();
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonAll;
@@ -303,5 +314,4 @@ public class SelectionBar extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
-    
 }
