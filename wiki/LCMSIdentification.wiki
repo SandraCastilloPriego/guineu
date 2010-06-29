@@ -1,2 +1,4 @@
 =LC-MS Algorithms=
 ==Identification==
+
+[LCMSAdductSearch Adduct Search]

@@ -28,7 +28,7 @@
   * [LCMSOpenFile Open LC-MS File]
   * [LCMSSaveFile Save LC-MS File]
  * [LCMSIdentification Identification]
- * Filtering
+  * [LCMSAdductSearch Adduct Search]
 
 * General Algorithms
  * Filtering
