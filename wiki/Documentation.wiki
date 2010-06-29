@@ -29,6 +29,7 @@
   * [LCMSSaveFile Save LC-MS File]
  * [LCMSIdentification Identification]
   * [LCMSAdductSearch Adduct Search]
+  * [LCMSCustomDatabaseSearch Custom Database Search]
 
 
 * General Algorithms

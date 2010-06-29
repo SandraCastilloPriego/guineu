@@ -2,3 +2,5 @@
 ==Identification==
 
 [LCMSAdductSearch Adduct Search]
+
+[LCMSCustomDatabaseSearch Custom Database Search]
