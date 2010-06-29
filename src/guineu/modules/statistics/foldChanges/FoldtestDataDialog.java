@@ -38,7 +38,7 @@ public class FoldtestDataDialog extends JDialog {
     /** Creates new form TtestDataDialog */
     public FoldtestDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
-                "Please select a experiment groups to do the t-test...", true);
+                "Please select a experiment groups to do the Fold Test...", true);
 
         logger.finest("Displaying experiment open dialog");
         this.dataset = dataset;
