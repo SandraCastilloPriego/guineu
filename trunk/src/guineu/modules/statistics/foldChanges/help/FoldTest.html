@@ -1,7 +1,7 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
     <head>
-        <title>Statistics - Fold Changes Test</title>
+        <title>Data analisys - Fold Changes Test</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" type="text/css" href="/guineu/desktop/impl/helpsystem/HelpStyles.css">
     </head>
@@ -9,7 +9,20 @@
         <h1>Fold Changes Test</h1>
         <h2>Description</h2>
         <p>
-            TODO.
-        </p>        
-</body>
+            Fold change is a mathematical operation describing how much two variables
+            differ. It is the ratio of the final value and initial value (B/A),
+            if the final value is larger. This differs from the change between two
+            values, which is (B − A)/A, which can be re-written as B/A − 1
+            in the respect that when the two values are identical the fold change
+            is unity (100%, one-fold change is not used), while the change is nil.
+        </p>
+        <pre>
+            x = measured value; y = control value --> Fold change: x/y
+        </pre>
+
+        <p>
+            The algorithm uses as a "measured" and "control" value the mean of one group of
+            samples chosen by the user.
+        </p>
+    </body>
 </html>
