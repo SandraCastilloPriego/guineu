@@ -1,34 +1,54 @@
 #labels Phase-Design
 = Index =
 
+* Menu
+ * GCxGC-MS Algorithms
+  * [GCGCFile File]
+    * [GCGCopenFile Open one sample file]
+    * [GCGCopenMultipleFile Open multiple sample file]
+    * [GCGCsaveFile Save data set file]
+  * [GCGCAlignment Alignment]
+   * [GCGCScoreAlignment Score Alignment]
+  * [GCGCIdentification Identificiation]
+   * [GCGCGroupIdentification Group Identification]
+   * [GCGCNameIdentification Name Identification]
+   * [GCGCClassIdentification Class Identification]
+  * [GCGCFiltering Filtering]
+   * [GCGCNameFilter Name Filter]
+   * [GCGCRecalculateIntensities Recalculate Intensities]
+   * [GCGCSimilarityFilter Similarity Filter]
+   * [GCGCCalculateDeviations Calculate Deviations Filter]
+   * [GCGCLinearNormalizer Linear Normalizer]
+   * [GCGCPeakCountFilter Peak Count Filter]
+   * [GCGCPubChemFilter PubChem Filter]
+   * [GCGCSinglingFilter Singling Filter]
+   * [GCGCRTIPreparationFile RTI Preparation File]
 
 
+ * LC-MS Algorithms
+  * [LCMSFile File]
+   * [LCMSOpenFile Open LC-MS File]
+   * [LCMSSaveFile Save LC-MS File]
+  * [LCMSIdentification Identification]
+   * [LCMSAdductSearch Adduct Search]
+   * [LCMSCustomDatabaseSearch Custom Database Search]
 
 
-* LC-MS Algorithms
- * [LCMSFile File]
-  * [LCMSOpenFile Open LC-MS File]
-  * [LCMSSaveFile Save LC-MS File]
- * [LCMSIdentification Identification]
-  * [LCMSAdductSearch Adduct Search]
-  * [LCMSCustomDatabaseSearch Custom Database Search]
+ * General Algorithms
+  * [GeneralFile File]
+   * [GeneralOpenOtherFile Open Other Files]
+   * [GeneralOpenMassLynxFile Open Mass Lynx Files]
+  * [GeneralFiltering Filtering]
+   * [GeneralFilteringTranspose Transpose Data Set]
+   * [GeneralFilteringChangeUnits Change Units]
+   * [GeneralFilteringSplit Split Data Set]
+  * [DataAnalisys Data Analysis]
+   * [DAProjectionPlot Projection Plots]
+   * [DACoefficientVariation Coefficient of Variation]
+   * [DATTest T-test]
+   * [DAFoldTest Fold Changes Test]
+   * [DAMedia Calculate Media]
 
 
-* General Algorithms
- * [GeneralFile File]
-  * [GeneralOpenOtherFile Open Other Files]
-  * [GeneralOpenMassLynxFile Open Mass Lynx Files]
- * [GeneralFiltering Filtering]
-  * [GeneralFilteringTranspose Transpose Data Set]
-  * [GeneralFilteringChangeUnits Change Units]
-  * [GeneralFilteringSplit Split Data Set]
- * [DataAnalisys Data Analysis]
-  * [DAProjectionPlot Projection Plots]
-  * [DACoefficientVariation Coefficient of Variation]
-  * [DATTest T-test]
-  * [DAFoldTest Fold Changes Test]
-  * [DAMedia Calculate Media]
-
-
-* Development
- * [NetbeansProjectSetup NetBeans Project Setup]
+ * Development
+  * [NetbeansProjectSetup NetBeans Project Setup]
