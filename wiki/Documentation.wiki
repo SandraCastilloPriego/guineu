@@ -23,8 +23,6 @@
    * [GCGCPubChemFilter PubChem Filter]
    * [GCGCSinglingFilter Singling Filter]
    * [GCGCRTIPreparationFile RTI Preparation File]
-
-
  * LC-MS Algorithms
   * [LCMSFile File]
    * [LCMSOpenFile Open LC-MS File]
@@ -32,8 +30,6 @@
   * [LCMSIdentification Identification]
    * [LCMSAdductSearch Adduct Search]
    * [LCMSCustomDatabaseSearch Custom Database Search]
-
-
  * General Algorithms
   * [GeneralFile File]
    * [GeneralOpenOtherFile Open Other Files]
@@ -48,7 +44,5 @@
    * [DATTest T-test]
    * [DAFoldTest Fold Changes Test]
    * [DAMedia Calculate Media]
-
-
  * Development
   * [NetbeansProjectSetup NetBeans Project Setup]
