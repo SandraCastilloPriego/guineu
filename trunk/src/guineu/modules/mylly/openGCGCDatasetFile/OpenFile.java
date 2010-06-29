@@ -50,7 +50,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         parameters = new OpenFileParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuSeparator(GuineuMenu.FILE);
-        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Aligned Local File..",
+        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Multiple Samples File..",
                 "Open multiple aligned peak list in CVS or Excel format", KeyEvent.VK_D, this, null, "icons/spectrumicon.png");
     }
 
