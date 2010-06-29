@@ -22,19 +22,16 @@
   * [GCGCPubChemFilter PubChem Filter]
   * [GCGCSinglingFilter Singling Filter]
   * [GCGCRTIPreparationFile RTI Preparation File]
-
 * LC-MS Algorithms
  * [LCMSFile File]
   * [LCMSOpenFile Open LC-MS File]
   * [LCMSSaveFile Save LC-MS File]
  * [LCMSIdentification Identification]
   * [LCMSAdductSearch Adduct Search]
-
 * General Algorithms
  * Filtering
  * [DataAnalisys Data Analysis]
   * [DAProjectionPlot Projection Plots]
   * [DACoefficientVariation Coefficient of Variation]
-
 * Development
  * [NetbeansProjectSetup NetBeans Project Setup]
