@@ -1,5 +1,6 @@
 #labels Phase-Design
 = Index =
+#sidebar TableOfContents 
 
 * GCxGC-MS Algorithms
  * [GCGCFile File]
@@ -23,10 +24,7 @@
   * [GCGCSinglingFilter Singling Filter]
   * [GCGCRTIPreparationFile RTI Preparation File]
 
-
-
-
-
+#sidebar TableOfContents 
 
 * LC-MS Algorithms
  * [LCMSFile File]
