@@ -1,30 +1,9 @@
 #labels Phase-Design
 = Index =
-#sidebar TableOfContents 
 
-* GCxGC-MS Algorithms
- * [GCGCFile File]
-   * [GCGCopenFile Open one sample file]
-   * [GCGCopenMultipleFile Open multiple sample file]
-   * [GCGCsaveFile Save data set file]
- * [GCGCAlignment Alignment]
-  * [GCGCScoreAlignment Score Alignment]
- * [GCGCIdentification Identificiation]
-  * [GCGCGroupIdentification Group Identification]
-  * [GCGCNameIdentification Name Identification]
-  * [GCGCClassIdentification Class Identification]
- * [GCGCFiltering Filtering]
-  * [GCGCNameFilter Name Filter]
-  * [GCGCRecalculateIntensities Recalculate Intensities]
-  * [GCGCSimilarityFilter Similarity Filter]
-  * [GCGCCalculateDeviations Calculate Deviations Filter]
-  * [GCGCLinearNormalizer Linear Normalizer]
-  * [GCGCPeakCountFilter Peak Count Filter]
-  * [GCGCPubChemFilter PubChem Filter]
-  * [GCGCSinglingFilter Singling Filter]
-  * [GCGCRTIPreparationFile RTI Preparation File]
 
-#sidebar TableOfContents 
+
+
 
 * LC-MS Algorithms
  * [LCMSFile File]
