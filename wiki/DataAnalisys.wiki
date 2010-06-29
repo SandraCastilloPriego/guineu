@@ -2,3 +2,5 @@
 ==Data Analisys==
 
 [DAProjectionPlot Projection Plots]
+
+[DACoefficientVariation Coefficient of Variation]
