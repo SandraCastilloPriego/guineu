@@ -1,6 +1,7 @@
 #labels Phase-Design
+= Index =
 
-* = Index =
+* 
  * GCxGC-MS Algorithms
   * [GCGCFile File]
     * [GCGCopenFile Open one sample file]
