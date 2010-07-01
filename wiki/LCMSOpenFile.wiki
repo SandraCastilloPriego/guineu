@@ -1,3 +1,4 @@
+#labels Featured
 = Open LC-MS Files =
 
 == Description ==
