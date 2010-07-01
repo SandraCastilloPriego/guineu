@@ -17,6 +17,7 @@
  */
 package guineu.modules.filter.splitdatasets;
 
+import guineu.modules.statistics.Ttest.*;
 import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
@@ -31,10 +32,10 @@ public class SplitDataDialog extends JDialog {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Dataset dataset;
-    private SplitDataModel group1,  group2,  from;
+    private TtestDataModel group1, group2, from;
     private ExitCode exit = ExitCode.UNKNOWN;
 
-    /** Creates new form TtestDataDialog */
+    /** Creates new form SplitDataDialog */
     public SplitDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please select a experiment groups to do the split filter...", true);
@@ -43,10 +44,16 @@ public class SplitDataDialog extends JDialog {
         this.dataset = dataset;
         initComponents();
 
+        for (String parameters : dataset.getParametersName()) {
+            if (!parameters.equals("Samples")) {
+                this.jComboBox1.addItem(parameters);
+            }
+        }
+
         try {
-            this.from = new SplitDataModel("Experiment Names");
-            this.group1 = new SplitDataModel("Group1 - Experiment Names");
-            this.group2 = new SplitDataModel("Group2 - Experiment Names");
+            this.from = new TtestDataModel("Experiment Names");
+            this.group1 = new TtestDataModel("Group1 - Experiment Names");
+            this.group2 = new TtestDataModel("Group2 - Experiment Names");
             this.jTablefrom.setModel(from);
             this.jTablefrom.createToolTip();
             this.jTablegroup1.setModel(group1);
@@ -54,6 +61,13 @@ public class SplitDataDialog extends JDialog {
             this.setValuesTable();
         } catch (Exception exception) {
         }
+    }
+
+    public String getParameter() {
+        if (this.jCheckBox1.isSelected()) {
+            return (String) jComboBox1.getSelectedItem();
+        }
+        return null;
     }
 
     /** This method is called from within the constructor to
@@ -78,13 +92,15 @@ public class SplitDataDialog extends JDialog {
         jButtonizq1 = new javax.swing.JButton();
         jButtonder1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jComboBox1 = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         jButtonOK = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTablefrom.setAutoCreateRowSorter(true);
         jTablefrom.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -108,7 +124,6 @@ public class SplitDataDialog extends JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jTablefrom.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTablefrom.setShowHorizontalLines(false);
         jScrollPane1.setViewportView(jTablefrom);
 
@@ -130,7 +145,6 @@ public class SplitDataDialog extends JDialog {
         });
         jPanel2.add(jButtonder2);
 
-        jTablegroup1.setAutoCreateRowSorter(true);
         jTablegroup1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -157,7 +171,6 @@ public class SplitDataDialog extends JDialog {
         jTablegroup1.setShowHorizontalLines(false);
         jScrollPane2.setViewportView(jTablegroup1);
 
-        jTablegroup2.setAutoCreateRowSorter(true);
         jTablegroup2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -223,7 +236,7 @@ public class SplitDataDialog extends JDialog {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -231,10 +244,15 @@ public class SplitDataDialog extends JDialog {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(238, 238, 238)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         jLabel1.setText("Select the groups of experiments");
+
+        jCheckBox1.setText("Use Parameters");
+        jPanel5.add(jCheckBox1);
+
+        jPanel5.add(jComboBox1);
 
         jButtonOK.setText("Ok");
         jButtonOK.addActionListener(new java.awt.event.ActionListener() {
@@ -242,7 +260,6 @@ public class SplitDataDialog extends JDialog {
                 jButtonOKActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonOK);
 
         jButtonClose.setText("Cancel");
         jButtonClose.addActionListener(new java.awt.event.ActionListener() {
@@ -250,32 +267,57 @@ public class SplitDataDialog extends JDialog {
                 jButtonCloseActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonClose);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jButtonOK)
+                .addGap(5, 5, 5)
+                .addComponent(jButtonClose))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonOK)
+                    .addComponent(jButtonClose))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(12, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(730, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(173, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -291,95 +333,55 @@ public class SplitDataDialog extends JDialog {
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     private void jButtonizq2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonizq2ActionPerformed
-        try {
-            int[] selRows = this.jTablefrom.getSelectedRows();
-            String[] names = new String[selRows.length];
-            int cont = 0;
-            for (int selected : selRows) {
-                int index = this.jTablefrom.convertRowIndexToModel(selected);
-                names[cont++] = this.from.getValueAt(index, 0);
+        int[] selRows = this.jTablefrom.getSelectedRows();
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.from.getValueAt(selRows[i], 0).isEmpty()) {
+                this.group2.addRows((String) this.from.getValueAt(selRows[i], 0));
+                this.from.removeRow(selRows[i]);
             }
-            for (String name : names) {
-                if (!name.isEmpty()) {
-                    this.group2.addRows((String) name);
-                    this.from.removeRow(name);
-                }
-            }
-
-            this.jTablefrom.revalidate();
-           // this.jTablefrom.repaint();
-            this.jTablegroup2.revalidate();
-        } catch (Exception e) {
         }
+        this.from.reconstruct();
+        this.jTablefrom.revalidate();
+        this.jTablegroup2.revalidate();
 }//GEN-LAST:event_jButtonizq2ActionPerformed
 
     private void jButtonder2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonder2ActionPerformed
-        try {
-            int[] selRows = this.jTablegroup2.getSelectedRows();
-            String[] names = new String[selRows.length];
-            int cont = 0;
-            for (int selected : selRows) {
-                int index = this.jTablegroup2.convertRowIndexToModel(selected);
-                names[cont++] = this.group2.getValueAt(index, 0);
+        int[] selRows = this.jTablegroup2.getSelectedRows();
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.group2.getValueAt(selRows[i], 0).isEmpty()) {
+                this.from.addRows((String) this.group2.getValueAt(selRows[i], 0));
+                this.group2.removeRow(selRows[i]);
             }
-            for (String name : names) {
-                if (!name.isEmpty()) {
-                    this.from.addRows((String) name);
-                    this.group2.removeRow(name);
-                }
-            }
-
-            this.jTablefrom.revalidate();
-           // this.jTablefrom.repaint();
-            this.jTablegroup2.revalidate();
-        } catch (Exception e) {
         }
+        this.group2.reconstruct();
+        this.jTablefrom.revalidate();
+        this.jTablegroup2.revalidate();
 }//GEN-LAST:event_jButtonder2ActionPerformed
 
     private void jButtonizq1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonizq1ActionPerformed
-        try {
-            int[] selRows = this.jTablefrom.getSelectedRows();
-            String[] names = new String[selRows.length];
-            int cont = 0;
-            for (int selected : selRows) {
-                int index = this.jTablefrom.convertRowIndexToModel(selected);
-                names[cont++] = this.from.getValueAt(index, 0);
+        int[] selRows = this.jTablefrom.getSelectedRows();
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.from.getValueAt(selRows[i], 0).isEmpty()) {
+                this.group1.addRows((String) this.from.getValueAt(selRows[i], 0));
+                this.from.removeRow(selRows[i]);
             }
-            for (String name : names) {
-                if (!name.isEmpty()) {
-                    this.group1.addRows((String) name);
-                    this.from.removeRow(name);
-                }
-            }
-
-            this.jTablefrom.revalidate();
-           // this.jTablefrom.repaint();
-            this.jTablegroup1.revalidate();
-        } catch (Exception e) {
         }
+        this.from.reconstruct();
+        this.jTablefrom.revalidate();
+        this.jTablegroup1.revalidate();
     }//GEN-LAST:event_jButtonizq1ActionPerformed
 
     private void jButtonder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonder1ActionPerformed
-        try {
-            int[] selRows = this.jTablegroup1.getSelectedRows();
-            String[] names = new String[selRows.length];
-            int cont = 0;
-            for (int selected : selRows) {
-                int index = this.jTablegroup1.convertRowIndexToModel(selected);
-                names[cont++] = this.group1.getValueAt(index, 0);
+        int[] selRows = this.jTablegroup1.getSelectedRows();
+        for (int i = 0; i < selRows.length; i++) {
+            if (!this.group1.getValueAt(selRows[i], 0).isEmpty()) {
+                this.from.addRows((String) this.group1.getValueAt(selRows[i], 0));
+                this.group1.removeRow(selRows[i]);
             }
-            for (String name : names) {
-                if (!name.isEmpty()) {
-                    this.from.addRows((String) name);
-                    this.group1.removeRow(name);
-                }
-            }
-
-            this.jTablefrom.revalidate();
-           // this.jTablefrom.repaint();
-            this.jTablegroup1.revalidate();
-        } catch (Exception e) {
         }
+        this.group1.reconstruct();
+        this.jTablefrom.revalidate();
+        this.jTablegroup1.revalidate();
     }//GEN-LAST:event_jButtonder1ActionPerformed
 
     public ExitCode getExitCode() {
@@ -408,11 +410,14 @@ public class SplitDataDialog extends JDialog {
     private javax.swing.JButton jButtonder2;
     private javax.swing.JButton jButtonizq1;
     private javax.swing.JButton jButtonizq2;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

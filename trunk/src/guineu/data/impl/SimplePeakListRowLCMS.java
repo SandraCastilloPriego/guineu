@@ -34,11 +34,11 @@ import java.util.logging.Logger;
  */
 public class SimplePeakListRowLCMS implements PeakListRow {
 
-    private String FAComposition = "",  allNames,  Name,  lipidClass = "0";
-    private double averageMZ,  averageRT,  numFound;
-    private int standard,  ID,  aligment;
-    private boolean control,  selection;
-    private String VTTid = "",  VTTAllIDs = "";
+    private String FAComposition = "", allNames, Name, lipidClass = "0";
+    private double averageMZ, averageRT, numFound;
+    private int standard, ID, aligment;
+    private boolean control, selection;
+    private String VTTid = "", VTTAllIDs = "";
     private Hashtable<String, Double> peaks;
     private Hashtable<String, String> peaksString;
     private String pubchemID = "";
@@ -122,7 +122,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
     public Object getPeak(String ExperimentName) {
         if (this.peaks.containsKey(ExperimentName)) {
             return this.peaks.get(ExperimentName);
-        }else if (this.peaksString.containsKey(ExperimentName)) {
+        } else if (this.peaksString.containsKey(ExperimentName)) {
             return this.peaksString.get(ExperimentName);
         }
         return null;
@@ -256,11 +256,13 @@ public class SimplePeakListRowLCMS implements PeakListRow {
     }
 
     public void removeNoSamplePeaks(String[] group) {
+        Hashtable<String, Double> newPeaks = new Hashtable<String, Double>();
         for (String name : group) {
             if (this.peaks.containsKey(name)) {
-                this.peaks.remove(name);
+                newPeaks.put(name, this.peaks.get(name));
             }
         }
+        this.peaks = newPeaks;
     }
 
     public String getVTTID() {
@@ -351,9 +353,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
     }
 
-
     @Override
-    public String toString(){
+    public String toString() {
         return this.Name;
     }
-    }
+}

@@ -139,25 +139,14 @@ public class FoldTestTask implements Task {
             }
 
         } else {
-            // Determine groups for selected raw data files
-            int[] groupsForSelectedRawDataFiles = new int[this.dataset.getNumberCols()];
-
-            for (int ind = 0; ind < this.dataset.getNumberCols(); ind++) {
-                groupsForSelectedRawDataFiles[ind] = ind;
-            }
-
+            // Determine groups for selected raw data files            
             Vector<String> availableParameterValues = new Vector<String>();
             for (String rawDataFile : dataset.getNameExperiments()) {
                 String paramValue = dataset.getParametersValue(rawDataFile, parameter);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
                 }
-            }
-
-            for (int ind = 0; ind < dataset.getNumberCols(); ind++) {
-                String paramValue = dataset.getParametersValue(dataset.getNameExperiments().elementAt(ind), parameter);
-                groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
-            }
+            }            
 
             int numberOfGroups = availableParameterValues.size();
 
