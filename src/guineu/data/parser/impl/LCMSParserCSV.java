@@ -89,7 +89,7 @@ public class LCMSParserCSV implements Parser {
         switch (type) {
             case BOOLEAN:
                 return new Boolean(data);
-            case INTEGER:               
+            case INTEGER:
                 return Integer.valueOf(data);
             case DOUBLE:
                 return Double.valueOf(data);
@@ -117,7 +117,9 @@ public class LCMSParserCSV implements Parser {
                                 sdata[i] = String.valueOf(rt);
                             }
                         }
-                        lipid.setVar(field.getSetFunctionName(), this.getType(sdata[i], field.getType()));
+                        if (sdata[i] != null) {
+                            lipid.setVar(field.getSetFunctionName(), this.getType(sdata[i], field.getType()));
+                        }
                         break;
                     }
                 }
@@ -135,7 +137,7 @@ public class LCMSParserCSV implements Parser {
                 if (lipid.getName() == null || lipid.getName().isEmpty()) {
                     lipid.setName("unknown");
                 }
-            // lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
+                // lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
             }
             lipid.setSelectionMode(false);
             this.dataset.AddRow(lipid);

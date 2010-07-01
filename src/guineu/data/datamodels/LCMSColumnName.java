@@ -31,10 +31,10 @@ public enum LCMSColumnName {
     PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*|.*ubChem.*|.*PubChem ID.*", ParameterType.STRING),
     VTT("VTT ID", true, "getVTTID", "setVTTID", "^VTT ID.*", ParameterType.STRING),
     ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD", ".*All VTT IDs.*", ParameterType.STRING),
-    LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*|.*Lipid class.*", ParameterType.INTEGER),
+    LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*|.*Lipid class.*", ParameterType.STRING),
     NFOUND("Num found", true, "getNumFound", "setNumFound", ".*um found.*|.*umber of detected peaks.*|.*n_found.*|.*Num Found.*", ParameterType.DOUBLE),
     STANDARD("Standard", true, "getStandard", "setStandard", ".*Standard.*", ParameterType.INTEGER),
-    FA("FA Composition", true, "getFAComposition", "setFAComposition", ".*FAComposition.*", ParameterType.STRING),
+    FA("FA Composition", true, "getFAComposition", "setFAComposition", ".*FA Composition.*", ParameterType.STRING),
     ALIGNMENT("Alignment", true, "getNumberAlignment", "setNumberAligment", ".*Aligment.*|.*Alignment.*", ParameterType.INTEGER);
     private final String columnName;
     private final String getFunctionName,  setFunctionName;

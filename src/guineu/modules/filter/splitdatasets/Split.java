@@ -43,6 +43,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
     private Desktop desktop;
     private Dataset dataset;
     private String[] group1,  group2;
+    private String parameter;
 
     public void initModule() {
 
@@ -87,6 +88,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
             dialog.setVisible(true);
             group1 = dialog.getGroup1();
             group2 = dialog.getGroup2();
+            parameter = dialog.getParameter();
             return dialog.getExitCode();
         } catch (Exception exception) {
             return ExitCode.CANCEL;
@@ -109,7 +111,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
         // prepare a new group of tasks
 
         Task tasks[] = new SplitTask[1];
-        tasks[0] = new SplitTask(group1, group2, dataset, desktop);
+        tasks[0] = new SplitTask(group1, group2, dataset, desktop, parameter);
 
         GuineuCore.getTaskController().addTasks(tasks);
 
