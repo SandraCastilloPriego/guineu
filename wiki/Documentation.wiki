@@ -1,4 +1,4 @@
-#labels LateralMenu
+#summary Lateral menu
 = Index =
 
 * 
