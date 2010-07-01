@@ -21,7 +21,7 @@ import guineu.data.ParameterType;
 
 public enum LCMSColumnName {
 
-    SELECTION("Selection", true, "isSelected", "setSelectionMode", "", ParameterType.BOOLEAN),
+    SELECTION("Selection", true, "isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
     ID("Id", true, "getID", "setID", "^ID.*|^Id", ParameterType.INTEGER),
     MZ("Average m/z", true, "getMZ", "setMZ", ".*Average M/Z.*|.*Average m/z.*|.*row m/z.*", ParameterType.DOUBLE),
     RT("Average Retention time", true, "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*|.*Average Retention time.*", ParameterType.DOUBLE),
@@ -31,7 +31,7 @@ public enum LCMSColumnName {
     PUBCHEM("PubChem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*|.*ubChem.*|.*PubChem ID.*", ParameterType.STRING),
     VTT("VTT ID", true, "getVTTID", "setVTTID", "^VTT ID.*", ParameterType.STRING),
     ALLVTT("All VTT IDs", true, "getAllVTTID", "setAllVTTD", ".*All VTT IDs.*", ParameterType.STRING),
-    LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*", ParameterType.INTEGER),
+    LIPIDCLASS("Lipid class", true, "getMolClass", "setLipidClass", ".*Class.*|.*Lipid class.*", ParameterType.INTEGER),
     NFOUND("Num found", true, "getNumFound", "setNumFound", ".*um found.*|.*umber of detected peaks.*|.*n_found.*|.*Num Found.*", ParameterType.DOUBLE),
     STANDARD("Standard", true, "getStandard", "setStandard", ".*Standard.*", ParameterType.INTEGER),
     FA("FA Composition", true, "getFAComposition", "setFAComposition", ".*FAComposition.*", ParameterType.STRING),
