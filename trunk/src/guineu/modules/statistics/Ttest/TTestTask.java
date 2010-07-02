@@ -135,14 +135,8 @@ public class TTestTask implements Task {
         } else {
 
             // Determine groups for selected raw data files    
-            Vector<String> availableParameterValues = new Vector<String>();
-            for (String rawDataFile : dataset.getNameExperiments()) {
-                String paramValue = dataset.getParametersValue(rawDataFile, parameter);
-                if (!availableParameterValues.contains(paramValue)) {
-                    availableParameterValues.add(paramValue);
-                }
-            }
-           
+            Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+
             int numberOfGroups = availableParameterValues.size();
 
             if (numberOfGroups > 1) {

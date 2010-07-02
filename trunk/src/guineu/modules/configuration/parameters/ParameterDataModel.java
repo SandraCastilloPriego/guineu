@@ -39,6 +39,9 @@ public class ParameterDataModel extends AbstractTableModel {
 
         // Column names
         columns = dataset.getParametersName();
+        if (!columns.contains("Samples")) {
+            columns.insertElementAt("Samples", 0);
+        }
         numColumns = columns.size();
         // First column with the name of the samples
         String[] col = dataset.getNameExperiments().toArray(new String[0]);
