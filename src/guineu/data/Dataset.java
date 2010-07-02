@@ -62,4 +62,6 @@ public interface Dataset {
     public Vector<String> getParametersName();
 
     public String getParametersValue(String experimentName, String parameterName);
+
+    public Vector<String> getParameterAvailableValues(String parameter);
 }

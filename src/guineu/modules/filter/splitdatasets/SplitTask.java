@@ -112,14 +112,8 @@ public class SplitTask implements Task {
     }
 
     private void SplitFromParameter() {
-        Vector<String> availableParameterValues = new Vector<String>();
-        for (String rawDataFile : dataset.getNameExperiments()) {
-            String paramValue = dataset.getParametersValue(rawDataFile, parameter);
-            if (!availableParameterValues.contains(paramValue)) {
-                availableParameterValues.add(paramValue);
-            }
-        }
-
+        Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+        
         for (String parameterVal : availableParameterValues) {
             Vector<String> group = new Vector<String>();
             for (String rawDataFile : dataset.getNameExperiments()) {

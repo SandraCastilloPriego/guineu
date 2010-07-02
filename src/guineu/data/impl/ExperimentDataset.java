@@ -40,8 +40,7 @@ public class ExperimentDataset implements Dataset {
         this.datasetName = datasetName;
         this.experiments = new Vector<Bexperiments>();
         this.parameters = new Hashtable<String, Parameters>();
-        this.parameterNames = new Vector<String>();
-        this.parameterNames.addElement("Samples");
+        this.parameterNames = new Vector<String>();        
         columnNames = new Vector<String>();
         columnNames.add("Name");
         columnNames.add("Type");
@@ -160,6 +159,17 @@ public class ExperimentDataset implements Dataset {
         } else {
             return null;
         }
+    }
+
+    public Vector<String> getParameterAvailableValues(String parameter) {
+        Vector<String> availableParameterValues = new Vector<String>();
+        for (String rawDataFile : this.getNameExperiments()) {
+            String paramValue = this.getParametersValue(rawDataFile, parameter);
+            if (!availableParameterValues.contains(paramValue)) {
+                availableParameterValues.add(paramValue);
+            }
+        }
+        return availableParameterValues;
     }
 
     public Vector<String> getParametersName() {

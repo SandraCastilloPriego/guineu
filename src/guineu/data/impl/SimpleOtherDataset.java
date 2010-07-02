@@ -41,8 +41,7 @@ public class SimpleOtherDataset implements Dataset {
         this.PeakList = new Vector<PeakListRow>();
         this.nameExperiments = new Vector<String>();
         this.parameters = new Hashtable<String, Parameters>();
-        this.parameterNames = new Vector<String>();
-        this.parameterNames.addElement("Samples");
+        this.parameterNames = new Vector<String>();        
         type = DatasetType.OTHER;
     }
 
@@ -77,6 +76,17 @@ public class SimpleOtherDataset implements Dataset {
         } else {
             return null;
         }
+    }
+
+    public Vector<String> getParameterAvailableValues(String parameter) {
+        Vector<String> availableParameterValues = new Vector<String>();
+        for (String rawDataFile : this.getNameExperiments()) {
+            String paramValue = this.getParametersValue(rawDataFile, parameter);
+            if (!availableParameterValues.contains(paramValue)) {
+                availableParameterValues.add(paramValue);
+            }
+        }
+        return availableParameterValues;
     }
 
     public Vector<String> getParametersName() {
