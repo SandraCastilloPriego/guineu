@@ -147,15 +147,16 @@ public class ProjectionPlotSetupDialog extends JDialog implements
         layout.setConstraints(comp, constraints);
 
         String projectParameters[] = peakList.getParametersName().toArray(new String[0]);
-        Object availableColoringStyles[] = new Object[3];
-        parametersInCombo = new String[3];
+        Object availableColoringStyles[] = new Object[projectParameters.length + 2];
+        parametersInCombo = new String[projectParameters.length + 2];
         availableColoringStyles[0] = ProjectionPlotParameters.ColoringTypeSingleColor;
         availableColoringStyles[1] = ProjectionPlotParameters.ColoringTypeByFile;
         parametersInCombo[0] = null;
         parametersInCombo[1] = null;
-        for (int i = 1; i < projectParameters.length; i++) {
-            availableColoringStyles[2] = "Color by parameter " + projectParameters[i];
-            parametersInCombo[2] = projectParameters[i];
+        for (int i = 0; i < projectParameters.length; i++) {
+            availableColoringStyles[i + 2] = "Color by parameter "
+                    + projectParameters[i];
+            parametersInCombo[i + 2] = projectParameters[i];
         }
         comboColoringMethod = new JComboBox(availableColoringStyles);
         if (parameterSet.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeSingleColor) {
