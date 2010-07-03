@@ -29,6 +29,7 @@ public class ParameterDataModel extends AbstractTableModel {
      */
     private static final long serialVersionUID = 1L;
     private Vector<String> columns;
+    private Vector<String> parameters;
     private Vector<String[]> rows; //content all data
     private int numColumns;
     private int numRows;
@@ -38,11 +39,15 @@ public class ParameterDataModel extends AbstractTableModel {
         this.table = table;
 
         // Column names
-        columns = dataset.getParametersName();
-        if (!columns.contains("Samples")) {
-            columns.insertElementAt("Samples", 0);
+        columns = new Vector<String>();
+        columns.addElement("Samples");
+        parameters = dataset.getParametersName();
+        for(String parameter : parameters){
+            columns.addElement(parameter);
         }
         numColumns = columns.size();
+
+
         // First column with the name of the samples
         String[] col = dataset.getNameExperiments().toArray(new String[0]);
         rows = new Vector<String[]>();
@@ -50,7 +55,7 @@ public class ParameterDataModel extends AbstractTableModel {
         numRows = dataset.getNameExperiments().size();
 
         // Parameter columns
-        for (int i = 1; i < dataset.getParametersName().size(); i++) {
+        for (int i = 0; i < dataset.getParametersName().size(); i++) {
             String parameterName = dataset.getParametersName().elementAt(i);
             col = new String[dataset.getNameExperiments().size()];
 
@@ -64,6 +69,7 @@ public class ParameterDataModel extends AbstractTableModel {
 
     public void addColumn(String column) {
         this.columns.addElement(column);
+        this.parameters.addElement(column);
         String[] newCol = new String[numRows];
         rows.addElement(newCol);
         numColumns++;
@@ -78,7 +84,11 @@ public class ParameterDataModel extends AbstractTableModel {
     }
 
     public String getValueAt(final int row, final int column) {
-        return rows.elementAt(column)[row];
+        try {
+            return rows.elementAt(column)[row];
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @Override
@@ -149,7 +159,7 @@ public class ParameterDataModel extends AbstractTableModel {
 
     public void addParameters(Dataset dataset) {
         for (int i = 1; i < this.getColumnCount(); i++) {
-            String parameterName = this.getColumnName(i);
+            String parameterName = this.parameters.elementAt(i-1);
             for (int e = 0; e < this.rows.elementAt(i).length; e++) {
                 String experimentName = this.rows.elementAt(0)[e];
                 String parameterValue = this.rows.elementAt(i)[e];

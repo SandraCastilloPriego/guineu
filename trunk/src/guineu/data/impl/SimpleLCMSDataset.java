@@ -47,10 +47,7 @@ public class SimpleLCMSDataset implements Dataset {
         type = DatasetType.LCMS;
     }
 
-    public void addParameter(String experimentName, String parameterName, String parameterValue) {
-        if (parameterName.equals("Samples")) {
-            return;
-        }
+    public void addParameter(String experimentName, String parameterName, String parameterValue) {       
         if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
             p.addParameter(parameterName, parameterValue);
@@ -94,7 +91,7 @@ public class SimpleLCMSDataset implements Dataset {
         return availableParameterValues;
     }
 
-    public Vector<String> getParametersName() {       
+    public Vector<String> getParametersName() {        
         return parameterNames;
     }
 
