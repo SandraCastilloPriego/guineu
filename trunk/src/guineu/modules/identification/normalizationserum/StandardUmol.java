@@ -17,6 +17,7 @@
  */
 package guineu.modules.identification.normalizationserum;
 
+import guineu.data.PeakListRow;
 import java.util.Vector;
 
 /**
@@ -25,33 +26,30 @@ import java.util.Vector;
  */
 public class StandardUmol {
 
-    double Cer = 0.0;
-    double GPCho = 0.0;
-    double GPEtn = 0.0;
-    double LysoGPCho = 0.0;
-    double TAG = 0.0;
-    String other = " ";
-    double otherValue = 0.0;
-    String other1 = " ";
-    double otherValue1 = 0.0;
-    Vector<Double> vCer;
-    Vector<Double> vGPCho;
-    Vector<Double> vGPEtn;
-    Vector<Double> vLysoGPCho;
-    Vector<Double> vTAG;
-    Vector<Double> vOtherValue;
-    Vector<Double> vOtherValue1;
-   // Vector<Double> 
-    
-    
-    public StandardUmol() {
-        this.vCer = new Vector<Double>();
-        this.vGPCho = new Vector<Double>();
-        this.vGPEtn = new Vector<Double>();
-        this.vLysoGPCho = new Vector<Double>();
-        this.vTAG = new Vector<Double>();
-        this.vOtherValue = new Vector<Double>();
-        this.vOtherValue1 = new Vector<Double>();
+    private PeakListRow values;
+    private String name;
+    private double realAmount;
 
+    public StandardUmol() {       
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setRealAmount(double value){
+        this.realAmount = value;
+    }
+
+    public void addValue(PeakListRow values){
+        this.values = values;
+    }
+
+    public double getRealAmount(){
+        return realAmount;
+    }
+
+    public Double getIntensity(String experimentName){
+        return (Double) values.getPeak(experimentName);
     }
 }

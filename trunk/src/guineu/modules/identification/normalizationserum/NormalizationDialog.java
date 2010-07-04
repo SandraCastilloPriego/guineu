@@ -3,13 +3,13 @@
  *
  * Created on 15 October 2008, 15:49
  */
-
 package guineu.modules.identification.normalizationserum;
 
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -17,28 +17,29 @@ import javax.swing.JOptionPane;
  *
  * @author  scsandra
  */
-public class NormalizationDialog extends javax.swing.JDialog implements ActionListener{
-    private StandardUmol standards;
+public class NormalizationDialog extends javax.swing.JDialog implements ActionListener {
+
+    private Hashtable<String, StandardUmol> standards;
     ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    
+
     /** Creates new form NormalizationDialog */
-    public NormalizationDialog(StandardUmol standards) {
+    public NormalizationDialog(Hashtable<String, StandardUmol> standards) {
         super(GuineuCore.getDesktop().getMainFrame(),
-				"Please fill the standards...", true);
+                "Please fill the standards...", true);
         this.standards = standards;
         initComponents();
         this.jButtonClose.addActionListener(this);
         this.jButtonOk.addActionListener(this);
         this.jButtonReset.addActionListener(this);
-        this.setSize(305,410);
+        this.setSize(305, 410);
         fillStandardsTextFields();
         logger.finest("Displaying Normalization Serum dialog");
     }
-   
-    public void fillStandardsTextFields(){
-        try{            
-            this.jTextFieldCer.setText(String.valueOf(standards.Cer));         
+
+    public void fillStandardsTextFields() {
+        try {
+            this.jTextFieldCer.setText(String.valueOf(standards.Cer));
             this.jTextFieldGPCho.setText(String.valueOf(standards.GPCho));
             this.jTextFieldGPEtn.setText(String.valueOf(standards.GPEtn));
             this.jTextFieldLysoGPCho.setText(String.valueOf(standards.LysoGPCho));
@@ -46,15 +47,13 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             this.jTextFieldother.setText(standards.other);
             this.jTextFieldOtherValue.setText(String.valueOf(standards.otherValue));
             this.jTextFieldother1.setText(standards.other1);
-            this.jTextFieldOtherValue1.setText(String.valueOf(standards.otherValue1));            
-        }catch(Exception e){
-            
+            this.jTextFieldOtherValue1.setText(String.valueOf(standards.otherValue1));
+        } catch (Exception e) {
         }
     }
-    
-    
-    public boolean fillStandards(){
-        try{
+
+    public boolean fillStandards() {
+        try {
             this.standards.Cer = Double.valueOf(this.jTextFieldCer.getText());
             this.standards.GPCho = Double.valueOf(this.jTextFieldGPCho.getText());
             this.standards.GPEtn = Double.valueOf(this.jTextFieldGPEtn.getText());
@@ -65,12 +64,12 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             this.standards.other1 = this.jTextFieldother1.getText();
             this.standards.otherValue1 = Double.valueOf(this.jTextFieldOtherValue1.getText());
             return true;
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value." , "Error",JOptionPane.ERROR_MESSAGE );
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -194,11 +193,10 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-    
-    public ExitCode getExitCode(){
+
+    public ExitCode getExitCode() {
         return exit;
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonClose;
     public javax.swing.JButton jButtonOk;
@@ -224,24 +222,24 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     private javax.swing.JTextField jTextFieldother1;
     // End of variables declaration//GEN-END:variables
 
-    public void actionPerformed(ActionEvent e) {     
-        if(e.getSource() == this.jButtonOk){
-            exit = ExitCode.OK;        
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == this.jButtonOk) {
+            exit = ExitCode.OK;
             fillStandards();
             dispose();
-        }else if(e.getSource() == this.jButtonClose){
-            exit = ExitCode.CANCEL;    
+        } else if (e.getSource() == this.jButtonClose) {
+            exit = ExitCode.CANCEL;
             dispose();
-        }else if(e.getSource() == this.jButtonReset){
+        } else if (e.getSource() == this.jButtonReset) {
             this.reset();
         }
-        
-        
+
+
     }
-    
-    public void reset(){
-        try{            
-            this.jTextFieldCer.setText("0.0");         
+
+    public void reset() {
+        try {
+            this.jTextFieldCer.setText("0.0");
             this.jTextFieldGPCho.setText("0.0");
             this.jTextFieldGPEtn.setText("0.0");
             this.jTextFieldLysoGPCho.setText("0.0");
@@ -249,10 +247,8 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             this.jTextFieldother.setText("");
             this.jTextFieldOtherValue.setText("0.0");
             this.jTextFieldother1.setText("");
-            this.jTextFieldOtherValue1.setText("0.0");            
-        }catch(Exception e){
-            
+            this.jTextFieldOtherValue1.setText("0.0");
+        } catch (Exception e) {
         }
     }
-    
 }

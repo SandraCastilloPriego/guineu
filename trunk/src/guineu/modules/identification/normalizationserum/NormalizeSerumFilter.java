@@ -25,12 +25,13 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
- 
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Hashtable;
 import java.util.logging.Logger;
 
 /**
@@ -41,10 +42,10 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private StandardUmol standards;
+    private Hashtable<String, StandardUmol> standards;
 
     public void initModule() {
-        this.standards = new StandardUmol();
+        this.standards = new Hashtable<String, StandardUmol>();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Serum Normalization Filter..",
                 "TODO write description", KeyEvent.VK_S, this, null, null);
