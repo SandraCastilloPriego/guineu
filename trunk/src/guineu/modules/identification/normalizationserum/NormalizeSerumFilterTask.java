@@ -29,7 +29,7 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
-import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  *
@@ -41,13 +41,11 @@ public class NormalizeSerumFilterTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private Dataset dataset;
-    private Hashtable<String, StandardUmol> standards;
     private NormalizeSerum serum;
 
-    public NormalizeSerumFilterTask(Dataset simpleDataset, Desktop desktop, Hashtable<String, StandardUmol> standards) {
+    public NormalizeSerumFilterTask(Dataset simpleDataset, Desktop desktop, Vector<StandardUmol> standards) {
         this.dataset =  simpleDataset.clone();
         this.desktop = desktop;
-        this.standards = standards;
         this.serum = new NormalizeSerum(dataset, standards);
     }
 
@@ -80,11 +78,14 @@ public class NormalizeSerumFilterTask implements Task {
             DataTableModel model = null;
             switch(dataset.getType()){
                 case LCMS:
-                    model = new DatasetLCMSDataModel(dataset); 
+                    model = new DatasetLCMSDataModel(dataset);
+                    break;
                 case GCGCTOF:
                     model = new DatasetGCGCDataModel(dataset);
+                    break;
                 case OTHER:
                     model = new OtherDataModel(dataset);
+                    break;
             }
             DataTable table = new PushableTable(model);
             table.formatNumbers(dataset.getType());

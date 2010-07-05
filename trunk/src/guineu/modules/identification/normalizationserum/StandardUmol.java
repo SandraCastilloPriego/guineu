@@ -18,7 +18,7 @@
 package guineu.modules.identification.normalizationserum;
 
 import guineu.data.PeakListRow;
-import java.util.Vector;
+import guineu.util.Range;
 
 /**
  *
@@ -26,30 +26,49 @@ import java.util.Vector;
  */
 public class StandardUmol {
 
-    private PeakListRow values;
+    private PeakListRow row;
     private String name;
-    private double realAmount;
+    private double realAmount = 0.0;
+    private Range RTRange;
 
-    public StandardUmol() {       
+    public StandardUmol(PeakListRow row) {
+        this.row = row;
+        this.name = (String) row.getVar("getName");
+        this.RTRange = new Range(0.0, 0.0);
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setRealAmount(double value){
+    public void setRealAmount(double value) {
         this.realAmount = value;
     }
 
-    public void addValue(PeakListRow values){
-        this.values = values;
+    public void addValue(PeakListRow values) {
+        this.row = values;
     }
 
-    public double getRealAmount(){
+    public double getRealAmount() {
         return realAmount;
     }
 
-    public Double getIntensity(String experimentName){
-        return (Double) values.getPeak(experimentName);
+    public Double getIntensity(String experimentName) {
+        return (Double) row.getPeak(experimentName);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setRange(Range RTRange) {
+        try {
+            this.RTRange = RTRange;
+        } catch (Exception e) {
+        }
+    }
+
+    public Range getRange() {
+        return this.RTRange;
     }
 }

@@ -16,19 +16,21 @@
  * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.main;
 
 import guineu.data.StorableParameterSet;
 import guineu.desktop.impl.MainWindow;
 import guineu.util.NumberFormatter;
 import guineu.util.NumberFormatter.FormatterType;
+import guineu.util.Range;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 
+import java.util.Set;
 import org.dom4j.Element;
 
 /**
@@ -36,249 +38,264 @@ import org.dom4j.Element;
  */
 public class GuineuPreferences implements StorableParameterSet {
 
-	public static final String FORMAT_ELEMENT_NAME = "format";
-	public static final String FORMAT_TYPE_ATTRIBUTE_NAME = "type";
-	public static final String FORMAT_TYPE_ATTRIBUTE_MZ = "m/z";
-	public static final String FORMAT_TYPE_ATTRIBUTE_RT = "Retention time";
-	public static final String FORMAT_TYPE_ATTRIBUTE_INT = "Intensity";
-	public static final String MAINWINDOW_ELEMENT_NAME = "mainwindow";
-	public static final String X_ELEMENT_NAME = "x";
-	public static final String Y_ELEMENT_NAME = "y";
-	public static final String WIDTH_ELEMENT_NAME = "width";
-	public static final String HEIGHT_ELEMENT_NAME = "height";
-	public static final String THREADS_ELEMENT_NAME = "threads";
-	public static final String PROXY = "proxy_settings";
-	public static final String PROXY_ADDRESS = "proxy_address";
-	public static final String PROXY_PORT = "proxy_port";
+    public static final String FORMAT_ELEMENT_NAME = "format";
+    public static final String FORMAT_TYPE_ATTRIBUTE_NAME = "type";
+    public static final String FORMAT_TYPE_ATTRIBUTE_MZ = "m/z";
+    public static final String FORMAT_TYPE_ATTRIBUTE_RT = "Retention time";
+    public static final String FORMAT_TYPE_ATTRIBUTE_INT = "Intensity";
+    public static final String MAINWINDOW_ELEMENT_NAME = "mainwindow";
+    public static final String X_ELEMENT_NAME = "x";
+    public static final String Y_ELEMENT_NAME = "y";
+    public static final String WIDTH_ELEMENT_NAME = "width";
+    public static final String HEIGHT_ELEMENT_NAME = "height";
+    public static final String THREADS_ELEMENT_NAME = "threads";
+    public static final String PROXY = "proxy_settings";
+    public static final String PROXY_ADDRESS = "proxy_address";
+    public static final String PROXY_PORT = "proxy_port";
+    public static final String STANDARD_RANGE = "standard_ranges";
+    public static final String STANDARD_NAME = "standard_ranges";
+    public static final int MAXIMIZED = -1;
+    private NumberFormatter mzFormat, rtFormat, intensityFormat;
+    private int mainWindowX, mainWindowY, mainWindowWidth, mainWindowHeight;
+    private boolean autoNumberOfThreads = true;
+    private int manualNumberOfThreads = 2;
+    private boolean proxyServer = false;
+    private String proxyAddress = "";
+    private String proxyPort = "";  
 
-	public static final int MAXIMIZED = -1;
+    public GuineuPreferences() {
+        this.mzFormat = new NumberFormatter(FormatterType.NUMBER, "0.000");
+        this.rtFormat = new NumberFormatter(FormatterType.TIME, "m:ss");
+        this.intensityFormat = new NumberFormatter(FormatterType.NUMBER,
+                "0.00E0");        
+    }
 
-	private NumberFormatter mzFormat, rtFormat, intensityFormat;
-	private int mainWindowX, mainWindowY, mainWindowWidth, mainWindowHeight;
+    /**
+     * @return Returns the intensityFormat.
+     */
+    public NumberFormatter getIntensityFormat() {
+        return intensityFormat;
+    }
 
-	private boolean autoNumberOfThreads = true;
-	private int manualNumberOfThreads = 2;
+    /**
+     * @return Returns the mzFormat.
+     */
+    public NumberFormatter getMZFormat() {
+        return mzFormat;
+    }
 
-	private boolean proxyServer = false;
-	private String proxyAddress = "";
-	private String proxyPort = "";
+    /**
+     * @return Returns the rtFormat.
+     */
+    public NumberFormatter getRTFormat() {
+        return rtFormat;
+    }
+   
+    /**
+     * @see net.sf.mzmine.data.StorableParameterSet#exportValuesToXML(org.dom4j.Element)
+     */
+    public void exportValuesToXML(Element element) {
 
-	public GuineuPreferences() {
-		this.mzFormat = new NumberFormatter(FormatterType.NUMBER, "0.000");
-		this.rtFormat = new NumberFormatter(FormatterType.TIME, "m:ss");
-		this.intensityFormat = new NumberFormatter(FormatterType.NUMBER,
-				"0.00E0");
-	}
+        MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
+        Point location = mainWindow.getLocation();
+        mainWindowX = location.x;
+        mainWindowY = location.y;
+        int state = mainWindow.getExtendedState();
+        Dimension size = mainWindow.getSize();
+        if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
+            mainWindowWidth = MAXIMIZED;
+        } else {
+            mainWindowWidth = size.width;
+        }
+        if ((state & Frame.MAXIMIZED_VERT) != 0) {
+            mainWindowHeight = MAXIMIZED;
+        } else {
+            mainWindowHeight = size.height;
+        }
 
-	/**
-	 * @return Returns the intensityFormat.
-	 */
-	public NumberFormatter getIntensityFormat() {
-		return intensityFormat;
-	}
+        Element mzFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
+        mzFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
+                FORMAT_TYPE_ATTRIBUTE_MZ);
+        mzFormat.exportToXML(mzFormatElement);
 
-	/**
-	 * @return Returns the mzFormat.
-	 */
-	public NumberFormatter getMZFormat() {
-		return mzFormat;
-	}
+        Element rtFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
+        rtFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
+                FORMAT_TYPE_ATTRIBUTE_RT);
+        rtFormat.exportToXML(rtFormatElement);
 
-	/**
-	 * @return Returns the rtFormat.
-	 */
-	public NumberFormatter getRTFormat() {
-		return rtFormat;
-	}
+        Element intensityFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
+        intensityFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
+                FORMAT_TYPE_ATTRIBUTE_INT);
+        intensityFormat.exportToXML(intensityFormatElement);
 
-	/**
-	 * @see net.sf.mzmine.data.StorableParameterSet#exportValuesToXML(org.dom4j.Element)
-	 */
-	public void exportValuesToXML(Element element) {
+        Element mainWindowElement = element.addElement(MAINWINDOW_ELEMENT_NAME);
+        mainWindowElement.addElement(X_ELEMENT_NAME).setText(
+                String.valueOf(mainWindowX));
+        mainWindowElement.addElement(Y_ELEMENT_NAME).setText(
+                String.valueOf(mainWindowY));
+        mainWindowElement.addElement(WIDTH_ELEMENT_NAME).setText(
+                String.valueOf(mainWindowWidth));
+        mainWindowElement.addElement(HEIGHT_ELEMENT_NAME).setText(
+                String.valueOf(mainWindowHeight));
 
-		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
-		Point location = mainWindow.getLocation();
-		mainWindowX = location.x;
-		mainWindowY = location.y;
-		int state = mainWindow.getExtendedState();
-		Dimension size = mainWindow.getSize();
-		if ((state & Frame.MAXIMIZED_HORIZ) != 0)
-			mainWindowWidth = MAXIMIZED;
-		else
-			mainWindowWidth = size.width;
-		if ((state & Frame.MAXIMIZED_VERT) != 0)
-			mainWindowHeight = MAXIMIZED;
-		else
-			mainWindowHeight = size.height;
-
-		Element mzFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
-		mzFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
-				FORMAT_TYPE_ATTRIBUTE_MZ);
-		mzFormat.exportToXML(mzFormatElement);
-
-		Element rtFormatElement = element.addElement(FORMAT_ELEMENT_NAME);
-		rtFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
-				FORMAT_TYPE_ATTRIBUTE_RT);
-		rtFormat.exportToXML(rtFormatElement);
-
-		Element intensityFormatElement = element
-				.addElement(FORMAT_ELEMENT_NAME);
-		intensityFormatElement.addAttribute(FORMAT_TYPE_ATTRIBUTE_NAME,
-				FORMAT_TYPE_ATTRIBUTE_INT);
-		intensityFormat.exportToXML(intensityFormatElement);
-
-		Element mainWindowElement = element.addElement(MAINWINDOW_ELEMENT_NAME);
-		mainWindowElement.addElement(X_ELEMENT_NAME).setText(
-				String.valueOf(mainWindowX));
-		mainWindowElement.addElement(Y_ELEMENT_NAME).setText(
-				String.valueOf(mainWindowY));
-		mainWindowElement.addElement(WIDTH_ELEMENT_NAME).setText(
-				String.valueOf(mainWindowWidth));
-		mainWindowElement.addElement(HEIGHT_ELEMENT_NAME).setText(
-				String.valueOf(mainWindowHeight));
-
-		Element threadsElement = element.addElement(THREADS_ELEMENT_NAME);
-		if (autoNumberOfThreads)
-			threadsElement.addAttribute("auto", "true");
-		threadsElement.setText(String.valueOf(manualNumberOfThreads));
-
-
-		//Proxy Settings
-		Element proxyElement = element.addElement(PROXY);
-		if (proxyServer)
-			proxyElement.addAttribute("activated", "true");
-
-		Element addressElement = proxyElement.addElement(PROXY_ADDRESS);
-		addressElement.setText(String.valueOf(proxyAddress));
-		Element portElement = proxyElement.addElement(PROXY_PORT);
-		portElement.setText(String.valueOf(proxyPort));
-
-	}
-
-	/**
-	 * @see net.sf.mzmine.data.StorableParameterSet#importValuesFromXML(org.dom4j.Element)
-	 */
-	public void importValuesFromXML(Element element) {
-		Iterator i = element.elements(FORMAT_ELEMENT_NAME).iterator();
-		while (i.hasNext()) {
-			Element formatElement = (Element) i.next();
-			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME)
-					.equals(FORMAT_TYPE_ATTRIBUTE_MZ))
-				mzFormat.importFromXML(formatElement);
-			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME)
-					.equals(FORMAT_TYPE_ATTRIBUTE_RT))
-				rtFormat.importFromXML(formatElement);
-			if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME)
-					.equals(FORMAT_TYPE_ATTRIBUTE_INT))
-				intensityFormat.importFromXML(formatElement);
-		}
-
-		Element mainWindowElement = element.element(MAINWINDOW_ELEMENT_NAME);
-		if (mainWindowElement != null) {
-			mainWindowX = Integer.parseInt(mainWindowElement
-					.elementText(X_ELEMENT_NAME));
-			mainWindowY = Integer.parseInt(mainWindowElement
-					.elementText(Y_ELEMENT_NAME));
-			mainWindowWidth = Integer.parseInt(mainWindowElement
-					.elementText(WIDTH_ELEMENT_NAME));
-			mainWindowHeight = Integer.parseInt(mainWindowElement
-					.elementText(HEIGHT_ELEMENT_NAME));
-		}
-
-		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
-		if (mainWindowX > 0)
-			mainWindow.setLocation(mainWindowX, mainWindowY);
-
-		if ((mainWindowWidth > 0) || (mainWindowHeight > 0))
-			mainWindow.setSize(mainWindowWidth, mainWindowHeight);
-
-		int newState = Frame.NORMAL;
-		if (mainWindowWidth == MAXIMIZED)
-			newState |= Frame.MAXIMIZED_HORIZ;
-
-		if (mainWindowHeight == MAXIMIZED)
-			newState |= Frame.MAXIMIZED_VERT;
-
-		mainWindow.setExtendedState(newState);
-
-		Element threadsElement = element.element(THREADS_ELEMENT_NAME);
-		if (threadsElement != null) {
-			autoNumberOfThreads = (threadsElement.attributeValue("auto") != null);
-			manualNumberOfThreads = Integer.parseInt(threadsElement.getText());
-		}
-
-		//Proxy settings
-		Element proxyElement = element.element(PROXY);
-		if (proxyElement != null) {
-			proxyServer = (proxyElement.attributeValue("activated") != null);
-
-			Element AddressElement = proxyElement.element(PROXY_ADDRESS);
-			if (AddressElement != null) {				
-				setProxyAddress(AddressElement.getText());
-			}
-
-			Element portElement = proxyElement.element(PROXY_PORT);
-			if (portElement != null) {				
-				setProxyPort(portElement.getText());
-			}
-		}
-
-	}
-
-	public GuineuPreferences clone() {
-		return new GuineuPreferences();
-	}
-
-	public boolean isAutoNumberOfThreads() {
-		return autoNumberOfThreads;
-	}
-
-	public void setAutoNumberOfThreads(boolean autoNumberOfThreads) {
-		this.autoNumberOfThreads = autoNumberOfThreads;
-	}
-
-	public int getManualNumberOfThreads() {
-		return manualNumberOfThreads;
-	}
-
-	public void setManualNumberOfThreads(int manualNumberOfThreads) {
-		this.manualNumberOfThreads = manualNumberOfThreads;
-	}
-
-	// Proxy settings	
-	public boolean isProxy(){
-		return proxyServer;
-	}
-
-	public void setProxy(boolean proxy){
-		this.proxyServer = proxy;
-		if(!proxy){
-			System.clearProperty("http.proxyHost");
-			System.clearProperty("http.proxyPort");
-		}
-	}
-
-	public String getProxyAddress(){		
-		return proxyAddress;
-	}
-
-	public void setProxyAddress(String address){
-		this.proxyAddress = address;
-		if(isProxy()){
-			System.setProperty("http.proxyHost", address);
-		}
-	}
-
-	public String getProxyPort(){		
-		return proxyPort;
-	}
-
-	public void setProxyPort(String port){
-		this.proxyPort = port;
-		if(isProxy()){
-			System.setProperty("http.proxyPort", port);
-		}
-	}
+        Element threadsElement = element.addElement(THREADS_ELEMENT_NAME);
+        if (autoNumberOfThreads) {
+            threadsElement.addAttribute("auto", "true");
+        }
+        threadsElement.setText(String.valueOf(manualNumberOfThreads));
 
 
+        //Proxy Settings
+        Element proxyElement = element.addElement(PROXY);
+        if (proxyServer) {
+            proxyElement.addAttribute("activated", "true");
+        }
+
+        Element addressElement = proxyElement.addElement(PROXY_ADDRESS);
+        addressElement.setText(String.valueOf(proxyAddress));
+        Element portElement = proxyElement.addElement(PROXY_PORT);
+        portElement.setText(String.valueOf(proxyPort));      
+
+    }
+
+    /**
+     * @see net.sf.mzmine.data.StorableParameterSet#importValuesFromXML(org.dom4j.Element)
+     */
+    public void importValuesFromXML(Element element) {
+        Iterator i = element.elements(FORMAT_ELEMENT_NAME).iterator();
+        while (i.hasNext()) {
+            Element formatElement = (Element) i.next();
+            if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME).equals(FORMAT_TYPE_ATTRIBUTE_MZ)) {
+                mzFormat.importFromXML(formatElement);
+            }
+            if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME).equals(FORMAT_TYPE_ATTRIBUTE_RT)) {
+                rtFormat.importFromXML(formatElement);
+            }
+            if (formatElement.attributeValue(FORMAT_TYPE_ATTRIBUTE_NAME).equals(FORMAT_TYPE_ATTRIBUTE_INT)) {
+                intensityFormat.importFromXML(formatElement);
+            }
+        }
+
+        Element mainWindowElement = element.element(MAINWINDOW_ELEMENT_NAME);
+        if (mainWindowElement != null) {
+            mainWindowX = Integer.parseInt(mainWindowElement.elementText(X_ELEMENT_NAME));
+            mainWindowY = Integer.parseInt(mainWindowElement.elementText(Y_ELEMENT_NAME));
+            mainWindowWidth = Integer.parseInt(mainWindowElement.elementText(WIDTH_ELEMENT_NAME));
+            mainWindowHeight = Integer.parseInt(mainWindowElement.elementText(HEIGHT_ELEMENT_NAME));
+        }
+
+        MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
+        if (mainWindowX > 0) {
+            mainWindow.setLocation(mainWindowX, mainWindowY);
+        }
+
+        if ((mainWindowWidth > 0) || (mainWindowHeight > 0)) {
+            mainWindow.setSize(mainWindowWidth, mainWindowHeight);
+        }
+
+        int newState = Frame.NORMAL;
+        if (mainWindowWidth == MAXIMIZED) {
+            newState |= Frame.MAXIMIZED_HORIZ;
+        }
+
+        if (mainWindowHeight == MAXIMIZED) {
+            newState |= Frame.MAXIMIZED_VERT;
+        }
+
+        mainWindow.setExtendedState(newState);
+
+        Element threadsElement = element.element(THREADS_ELEMENT_NAME);
+        if (threadsElement != null) {
+            autoNumberOfThreads = (threadsElement.attributeValue("auto") != null);
+            manualNumberOfThreads = Integer.parseInt(threadsElement.getText());
+        }
+
+        //Proxy settings
+        Element proxyElement = element.element(PROXY);
+        if (proxyElement != null) {
+            proxyServer = (proxyElement.attributeValue("activated") != null);
+
+            Element AddressElement = proxyElement.element(PROXY_ADDRESS);
+            if (AddressElement != null) {
+                setProxyAddress(AddressElement.getText());
+            }
+
+            Element portElement = proxyElement.element(PROXY_PORT);
+            if (portElement != null) {
+                setProxyPort(portElement.getText());
+            }
+        }
+
+
+         if (proxyElement != null) {
+            proxyServer = (proxyElement.attributeValue("activated") != null);
+
+            Element AddressElement = proxyElement.element(PROXY_ADDRESS);
+            if (AddressElement != null) {
+                setProxyAddress(AddressElement.getText());
+            }
+
+            Element portElement = proxyElement.element(PROXY_PORT);
+            if (portElement != null) {
+                setProxyPort(portElement.getText());
+            }
+        }
+
+
+    }
+
+    public GuineuPreferences clone() {
+        return new GuineuPreferences();
+    }
+
+    public boolean isAutoNumberOfThreads() {
+        return autoNumberOfThreads;
+    }
+
+    public void setAutoNumberOfThreads(boolean autoNumberOfThreads) {
+        this.autoNumberOfThreads = autoNumberOfThreads;
+    }
+
+    public int getManualNumberOfThreads() {
+        return manualNumberOfThreads;
+    }
+
+    public void setManualNumberOfThreads(int manualNumberOfThreads) {
+        this.manualNumberOfThreads = manualNumberOfThreads;
+    }
+
+    // Proxy settings
+    public boolean isProxy() {
+        return proxyServer;
+    }
+
+    public void setProxy(boolean proxy) {
+        this.proxyServer = proxy;
+        if (!proxy) {
+            System.clearProperty("http.proxyHost");
+            System.clearProperty("http.proxyPort");
+        }
+    }
+
+    public String getProxyAddress() {
+        return proxyAddress;
+    }
+
+    public void setProxyAddress(String address) {
+        this.proxyAddress = address;
+        if (isProxy()) {
+            System.setProperty("http.proxyHost", address);
+        }
+    }
+
+    public String getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(String port) {
+        this.proxyPort = port;
+        if (isProxy()) {
+            System.setProperty("http.proxyPort", port);
+        }
+    }
 }
