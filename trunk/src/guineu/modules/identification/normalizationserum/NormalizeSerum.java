@@ -90,9 +90,8 @@ public class NormalizeSerum {
     }
 
     /**
-     * Each lipid has its own standard. This function return a different number for each
-     * standard.
-     * @param lipid
+     * Each compound has its own standard. This function return a different standard for each
+     * compound.
      * @return
      */
     private StandardUmol getStd(PeakListRow row) {

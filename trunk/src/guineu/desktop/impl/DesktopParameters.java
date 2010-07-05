@@ -62,6 +62,7 @@ public class DesktopParameters implements StorableParameterSet,
     public static final String LAST_PROJECT_PATH_ELEMENT_NAME = "lastProjectDirectory";
     public static final String LAST_MYLLY_PATH_ELEMENT_NAME = "lastMyllyDirectory";
     public static final String LAST_SAVE_PATH_ELEMENT_NAME = "lastSaveDirectory";
+    public static final String NORMALIZATION_PATH_ELEMENT_NAME = "normalizationDirectory";
     public static final String STANDARD_RANGE = "standard_ranges";
     public static final String STANDARD_NAME = "standard_name";
     public static final int MAXIMIZED = -1;
@@ -71,6 +72,7 @@ public class DesktopParameters implements StorableParameterSet,
     private String lastOpenProjectPath = "";
     private String lastSavePath = "";
     private String lastMyllyPath = " ";
+    private String normalizationPath = " ";
     private SimpleParameterSet LCMSViewParameters, GCGCViewParameters;
     private SimpleParameterSet SaveLCMSParameters, SaveGCGCParameters, SaveOtherParameters;
     private SimpleParameterSet proxy;
@@ -288,6 +290,20 @@ public class DesktopParameters implements StorableParameterSet,
         this.lastMyllyPath = lastMyllyPath;
     }
 
+     /**
+     * @return Returns the lastMyllyPath (GCGC-tof part).
+     */
+    public String getLastNormalizationPath() {
+        return normalizationPath;
+    }
+
+    /**
+     * @return Returns the lastMyllyPath (GCGC-tof part).
+     */
+    public void setLastNormalizationPath(String normalizationPath) {
+        this.normalizationPath = normalizationPath;
+    }
+
     /**
      * @param lastSavePath
      *            The lastSavePath to set.
@@ -329,6 +345,8 @@ public class DesktopParameters implements StorableParameterSet,
                 lastSavePath);
         element.addElement(LAST_MYLLY_PATH_ELEMENT_NAME).setText(
                 lastMyllyPath);
+        element.addElement(NORMALIZATION_PATH_ELEMENT_NAME).setText(
+                normalizationPath);
 
         LCMSViewParameters.exportValuesToXML(element);
         GCGCViewParameters.exportValuesToXML(element);
@@ -394,6 +412,7 @@ public class DesktopParameters implements StorableParameterSet,
         lastOpenProjectPath = element.elementText(LAST_PROJECT_PATH_ELEMENT_NAME);
         lastSavePath = element.elementText(LAST_SAVE_PATH_ELEMENT_NAME);
         lastMyllyPath = element.elementText(LAST_MYLLY_PATH_ELEMENT_NAME);
+        normalizationPath = element.elementText(NORMALIZATION_PATH_ELEMENT_NAME);
 
         LCMSViewParameters.importValuesFromXML(element);
         GCGCViewParameters.importValuesFromXML(element);
