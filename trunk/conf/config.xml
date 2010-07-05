@@ -3,7 +3,7 @@
 <configuration> 
   <nodes local="2"/>  
   <modules> 
-    <!-- DATABASE SAVE FILE: <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  -->
+    <!-- DATABASE SAVE FILE: <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  -->  
     <!-- DATABASE OPEN FILE: <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
       <parameters> 
         <parameter name="Project" type="STRING"/>  
@@ -12,11 +12,16 @@
         <parameter name="Open" type="MULTIPLE_SELECTION">Sample Information,Project Information,Study Information,Dataset Information</parameter> 
       </parameters> 
     </module>  
-    DATABASE DELETE FILE: <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  -->
-    <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>   
-    <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/>  
+    DATABASE DELETE FILE: <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  -->  
+    <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
+    <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"> 
+      <parameters>
+        <parameter name="File Name: " type="FILE_NAME">File Name</parameter>
+        <parameter name="Number of Columns for Parameters: " type="INTEGER">10</parameter>
+      </parameters> 
+    </module>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
-    <!-- OPEN EXPERIMENT DATA: <module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->
+    <!-- OPEN EXPERIMENT DATA: <module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->  
     <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
     <!-- OPEN MASS LYNX FILES: <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
@@ -24,7 +29,7 @@
     <!-- DATABASE SAVE FILE: <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"> 
       <parameters>
-        <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
+        <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,All names,Identification type,PubChem ID,VTT ID,All VTT IDs,Lipid class,Num found,Standard,FA Composition,Alignment</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView"> 
@@ -32,8 +37,13 @@
         <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.configuration.proxy.ProxyConfiguration"/> 
-    <module class="guineu.modules.configuration.parameters.ParameterConfiguration"/> 
+    <module class="guineu.modules.configuration.proxy.ProxyConfiguration"> 
+      <parameters>
+        <parameter name="Proxy server:" type="STRING"></parameter>
+        <parameter name="Port:" type="STRING"></parameter>
+      </parameters> 
+    </module>  
+    <module class="guineu.modules.configuration.parameters.ParameterConfiguration"/>  
     <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"> 
       <parameters>
         <parameter name="Peak list name" type="STRING">Aligned peak list</parameter>
@@ -48,17 +58,17 @@
     <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering"/>  
     <module class="guineu.modules.filter.Alignment.centering.median.MedianCentering"/>  
     <module class="guineu.modules.filter.Alignment.normalizationSTD.STDNormalization"/>  
-   <!-- CONCATETANE FILTER: <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  -->
+    <!-- CONCATETANE FILTER: <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  -->  
     <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
     <module class="guineu.modules.filter.splitdatasets.Split"/>  
-   <!-- RELATED PEAKS FILTER: <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/> --> 
+    <!-- RELATED PEAKS FILTER: <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/> -->  
     <module class="guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilter"> 
       <parameters>
         <parameter name="Multiply by" type="DOUBLE">0.0</parameter>
         <parameter name="Divide by" type="DOUBLE">0.0</parameter>
       </parameters> 
     </module>  
-   <!-- QUALITY REPORTS: <module class="guineu.modules.filter.report.qualityReport.Report"> 
+    <!-- QUALITY REPORTS: <module class="guineu.modules.filter.report.qualityReport.Report"> 
       <parameters>
         <parameter name="Input File" type="FILE_NAME"/>
         <parameter name="HTML Output File" type="FILE_NAME"/>
@@ -89,26 +99,34 @@
         <parameter name="Save report" type="FILE_NAME">/</parameter>
       </parameters> 
     </module>  
-    <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  -->
+    <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  -->  
     <module class="guineu.modules.filter.dataselection.DataSelection"/>  
     <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch"> 
       <parameters>
-        <parameter name="Database file" type="FILE_NAME">/</parameter>
+        <parameter name="Database file" type="FILE_NAME"/>
         <parameter name="Field separator" type="STRING">,</parameter>
         <parameter name="Field order" type="ORDERED_LIST">ID,m/z,Retention time,Identity,Formula</parameter>
         <parameter name="Ignore first line" type="BOOLEAN">true</parameter>
-        <parameter name="m/z tolerance" type="DOUBLE">0.04</parameter>
-        <parameter name="Time tolerance" type="DOUBLE">750.0</parameter>
-        <parameter name="MSMS Identification" type="BOOLEAN">false</parameter>
+        <parameter name="m/z tolerance" type="DOUBLE">1.0</parameter>
+        <parameter name="Time tolerance" type="DOUBLE">60.0</parameter>
+        <parameter name="MSMS Identification" type="BOOLEAN">true</parameter>
       </parameters> 
     </module>  
-    <!-- DATABASE IDENTIFICATION: <module class="guineu.modules.identification.identification.Identification"/>  -->
-    <module class="guineu.modules.identification.AdductSearch.AdductSearch"/>  
+    <!-- DATABASE IDENTIFICATION: <module class="guineu.modules.identification.identification.Identification"/>  -->  
+    <module class="guineu.modules.identification.AdductSearch.AdductSearch"> 
+      <parameters>
+        <parameter name="Time tolerance" type="DOUBLE">10.0</parameter>
+        <parameter name="Adducts" type="MULTIPLE_SELECTION">All related peaks 0.000 m/z,[M+NH4] 17.027 m/z,[M+Na] 21.982 m/z,[[M+NH4] - [M+Na]] 4.955 m/z,[M-CH3] 14.016 m/z,[M+HCOO] 46.006 m/z,[[M-CH3] - [M+C2H3OO]] 74.038 m/z,[M+Na-H] 21.982 m/z,[M+K-H] 37.956 m/z,[M+Mg-2H] 21.969 m/z,[M+NH3] 17.026 m/z,[M+H3PO4] 97.977 m/z,[M+H2SO4] 97.967 m/z,[M+H2CO3] 62.000 m/z,[(Deuterium)]glycerol 5.000 m/z,Custom 0.000 m/z</parameter>
+        <parameter name="Custom adduct value" type="DOUBLE">0.0</parameter>
+        <parameter name="m/z tolerance" type="DOUBLE">0.1</parameter>
+        <parameter name="Max adduct peak height" type="DOUBLE">0.2</parameter>
+      </parameters> 
+    </module>  
     <!-- DATABASE ESI NEGATIVE IDENTIFICATION: <module class="guineu.modules.identification.identificationNeg.Identification"/> -->  
     <module class="guineu.modules.identification.simplelipidname.SimpleLipidNameFilter"/>  
     <module class="guineu.modules.identification.purgeIdentification.purgeIdentification"/>  
-    <!-- SERUM NORMALIZATION: <module class="guineu.modules.identification.normalizationserum.NormalizeSerumFilter"/> -->
-    <!-- TISSUE NORMALIZATION: <module class="guineu.modules.identification.normalizationtissue.NormalizeTissueFilter"/>  -->
+    <module class="guineu.modules.identification.normalizationserum.NormalizeSerumFilter"/>  
+    <module class="guineu.modules.identification.normalizationtissue.NormalizeTissueFilter"/>  
     <!-- NOMIS NORMALIZATION: <module class="guineu.modules.identification.normalizationNOMIS.NormalizeNOMISFilter"/> -->  
     <!-- NOMIS NORMALIZATION: <module class="guineu.modules.identification.normalizationNOMIS2.NormalizeNOMISFilter"/> -->  
     <module class="guineu.modules.statistics.variationCoefficient.VariationCoefficient"/>  
@@ -124,9 +142,14 @@
     </module>  
     <!-- UPGMA MODULE: <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
-    <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->
+    <module class="guineu.modules.statistics.anova.AnovaTest"> 
+      <parameters> 
+        <parameter name="Select the parameter" type="STRING">group</parameter> 
+      </parameters> 
+    </module>  
+    <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->  
     <!-- STANDARD VARIATION MODULE: <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
-    <!-- OPEN MSMS FILE:<module class="guineu.modules.msms.open.OpenFile"/> -->
+    <!-- OPEN MSMS FILE:<module class="guineu.modules.msms.open.OpenFile"/> -->  
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"> 
       <parameters>
         <parameter name="RT Lax:" type="DOUBLE">15.0</parameter>
@@ -135,7 +158,7 @@
         <parameter name="RT penalty:" type="DOUBLE">5.0</parameter>
         <parameter name="RT2 penalty:" type="DOUBLE">35.0</parameter>
         <parameter name="RTI penalty" type="DOUBLE">40.0</parameter>
-        <parameter name="Minimun Spectrum Match:" type="DOUBLE">0.75</parameter>
+        <parameter name="Minimum Spectrum Match:" type="DOUBLE">0.75</parameter>
         <parameter name="Bonus for matching names:" type="DOUBLE">100.0</parameter>
         <parameter name="Drop peaks with similarity less than:" type="DOUBLE">600.0</parameter>
         <parameter name="Use Concentrations: " type="BOOLEAN">true</parameter>
@@ -145,12 +168,12 @@
     <module class="guineu.modules.mylly.filter.NameFilter.NameFilter"> 
       <parameters>
         <parameter name="Suffix: " type="STRING">-Name Filter</parameter>
-        <parameter name="Name Filter File: " type="FILE_NAME">Name Filter File</parameter>
+        <parameter name="File Name: " type="FILE_NAME">Name of the File</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.calculateDeviations.CalculateDeviations"> 
       <parameters>
-        <parameter name="Name Filter File: " type="FILE_NAME">/</parameter>
+        <parameter name="File Name: " type="FILE_NAME">Name of the File</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.pubChem.PubChemFilter"> 
@@ -160,7 +183,7 @@
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.GroupIdentification.GroupIdentificationFilter"/>  
-    <module class="guineu.modules.mylly.filter.NameGolmIdentification.NameGolmIdentificationFilter"/> 
+    <module class="guineu.modules.mylly.filter.NameGolmIdentification.NameGolmIdentificationFilter"/>  
     <module class="guineu.modules.mylly.filter.classIdentification.ClassIdentificationFilter"> 
       <parameters>
         <parameter name="Suffix: " type="STRING">-Class Identification Filter</parameter>
@@ -192,8 +215,8 @@
     <module class="guineu.modules.mylly.filter.NonPolarComponents.removeNonPolarFilter"/>  
     <module class="guineu.modules.mylly.filter.tools.PrepareDeviationFile.RTIFile"> 
       <parameters>
-        <parameter name="Input File: " type="FILE_NAME">/</parameter>
-        <parameter name="Output File: " type="FILE_NAME">/</parameter>
+        <parameter name="Input File: " type="FILE_NAME">Input File</parameter>
+        <parameter name="Output File: " type="FILE_NAME">Output File</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.mylly.filter.ConcentrationsFromMass.ConcentrationsFromMassFilter"/> 
@@ -212,13 +235,13 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>1152</x>
-      <y>0</y>
+      <x>0</x>
+      <y>25</y>
       <width>-1</width>
       <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
-    <lastProjectDirectory>/</lastProjectDirectory>
+    <lastProjectDirectory>/home/scsandra/Desktop/example folder/206MB_Heart.csv</lastProjectDirectory>
     <lastSaveDirectory>/</lastSaveDirectory>
     <lastMyllyDirectory>/</lastMyllyDirectory>
     <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
@@ -231,5 +254,10 @@
     <parameter name="Export GCGC elements" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
     <parameter name="Filename" type="FILE_NAME"/>
     <parameter name="type" type="STRING"/>
+    <standard_ranges standard_name="LysoPC(17:0)">0.0 - 300.0</standard_ranges>
+    <standard_ranges standard_name="TG(51:0)">410.0 - 10000.0</standard_ranges>
+    <standard_ranges standard_name="PC(34:0)">300.0 - 410.0</standard_ranges>
+    <standard_ranges standard_name="Cer(d18:1/17:0)">0.0 - 0.0</standard_ranges>
+    <standard_ranges standard_name="PE(34:0)">0.0 - 0.0</standard_ranges>
   </desktop> 
 </configuration>
