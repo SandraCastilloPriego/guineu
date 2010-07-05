@@ -1,23 +1,29 @@
 /*
-Copyright 2007-2010 VTT Biotechnology
-This file is part of MULLU.
-MULLU is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation.
-MULLU is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-You should have received a copy of the GNU General Public License
-along with MULLU; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Copyright 2007-2010 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
 package guineu.modules.identification.normalizationtissue;
 
+
+import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.DatasetType;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.TaskStatus;
+import java.util.Hashtable;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,171 +34,59 @@ import java.util.regex.Pattern;
  */
 public class NormalizeTissue {
 
-    private SimpleLCMSDataset dataset;
-    private double cont;
-    private StandardUmol stdMol;
+    private Dataset dataset;
+    private double cont = 0;
+    private Vector<StandardUmol> stdMol;
+    Hashtable<String, Double> weights;
 
-    public NormalizeTissue(SimpleLCMSDataset dataset, StandardUmol stdMol) {
+
+    public NormalizeTissue(Dataset dataset, Vector<StandardUmol> stdMol, Hashtable<String, Double> weights) {
         this.dataset = dataset;
         this.stdMol = stdMol;
+        this.weights = weights;
     }
 
-    public void getStandars() {
-        this.stdMol.vCer.removeAllElements();
-        this.fillStd(".*Cer.*", this.stdMol.vCer);
-        this.stdMol.vTAG.removeAllElements();
-        this.fillStd(".*TAG.*", this.stdMol.vTAG);
-        this.fillStd(".*TG.*", this.stdMol.vTAG);
-        this.stdMol.vGPEtn.removeAllElements();
-        this.fillStd("^GPEtn.*", this.stdMol.vGPEtn);
-        this.fillStd("^PE.*", this.stdMol.vGPEtn);
-        this.stdMol.vGPCho.removeAllElements();
-        this.fillStd("^GPCho.*", this.stdMol.vGPCho);
-        this.fillStd("^PC.*", this.stdMol.vGPCho);
-        this.stdMol.vLysoGPCho.removeAllElements();
-        this.fillStd(".*Lyso.*", this.stdMol.vLysoGPCho);
-        this.fillStd(".*LP.*", this.stdMol.vLysoGPCho);
-        this.stdMol.vOtherValue.removeAllElements();
-        this.fillStd(".*" + this.stdMol.other + ".*", this.stdMol.vOtherValue);
-        this.stdMol.vOtherValue1.removeAllElements();
-        this.fillStd(".*" + this.stdMol.other1 + ".*", this.stdMol.vOtherValue1);
-    }
-
-    public SimpleLCMSDataset getDataset() {
+    public Dataset getDataset() {
         return dataset;
     }
 
-    private void fillStd(String lipidName, Vector vlipid) {
-        for (int i = 0; i < dataset.getNumberRows(); i++) {
-            String olipid = this.getLipidName(i);
-            if (olipid.matches(lipidName) && ((SimplePeakListRowLCMS) dataset.getRow(i)).getStandard() == 1) {
-                for (String experimentName : dataset.getNameExperiments()) {
-                    try {
-                        vlipid.addElement(new Double((Double) dataset.getRow(i).getPeak(experimentName)));
-                    } catch (Exception e) {
-                    }
-                }
-
-            }
-        }
-    }
-
-    private String getLipidName(int row) {
-        if (dataset.getRow(row) != null) {
-            String olipid = (String) dataset.getRow(row).getVar("getName");
-            if (olipid.matches(".*unknown.*")) {
-                olipid = this.getUnknownName(row);
-            }
-            return olipid;
-        }
-        return null;
-    }
-
-    public double getNormalizedValue(double value, double stdConcentration, double concentration) {
+    public double getNormalizedValue(double stdRealConcentration, double stdConcentration, double concentration) {
         try {
             if (stdConcentration == 0) {
                 return 0;
             }
-            return (value / stdConcentration) * concentration;
+            return (stdRealConcentration / stdConcentration) * concentration;
         } catch (Exception e) {
             return 0;
         }
     }
 
-    public String getUnknownName(int row) {
-        double RT = (Double) ((SimplePeakListRowLCMS) this.dataset.getRow(row)).getRT();
-        if (RT < 300) {
-            return "LysoPC(18:0)";
-        }
-        if (RT >= 300 && RT < 410) {
-            return "PA(32:0)";
-        }
-        if (RT >= 410) {
-            return "TG(52:0)";
+    public StandardUmol getUnknownName(PeakListRow row) {
+        double RT = (Double) row.getVar("getRT");
+        for (StandardUmol std : this.stdMol) {
+            if (std.getRange().contains(RT)) {
+                return std;
+            }
         }
         return null;
     }
 
     public void normalize(TaskStatus status) {
-        this.getStandars();
-        for (int i = 0; i < dataset.getNumberRows(); i++) {
-            int e = 0;
-            for (String experimentName : dataset.getNameExperiments()) {
-                if (!experimentName.matches(".*peak status.*")) {
+        for (PeakListRow row : dataset.getRows()) {
+            StandardUmol standard = this.getStd(row);            
+            if (standard != null) {
+               // System.out.println(row.getVar("getName") + " - " + standard.getName());
+                for (String experimentName : dataset.getNameExperiments()) {
                     if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
                         return;
                     }
+
                     try {
-                        String lipid = this.getLipidName(i);
-                        if (lipid != null) {
-                            try {
-                                lipid = lipid.substring(0, lipid.indexOf("("));
-                            } catch (Exception exception) {
-                            }
-                            try {
-                                Double valueNormalized = (Double) dataset.getRow(i).getPeak(experimentName);
-
-                                switch (this.getStdIndex(lipid)) {
-                                    case 1:
-                                        if (this.stdMol.vTAG.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vTAG.elementAt(e), this.stdMol.TAG / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    case 2:
-                                        if (this.stdMol.vGPEtn.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vGPEtn.elementAt(e), this.stdMol.GPEtn / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    case 3:
-                                        if (this.stdMol.vLysoGPCho.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vLysoGPCho.elementAt(e), this.stdMol.LysoGPCho / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    case 4:
-                                        if (this.stdMol.vCer.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vCer.elementAt(e), this.stdMol.Cer / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    case 5:
-                                        if (this.stdMol.vGPCho.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vGPCho.elementAt(e), this.stdMol.GPCho / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    case 6:
-                                        if (this.stdMol.vOtherValue.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vOtherValue.elementAt(e), this.stdMol.otherValue / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    case 7:
-                                        if (this.stdMol.vOtherValue1.isEmpty() || this.stdMol.Weights.isEmpty()) {
-                                            status = TaskStatus.ERROR;
-                                            return;
-                                        }
-                                        valueNormalized = this.getNormalizedValue(valueNormalized, this.stdMol.vOtherValue1.elementAt(e), this.stdMol.otherValue1 / this.stdMol.Weights.get(experimentName));
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-                                dataset.getRow(i).setPeak(experimentName, new Double(valueNormalized));
-                            } catch (Exception exception2) {
-                            }
-                        }
-                        e++;
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                        Double valueNormalized = (Double) row.getPeak(experimentName);
+                        valueNormalized = this.getNormalizedValue(standard.getRealAmount(), standard.getIntensity(experimentName), valueNormalized/weights.get(experimentName));
+                        row.setPeak(experimentName, new Double(valueNormalized));
+                    } catch (Exception exception2) {
+                        exception2.printStackTrace();
                     }
                 }
             }
@@ -206,60 +100,124 @@ public class NormalizeTissue {
      * @param lipid
      * @return
      */
-    private int getStdIndex(String lipid) {
+    private StandardUmol getStd(PeakListRow row) {
+        String compoundName = (String) row.getVar("getName");
         // In the case the lipid is identified as an adduct, the program search the
         // main peak to get the standard class and change the name to the field "lipid"
-        int newRow = -1;
-        if (lipid.matches(".*adduct.*")) {
-            double num = 0;
-            Pattern adduct = Pattern.compile("\\d+.\\d+");
-            Matcher matcher = adduct.matcher(lipid);
-            if (matcher.find()) {
-                num = Double.valueOf(lipid.substring(matcher.start(), matcher.end()));
-            }
-            double difference = Double.POSITIVE_INFINITY;
-            int counter = 0;
-            for (PeakListRow row : dataset.getRows()) {
-                double mzRow = ((SimplePeakListRowLCMS) row).getMZ();
-                double dif = Math.abs(num - mzRow);
-                if (dif < difference) {
-                    difference = dif;
-                    lipid = ((SimplePeakListRowLCMS) row).getName();
-                    newRow = counter;
+        if (dataset.getType() == DatasetType.LCMS) {
+
+            if (compoundName.matches(".*adduct.*")) {
+                double num = 0;
+                Pattern adduct = Pattern.compile("\\d+.\\d+");
+                Matcher matcher = adduct.matcher(compoundName);
+                if (matcher.find()) {
+                    num = Double.valueOf(compoundName.substring(matcher.start(), matcher.end()));
                 }
-                counter++;
+                double difference = Double.POSITIVE_INFINITY;
+                for (PeakListRow parentRow : dataset.getRows()) {
+                    double mzRow = ((SimplePeakListRowLCMS) parentRow).getMZ();
+                    double dif = Math.abs(num - mzRow);
+                    if (dif < difference) {
+                        difference = dif;
+                        compoundName = ((SimplePeakListRowLCMS) parentRow).getName();
+                    }
+                }
             }
         }
 
         // In the case the main lipid is unknown or another adduct..
-        if (lipid.matches(".*unknown.*") || lipid.matches(".*adduct.*") && newRow >= 0) {
-            lipid = this.getUnknownName(newRow);
+        if (compoundName.matches(".*unknown.*") || compoundName.matches(".*adduct.*")) {
+            return this.getUnknownName(row);
         }
 
+        return getMostSimilar(compoundName);
+    }
 
-        if (lipid.matches(stdMol.other)) {
-            return 6;
-        } else if (lipid.matches(stdMol.other1)) {
-            return 7;
-        } else if (lipid.matches(".*TAG.*") || lipid.matches(".*ChoE.*") || lipid.matches(".*TG.*")) {
-            if (stdMol.TAG == 0.0) {
-                return 5;
+    private StandardUmol getMostSimilar(String compoundName) {
+        StandardUmol minDistanceStd = null;
+        int minDistance = Integer.MAX_VALUE;
+        for (StandardUmol std : this.stdMol) {
+            int dist = this.getLevenshteinDistance(std.getName(), compoundName);
+            if (dist < minDistance) {
+                minDistance = dist;
+                minDistanceStd = std;
             }
-            return 1;
-        } else if (lipid.matches("^GPEtn.*") || lipid.matches("^GPSer.*") || lipid.matches("^PS.*") || lipid.matches("^PE.*")) {
-            return 2;
-        } else if (lipid.matches(".*Lyso.*") || lipid.matches(".*MAG.*") || lipid.matches("^LP.*") || lipid.matches("^MG.*")) {
-            return 3;
-        } else if (lipid.matches(".*Cer.*")) {
-            return 4;
-        } else if (lipid.matches("^GP.*") || lipid.matches(".*SM.*") || lipid.matches("^DAG.*") || lipid.matches("^GPA.*") || lipid.matches("^PA.*") || lipid.matches("^DG.*") || lipid.matches("^P.*")) {
-            return 5;
         }
-        return 0;
 
+        return minDistanceStd;
     }
 
     public double getProgress() {
-        return /*(cont/(dataset.getNumberMolecules()))*/ 0.0f;
+        return (cont / (dataset.getNumberRows()));
+    }
+
+    public int getLevenshteinDistance(String s, String t) {
+        if (s == null || t == null) {
+            throw new IllegalArgumentException("Strings must not be null");
+        }
+
+        /*
+        Levenshtein Distance Algorithm: Java Implementation
+        by Chas Emerick
+        The difference between this impl. and the previous is that, rather
+        than creating and retaining a matrix of size s.length()+1 by t.length()+1,
+        we maintain two single-dimensional arrays of length s.length()+1.  The first, d,
+        is the 'current working' distance array that maintains the newest distance cost
+        counts as we iterate through the characters of String s.  Each time we increment
+        the index of String t we are comparing, d is copied to p, the second int[].  Doing so
+        allows us to retain the previous cost counts as required by the algorithm (taking
+        the minimum of the cost count to the left, up one, and diagonally up and to the left
+        of the current cost count being calculated).  (Note that the arrays aren't really
+        copied anymore, just switched...this is clearly much better than cloning an array
+        or doing a System.arraycopy() each time  through the outer loop.)
+
+        Effectively, the difference between the two implementations is this one does not
+        cause an out of memory condition when calculating the LD over two very large strings.
+         */
+
+        int n = s.length(); // length of s
+        int m = t.length(); // length of t
+
+        if (n == 0) {
+            return m;
+        } else if (m == 0) {
+            return n;
+        }
+
+        int p[] = new int[n + 1]; //'previous' cost array, horizontally
+        int d[] = new int[n + 1]; // cost array, horizontally
+        int _d[]; //placeholder to assist in swapping p and d
+
+        // indexes into strings s and t
+        int i; // iterates through s
+        int j; // iterates through t
+
+        char t_j; // jth character of t
+
+        int cost; // cost
+
+        for (i = 0; i <= n; i++) {
+            p[i] = i;
+        }
+
+        for (j = 1; j <= m; j++) {
+            t_j = t.charAt(j - 1);
+            d[0] = j;
+
+            for (i = 1; i <= n; i++) {
+                cost = s.charAt(i - 1) == t_j ? 0 : 1;
+                // minimum of cell to the left+1, to the top+1, diagonally left and up +cost
+                d[i] = Math.min(Math.min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
+            }
+
+            // copy current distance counts to 'previous row' distance counts
+            _d = p;
+            p = d;
+            d = _d;
+        }
+
+        // our last action in the above loop was to switch d and p, so p now
+        // actually has the most recent cost counts
+        return p[n];
     }
 }

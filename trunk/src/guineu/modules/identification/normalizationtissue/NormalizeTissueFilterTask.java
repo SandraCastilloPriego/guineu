@@ -18,8 +18,9 @@
 package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
+import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.datamodels.OtherDataModel;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -28,6 +29,8 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  *
@@ -38,15 +41,13 @@ public class NormalizeTissueFilterTask implements Task {
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private Desktop desktop;
-    private SimpleLCMSDataset dataset;
-    private StandardUmol standards;
+    private Dataset dataset;
     private NormalizeTissue serum;
 
-    public NormalizeTissueFilterTask(Dataset simpleDataset, Desktop desktop, StandardUmol standards) {
-        this.dataset = ((SimpleLCMSDataset) simpleDataset).clone();
-        this.desktop = desktop;
-        this.standards = standards;
-        this.serum = new NormalizeTissue(dataset, standards);
+    public NormalizeTissueFilterTask(Dataset simpleDataset, Desktop desktop, Vector<StandardUmol> standards, Hashtable<String, Double> weights) {
+        this.dataset = simpleDataset.clone();
+        this.desktop = desktop;       
+        this.serum = new NormalizeTissue(dataset, standards, weights);
     }
 
     public String getTaskDescription() {
@@ -75,7 +76,18 @@ public class NormalizeTissueFilterTask implements Task {
             serum.normalize(status);
             dataset = serum.getDataset();
             desktop.AddNewFile(dataset);
-            DataTableModel model = new DatasetLCMSDataModel(dataset);
+            DataTableModel model = null;
+            switch(dataset.getType()){
+                case LCMS:
+                    model = new DatasetLCMSDataModel(dataset);
+                    break;
+                case GCGCTOF:
+                    model = new DatasetGCGCDataModel(dataset);
+                    break;
+                case OTHER:
+                    model = new OtherDataModel(dataset);
+                    break;
+            }
             DataTable table = new PushableTable(model);
             table.formatNumbers(dataset.getType());
             DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));

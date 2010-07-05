@@ -22,15 +22,12 @@ import guineu.data.StorableParameterSet;
 import guineu.desktop.impl.MainWindow;
 import guineu.util.NumberFormatter;
 import guineu.util.NumberFormatter.FormatterType;
-import guineu.util.Range;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 
-import java.util.Set;
 import org.dom4j.Element;
 
 /**
