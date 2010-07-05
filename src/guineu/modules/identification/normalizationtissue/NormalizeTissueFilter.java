@@ -51,6 +51,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
 
     public void initModule() {
         this.standards = new Vector<StandardUmol>();
+        this.weights = new Hashtable<String, Double>();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Tissue Normalization Filter..",
                 "TODO write description", KeyEvent.VK_S, this, null, null);
@@ -106,7 +107,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
 
             try {
 
-                NormalizationDialog dialog = new NormalizationDialog(standards, weights);
+                NormalizationDialog dialog = new NormalizationDialog(standards, datasets[0], weights);
                 dialog.setVisible(true);
                 return dialog.getExitCode();
             } catch (Exception exception) {

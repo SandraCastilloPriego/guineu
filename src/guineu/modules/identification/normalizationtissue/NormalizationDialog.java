@@ -17,6 +17,8 @@
  */
 package guineu.modules.identification.normalizationtissue;
 
+import guineu.data.Dataset;
+import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -30,6 +32,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -40,14 +43,38 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     private Vector<StandardUmol> standards;
     ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
+    Dataset dataset;
+    Hashtable<String, Double> weights;
+    String filePath;
 
     /** Creates new form NormalizationDialog */
-    public NormalizationDialog(Vector<StandardUmol> standards, Hashtable<String, Double> weights) {
+    public NormalizationDialog(Vector<StandardUmol> standards, Dataset dataset, Hashtable<String, Double> weights) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please fill the standards...", true);
 
         this.standards = standards;
+        this.dataset = dataset;
         initComponents();
+
+        DefaultTableModel d = (DefaultTableModel) this.jTable.getModel();
+        int cont = 0;
+        for (String name : dataset.getNameExperiments()) {
+
+            try {
+                Object[] row = new Object[2];
+                row[0] = name;
+                if (weights.containsKey(name)) {
+                    row[1] = (Double) weights.get(name);
+                }
+                d.addRow(row);
+
+                this.jTable.setEditingRow(cont++);
+
+            } catch (Exception e) {
+            }
+        }
+
+
 
         StandardsDataModel model = new StandardsDataModel(this.standards);
         UnknownsDataModel unknownModel = new UnknownsDataModel(this.standards);
@@ -57,18 +84,22 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         this.jButtonClose.addActionListener(this);
         this.jButtonOk.addActionListener(this);
         this.jButtonReset.addActionListener(this);
-        this.setSize(305, 410);
+        this.readFileButton.addActionListener(this);
         logger.finest("Displaying Normalization Serum dialog");
     }
 
-   
     public void fillStandards() {
         try {
-           ((StandardsDataModel)this.jTable1.getModel()).fillStandards();
-           ((UnknownsDataModel)this.jTable2.getModel()).fillStandards();
+            ((StandardsDataModel) this.jTable1.getModel()).fillStandards();
+            ((UnknownsDataModel) this.jTable2.getModel()).fillStandards();
+            for (int i = 0; i < this.jTable.getRowCount(); i++) {
+                String name = (String) this.jTable.getValueAt(i, 0);
+                Double value = (Double) this.jTable.getValueAt(i, 1);
+                this.weights.put(name, value);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
-           
+
         }
     }
 
@@ -80,6 +111,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -87,21 +119,30 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable = new javax.swing.JTable();
+        readFileButton = new javax.swing.JButton();
 
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(587, 551));
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
-        jPanel5.setPreferredSize(new java.awt.Dimension(500, 500));
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
+
+        jPanel5.setPreferredSize(new java.awt.Dimension(300, 400));
+        jPanel5.setRequestFocusEnabled(false);
+        jPanel5.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("umol / l.blood sample  --- umol / g sample"));
-        jPanel1.setPreferredSize(new java.awt.Dimension(500, 250));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.setPreferredSize(new java.awt.Dimension(300, 200));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(300, 200));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -117,14 +158,15 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jTable1.setCellSelectionEnabled(true);
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(jScrollPane1);
 
-        jPanel5.add(jPanel1);
+        jPanel5.add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("")), "Unknown Compounds"));
-        jPanel6.setPreferredSize(new java.awt.Dimension(500, 250));
-        jPanel6.setRequestFocusEnabled(false);
-        jPanel6.setLayout(new java.awt.BorderLayout());
+        jPanel6.setPreferredSize(new java.awt.Dimension(300, 200));
+        jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.LINE_AXIS));
+
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(300, 200));
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -140,25 +182,17 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jTable2.setCellSelectionEnabled(true);
         jScrollPane2.setViewportView(jTable2);
 
-        jPanel6.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        jPanel6.add(jScrollPane2);
 
-        jPanel5.add(jPanel6);
+        jPanel5.add(jPanel6, java.awt.BorderLayout.PAGE_END);
 
-        jButtonOk.setText("  Ok ");
-        jPanel4.add(jButtonOk);
+        jPanel3.add(jPanel5);
 
-        jButtonClose.setText("Close");
-        jPanel4.add(jButtonClose);
+        jPanel2.setPreferredSize(new java.awt.Dimension(300, 400));
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
 
-        jButtonReset.setText("Reset");
-        jButtonReset.setMaximumSize(new java.awt.Dimension(60, 27));
-        jButtonReset.setMinimumSize(new java.awt.Dimension(60, 27));
-        jButtonReset.setPreferredSize(new java.awt.Dimension(60, 27));
-        jPanel4.add(jButtonReset);
-
-        jPanel2.setPreferredSize(new java.awt.Dimension(500, 300));
-
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(480, 380));
+        jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(300, 390));
 
         jTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -180,44 +214,31 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jTable.setPreferredSize(new java.awt.Dimension(480, 380));
         jScrollPane3.setViewportView(jTable);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
+        jPanel2.add(jScrollPane3);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 887, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jPanel3.add(jPanel2);
+
+        getContentPane().add(jPanel3);
+
+        jPanel4.setMinimumSize(new java.awt.Dimension(60, 37));
+        jPanel4.setPreferredSize(new java.awt.Dimension(60, 37));
+
+        jButtonOk.setText("  Ok ");
+        jPanel4.add(jButtonOk);
+
+        jButtonClose.setText("Close");
+        jPanel4.add(jButtonClose);
+
+        jButtonReset.setText("Reset");
+        jButtonReset.setMaximumSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setMinimumSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setPreferredSize(new java.awt.Dimension(60, 27));
+        jPanel4.add(jButtonReset);
+
+        readFileButton.setText("Read File");
+        jPanel4.add(readFileButton);
+
+        getContentPane().add(jPanel4);
     }// </editor-fold>//GEN-END:initComponents
 
     public ExitCode getExitCode() {
@@ -229,6 +250,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     private javax.swing.JButton jButtonReset;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -238,6 +260,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     private javax.swing.JTable jTable;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JButton readFileButton;
     // End of variables declaration//GEN-END:variables
 
     public void actionPerformed(ActionEvent e) {
@@ -250,25 +273,48 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             dispose();
         } else if (e.getSource() == this.jButtonReset) {
             this.reset();
+        } else if (e.getSource() == this.readFileButton) {
+            ExitCode exitCode = setupParameters();
+            if (exitCode != ExitCode.OK) {
+                return;
+            }
+            readWeithgs();
         }
+    }
 
-
+    public ExitCode setupParameters() {
+        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
+        String lastPath = deskParameters.getLastOpenProjectPath();
+        if (lastPath == null) {
+            lastPath = "";
+        }
+        File lastFilePath = new File(lastPath);
+        readFileDialog dialog = new readFileDialog(lastFilePath);
+        dialog.setVisible(true);
+        try {
+            this.filePath = dialog.getCurrentDirectory();
+        } catch (Exception e) {
+        }
+        return dialog.getExitCode();
     }
 
     public void reset() {
         try {
-            ((StandardsDataModel)this.jTable1.getModel()).resetStandards();
-            ((UnknownsDataModel)this.jTable2.getModel()).resetStandards();
+            ((StandardsDataModel) this.jTable1.getModel()).resetStandards();
+            ((UnknownsDataModel) this.jTable2.getModel()).resetStandards();
+
+            for (int i = 0; i < this.jTable.getRowCount(); i++) {
+                this.jTable.setValueAt(0.0, i, 1);
+            }
         } catch (Exception e) {
         }
     }
-
 
     public void readWeithgs() {
         FileReader fr = null;
 
         try {
-            fr = new FileReader(new File("list.csv"));
+            fr = new FileReader(new File(this.filePath));
             BufferedReader br = new BufferedReader(fr);
             String line;
             while ((line = (br.readLine())) != null) {
@@ -291,5 +337,4 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             Logger.getLogger(NormalizationDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 }

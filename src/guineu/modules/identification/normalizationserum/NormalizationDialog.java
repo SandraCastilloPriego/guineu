@@ -86,9 +86,9 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jButtonClose = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(587, 551));
+        setMinimumSize(new java.awt.Dimension(320, 300));
 
-        jPanel5.setPreferredSize(new java.awt.Dimension(500, 500));
+        jPanel5.setPreferredSize(new java.awt.Dimension(170, 430));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("umol / l.blood sample  --- umol / g sample"));
         jPanel1.setPreferredSize(new java.awt.Dimension(500, 250));
@@ -109,8 +109,6 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jScrollPane1.setViewportView(jTable1);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jPanel5.add(jPanel1);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("")), "Unknown Compounds"));
         jPanel6.setPreferredSize(new java.awt.Dimension(500, 250));
@@ -133,11 +131,6 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         jPanel6.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        jPanel5.add(jPanel6);
-        jPanel6.getAccessibleContext().setAccessibleName("Unknown Compounds");
-
-        getContentPane().add(jPanel5, java.awt.BorderLayout.CENTER);
-
         jButtonOk.setText("  Ok ");
         jPanel4.add(jButtonOk);
 
@@ -150,7 +143,33 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jButtonReset.setPreferredSize(new java.awt.Dimension(60, 27));
         jPanel4.add(jButtonReset);
 
-        getContentPane().add(jPanel4, java.awt.BorderLayout.PAGE_END);
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                .addGap(13, 13, 13))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(1, 1, 1)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
+        );
+
+        getContentPane().add(jPanel5, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     public ExitCode getExitCode() {
