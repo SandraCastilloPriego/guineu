@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.util;
 
 /**
@@ -57,6 +56,20 @@ public class Range {
      */
     public Range(Range range) {
         this(range.getMin(), range.getMax());
+    }
+
+    public Range(String range) {
+        try {
+            String[] value = range.split("-");
+            this.min = Double.parseDouble(value[0]);
+            this.max = Double.parseDouble(value[1]);
+            if (min > max) {
+                throw (new IllegalArgumentException(
+                        "Range minimum must be <= maximum"));
+            }
+
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -131,10 +144,12 @@ public class Range {
      * @param value Value to extends this range
      */
     public void extendRange(double value) {
-        if (min > value)
+        if (min > value) {
             min = value;
-        if (max < value)
+        }
+        if (max < value) {
             max = value;
+        }
     }
 
     /**
@@ -143,10 +158,12 @@ public class Range {
      * @param extension Range to extends this range
      */
     public void extendRange(Range extension) {
-        if (min > extension.getMin())
+        if (min > extension.getMin()) {
             min = extension.getMin();
-        if (max < extension.getMax())
+        }
+        if (max < extension.getMax()) {
             max = extension.getMax();
+        }
     }
 
     /**

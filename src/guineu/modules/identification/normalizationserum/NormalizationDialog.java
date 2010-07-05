@@ -1,7 +1,19 @@
 /*
- * NormalizationDialog.java
+ * Copyright 2007-2010 VTT Biotechnology
+ * This file is part of Guineu.
  *
- * Created on 15 October 2008, 15:49
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
 package guineu.modules.identification.normalizationserum;
 
@@ -9,7 +21,7 @@ import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
+import java.util.Vector;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -19,54 +31,38 @@ import javax.swing.JOptionPane;
  */
 public class NormalizationDialog extends javax.swing.JDialog implements ActionListener {
 
-    private Hashtable<String, StandardUmol> standards;
+    private Vector<StandardUmol> standards;
     ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
     /** Creates new form NormalizationDialog */
-    public NormalizationDialog(Hashtable<String, StandardUmol> standards) {
+    public NormalizationDialog(Vector<StandardUmol> standards) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please fill the standards...", true);
+
         this.standards = standards;
         initComponents();
+
+        StandardsDataModel model = new StandardsDataModel(this.standards);
+        UnknownsDataModel unknownModel = new UnknownsDataModel(this.standards);
+
+        this.jTable1.setModel(model);
+        this.jTable2.setModel(unknownModel);
         this.jButtonClose.addActionListener(this);
         this.jButtonOk.addActionListener(this);
         this.jButtonReset.addActionListener(this);
         this.setSize(305, 410);
-        fillStandardsTextFields();
         logger.finest("Displaying Normalization Serum dialog");
     }
 
-    public void fillStandardsTextFields() {
+   
+    public void fillStandards() {
         try {
-            this.jTextFieldCer.setText(String.valueOf(standards.Cer));
-            this.jTextFieldGPCho.setText(String.valueOf(standards.GPCho));
-            this.jTextFieldGPEtn.setText(String.valueOf(standards.GPEtn));
-            this.jTextFieldLysoGPCho.setText(String.valueOf(standards.LysoGPCho));
-            this.jTextFieldTAG.setText(String.valueOf(standards.TAG));
-            this.jTextFieldother.setText(standards.other);
-            this.jTextFieldOtherValue.setText(String.valueOf(standards.otherValue));
-            this.jTextFieldother1.setText(standards.other1);
-            this.jTextFieldOtherValue1.setText(String.valueOf(standards.otherValue1));
-        } catch (Exception e) {
-        }
-    }
-
-    public boolean fillStandards() {
-        try {
-            this.standards.Cer = Double.valueOf(this.jTextFieldCer.getText());
-            this.standards.GPCho = Double.valueOf(this.jTextFieldGPCho.getText());
-            this.standards.GPEtn = Double.valueOf(this.jTextFieldGPEtn.getText());
-            this.standards.LysoGPCho = Double.valueOf(this.jTextFieldLysoGPCho.getText());
-            this.standards.TAG = Double.valueOf(this.jTextFieldTAG.getText());
-            this.standards.other = this.jTextFieldother.getText();
-            this.standards.otherValue = Double.valueOf(this.jTextFieldOtherValue.getText());
-            this.standards.other1 = this.jTextFieldother1.getText();
-            this.standards.otherValue1 = Double.valueOf(this.jTextFieldOtherValue1.getText());
-            return true;
+           ((StandardsDataModel)this.jTable1.getModel()).fillStandards();
+           ((UnknownsDataModel)this.jTable2.getModel()).fillStandards();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+           
         }
     }
 
@@ -80,118 +76,81 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jTextFieldother = new javax.swing.JTextField();
-        jTextFieldother1 = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
-        jTextFieldCer = new javax.swing.JTextField();
-        jTextFieldGPCho = new javax.swing.JTextField();
-        jTextFieldLysoGPCho = new javax.swing.JTextField();
-        jTextFieldGPEtn = new javax.swing.JTextField();
-        jTextFieldTAG = new javax.swing.JTextField();
-        jTextFieldOtherValue = new javax.swing.JTextField();
-        jTextFieldOtherValue1 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
 
+        setMinimumSize(new java.awt.Dimension(587, 551));
+
+        jPanel5.setPreferredSize(new java.awt.Dimension(500, 500));
+
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("umol / l.blood sample  --- umol / g sample"));
+        jPanel1.setPreferredSize(new java.awt.Dimension(500, 250));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(7, 1, 0, 20));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
 
-        jLabel1.setText("Cer:");
-        jPanel2.add(jLabel1);
+            }
+        ));
+        jTable1.setCellSelectionEnabled(true);
+        jScrollPane1.setViewportView(jTable1);
 
-        jLabel2.setText("PC:");
-        jPanel2.add(jLabel2);
+        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        jLabel3.setText("LPC:");
-        jPanel2.add(jLabel3);
+        jPanel5.add(jPanel1);
 
-        jLabel4.setText("PE:");
-        jPanel2.add(jLabel4);
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("")), "Unknown Compounds"));
+        jPanel6.setPreferredSize(new java.awt.Dimension(500, 250));
+        jPanel6.setRequestFocusEnabled(false);
+        jPanel6.setLayout(new java.awt.BorderLayout());
 
-        jLabel5.setText("TG:");
-        jPanel2.add(jLabel5);
-        jPanel2.add(jTextFieldother);
-        jPanel2.add(jTextFieldother1);
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
 
-        jPanel3.setLayout(new java.awt.GridLayout(7, 1, 20, 20));
-        jPanel3.add(jTextFieldCer);
-        jPanel3.add(jTextFieldGPCho);
-        jPanel3.add(jTextFieldLysoGPCho);
-        jPanel3.add(jTextFieldGPEtn);
-        jPanel3.add(jTextFieldTAG);
-        jPanel3.add(jTextFieldOtherValue);
-        jPanel3.add(jTextFieldOtherValue1);
+            }
+        ));
+        jTable2.setCellSelectionEnabled(true);
+        jScrollPane2.setViewportView(jTable2);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        jPanel6.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        jButtonOk.setText("Ok");
+        jPanel5.add(jPanel6);
+        jPanel6.getAccessibleContext().setAccessibleName("Unknown Compounds");
+
+        getContentPane().add(jPanel5, java.awt.BorderLayout.CENTER);
+
+        jButtonOk.setText("  Ok ");
         jPanel4.add(jButtonOk);
 
         jButtonClose.setText("Close");
         jPanel4.add(jButtonClose);
 
         jButtonReset.setText("Reset");
+        jButtonReset.setMaximumSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setMinimumSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setPreferredSize(new java.awt.Dimension(60, 27));
         jPanel4.add(jButtonReset);
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
-        );
+        getContentPane().add(jPanel4, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
     public ExitCode getExitCode() {
@@ -201,25 +160,14 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     private javax.swing.JButton jButtonClose;
     public javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonReset;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JTextField jTextFieldCer;
-    private javax.swing.JTextField jTextFieldGPCho;
-    private javax.swing.JTextField jTextFieldGPEtn;
-    private javax.swing.JTextField jTextFieldLysoGPCho;
-    private javax.swing.JTextField jTextFieldOtherValue;
-    private javax.swing.JTextField jTextFieldOtherValue1;
-    private javax.swing.JTextField jTextFieldTAG;
-    private javax.swing.JTextField jTextFieldother;
-    private javax.swing.JTextField jTextFieldother1;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 
     public void actionPerformed(ActionEvent e) {
@@ -239,15 +187,8 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
     public void reset() {
         try {
-            this.jTextFieldCer.setText("0.0");
-            this.jTextFieldGPCho.setText("0.0");
-            this.jTextFieldGPEtn.setText("0.0");
-            this.jTextFieldLysoGPCho.setText("0.0");
-            this.jTextFieldTAG.setText("0.0");
-            this.jTextFieldother.setText("");
-            this.jTextFieldOtherValue.setText("0.0");
-            this.jTextFieldother1.setText("");
-            this.jTextFieldOtherValue1.setText("0.0");
+            ((StandardsDataModel)this.jTable1.getModel()).resetStandards();
+            ((UnknownsDataModel)this.jTable2.getModel()).resetStandards();
         } catch (Exception e) {
         }
     }

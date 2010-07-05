@@ -19,19 +19,23 @@ package guineu.modules.identification.normalizationserum;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
+import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
+import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
+import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Hashtable;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 /**
@@ -42,10 +46,10 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private Hashtable<String, StandardUmol> standards;
+    private Vector<StandardUmol> standards;
 
     public void initModule() {
-        this.standards = new Hashtable<String, StandardUmol>();
+        this.standards = new Vector<StandardUmol>();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Serum Normalization Filter..",
                 "TODO write description", KeyEvent.VK_S, this, null, null);
@@ -76,15 +80,38 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
             return;
         }
 
+        for (StandardUmol std : this.standards) {
+            ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setStandard(std.getName(), std.getRange());
+        }
+
         runModule();
     }
 
     public ExitCode setupParameters() {
-        try {
-            NormalizationDialog dialog = new NormalizationDialog(standards);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
+        Dataset[] datasets = desktop.getSelectedDataFiles();
+        if (datasets.length > 0) {
+            Hashtable<String, Range> stdRanges = ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getStandards();
+            for (PeakListRow row : datasets[0].getRows()) {
+                if (row.isSelected() || (Integer) row.getVar("getStandard") == 1) {
+                    StandardUmol std = new StandardUmol(row);
+                    if (stdRanges != null && stdRanges.containsKey(std.getName())) {
+                        std.setRange(stdRanges.get(std.getName()));
+                    }
+                    if (!this.isThere(std)) {
+                        this.standards.add(std);
+                    }
+                }
+            }
+
+            try {
+
+                NormalizationDialog dialog = new NormalizationDialog(standards);
+                dialog.setVisible(true);
+                return dialog.getExitCode();
+            } catch (Exception exception) {
+                return ExitCode.CANCEL;
+            }
+        } else {
             return ExitCode.CANCEL;
         }
     }
@@ -108,10 +135,15 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
             tasks[i] = new NormalizeSerumFilterTask(datasets[i], desktop, standards);
         }
         GuineuCore.getTaskController().addTasks(tasks);
-
         return tasks;
+    }
 
-
-
+    private boolean isThere(StandardUmol std2) {
+        for(StandardUmol std : this.standards){
+            if(std.getName().equals(std2.getName())){
+                return true;
+            }
+        }
+        return false;
     }
 }
