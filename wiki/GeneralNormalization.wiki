@@ -1,0 +1,8 @@
+#summary Sub-menu
+
+=General Algorithms=
+==Normalization==
+
+[GeneralSerumNormalization Serum Normalization]
+
+[GeneralTissueNormalization Tissue Normalization]
