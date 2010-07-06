@@ -103,6 +103,8 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
                 }
             }
 
+            purge();
+            
             try {
 
                 NormalizationDialog dialog = new NormalizationDialog(standards);
@@ -145,5 +147,19 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
             }
         }
         return false;
+    }
+
+    private void purge() {
+        Vector<StandardUmol> remove = new Vector<StandardUmol>();
+        for (StandardUmol std : this.standards) {
+            if (!std.isSelect()) {
+                remove.addElement(std);
+            }
+        }
+
+        for (StandardUmol std : remove) {
+            this.standards.remove(std);
+        }
+
     }
 }
