@@ -29,6 +29,7 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
+import guineu.util.GUIUtils;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -48,6 +49,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
     private Desktop desktop;
     private Vector<StandardUmol> standards;
     private Hashtable<String, Double> weights;
+    final String helpID = GUIUtils.generateHelpID(this);
 
     public void initModule() {
         this.standards = new Vector<StandardUmol>();
@@ -108,7 +110,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
             purge();
             try {
 
-                NormalizationDialog dialog = new NormalizationDialog(standards, datasets[0], weights);
+                NormalizationDialog dialog = new NormalizationDialog(standards, datasets[0], weights, helpID);
                 dialog.setVisible(true);
                 return dialog.getExitCode();
             } catch (Exception exception) {

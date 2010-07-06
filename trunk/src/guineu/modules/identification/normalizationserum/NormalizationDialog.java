@@ -18,11 +18,13 @@
 package guineu.modules.identification.normalizationserum;
 
 import guineu.main.GuineuCore;
+import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 /**
@@ -32,11 +34,12 @@ import javax.swing.JOptionPane;
 public class NormalizationDialog extends javax.swing.JDialog implements ActionListener {
 
     private Vector<StandardUmol> standards;
-    ExitCode exit = ExitCode.UNKNOWN;
+    private ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
+    private JButton btnHelp;
 
     /** Creates new form NormalizationDialog */
-    public NormalizationDialog(Vector<StandardUmol> standards) {
+    public NormalizationDialog(Vector<StandardUmol> standards, String helpID) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please fill the standards...", true);
 
@@ -52,17 +55,19 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         this.jButtonOk.addActionListener(this);
         this.jButtonReset.addActionListener(this);
         this.setSize(305, 410);
+        // Help button
+        btnHelp = new HelpButton(helpID);
+        this.jPanel4.add(btnHelp);
         logger.finest("Displaying Normalization Serum dialog");
     }
 
-   
     public void fillStandards() {
         try {
-           ((StandardsDataModel)this.jTable1.getModel()).fillStandards();
-           ((UnknownsDataModel)this.jTable2.getModel()).fillStandards();
+            ((StandardsDataModel) this.jTable1.getModel()).fillStandards();
+            ((UnknownsDataModel) this.jTable2.getModel()).fillStandards();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
-           
+
         }
     }
 
@@ -139,7 +144,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         getContentPane().add(jPanel5);
 
-        jPanel4.setMaximumSize(new java.awt.Dimension(260, 30));
+        jPanel4.setMaximumSize(new java.awt.Dimension(300, 30));
         jPanel4.setMinimumSize(new java.awt.Dimension(168, 30));
         jPanel4.setPreferredSize(new java.awt.Dimension(100, 50));
 
@@ -192,8 +197,8 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
     public void reset() {
         try {
-            ((StandardsDataModel)this.jTable1.getModel()).resetStandards();
-            ((UnknownsDataModel)this.jTable2.getModel()).resetStandards();
+            ((StandardsDataModel) this.jTable1.getModel()).resetStandards();
+            ((UnknownsDataModel) this.jTable2.getModel()).resetStandards();
         } catch (Exception e) {
         }
     }
