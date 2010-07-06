@@ -7,13 +7,15 @@ Normalization is based on internal standards. One internal standard is use to no
 
 Levenshtein Distance Algorithm is used to get the similarity between the name of the compound and the name of the standards.
 
+One dataset has to be selected to perform its normalization.
+
+Normalization formula:
+
 {{{
 
             Normalized Intensity = (Intensity of the compound / Intensity of the standard compound) * Amount of standard added;
 
 }}}
-
-One dataset has to be selected to perform its normalization.
 
 The final units will depend on the units of the number you introduce. For example:
 
