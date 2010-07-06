@@ -17,7 +17,6 @@
  */
 package guineu.modules.identification.normalizationtissue;
 
-
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.DatasetType;
@@ -38,7 +37,6 @@ public class NormalizeTissue {
     private double cont = 0;
     private Vector<StandardUmol> stdMol;
     Hashtable<String, Double> weights;
-
 
     public NormalizeTissue(Dataset dataset, Vector<StandardUmol> stdMol, Hashtable<String, Double> weights) {
         this.dataset = dataset;
@@ -73,9 +71,9 @@ public class NormalizeTissue {
 
     public void normalize(TaskStatus status) {
         for (PeakListRow row : dataset.getRows()) {
-            StandardUmol standard = this.getStd(row);            
+            StandardUmol standard = this.getStd(row);
             if (standard != null) {
-               // System.out.println(row.getVar("getName") + " - " + standard.getName());
+                // System.out.println(row.getVar("getName") + " - " + standard.getName());
                 for (String experimentName : dataset.getNameExperiments()) {
                     if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
                         return;
@@ -83,7 +81,7 @@ public class NormalizeTissue {
 
                     try {
                         Double valueNormalized = (Double) row.getPeak(experimentName);
-                        valueNormalized = this.getNormalizedValue(standard.getRealAmount(), standard.getIntensity(experimentName), valueNormalized/weights.get(experimentName));
+                        valueNormalized = this.getNormalizedValue(standard.getRealAmount(), standard.getIntensity(experimentName), valueNormalized / weights.get(experimentName));
                         row.setPeak(experimentName, new Double(valueNormalized));
                     } catch (Exception exception2) {
                         exception2.printStackTrace();
