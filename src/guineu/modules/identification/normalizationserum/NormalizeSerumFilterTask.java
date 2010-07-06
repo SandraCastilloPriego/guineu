@@ -73,6 +73,9 @@ public class NormalizeSerumFilterTask implements Task {
         try {
             status = TaskStatus.PROCESSING;
             serum.normalize(status);
+            if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
+                return;
+            }
             dataset = serum.getDataset();
             desktop.AddNewFile(dataset);
             DataTableModel model = null;

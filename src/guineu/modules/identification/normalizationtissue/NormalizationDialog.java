@@ -54,6 +54,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         this.standards = standards;
         this.dataset = dataset;
+        this.weights = weights;
         initComponents();
 
         DefaultTableModel d = (DefaultTableModel) this.jTable.getModel();
@@ -94,12 +95,13 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             ((UnknownsDataModel) this.jTable2.getModel()).fillStandards();
             for (int i = 0; i < this.jTable.getRowCount(); i++) {
                 String name = (String) this.jTable.getValueAt(i, 0);
-                Double value = (Double) this.jTable.getValueAt(i, 1);
+                Double value = (Double) this.jTable.getValueAt(i, 1);                
                 this.weights.put(name, value);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error, You have not introduced a correct value.", "Error", JOptionPane.ERROR_MESSAGE);
-
+            exit = ExitCode.CANCEL;
         }
     }
 
@@ -136,7 +138,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         jPanel5.setPreferredSize(new java.awt.Dimension(300, 400));
         jPanel5.setRequestFocusEnabled(false);
-        jPanel5.setLayout(new java.awt.BorderLayout());
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.PAGE_AXIS));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("umol / l.blood sample  --- umol / g sample"));
         jPanel1.setPreferredSize(new java.awt.Dimension(300, 200));
@@ -160,9 +162,11 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         jPanel1.add(jScrollPane1);
 
-        jPanel5.add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        jPanel5.add(jPanel1);
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("")), "Unknown Compounds"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Uknown compounds"));
+        jPanel6.setMaximumSize(new java.awt.Dimension(32779, 32796));
+        jPanel6.setMinimumSize(new java.awt.Dimension(37, 54));
         jPanel6.setPreferredSize(new java.awt.Dimension(300, 200));
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -184,10 +188,11 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         jPanel6.add(jScrollPane2);
 
-        jPanel5.add(jPanel6, java.awt.BorderLayout.PAGE_END);
+        jPanel5.add(jPanel6);
 
         jPanel3.add(jPanel5);
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Sample weights"));
         jPanel2.setPreferredSize(new java.awt.Dimension(300, 400));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -220,6 +225,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         getContentPane().add(jPanel3);
 
+        jPanel4.setMaximumSize(new java.awt.Dimension(400, 30));
         jPanel4.setMinimumSize(new java.awt.Dimension(60, 37));
         jPanel4.setPreferredSize(new java.awt.Dimension(60, 37));
 
@@ -230,9 +236,10 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jPanel4.add(jButtonClose);
 
         jButtonReset.setText("Reset");
-        jButtonReset.setMaximumSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setMaximumSize(new java.awt.Dimension(100, 27));
         jButtonReset.setMinimumSize(new java.awt.Dimension(60, 27));
-        jButtonReset.setPreferredSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setOpaque(true);
+        jButtonReset.setPreferredSize(new java.awt.Dimension(80, 27));
         jPanel4.add(jButtonReset);
 
         readFileButton.setText("Read File");
@@ -322,9 +329,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
                     String[] w = line.split(",");
                     for (int i = 0; i < this.jTable.getRowCount(); i++) {
                         w[0] = w[0].replaceAll(" \"", "").toLowerCase();
-                        System.out.println(this.jTable.getValueAt(i, 0).toString().toLowerCase() + " - " + w[0] + " - " + w[1]);
-                        if (this.jTable.getValueAt(i, 0).toString()/*.replace("_", "")*/.toLowerCase().matches(w[0] + ".*")) {
-
+                        if (w[0].contains(this.jTable.getValueAt(i, 0).toString().toLowerCase())) {
                             this.jTable.setValueAt(Double.valueOf(w[1]), i, 1);
                             break;
                         }

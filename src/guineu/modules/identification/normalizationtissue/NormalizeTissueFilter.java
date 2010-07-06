@@ -105,6 +105,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
                 }
             }
 
+            purge();
             try {
 
                 NormalizationDialog dialog = new NormalizationDialog(standards, datasets[0], weights);
@@ -141,11 +142,25 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
     }
 
     private boolean isThere(StandardUmol std2) {
-        for(StandardUmol std : this.standards){
-            if(std.getName().equals(std2.getName())){
+        for (StandardUmol std : this.standards) {
+            if (std.getName().equals(std2.getName())) {
                 return true;
             }
         }
         return false;
+    }
+
+    private void purge() {
+        Vector<StandardUmol> remove = new Vector<StandardUmol>();
+        for (StandardUmol std : this.standards) {
+            if (!std.isSelect()) {
+                remove.addElement(std);
+            }
+        }
+
+        for (StandardUmol std : remove) {
+            this.standards.remove(std);
+        }
+
     }
 }

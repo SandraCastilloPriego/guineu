@@ -46,7 +46,7 @@ public class NormalizeTissueFilterTask implements Task {
 
     public NormalizeTissueFilterTask(Dataset simpleDataset, Desktop desktop, Vector<StandardUmol> standards, Hashtable<String, Double> weights) {
         this.dataset = simpleDataset.clone();
-        this.desktop = desktop;       
+        this.desktop = desktop;
         this.serum = new NormalizeTissue(dataset, standards, weights);
     }
 
@@ -72,12 +72,15 @@ public class NormalizeTissueFilterTask implements Task {
 
     public void run() {
         try {
-            status = TaskStatus.PROCESSING;            
+            status = TaskStatus.PROCESSING;
             serum.normalize(status);
+            if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
+                return;
+            }
             dataset = serum.getDataset();
             desktop.AddNewFile(dataset);
             DataTableModel model = null;
-            switch(dataset.getType()){
+            switch (dataset.getType()) {
                 case LCMS:
                     model = new DatasetLCMSDataModel(dataset);
                     break;

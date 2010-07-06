@@ -87,12 +87,14 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jButtonReset = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(320, 300));
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
-        jPanel5.setPreferredSize(new java.awt.Dimension(170, 430));
+        jPanel5.setPreferredSize(new java.awt.Dimension(100, 230));
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.PAGE_AXIS));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("umol / l.blood sample  --- umol / g sample"));
         jPanel1.setPreferredSize(new java.awt.Dimension(500, 250));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -108,12 +110,14 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jTable1.setCellSelectionEnabled(true);
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(jScrollPane1);
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("")), "Unknown Compounds"));
+        jPanel5.add(jPanel1);
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Unknow compounds"));
         jPanel6.setPreferredSize(new java.awt.Dimension(500, 250));
         jPanel6.setRequestFocusEnabled(false);
-        jPanel6.setLayout(new java.awt.BorderLayout());
+        jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.LINE_AXIS));
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -129,7 +133,15 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jTable2.setCellSelectionEnabled(true);
         jScrollPane2.setViewportView(jTable2);
 
-        jPanel6.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        jPanel6.add(jScrollPane2);
+
+        jPanel5.add(jPanel6);
+
+        getContentPane().add(jPanel5);
+
+        jPanel4.setMaximumSize(new java.awt.Dimension(260, 30));
+        jPanel4.setMinimumSize(new java.awt.Dimension(168, 30));
+        jPanel4.setPreferredSize(new java.awt.Dimension(100, 50));
 
         jButtonOk.setText("  Ok ");
         jPanel4.add(jButtonOk);
@@ -138,38 +150,12 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         jPanel4.add(jButtonClose);
 
         jButtonReset.setText("Reset");
-        jButtonReset.setMaximumSize(new java.awt.Dimension(60, 27));
-        jButtonReset.setMinimumSize(new java.awt.Dimension(60, 27));
-        jButtonReset.setPreferredSize(new java.awt.Dimension(60, 27));
+        jButtonReset.setMaximumSize(new java.awt.Dimension(90, 27));
+        jButtonReset.setMinimumSize(new java.awt.Dimension(80, 27));
+        jButtonReset.setPreferredSize(new java.awt.Dimension(80, 27));
         jPanel4.add(jButtonReset);
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
-                .addGap(13, 13, 13))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(1, 1, 1)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
-        );
-
-        getContentPane().add(jPanel5, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanel4);
     }// </editor-fold>//GEN-END:initComponents
 
     public ExitCode getExitCode() {

@@ -71,4 +71,11 @@ public class StandardUmol {
     public Range getRange() {
         return this.RTRange;
     }
+
+    public boolean isSelect() {
+        if (row.isSelected() || (Integer) row.getVar("getStandard") == 1) {
+            return true;
+        }
+        return false;
+    }
 }
