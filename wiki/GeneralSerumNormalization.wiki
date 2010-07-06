@@ -9,7 +9,7 @@ Levenshtein Distance Algorithm is used to get the similarity between the name of
 
 {{{
 
-            *Normalized Intensity *= (Intensity of the compound / Intensity of the standard compound) * Amount of standard added;
+            Normalized Intensity = (Intensity of the compound / Intensity of the standard compound) * Amount of standard added;
 
 }}}
 
@@ -19,9 +19,9 @@ The final units will depend on the units of the number you introduce. For exampl
 
 {{{
 
-            *Amount of standard* = umols/l
+            Amount of standard = umols/l
             The final units will be:
-                *umols of compound / l*
+                umols of compound / l
 
 }}}
 

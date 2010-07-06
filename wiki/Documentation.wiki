@@ -45,7 +45,7 @@
    * [DAFoldTest Fold Changes Test]
    * [DAMedia Calculate Media]
   * [GeneralNormalization Normalization]
-   *[GeneralSerumNormalization Serum Normalization]
-   *[GeneralTissueNormalization Tissue Normalization]
+   * [GeneralSerumNormalization Serum Normalization]
+   * [GeneralTissueNormalization Tissue Normalization]
  * Development
   * [NetbeansProjectSetup NetBeans Project Setup]
