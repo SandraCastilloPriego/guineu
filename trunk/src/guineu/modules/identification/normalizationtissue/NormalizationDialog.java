@@ -291,7 +291,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
     public ExitCode setupParameters() {
         DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
+        String lastPath = deskParameters.getLastNormalizationPath();
         if (lastPath == null) {
             lastPath = "";
         }
