@@ -1,0 +1,55 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+    <head>
+        <title>Normalization - Tissue Normalization</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="/guineu/desktop/impl/helpsystem/HelpStyles.css">
+    </head>
+    <body>
+        <h1>Tissue Normalization</h1>
+        <h2>Description</h2>
+        <p>
+            Normalization is based on internal standards. One internal standard is use to normalize
+            the intensity of similar group of compounds. The similarity is based on the compound name,
+            so the identificacion should be done before this step.
+            The standard compound used by the unknown compounds depends on the ranges of retention
+            time set by the user.
+        </p>
+
+        <p>
+            Levenshtein Distance Algorithm is used to get the similarity between the name of
+            the compound and the name of the standards.
+        </p>
+
+        <pre>
+            <b>Normalized Intensity</b> = (Intensity of the compound / Intensity of the standard compound) * (Amount of standard added / Weight of the sample);
+        </pre>
+
+        <p>
+            One dataset has to be selected to perform its normalization.
+        </p>
+
+        <p>
+            The final units will depend on the units of the number you introduce. For example:
+        </p>
+
+        <pre>
+            <b>Amount of standard</b> = umols/sample
+            <b>Weight of the sample</b> = ug/sample
+            The final units will be:
+                <b>umols of compound / ug</b>
+        </pre>
+
+        <h4>Method parameters</h4>
+        <dl>
+            <dt>Standard Amount</dt>
+            <dd>Amount of standard added during the sample preparation.</dd>
+            <dt>RT Range</dt>
+            <dd>Range of retention time where the standard will be use to normalize unknown compounds.</dd>
+            <dt>Sample Weights</dt>
+            <dd>Weight of each sample.</dd>
+        </dl>
+
+    </body>
+</html>
+
