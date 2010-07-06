@@ -9,6 +9,8 @@
 
 [DATTest T-test]
 
+[DAAnova Anova test]
+
 [DAFoldTest Fold Changes Test]
 
 [DAMedia Calculate Media]
