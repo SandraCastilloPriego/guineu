@@ -1,0 +1,12 @@
+#summary Sub-menu
+
+=General Algorithms=
+==General Configuration==
+
+[ProxyConfiguration Proxy Configuration]
+
+[GCGCColumnsConfiguration Configuration of the GCxGC-MS files's columns]
+
+[LCMSColumnsConfiguration Configuration of the LC-MS files's columns]
+
+[ParametersConfiguration Parameters Configuration]

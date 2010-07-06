@@ -48,5 +48,10 @@
   * [GeneralNormalization Normalization]
    * [GeneralSerumNormalization Serum Normalization]
    * [GeneralTissueNormalization Tissue Normalization]
+  * [GeneralConfiguration Configuration]
+   * [ProxyConfiguration Proxy Configuration]
+   * [GCGCColumnsConfiguration Configuration of the GCxGC-MS files's columns]
+   * [LCMSColumnsConfiguration Configuration of the LC-MS files's columns]
+   * [ParametersConfiguration Parameters Configuration]
  * Development
   * [NetbeansProjectSetup NetBeans Project Setup]
