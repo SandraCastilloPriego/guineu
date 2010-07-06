@@ -20,6 +20,7 @@ package guineu.modules.identification.normalizationtissue;
 import guineu.data.Dataset;
 import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
+import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +32,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -41,19 +43,18 @@ import javax.swing.table.DefaultTableModel;
 public class NormalizationDialog extends javax.swing.JDialog implements ActionListener {
 
     private Vector<StandardUmol> standards;
-    ExitCode exit = ExitCode.UNKNOWN;
+    private ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    Dataset dataset;
-    Hashtable<String, Double> weights;
-    String filePath;
+    private Hashtable<String, Double> weights;
+    private String filePath;
+    private JButton btnHelp;
 
     /** Creates new form NormalizationDialog */
-    public NormalizationDialog(Vector<StandardUmol> standards, Dataset dataset, Hashtable<String, Double> weights) {
+    public NormalizationDialog(Vector<StandardUmol> standards, Dataset dataset, Hashtable<String, Double> weights, String helpID) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please fill the standards...", true);
 
         this.standards = standards;
-        this.dataset = dataset;
         this.weights = weights;
         initComponents();
 
@@ -86,6 +87,12 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         this.jButtonOk.addActionListener(this);
         this.jButtonReset.addActionListener(this);
         this.readFileButton.addActionListener(this);
+
+
+        // Help button
+        btnHelp = new HelpButton(helpID);
+        this.jPanel4.add(btnHelp);
+
         logger.finest("Displaying Normalization Serum dialog");
     }
 
@@ -95,7 +102,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
             ((UnknownsDataModel) this.jTable2.getModel()).fillStandards();
             for (int i = 0; i < this.jTable.getRowCount(); i++) {
                 String name = (String) this.jTable.getValueAt(i, 0);
-                Double value = (Double) this.jTable.getValueAt(i, 1);                
+                Double value = (Double) this.jTable.getValueAt(i, 1);
                 this.weights.put(name, value);
             }
         } catch (Exception e) {

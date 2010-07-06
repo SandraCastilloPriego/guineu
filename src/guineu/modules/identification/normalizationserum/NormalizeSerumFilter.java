@@ -29,6 +29,7 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
+import guineu.util.GUIUtils;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -47,6 +48,7 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     private Vector<StandardUmol> standards;
+    final String helpID = GUIUtils.generateHelpID(this);
 
     public void initModule() {
         this.standards = new Vector<StandardUmol>();
@@ -104,10 +106,10 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
             }
 
             purge();
-            
+
             try {
 
-                NormalizationDialog dialog = new NormalizationDialog(standards);
+                NormalizationDialog dialog = new NormalizationDialog(standards, helpID);
                 dialog.setVisible(true);
                 return dialog.getExitCode();
             } catch (Exception exception) {
@@ -141,8 +143,8 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
     }
 
     private boolean isThere(StandardUmol std2) {
-        for(StandardUmol std : this.standards){
-            if(std.getName().equals(std2.getName())){
+        for (StandardUmol std : this.standards) {
+            if (std.getName().equals(std2.getName())) {
                 return true;
             }
         }
