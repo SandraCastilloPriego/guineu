@@ -17,7 +17,7 @@
  */
 package guineu.util.Tables;
 
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import javax.swing.JTable;
 
 /**

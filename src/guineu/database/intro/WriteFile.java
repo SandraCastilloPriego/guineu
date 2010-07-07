@@ -67,7 +67,7 @@ public class WriteFile {
 				}
 			}
 			int c = fieldsNumber;
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				data[c++] = experimentName;
 			}
 			w.writeRecord(data);
@@ -86,7 +86,7 @@ public class WriteFile {
 					}
 				}
 				c = fieldsNumber;
-				for (String experimentName : dataset.getNameExperiments()) {
+				for (String experimentName : dataset.getAllColumnNames()) {
 					data[c++] = String.valueOf(lipid.getPeak(experimentName));
 				}
 				w.writeRecord(data);
@@ -140,7 +140,7 @@ public class WriteFile {
 				}
 			}
 			int c = fieldsNumber;
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				this.setCell(row, c++, experimentName);
 			}
 
@@ -162,7 +162,7 @@ public class WriteFile {
 					}
 				}
 				c = fieldsNumber;
-				for (String experimentName : dataset.getNameExperiments()) {
+				for (String experimentName : dataset.getAllColumnNames()) {
 					this.setCell(row, c++, lipid.getPeak(experimentName));
 				}
 			}
@@ -185,14 +185,14 @@ public class WriteFile {
 			CsvWriter w = new CsvWriter(path);
 			String[] data = new String[dataset.getNumberCols()];
 			int c = 0;
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				data[c++] = experimentName;
 			}
 			w.writeRecord(data);
 			for (int i = 0; i < dataset.getNumberRows(); i++) {
 				SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 				c = 0;
-				for (String experimentName : dataset.getNameExperiments()) {
+				for (String experimentName : dataset.getAllColumnNames()) {
 					if (lipid.getPeak(experimentName) == null) {
 						data[c++] = "";
 					} else {
@@ -233,7 +233,7 @@ public class WriteFile {
 				row = sheet.createRow(0);
 			}
 			int cont = 0;
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				this.setCell(row, cont++, experimentName);
 
 			}
@@ -245,7 +245,7 @@ public class WriteFile {
 					row = sheet.createRow(i + 1);
 				}
 				int c = 0;
-				for (String experimentName : dataset.getNameExperiments()) {
+				for (String experimentName : dataset.getAllColumnNames()) {
 					if (lipid.getPeak(experimentName) == null) {
 						this.setCell(row, c++, "");
 					} else {
@@ -351,7 +351,7 @@ public class WriteFile {
 				}
 			}
 			int c = fieldsNumber;
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				this.setCell(row, c++, experimentName);
 			}
 
@@ -373,7 +373,7 @@ public class WriteFile {
 					}
 				}
 				c = fieldsNumber;
-				for (String experimentName : dataset.getNameExperiments()) {
+				for (String experimentName : dataset.getAllColumnNames()) {
 					try {
 						this.setCell(row, c++, metabolite.getPeak(experimentName));
 					} catch (Exception e) {
@@ -415,7 +415,7 @@ public class WriteFile {
 			}
 			int c = fieldsNumber;
 
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				data[c++] = experimentName;
 			}
 			w.writeRecord(data);
@@ -436,7 +436,7 @@ public class WriteFile {
 					}
 
 					c = fieldsNumber;
-					for (String experimentName : dataset.getNameExperiments()) {
+					for (String experimentName : dataset.getAllColumnNames()) {
 						try {
 							data[c++] = String.valueOf(metabolite.getPeak(experimentName));
 						} catch (Exception e) {

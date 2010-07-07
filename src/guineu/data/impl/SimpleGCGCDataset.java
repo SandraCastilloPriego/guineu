@@ -17,6 +17,7 @@
  */
 package guineu.data.impl;
 
+import guineu.data.DatasetType;
 import guineu.modules.mylly.alignment.scoreAligner.functions.*;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory.SORT_MODE;
@@ -30,9 +31,7 @@ import guineu.data.PeakListRow;
 import java.util.Hashtable;
 import java.util.Vector;
 
-/**
- * @author jmjarkko
- */
+
 public class SimpleGCGCDataset implements Dataset {
 
     private List<PeakListRow> peakList;
@@ -57,10 +56,10 @@ public class SimpleGCGCDataset implements Dataset {
         this.aligner = aligner;
         datasetName = "Alignment";
         this.parameters = new Hashtable<String, Parameters>();
-        this.parameterNames = new Vector<String>();        
+        this.parameterNames = new Vector<String>();
     }
 
-    public void addParameter(String experimentName, String parameterName, String parameterValue) {
+    public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
         if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
             p.addParameter(parameterName, parameterValue);
@@ -95,7 +94,7 @@ public class SimpleGCGCDataset implements Dataset {
 
     public Vector<String> getParameterAvailableValues(String parameter) {
         Vector<String> availableParameterValues = new Vector<String>();
-        for (String rawDataFile : this.getNameExperiments()) {
+        for (String rawDataFile : this.getAllColumnNames()) {
             String paramValue = this.getParametersValue(rawDataFile, parameter);
             if (!availableParameterValues.contains(paramValue)) {
                 availableParameterValues.add(paramValue);
@@ -247,7 +246,7 @@ public class SimpleGCGCDataset implements Dataset {
         return datasetName;
     }
 
-    public Vector<String> getNameExperiments() {
+    public Vector<String> getAllColumnNames() {
         return nameExperiments;
     }
 
@@ -279,11 +278,11 @@ public class SimpleGCGCDataset implements Dataset {
         this.peakList.remove(row);
     }
 
-    public void AddNameExperiment(String nameExperiment) {
+    public void AddColumnName(String nameExperiment) {
         this.nameExperiments.add(nameExperiment);
     }
 
-    public void AddNameExperiment(String nameExperiment, int position) {
+    public void AddColumnName(String nameExperiment, int position) {
         this.nameExperiments.insertElementAt(nameExperiment, position);
     }
 
@@ -294,7 +293,7 @@ public class SimpleGCGCDataset implements Dataset {
     public Dataset clone() {
         SimpleGCGCDataset newDataset = new SimpleGCGCDataset(datasetName);
         for (String experimentName : this.nameExperiments) {
-            newDataset.AddNameExperiment(experimentName);
+            newDataset.AddColumnName(experimentName);
         }
         newDataset.setAligner(aligner);
         newDataset.setParameters(params);

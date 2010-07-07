@@ -17,7 +17,7 @@
  */
 package guineu.modules.mylly.openFiles;
 
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCDatum;
@@ -87,7 +87,7 @@ public class OpenFileTask implements Task {
 	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data) {
 
 		SimpleGCGCDataset dataset = new SimpleGCGCDataset(file.getName());
-		dataset.AddNameExperiment(file.getName());
+		dataset.AddColumnName(file.getName());
 		dataset.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {

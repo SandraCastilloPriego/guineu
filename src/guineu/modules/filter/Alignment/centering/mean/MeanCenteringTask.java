@@ -95,7 +95,7 @@ class MeanCenteringTask implements Task {
 
     private void normalize(Dataset data) {
         DescriptiveStatistics stats = new DescriptiveStatistics();
-        for (String nameExperiment : data.getNameExperiments()) {
+        for (String nameExperiment : data.getAllColumnNames()) {
             for (PeakListRow row : data.getRows()) {
                 Object value = row.getPeak(nameExperiment);
                 if (value != null && value instanceof Double) {

@@ -93,7 +93,7 @@ class LinearNormalizerTask implements Task {
         // Loop through all raw data files, and find the peak with biggest
         // height
         double maxOriginalHeight = 0.0;
-        for (String file : originalPeakList.getNameExperiments()) {
+        for (String file : originalPeakList.getAllColumnNames()) {
             for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
                 Double p = (Double) originalpeakListRow.getPeak(file);
                 if (p != null) {
@@ -105,7 +105,7 @@ class LinearNormalizerTask implements Task {
         }
 
         // Loop through all raw data files, and normalize peak values
-        for (String file : originalPeakList.getNameExperiments()) {
+        for (String file : originalPeakList.getAllColumnNames()) {
 
             // Cancel?
             if (status == TaskStatus.CANCELED) {

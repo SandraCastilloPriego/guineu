@@ -68,7 +68,7 @@ public class UnitsChangeFilterTask implements Task {
         try {
             status = TaskStatus.PROCESSING;
             for (PeakListRow row : dataset.getRows()) {
-                for (String experimentName : dataset.getNameExperiments()) {
+                for (String experimentName : dataset.getAllColumnNames()) {
                     try {
                         Double peak = (Double) row.getPeak(experimentName);
                         double divide = (Double) parameters.getParameterValue(UnitsChangeFilterParameters.divide);

@@ -85,7 +85,7 @@ public class FoldTestTask implements Task {
 
             Dataset newDataset = FileUtils.getDataset(dataset, "Fold Test - ");
             progress = 0.3f;
-            newDataset.AddNameExperiment("Fold test");
+            newDataset.AddColumnName("Fold test");
             int cont = 0;
             for (PeakListRow row : dataset.getRows()) {
                 PeakListRow newRow = row.clone();
@@ -148,7 +148,7 @@ public class FoldTestTask implements Task {
                 parameter1 = availableParameterValues.firstElement();
                 String parameter2 = availableParameterValues.elementAt(1);
 
-                for (String sampleName : dataset.getNameExperiments()) {
+                for (String sampleName : dataset.getAllColumnNames()) {
                     if (dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
                         stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
                     } else if (dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {

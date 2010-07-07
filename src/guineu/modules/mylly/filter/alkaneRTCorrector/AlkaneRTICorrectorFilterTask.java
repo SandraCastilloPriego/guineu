@@ -17,7 +17,7 @@
  */
 package guineu.modules.mylly.filter.alkaneRTCorrector;
 
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
@@ -90,7 +90,7 @@ public class AlkaneRTICorrectorFilterTask implements Task {
 	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data, String name) {
 
 		SimpleGCGCDataset dataset = new SimpleGCGCDataset(name);
-		dataset.AddNameExperiment(name);
+		dataset.AddColumnName(name);
 		dataset.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {

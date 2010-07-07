@@ -2,7 +2,7 @@ package guineu.data.datamodels;
 
 import guineu.data.Dataset;
 import guineu.data.impl.Bexperiments;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.ExperimentDataset;
 import guineu.util.Tables.DataTableModel;
 import javax.swing.JTable;

@@ -83,7 +83,7 @@ public class mediaFilterTask implements Task {
             progress = 0.0f;
             for (Dataset dataset : datasets) {
                 double[] median = this.getSTDDev(dataset);
-                dataset.AddNameExperiment("Median");
+                dataset.AddColumnName("Median");
                 int cont = 0;
                 for (PeakListRow row : dataset.getRows()) {
                     row.setPeak("Median", median[cont++]);
@@ -113,7 +113,7 @@ public class mediaFilterTask implements Task {
         int numRows = 0;
         for (PeakListRow peak : dataset.getRows()) {
             stats.clear();
-            for (String nameExperiment : dataset.getNameExperiments()) {
+            for (String nameExperiment : dataset.getAllColumnNames()) {
                 try {
                     stats.addValue((Double) peak.getPeak(nameExperiment));
                 } catch (Exception e) {

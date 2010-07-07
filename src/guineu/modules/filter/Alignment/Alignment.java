@@ -30,8 +30,8 @@ public class Alignment {
 
         //intro all experiments into the new dataset result      
         for (int i = 0; i < datasets.length; i++) {
-            for (String experimentName : ((SimpleLCMSDataset) datasets[i]).getNameExperiments()) {
-                result.AddNameExperiment(experimentName);
+            for (String experimentName : ((SimpleLCMSDataset) datasets[i]).getAllColumnNames()) {
+                result.AddColumnName(experimentName);
             }
         }
         this.init_general_type();

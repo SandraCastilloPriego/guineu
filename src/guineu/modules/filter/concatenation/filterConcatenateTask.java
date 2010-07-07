@@ -20,7 +20,7 @@ package guineu.modules.filter.concatenation;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -112,13 +112,13 @@ public class filterConcatenateTask implements Task {
 	private void fillDataset(SimpleOtherDataset newDataset, Dataset[] otherDatasets) {
 
 		for (Dataset data : otherDatasets) {
-			//Vector<String> experimentsNames = newDataset.getNameExperiments();
-			for (String Name : ((SimpleOtherDataset) data).getNameExperiments()) {
+			//Vector<String> experimentsNames = newDataset.getAllColumnNames();
+			for (String Name : ((SimpleOtherDataset) data).getAllColumnNames()) {
 				if (!Name.matches(".*Name.*")/* && !Name.matches(".*dg present.*")*/) {
-					newDataset.AddNameExperiment(Name);
+					newDataset.AddColumnName(Name);
 				}
 			}
-			newDataset.AddNameExperiment("Name2");
+			newDataset.AddColumnName("Name2");
 		}
 		for (PeakListRow row2 : newDataset.getRows()) {
 			for (Dataset data : otherDatasets) {
@@ -129,7 +129,7 @@ public class filterConcatenateTask implements Task {
 						//realName+="_";
 						if (row2.getPeak("Name").toString().matches(".*" + row.getPeak("Name").toString() + ".*")) {
 							/*if (row.getPeak("Name").toString().matches(".*b.*") && row2.getPeak("Name").toString().matches(".*150.*")) {
-							for (String peak : data.getNameExperiments()) {
+							for (String peak : data.getAllColumnNames()) {
 							if (peak.matches(".*Name.*")) {
 							row2.setPeak("Name2", row.getPeak(peak).toString());
 							} else {
@@ -139,7 +139,7 @@ public class filterConcatenateTask implements Task {
 							}
 							break;
 							} else if (!row.getPeak("Name").toString().matches(".*b.*") && row2.getPeak("Name").toString().matches(".*137.*")) {
-							for (String peak : data.getNameExperiments()) {
+							for (String peak : data.getAllColumnNames()) {
 							if (!peak.matches(".*dg present.*")) {
 							if (peak.matches(".*Name.*")) {
 							row2.setPeak("Name2", row.getPeak(peak).toString());
@@ -151,7 +151,7 @@ public class filterConcatenateTask implements Task {
 							}
 							break;
 							}*/
-							for (String peak : data.getNameExperiments()) {
+							for (String peak : data.getAllColumnNames()) {
 
 								if (peak.matches(".*Name.*")) {
 									row2.setPeak("Name2", row.getPeak(peak).toString());
@@ -172,7 +172,7 @@ public class filterConcatenateTask implements Task {
 			}
 		}
 		for (PeakListRow row2 : newDataset.getRows()) {
-			for (String peak : newDataset.getNameExperiments()) {
+			for (String peak : newDataset.getAllColumnNames()) {
 			try{
 				if (row2.getPeak(peak)== null) {
 					row2.setPeak(peak, "NA");					

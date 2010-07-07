@@ -18,7 +18,7 @@
 package guineu.modules.msms.open;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
 import guineu.data.impl.SimpleLCMSDataset;
@@ -139,8 +139,8 @@ public class OpenFileTask implements Task {
 	private SimpleOtherDataset modifyDataset(SimpleLCMSDataset dataset) {
 		SimpleOtherDataset datasetOther = new SimpleOtherDataset(dataset.getDatasetName());
 		datasetOther.setType(DatasetType.OTHER);
-		datasetOther.AddNameExperiment("m/z");
-		datasetOther.AddNameExperiment("rt");
+		datasetOther.AddColumnName("m/z");
+		datasetOther.AddColumnName("rt");
 		double margin = (Double) parameters.getParameterValue(OpenMSMSFileParameters.rtTolerance);
 		int i = 1;
 		int maxim = 1;
@@ -180,7 +180,7 @@ public class OpenFileTask implements Task {
 			e.printStackTrace();
 		}
 		for (int e = 1; e <= maxim; e++) {
-			datasetOther.AddNameExperiment("fragment" + e);
+			datasetOther.AddColumnName("fragment" + e);
 		}
 
 		return datasetOther;

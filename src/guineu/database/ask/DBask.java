@@ -303,7 +303,7 @@ public class DBask implements DataBase {
 
 			while (r.next()) {
 				try {
-					dataset.AddNameExperiment(r.getString("NAME"));
+					dataset.AddColumnName(r.getString("NAME"));
 				} catch (Exception exception) {
 				}
 			}

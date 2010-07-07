@@ -49,18 +49,18 @@ public class ParameterDataModel extends AbstractTableModel {
 
 
         // First column with the name of the samples
-        String[] col = dataset.getNameExperiments().toArray(new String[0]);
+        String[] col = dataset.getAllColumnNames().toArray(new String[0]);
         rows = new Vector<String[]>();
         rows.addElement(col);
-        numRows = dataset.getNameExperiments().size();
+        numRows = dataset.getAllColumnNames().size();
 
         // Parameter columns
         for (int i = 0; i < dataset.getParametersName().size(); i++) {
             String parameterName = dataset.getParametersName().elementAt(i);
-            col = new String[dataset.getNameExperiments().size()];
+            col = new String[dataset.getAllColumnNames().size()];
 
-            for (int e = 0; e < dataset.getNameExperiments().size(); e++) {
-                String experimentName = dataset.getNameExperiments().elementAt(e);
+            for (int e = 0; e < dataset.getAllColumnNames().size(); e++) {
+                String experimentName = dataset.getAllColumnNames().elementAt(e);
                 col[e] = dataset.getParametersValue(experimentName, parameterName);
             }
             rows.addElement(col);
@@ -163,7 +163,7 @@ public class ParameterDataModel extends AbstractTableModel {
             for (int e = 0; e < this.rows.elementAt(i).length; e++) {
                 String experimentName = this.rows.elementAt(0)[e];
                 String parameterValue = this.rows.elementAt(i)[e];
-                dataset.addParameter(experimentName, parameterName, parameterValue);
+                dataset.addParameterValue(experimentName, parameterName, parameterValue);
             }
         }
     }

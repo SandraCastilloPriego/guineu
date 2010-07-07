@@ -19,7 +19,7 @@ package guineu.database.intro;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
@@ -58,7 +58,7 @@ public class WriteDataBase {
         try {
             Statement statement = conn.createStatement();
             ResultSet r = null;
-            for (String sampleName : dataset.getNameExperiments()) {
+            for (String sampleName : dataset.getAllColumnNames()) {
                 String sampleNameExp;
                 try {
                     sampleNameExp = sampleName.substring(0, sampleName.indexOf(" "));
@@ -201,7 +201,7 @@ public class WriteDataBase {
             statement = conn.createStatement();
             for (int i = 0; i < Molecules.getNumberRows(); i++) {
                 PeakListRow row = Molecules.getRow(i);
-                for (String experimentName : Molecules.getNameExperiments()) {
+                for (String experimentName : Molecules.getAllColumnNames()) {
                     try {
                         Double peak = (Double) row.getPeak(experimentName);
                         //ID_sample

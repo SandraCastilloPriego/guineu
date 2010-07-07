@@ -17,6 +17,7 @@
  */
 package guineu.data.impl;
 
+import guineu.data.DatasetType;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class SimpleLCMSDataset implements Dataset {
         type = DatasetType.LCMS;
     }
 
-    public void addParameter(String experimentName, String parameterName, String parameterValue) {       
+    public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
         if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
             p.addParameter(parameterName, parameterValue);
@@ -82,7 +83,7 @@ public class SimpleLCMSDataset implements Dataset {
 
     public Vector<String> getParameterAvailableValues(String parameter) {
         Vector<String> availableParameterValues = new Vector<String>();
-        for (String rawDataFile : this.getNameExperiments()) {
+        for (String rawDataFile : this.getAllColumnNames()) {
             String paramValue = this.getParametersValue(rawDataFile, parameter);
             if (!availableParameterValues.contains(paramValue)) {
                 availableParameterValues.add(paramValue);
@@ -107,7 +108,7 @@ public class SimpleLCMSDataset implements Dataset {
         this.peakList.add(peakListRow);
     }
 
-    public void AddNameExperiment(String nameExperiment) {
+    public void AddColumnName(String nameExperiment) {
         this.nameExperiments.addElement(nameExperiment);
     }
 
@@ -127,7 +128,7 @@ public class SimpleLCMSDataset implements Dataset {
         return this.nameExperiments.size();
     }
 
-    public Vector<String> getNameExperiments() {
+    public Vector<String> getAllColumnNames() {
         return this.nameExperiments;
     }
 
@@ -147,7 +148,7 @@ public class SimpleLCMSDataset implements Dataset {
     public SimpleLCMSDataset clone() {
         SimpleLCMSDataset newDataset = new SimpleLCMSDataset(this.datasetName);
         for (String experimentName : this.nameExperiments) {
-            newDataset.AddNameExperiment(experimentName);
+            newDataset.AddColumnName(experimentName);
         }
         for (PeakListRow peakListRow : this.peakList) {
             newDataset.AddRow(peakListRow.clone());
@@ -164,8 +165,8 @@ public class SimpleLCMSDataset implements Dataset {
         }
     }
 
-    public void AddNameExperiment(String nameExperiment, int position) {
-        this.nameExperiments.insertElementAt(nameExperiment, position);
+    public void AddColumnName(String columnName, int position) {
+        this.nameExperiments.insertElementAt(columnName, position);
     }
 
     public String toString() {

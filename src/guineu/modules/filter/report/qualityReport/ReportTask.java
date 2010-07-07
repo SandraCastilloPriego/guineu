@@ -249,7 +249,7 @@ public class ReportTask implements Task {
         ((SimpleQualityControlDataset) dataset).setParameters(date, sampleSet, ionMode, injection, sampleType, comments);
 
         for (int i = 1; i <= 12; i++) {
-            dataset.AddNameExperiment(String.valueOf(i));
+            dataset.AddColumnName(String.valueOf(i));
         }
 
         dataset.AddRow(getRow("Date:", date));

@@ -19,7 +19,7 @@ package guineu.modules.mylly.alignment.scoreAligner;
 
 
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.main.GuineuCore;
 import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
 import guineu.data.impl.SimpleGCGCDataset;

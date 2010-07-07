@@ -18,7 +18,7 @@
 package guineu.modules.mylly.filter.singlingFilter;
 
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.main.GuineuCore;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;

@@ -233,7 +233,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
 			for (int i = 0; i < header.size(); i++) {
 				if (!header.elementAt(i).matches(regExpression)) {
-					this.dataset.AddNameExperiment(header.elementAt(i));
+					this.dataset.AddColumnName(header.elementAt(i));
 				}
 			}
 

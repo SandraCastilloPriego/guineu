@@ -100,7 +100,7 @@ public class ConcentrationsFromMassFilterTask implements Task {
                         }
                     }
                     if (val != null) {
-                        for (String name : newDataset.getNameExperiments()) {
+                        for (String name : newDataset.getAllColumnNames()) {
                             double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
                             double newConcentration = val.getSumIntensity() * (concentration / val.getIntensity());
                             if (newConcentration != Double.POSITIVE_INFINITY) {

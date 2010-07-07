@@ -60,7 +60,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
 
         DefaultTableModel d = (DefaultTableModel) this.jTable.getModel();
         int cont = 0;
-        for (String name : dataset.getNameExperiments()) {
+        for (String name : dataset.getAllColumnNames()) {
 
             try {
                 Object[] row = new Object[2];

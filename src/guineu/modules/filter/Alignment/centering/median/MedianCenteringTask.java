@@ -96,7 +96,7 @@ class MedianCenteringTask implements Task {
     }
 
     private void normalize(Dataset data) {
-        for (String nameExperiment : data.getNameExperiments()) {
+        for (String nameExperiment : data.getAllColumnNames()) {
             List<Double> median = new ArrayList<Double>();
             for (PeakListRow row : data.getRows()) {
                 Object value = row.getPeak(nameExperiment);

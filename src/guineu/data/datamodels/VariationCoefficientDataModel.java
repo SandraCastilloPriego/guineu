@@ -1,6 +1,6 @@
 package guineu.data.datamodels;
 
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.util.Tables.DataTableModel;
 import javax.swing.table.AbstractTableModel;
