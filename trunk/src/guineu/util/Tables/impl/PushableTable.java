@@ -18,7 +18,7 @@
 package guineu.util.Tables.impl;
 
 import guineu.data.datamodels.LCMSColumnName;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
 import java.awt.Color;

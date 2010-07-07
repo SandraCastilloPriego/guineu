@@ -21,7 +21,7 @@ import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.util.Tables.DataTableModel;
 import javax.swing.table.AbstractTableModel;
 
@@ -59,7 +59,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
         if (column == 0) {
             return (Boolean) this.dataset.getRow(row).isSelected();
         } else {
-            return (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(column - this.getFixColumns(), this.dataset.getNameExperiments());
+            return (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(column - this.getFixColumns(), this.dataset.getAllColumnNames());
         }
     }
 
@@ -68,7 +68,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
         if (columnIndex == 0) {
             return "Selection";
         } else {
-            return this.dataset.getNameExperiments().elementAt(columnIndex - this.getFixColumns());
+            return this.dataset.getAllColumnNames().elementAt(columnIndex - this.getFixColumns());
         }
     }
 
@@ -88,7 +88,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
         if (column == 0) {
             peakRow.setSelectionMode((Boolean) aValue);
         } else {
-            peakRow.setPeak(this.dataset.getNameExperiments().elementAt(column - this.getFixColumns()), aValue.toString());
+            peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.getFixColumns()), aValue.toString());
         }
         fireTableCellUpdated(row, column);
     }
@@ -107,6 +107,6 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
     }
 
     public void addColumn(String ColumnName) {
-        this.dataset.AddNameExperiment(ColumnName);
+        this.dataset.AddColumnName(ColumnName);
     }
 }

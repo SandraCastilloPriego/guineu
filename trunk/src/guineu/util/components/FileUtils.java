@@ -23,7 +23,7 @@ import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.datamodels.OtherDataModel;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleOtherDataset;
@@ -89,8 +89,8 @@ public class FileUtils {
 			newDataset.setType(DatasetType.GCGCTOF);
 			((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
 			((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
-			for (String ColumnName : dataset.getNameExperiments()) {
-				newDataset.AddNameExperiment(ColumnName);
+			for (String ColumnName : dataset.getAllColumnNames()) {
+				newDataset.AddColumnName(ColumnName);
 			}
 			for (PeakListRow row : dataset.getRows()) {
 				((SimpleGCGCDataset) newDataset).addAlignmentRow((SimplePeakListRowGCGC) row);

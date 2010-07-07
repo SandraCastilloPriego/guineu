@@ -86,7 +86,7 @@ public class variationCoefficientRowFilterTask implements Task {
 		for (Dataset dataset : datasets) {
 			DataTableModel model = null;
 			Dataset newDataset = FileUtils.cloneDataset(dataset, "Var Coefficient - ");
-			newDataset.AddNameExperiment("Coefficient of variation");
+			newDataset.AddColumnName("Coefficient of variation");
 			for (PeakListRow lipid : newDataset.getRows()) {
 				double stdDev = this.CoefficientOfVariation(lipid);
 				lipid.setPeak("Coefficient of variation", stdDev);

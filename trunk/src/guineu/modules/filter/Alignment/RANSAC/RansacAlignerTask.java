@@ -120,8 +120,8 @@ class RansacAlignerTask implements Task {
 		this.alignedPeakList = FileUtils.getDataset(peakLists[0], "Aligned Dataset");
 
 		for (Dataset dataset : this.peakLists) {
-			for (String experimentName : dataset.getNameExperiments()) {
-				this.alignedPeakList.AddNameExperiment(experimentName);
+			for (String experimentName : dataset.getAllColumnNames()) {
+				this.alignedPeakList.AddColumnName(experimentName);
 			}
 		}
 
@@ -183,7 +183,7 @@ class RansacAlignerTask implements Task {
 		int NPeaks = molRow.getNumberPeaks();
 		for (PeakListRow row : newDataset.getRows()) {
 			int cont = 0;
-			for (String experimentNames : oldDataset.getNameExperiments()) {
+			for (String experimentNames : oldDataset.getAllColumnNames()) {
 				try {
 					Double peak1 = (Double) row.getPeak(experimentNames);
 					Double peak2 = (Double) molRow.getPeak(experimentNames);
@@ -206,7 +206,7 @@ class RansacAlignerTask implements Task {
 		int NPeaks = molRow.getNumberPeaks();
 		for (PeakListRow row : newDataset.getRows()) {
 			int cont = 0;
-			for (String experimentNames : newDataset.getNameExperiments()) {
+			for (String experimentNames : newDataset.getAllColumnNames()) {
 				try {
 					Double peak1 = (Double) row.getPeak(experimentNames);
 					Double peak2 = (Double) molRow.getPeak(experimentNames);
@@ -384,7 +384,7 @@ class RansacAlignerTask implements Task {
 		for (PeakListRow row : peakList.getRows()) {
 			row.setVar("setNumberAlignment", 0);
 			for (Dataset data : this.peakLists) {
-				if (row.getPeak(data.getNameExperiments().elementAt(0)) != null) {
+				if (row.getPeak(data.getAllColumnNames().elementAt(0)) != null) {
 					row.setVar("setNumberAlignment", ((Integer) row.getVar("getNumberAlignment") + 1));
 				}
 			}
@@ -403,7 +403,7 @@ class RansacAlignerTask implements Task {
 					NPeaks = row.getNumberPeaks() - 1;
 				}
 				int cont = 0;
-				for (String experimentNames : newDataset.getNameExperiments()) {
+				for (String experimentNames : newDataset.getAllColumnNames()) {
 					try {
 						Double peak1 = (Double) row.getPeak(experimentNames);
 						Double peak2 = (Double) molRow.getPeak(experimentNames);

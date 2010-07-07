@@ -20,7 +20,7 @@ package guineu.data.datamodels;
 import guineu.data.Dataset;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.desktop.impl.DesktopParameters;
@@ -109,7 +109,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 				}
 				return value;
 			}
-			return peakRow.getPeak(this.dataset.getNameExperiments().elementAt(column - this.fixNumberColumns));
+			return peakRow.getPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns));
 		} catch (Exception e) {
 			return null;
 		}
@@ -120,7 +120,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 		if (columnIndex < this.fixNumberColumns) {
 			return (String) this.columns.get(columnIndex).toString();
 		} else {
-			return this.dataset.getNameExperiments().elementAt(columnIndex - this.fixNumberColumns);
+			return this.dataset.getAllColumnNames().elementAt(columnIndex - this.fixNumberColumns);
 		}
 	}
 
@@ -155,7 +155,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 				peakRow.setVar(this.columns.get(column).getSetFunctionName(), aValue);
 			}
 		} else {
-			peakRow.setPeak(this.dataset.getNameExperiments().elementAt(column - this.fixNumberColumns), (Double) aValue);
+			peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns), (Double) aValue);
 		}
 		fireTableCellUpdated(row, column);
 	}
@@ -174,6 +174,6 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 	}
 
 	public void addColumn(String columnName) {
-		this.dataset.AddNameExperiment(columnName);
+		this.dataset.AddColumnName(columnName);
 	}
 }

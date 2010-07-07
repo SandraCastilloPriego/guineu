@@ -20,7 +20,7 @@ package guineu.modules.file.openMassLynxFiles;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
@@ -163,10 +163,10 @@ public class LCMSParserMassLynx implements Parser {
 					} else if (header[i].matches("#")) {
 						name = "#";
 					}if (header[i] != null && !header[i].isEmpty()){
-						this.dataset.AddNameExperiment(name);
+						this.dataset.AddColumnName(name);
 					}
 				} else if (header[i] != null && !header[i].isEmpty() && !header[i].matches("Name") && !header[i].matches("#") ) {
-					this.dataset.AddNameExperiment(compound + " - " + header[i]);
+					this.dataset.AddColumnName(compound + " - " + header[i]);
 				}
 			}
 

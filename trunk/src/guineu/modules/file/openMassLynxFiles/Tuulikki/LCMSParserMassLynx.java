@@ -20,7 +20,7 @@ package guineu.modules.file.openMassLynxFiles.Tuulikki;
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
@@ -74,7 +74,7 @@ public class LCMSParserMassLynx implements Parser {
             reader.readHeaders();
             String[] header = reader.getHeaders();
             for (int i = 0; i < 6; i++) {
-                this.dataset.AddNameExperiment(header[i]);
+                this.dataset.AddColumnName(header[i]);
             }
             boolean open = true;
            
@@ -102,7 +102,7 @@ public class LCMSParserMassLynx implements Parser {
                     names = new ArrayList<String>();
                     open = false;
                 }
-                this.dataset.AddNameExperiment(data[7]);
+                this.dataset.AddColumnName(data[7]);
                 names.add(data[7]);
                 values.add(data[8]);               
             }
@@ -165,7 +165,7 @@ public class LCMSParserMassLynx implements Parser {
         String line = br.readLine();
         String compound = "";
         boolean oneTime = false;
-        this.dataset.AddNameExperiment("Sample Name");
+        this.dataset.AddColumnName("Sample Name");
         SimplePeakListRowOther row = null;
         SimplePeakListRowOther rt = new SimplePeakListRowOther();
         rt.setPeak("Sample Name", "RT");
@@ -182,7 +182,7 @@ public class LCMSParserMassLynx implements Parser {
         br.readLine();
         } else if (!compound.isEmpty()) {
         String[] data = line.split("\t");
-        dataset.AddNameExperiment(data[2]);
+        dataset.AddColumnName(data[2]);
         rt.setPeak(data[2], data[4]);
         }
         }
@@ -257,10 +257,10 @@ public class LCMSParserMassLynx implements Parser {
                         name = "#";
                     }
                     if (header[i] != null && !header[i].isEmpty()) {
-                        this.dataset.AddNameExperiment(name);
+                        this.dataset.AddColumnName(name);
                     }
                 } else if (header[i] != null && !header[i].isEmpty() && !header[i].matches("Name") && !header[i].matches("#")) {
-                    this.dataset.AddNameExperiment(compound + " - " + header[i]);
+                    this.dataset.AddColumnName(compound + " - " + header[i]);
                 }
             }
 

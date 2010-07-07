@@ -17,6 +17,7 @@
  */
 package guineu.data.impl;
 
+import guineu.data.DatasetType;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import java.util.Hashtable;
@@ -74,7 +75,7 @@ public class ExperimentDataset implements Dataset {
         return this.type;
     }
 
-    public Vector<String> getNameExperiments() {
+    public Vector<String> getAllColumnNames() {
         return columnNames;
     }
 
@@ -97,7 +98,7 @@ public class ExperimentDataset implements Dataset {
     public void removeRow(PeakListRow row) {
     }
 
-    public void AddNameExperiment(String nameExperiment) {
+    public void AddColumnName(String nameExperiment) {
         this.columnNames.add(nameExperiment);
     }
 
@@ -105,7 +106,7 @@ public class ExperimentDataset implements Dataset {
         return null;
     }
 
-    public void AddNameExperiment(String nameExperiment, int position) {
+    public void AddColumnName(String nameExperiment, int position) {
         this.columnNames.set(position, nameExperiment);
     }
 
@@ -128,7 +129,7 @@ public class ExperimentDataset implements Dataset {
         this.infoDataset = info;
     }
 
-    public void addParameter(String experimentName, String parameterName, String parameterValue) {
+    public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
         if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
             p.addParameter(parameterName, parameterValue);
@@ -163,7 +164,7 @@ public class ExperimentDataset implements Dataset {
 
     public Vector<String> getParameterAvailableValues(String parameter) {
         Vector<String> availableParameterValues = new Vector<String>();
-        for (String rawDataFile : this.getNameExperiments()) {
+        for (String rawDataFile : this.getAllColumnNames()) {
             String paramValue = this.getParametersValue(rawDataFile, parameter);
             if (!availableParameterValues.contains(paramValue)) {
                 availableParameterValues.add(paramValue);

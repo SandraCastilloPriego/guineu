@@ -78,7 +78,7 @@ public class AnovaTestTask implements Task {
         try {
             Vector<String> groups = dataset.getParameterAvailableValues(parameter);
             Dataset newDataset = FileUtils.getDataset(dataset, "Anova Test - ");
-            newDataset.AddNameExperiment("Anova test");
+            newDataset.AddColumnName("Anova test");
 
             for (PeakListRow row : dataset.getRows()) {
                 PeakListRow newRow = row.clone();
@@ -107,7 +107,7 @@ public class AnovaTestTask implements Task {
             List classes = new ArrayList();
             for (String group : groups) {
                 Vector<Double> values = new Vector<Double>();
-                for (String name : dataset.getNameExperiments()) {
+                for (String name : dataset.getAllColumnNames()) {
                     if (dataset.getParametersValue(name, parameter) != null && dataset.getParametersValue(name, parameter).equals(group)) {
                         values.addElement((Double) row.getPeak(name));
                     }

@@ -20,7 +20,7 @@ package guineu.data.parser.impl;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.database.ask.DBask;
 import guineu.database.ask.DataBase;

@@ -88,7 +88,7 @@ public class TTestTask implements Task {
             progress = 0.5f;
 
             Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
-            newDataset.AddNameExperiment("Ttest");
+            newDataset.AddColumnName("Ttest");
             int cont = 0;
 
             for (PeakListRow row : dataset.getRows()) {
@@ -143,7 +143,7 @@ public class TTestTask implements Task {
                 parameter1 = availableParameterValues.firstElement();
                 String parameter2 = availableParameterValues.elementAt(1);
 
-                for (String sampleName : dataset.getNameExperiments()) {
+                for (String sampleName : dataset.getAllColumnNames()) {
                     if (dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
                         stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
                     } else if (dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {

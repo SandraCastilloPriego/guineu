@@ -17,6 +17,7 @@
  */
 package guineu.data.impl;
 
+import guineu.data.DatasetType;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ public class SimpleOtherDataset implements Dataset {
         type = DatasetType.OTHER;
     }
 
-    public void addParameter(String experimentName, String parameterName, String parameterValue) {
+    public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
         if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
             p.addParameter(parameterName, parameterValue);
@@ -80,7 +81,7 @@ public class SimpleOtherDataset implements Dataset {
 
     public Vector<String> getParameterAvailableValues(String parameter) {
         Vector<String> availableParameterValues = new Vector<String>();
-        for (String rawDataFile : this.getNameExperiments()) {
+        for (String rawDataFile : this.getAllColumnNames()) {
             String paramValue = this.getParametersValue(rawDataFile, parameter);
             if (!availableParameterValues.contains(paramValue)) {
                 availableParameterValues.add(paramValue);
@@ -105,7 +106,7 @@ public class SimpleOtherDataset implements Dataset {
         this.PeakList.addElement(peakListRow);
     }
 
-    public void AddNameExperiment(String nameExperiment) {
+    public void AddColumnName(String nameExperiment) {
         this.nameExperiments.addElement(nameExperiment);
     }
 
@@ -125,7 +126,7 @@ public class SimpleOtherDataset implements Dataset {
         return this.nameExperiments.size();
     }
 
-    public Vector<String> getNameExperiments() {
+    public Vector<String> getAllColumnNames() {
         return this.nameExperiments;
     }
 
@@ -169,7 +170,7 @@ public class SimpleOtherDataset implements Dataset {
     public SimpleOtherDataset clone() {
         SimpleOtherDataset newDataset = new SimpleOtherDataset(this.datasetName);
         for (String experimentName : this.nameExperiments) {
-            newDataset.AddNameExperiment(experimentName);
+            newDataset.AddColumnName(experimentName);
         }
         for (PeakListRow peakListRow : this.PeakList) {
             newDataset.AddRow(peakListRow.clone());
@@ -187,7 +188,7 @@ public class SimpleOtherDataset implements Dataset {
         }
     }
 
-    public void AddNameExperiment(String nameExperiment, int position) {
+    public void AddColumnName(String nameExperiment, int position) {
         this.nameExperiments.insertElementAt(datasetName, position);
     }
 

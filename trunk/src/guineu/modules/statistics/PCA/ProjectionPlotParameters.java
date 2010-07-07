@@ -66,7 +66,7 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
 		this();
 		
 		this.sourcePeakList = sourcePeakList;
-		this.selectedDataFiles = sourcePeakList.getNameExperiments();
+		this.selectedDataFiles = sourcePeakList.getAllColumnNames();
 		this.selectedRows = sourcePeakList.getRows();
 
         }

@@ -19,7 +19,7 @@ package guineu.modules.mylly.filter.peakCounter;
 
 import guineu.data.PeakListRow;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.data.impl.SimpleGCGCDataset;

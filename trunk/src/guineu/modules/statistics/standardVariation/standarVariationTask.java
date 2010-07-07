@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -124,7 +124,7 @@ public class standarVariationTask implements Task {
 	public Dataset StandardVariation(String[] group) {
 		Dataset newDataset = FileUtils.getDataset(dataset, "Standard Variation -");
 		for (String experimentName : group) {
-			newDataset.AddNameExperiment(experimentName);
+			newDataset.AddColumnName(experimentName);
 		}
 
 		StandardUmol std = new StandardUmol(group);

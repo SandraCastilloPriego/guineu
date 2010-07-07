@@ -367,7 +367,7 @@ public class standardVariationDataDialog extends JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void setValuesTable() {        
-        for(String experimentName: dataset.getNameExperiments()){
+        for(String experimentName: dataset.getAllColumnNames()){
             this.from.addRows(experimentName);
         }
     }

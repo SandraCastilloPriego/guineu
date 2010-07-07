@@ -19,7 +19,7 @@ package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.taskcontrol.TaskStatus;
 import java.util.Hashtable;
@@ -74,7 +74,7 @@ public class NormalizeTissue {
             StandardUmol standard = this.getStd(row);
             if (standard != null) {
                 // System.out.println(row.getVar("getName") + " - " + standard.getName());
-                for (String experimentName : dataset.getNameExperiments()) {
+                for (String experimentName : dataset.getAllColumnNames()) {
                     if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
                         return;
                     }

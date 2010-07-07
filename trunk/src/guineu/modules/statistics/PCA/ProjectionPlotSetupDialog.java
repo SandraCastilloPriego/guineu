@@ -110,7 +110,7 @@ public class ProjectionPlotSetupDialog extends JDialog implements
                 dataFileCheckBoxesPanel, BoxLayout.Y_AXIS));
         rawDataFileCheckBoxes = new Vector<ExtendedCheckBox<String>>();
         int minimumHorizSize = 0;
-        Vector<String> files = alignedPeakList.getNameExperiments();
+        Vector<String> files = alignedPeakList.getAllColumnNames();
         for (int i = 0; i < files.size(); i++) {
             ExtendedCheckBox<String> ecb = new ExtendedCheckBox<String>(
                     files.elementAt(i), selectedDataFiles.contains(files.elementAt(i)));

@@ -20,7 +20,7 @@ package guineu.data.parser.impl;
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
@@ -106,7 +106,7 @@ public class OtherFilesParserCSV implements Parser {
     private void setExperimentsName(String[] header) {
         try {
             for (int i = 0; i < header.length; i++) {
-                this.dataset.AddNameExperiment(header[i]);
+                this.dataset.AddColumnName(header[i]);
             }
         } catch (Exception exception) {
             exception.printStackTrace();

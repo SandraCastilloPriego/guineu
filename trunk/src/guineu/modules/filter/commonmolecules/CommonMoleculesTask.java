@@ -106,11 +106,11 @@ class CommonMoleculesTask implements Task {
 			}
 
 			SimpleOtherDataset dataset = new SimpleOtherDataset("Common peaks");
-			dataset.AddNameExperiment("m/z");
-			dataset.AddNameExperiment("rt");
-			dataset.AddNameExperiment("Molecule Name");
-			dataset.AddNameExperiment("Number of datasets");
-			dataset.AddNameExperiment("Dataset names");
+			dataset.AddColumnName("m/z");
+			dataset.AddColumnName("rt");
+			dataset.AddColumnName("Molecule Name");
+			dataset.AddColumnName("Number of datasets");
+			dataset.AddColumnName("Dataset names");
 			
 			for (lipid mol : commonNames) {
 				SimplePeakListRowOther row = new SimplePeakListRowOther();

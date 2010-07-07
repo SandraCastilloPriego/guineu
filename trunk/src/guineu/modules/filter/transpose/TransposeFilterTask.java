@@ -19,7 +19,7 @@ package guineu.modules.filter.transpose;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
@@ -68,7 +68,7 @@ public class TransposeFilterTask implements Task {
     public void run() {
         try {
             SimpleOtherDataset newDataset = new SimpleOtherDataset(dataset.getDatasetName() + "- transposed");
-            newDataset.AddNameExperiment("Name");
+            newDataset.AddColumnName("Name");
             status = TaskStatus.PROCESSING;
 
             List<String> newNames = new ArrayList<String>();
@@ -87,11 +87,11 @@ public class TransposeFilterTask implements Task {
                 } catch (Exception e) {
                     newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
                 }
-                newDataset.AddNameExperiment(newName);
+                newDataset.AddColumnName(newName);
 
                 newNames.add(newName);
             }
-            for (String samples : dataset.getNameExperiments()) {
+            for (String samples : dataset.getAllColumnNames()) {
                 SimplePeakListRowOther row = new SimplePeakListRowOther();
                 row.setPeak("Name", samples);
                 newDataset.AddRow(row);

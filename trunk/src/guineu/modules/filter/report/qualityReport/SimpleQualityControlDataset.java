@@ -5,7 +5,7 @@
 package guineu.modules.filter.report.qualityReport;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleOtherDataset;
 import java.util.Vector;
 

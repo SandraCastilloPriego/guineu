@@ -101,7 +101,7 @@ public class SplitTask implements Task {
         Dataset DatasetSplit = FileUtils.getDataset(dataset, "Split dataset " + groupName + " - ");
 
         for (String name : group) {
-            DatasetSplit.AddNameExperiment(name);
+            DatasetSplit.AddColumnName(name);
         }
         for (PeakListRow row : dataset.getRows()) {
             PeakListRow newRow = row.clone();
@@ -116,7 +116,7 @@ public class SplitTask implements Task {
         
         for (String parameterVal : availableParameterValues) {
             Vector<String> group = new Vector<String>();
-            for (String rawDataFile : dataset.getNameExperiments()) {
+            for (String rawDataFile : dataset.getAllColumnNames()) {
                 if (dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
                     group.addElement(rawDataFile);
                 }

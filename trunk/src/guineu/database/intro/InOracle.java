@@ -19,7 +19,7 @@ package guineu.database.intro;
 
 import guineu.data.Dataset;
 import guineu.data.impl.Bexperiments;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleOtherDataset;

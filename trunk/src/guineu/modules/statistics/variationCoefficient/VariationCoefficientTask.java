@@ -124,7 +124,7 @@ public class VariationCoefficientTask implements Task {
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		for (PeakListRow row : dataset.getRows()) {
 			stats.clear();
-			for (String experimentName : dataset.getNameExperiments()) {
+			for (String experimentName : dataset.getAllColumnNames()) {
 				Object value = row.getPeak(experimentName);
 				if (value != null && value instanceof Double) {
 					stats.addValue((Double) value);

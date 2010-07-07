@@ -17,7 +17,7 @@
  */
 package guineu.modules.mylly.filter.classIdentification;
 
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;

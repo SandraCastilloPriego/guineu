@@ -18,7 +18,7 @@
 package guineu.modules.file.saveLCMSFile;
 
 import guineu.data.Dataset;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.InOracle;

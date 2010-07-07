@@ -22,7 +22,7 @@ import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.ParameterType;
 import guineu.data.datamodels.GCGCColumnName;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.Spectrum;
@@ -153,7 +153,7 @@ public class GCGCParserCSV implements Parser {
             }
             for (int i = numColumns; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
-                    this.dataset.AddNameExperiment(header[i]);
+                    this.dataset.AddColumnName(header[i]);
                 }
             }
 

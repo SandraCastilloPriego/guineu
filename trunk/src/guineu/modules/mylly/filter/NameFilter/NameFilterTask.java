@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
@@ -124,7 +124,7 @@ public class NameFilterTask implements Task {
     private SimpleGCGCDataset writeDataset(List<GCGCDatum> data, String name) {
 
         SimpleGCGCDataset dataset = new SimpleGCGCDataset(name);
-        dataset.AddNameExperiment(name);
+        dataset.AddColumnName(name);
         dataset.setType(DatasetType.GCGCTOF);
 
         for (GCGCDatum mol : data) {

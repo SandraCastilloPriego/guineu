@@ -18,7 +18,7 @@
 package guineu.modules.file.saveDatasetDB;
 
 import guineu.data.Dataset;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.database.intro.InDataBase;

@@ -21,7 +21,7 @@ import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.ParameterType;
 import guineu.data.datamodels.LCMSColumnName;
-import guineu.data.impl.DatasetType;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.parser.Parser;
@@ -160,7 +160,7 @@ public class LCMSParserCSV implements Parser {
             }
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
-                    this.dataset.AddNameExperiment(header[i]);
+                    this.dataset.AddColumnName(header[i]);
                 }
             }
 
