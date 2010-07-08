@@ -21,7 +21,7 @@ import com.csvreader.CsvReader;
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.GCGCColumnName;
+import guineu.data.GCGCColumnName;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;

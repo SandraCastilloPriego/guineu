@@ -15,13 +15,15 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.util.dialogs;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  * Simple enum for for dialog exit code
  */
 public enum ExitCode {
-    UNKNOWN, OK, CANCEL
+
+        UNKNOWN, OK, CANCEL
 }

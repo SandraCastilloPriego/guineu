@@ -15,8 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.util.components;
 
 import javax.swing.JLabel;
@@ -25,43 +23,45 @@ import javax.swing.JProgressBar;
 import javax.swing.OverlayLayout;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
  * Progress bar with a text label displaying % of completion
  */
 public class LabeledProgressBar extends JPanel {
 
-    private JLabel label;
-    private JProgressBar progressBar;
+        private JLabel label;
+        private JProgressBar progressBar;
 
-    public LabeledProgressBar() {
+        public LabeledProgressBar() {
 
-        setLayout(new OverlayLayout(this));
+                setLayout(new OverlayLayout(this));
 
-        label = new JLabel();
-        label.setAlignmentX(0.5f);
-        label.setFont(label.getFont().deriveFont(11f));
-        add(label);
+                label = new JLabel();
+                label.setAlignmentX(0.5f);
+                label.setFont(label.getFont().deriveFont(11f));
+                add(label);
 
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setBorderPainted(false);
-        add(progressBar);
+                progressBar = new JProgressBar(0, 100);
+                progressBar.setBorderPainted(false);
+                add(progressBar);
 
-    }
+        }
 
-    public LabeledProgressBar(double value) {
-        this();
-        setValue(value);
-    }
+        public LabeledProgressBar(double value) {
+                this();
+                setValue(value);
+        }
 
-    public void setValue(double value) {
-        int percent = (int) (value * 100);
-        progressBar.setValue(percent);
-        label.setText(percent + "%");
-    }
-    
-    public void setValue(double value, String text) {
-        int percent = (int) (value * 100);
-        progressBar.setValue(percent);
-        label.setText(text);
-    }
+        public void setValue(double value) {
+                int percent = (int) (value * 100);
+                progressBar.setValue(percent);
+                label.setText(percent + "%");
+        }
 
+        public void setValue(double value, String text) {
+                int percent = (int) (value * 100);
+                progressBar.setValue(percent);
+                label.setText(text);
+        }
 }

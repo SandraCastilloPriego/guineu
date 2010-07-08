@@ -99,7 +99,7 @@ public class VariationCoefficientRowFilter implements GuineuModule, TaskListener
         // prepare a new group of tasks
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new variationCoefficientRowFilterTask[1];
-        tasks[0] = new variationCoefficientRowFilterTask(datasets, desktop);
+        tasks[0] = new variationCoefficientRowFilterTask(datasets);
         GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;

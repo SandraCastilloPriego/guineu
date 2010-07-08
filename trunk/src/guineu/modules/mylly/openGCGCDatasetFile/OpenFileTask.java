@@ -17,19 +17,13 @@
  */
 package guineu.modules.mylly.openGCGCDatasetFile;
 
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.parser.impl.GCGCParserXLS;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.GCGCParserCSV;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import java.io.IOException;
 
 /**
@@ -42,14 +36,12 @@ public class OpenFileTask implements Task {
     private int numColumns;
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
-    private Desktop desktop;
     private Parser parser;
 
-    public OpenFileTask(String fileDir, int numColumns, Desktop desktop) {
+    public OpenFileTask(String fileDir, int numColumns) {
         if (fileDir != null) {
             this.fileDir = fileDir;
-        }
-        this.desktop = desktop;
+        }        
         this.numColumns = numColumns;
     }
 
@@ -118,21 +110,7 @@ public class OpenFileTask implements Task {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }
-
-        /*parser.fillData();
-        SimpleGCGCDataset dataset =  (SimpleGCGCDataset) parser.getDataset();
-        desktop.AddNewFile(dataset);
-
-        //creates internal frame with the table
-        DataTableModel model = new DatasetGCGCDataModel(dataset);
-        DataTable table = new PushableTable(model);
-        table.formatNumbers(dataset.getType());
-        DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-        desktop.addInternalFrame(frame);
-        frame.setVisible(true);*/
-
+            }       
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -144,16 +122,7 @@ public class OpenFileTask implements Task {
         try {
             if (status != TaskStatus.CANCELED) {
                 SimpleGCGCDataset dataset = (SimpleGCGCDataset) parser.getDataset();
-                desktop.AddNewFile(dataset);
-
-                //creates internal frame with the table
-                DataTableModel model = new DatasetGCGCDataModel(dataset);
-                DataTable table = new PushableTable(model);
-                table.formatNumbers(dataset.getType());
-                DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-                desktop.addInternalFrame(frame);
-                frame.setVisible(true);
+                GUIUtils.showNewTable(dataset);
             }
         } catch (Exception exception) {
             // exception.printStackTrace();

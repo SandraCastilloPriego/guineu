@@ -24,6 +24,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
  * Collection API related utilities
  */
 public class CollectionUtils {

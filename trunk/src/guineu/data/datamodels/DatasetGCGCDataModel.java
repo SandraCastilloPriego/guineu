@@ -17,6 +17,7 @@
  */
 package guineu.data.datamodels;
 
+import guineu.data.GCGCColumnName;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;

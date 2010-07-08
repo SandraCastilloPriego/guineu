@@ -19,18 +19,10 @@ package guineu.modules.statistics.standardVariation;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.DatasetType;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
+import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.Vector;
 
 /**
@@ -41,17 +33,14 @@ public class standarVariationTask implements Task {
 
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
-	private Desktop desktop;
 	private double progress = 0.0f;
 	private String[] group1,  group2;
 	private Dataset dataset;
 
-	public standarVariationTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop) {
+	public standarVariationTask(String[] group1, String[] group2, Dataset dataset) {
 		this.group1 = group1;
 		this.group2 = group2;
-		this.dataset = dataset;
-		this.desktop = desktop;
-
+		this.dataset = dataset;	
 	}
 
 	public String getTaskDescription() {
@@ -77,41 +66,18 @@ public class standarVariationTask implements Task {
 	public void run() {
 		try {
 			status = TaskStatus.PROCESSING;
-			Dataset newDataset = this.StandardVariation(group1);
-			DataTableModel model = null;
-			if (newDataset.getType() == DatasetType.LCMS) {
-				model = new DatasetLCMSDataModel(newDataset);
-			} else if (newDataset.getType() == DatasetType.GCGCTOF) {
-				model = new DatasetGCGCDataModel(newDataset);
-			}
-			progress = 0.25f;
-			DataTable table = new PushableTable(model);
-			table.formatNumbers(newDataset.getType());
-			DataInternalFrame frame = new DataInternalFrame("Standard Variation 1", table.getTable(), new Dimension(450, 450));
-			desktop.addInternalFrame(frame);
-			desktop.AddNewFile(newDataset);
+			Dataset newDataset = this.StandardVariation(group1);			
+			GUIUtils.showNewTable(newDataset);
 
 			/*for(int i = 0; i < newDataset.getNumberMolecules(); i++){
 			RegressionChart chart = new RegressionChart(newDataset.getConcentrationsID(i), newDataset.getDatasetName(), newDataset.getMolecule(i).getMolName());
 			desktop.addInternalFrame(chart);
 			chart.setVisible(true);
 			}*/
-
-			frame.setVisible(true);
+		
 			progress = 0.5f;
 			newDataset = this.StandardVariation(group2);
-			if (newDataset.getType() == DatasetType.LCMS) {
-				model = new DatasetLCMSDataModel(newDataset);
-			} else if (newDataset.getType() == DatasetType.GCGCTOF) {
-				model = new DatasetGCGCDataModel(newDataset);
-			}
-			progress = 0.75f;
-			table = new PushableTable(model);
-			table.formatNumbers(newDataset.getType());
-			frame = new DataInternalFrame("Standard Variation 2", table.getTable(), new Dimension(450, 450));
-			desktop.addInternalFrame(frame);
-			desktop.AddNewFile(newDataset);
-			frame.setVisible(true);
+                        GUIUtils.showNewTable(newDataset);
 			progress = 1f;
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {

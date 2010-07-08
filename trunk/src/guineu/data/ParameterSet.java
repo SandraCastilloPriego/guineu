@@ -15,23 +15,21 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data;
 
-
 /**
- * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public interface ParameterSet {
 
-    /**
-     * Create a copy of this parameter set, all referenced objects must be cloned. 
-     */
-    public ParameterSet clone();
-    
-    /**
-     * Represent method's parameters and their values in human-readable format
-     */
-    public String toString();
+        /**
+         * Creates a copy of this parameter set, all referenced objects must be cloned.
+         */
+        public ParameterSet clone();
 
+        /**
+         * Represents method's parameters and their values in human-readable format
+         */
+        public String toString();
 }

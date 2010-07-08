@@ -15,25 +15,24 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.data;
 
 import org.dom4j.Element;
 
 /**
- * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public interface StorableParameterSet extends ParameterSet {
 
-    /**
-     * Export parameter values to XML representation
-     * 
-     */
-    public void exportValuesToXML(Element element);
+        /**
+         * Export parameter values to XML representation
+         *
+         */
+        public void exportValuesToXML(Element element);
 
-    /**
-     * Import parameter values from XML representation
-     */
-    public void importValuesFromXML(Element element);
-
+        /**
+         * Import parameter values from XML representation
+         */
+        public void importValuesFromXML(Element element);
 }

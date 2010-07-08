@@ -15,8 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.util.components;
 
 import java.awt.event.MouseAdapter;
@@ -27,47 +25,49 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  * A modified JList that can reorder items in DefaultListModel by dragging with
- * mouse
- * 
+ * mouse * 
  */
 public class DragOrderedJList extends JList {
 
-	private int dragFrom;
+        private int dragFrom;
 
-	public DragOrderedJList(DefaultListModel model) {
-		super(model);
+        public DragOrderedJList(DefaultListModel model) {
+                super(model);
 
-		// add mouse button pressed listener
-		addMouseListener(new MouseAdapter() {
+                // add mouse button pressed listener
+                addMouseListener(new MouseAdapter() {
 
-			public void mousePressed(MouseEvent m) {
-				dragFrom = getSelectedIndex();
-			}
-		});
+                        public void mousePressed(MouseEvent m) {
+                                dragFrom = getSelectedIndex();
+                        }
+                });
 
-		// add mouse move listener
-		addMouseMotionListener(new MouseMotionAdapter() {
+                // add mouse move listener
+                addMouseMotionListener(new MouseMotionAdapter() {
 
-			public void mouseDragged(MouseEvent m) {
+                        public void mouseDragged(MouseEvent m) {
 
-				// get drag target
-				int dragTo = getSelectedIndex();
+                                // get drag target
+                                int dragTo = getSelectedIndex();
 
-				// ignore event if order has not changed
-				if (dragTo == dragFrom)
-					return;
+                                // ignore event if order has not changed
+                                if (dragTo == dragFrom) {
+                                        return;
+                                }
 
-				// reorder the item
-				DefaultListModel listModel = (DefaultListModel) DragOrderedJList.this
-						.getModel();
-				Object item = listModel.elementAt(dragFrom);
-				listModel.removeElementAt(dragFrom);
-				listModel.add(dragTo, item);
+                                // reorder the item
+                                DefaultListModel listModel = (DefaultListModel) DragOrderedJList.this.getModel();
+                                Object item = listModel.elementAt(dragFrom);
+                                listModel.removeElementAt(dragFrom);
+                                listModel.add(dragTo, item);
 
-				// update drag source
-				dragFrom = dragTo;
-			}
-		});
-	}
+                                // update drag source
+                                dragFrom = dragTo;
+                        }
+                });
+        }
 }

@@ -18,12 +18,32 @@
 package guineu.data;
 
 /**
- * 
+ * Type of data set defined until now.
+ *
  * @author SCSANDRA
  */
 public enum DatasetType {
 
-    LCMS, GCGCTOF, EXPERIMENTINFO, OTHER, QUALITYCONTROL;
+        /**
+         * LC-MS data
+         */
+        LCMS,
+        /**
+         * GCxGC-Tof data
+         */
+        GCGCTOF,
+        /**
+         * Experiment data
+         */
+        EXPERIMENTINFO,
+        /**
+         * Other data
+         */
+        OTHER,
+        /**
+         * Quality control data
+         */
+        QUALITYCONTROL;
 };
 
     

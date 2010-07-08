@@ -20,7 +20,7 @@ package guineu.data.parser.impl;
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.LCMSColumnName;
+import guineu.data.LCMSColumnName;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;

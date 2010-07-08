@@ -15,12 +15,14 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.util;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public enum SortingProperty {
 
-	MZ, RT, Intensity, ID, Height
-
+        MZ, RT, Intensity, ID, Height
 }
