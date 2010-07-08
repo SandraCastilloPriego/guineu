@@ -20,6 +20,8 @@
 package guineu.taskcontrol;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  * 
  * This enum defines task priority. High priority tasks are always executed
  * immediately. Normal priority tasks may wait until a thread is available.
