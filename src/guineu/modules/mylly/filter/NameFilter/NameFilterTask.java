@@ -31,17 +31,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
-
+import guineu.util.GUIUtils;
 /**
  *
  * @author bicha
@@ -105,12 +99,7 @@ public class NameFilterTask implements Task {
                     dataset = filter.actualMap((SimpleGCGCDataset) alignment);
                     dataset.setDatasetName(dataset.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
                     dataset.setType(DatasetType.GCGCTOF);
-                    DataTableModel model = new DatasetGCGCDataModel(dataset);
-                    DataTable table = new PushableTable(model);
-                    table.formatNumbers(dataset.getType());
-                    DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-                    GuineuCore.getDesktop().addInternalFrame(frame);
-                    GuineuCore.getDesktop().AddNewFile(dataset);
+                    GUIUtils.showNewTable(dataset);
                 }
             }
 

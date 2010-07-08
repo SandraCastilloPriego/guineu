@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
 import guineu.data.parser.impl.Lipidclass;
-import guineu.data.datamodels.LCMSColumnName;
+import guineu.data.LCMSColumnName;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;

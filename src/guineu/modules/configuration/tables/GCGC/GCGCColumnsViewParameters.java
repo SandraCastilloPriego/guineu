@@ -19,7 +19,7 @@ package guineu.modules.configuration.tables.GCGC;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.GCGCColumnName;
+import guineu.data.GCGCColumnName;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 

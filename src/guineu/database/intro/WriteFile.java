@@ -19,8 +19,8 @@ package guineu.database.intro;
 
 import com.csvreader.CsvWriter;
 import guineu.data.Dataset;
-import guineu.data.datamodels.GCGCColumnName;
-import guineu.data.datamodels.LCMSColumnName;
+import guineu.data.GCGCColumnName;
+import guineu.data.LCMSColumnName;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowGCGC;

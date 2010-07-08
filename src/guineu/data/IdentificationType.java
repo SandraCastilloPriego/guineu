@@ -18,6 +18,7 @@
 package guineu.data;
 
 /**
+ *  Type of indentification stage.
  *
  * @author scsandra
  */

@@ -17,6 +17,7 @@
  */
 package guineu.data.datamodels;
 
+import guineu.data.LCMSColumnName;
 import guineu.data.Dataset;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;

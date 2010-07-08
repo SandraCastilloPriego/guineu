@@ -109,7 +109,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         // prepare a new group of tasks
         if (path != null) {
             Task tasks[] = new OpenFileTask[1];
-            tasks[0] = new OpenFileTask(path, numColumns, desktop);
+            tasks[0] = new OpenFileTask(path, numColumns);
 
             GuineuCore.getTaskController().addTasks(tasks);
 

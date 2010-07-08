@@ -19,15 +19,9 @@ package guineu.modules.statistics.variationCoefficientRow;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.components.FileUtils;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -38,13 +32,12 @@ public class variationCoefficientRowFilterTask implements Task {
 
 	private Dataset[] datasets;
 	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private Desktop desktop;
+	private String errorMessage;	
 	private double progress;
 
-	public variationCoefficientRowFilterTask(Dataset[] datasets, Desktop desktop) {
+	public variationCoefficientRowFilterTask(Dataset[] datasets) {
 		this.datasets = datasets;
-		this.desktop = desktop;
+		
 	}
 
 	public String getTaskDescription() {
@@ -80,27 +73,19 @@ public class variationCoefficientRowFilterTask implements Task {
 	}
 
 	public void variationCoefficient() {
-
 		progress = 0.0f;
 		double steps = 1f / datasets.length;
-		for (Dataset dataset : datasets) {
-			DataTableModel model = null;
-			Dataset newDataset = FileUtils.cloneDataset(dataset, "Var Coefficient - ");
+		for (Dataset dataset : datasets) {			
+			Dataset newDataset = dataset.clone();
+                        newDataset.setDatasetName("Var Coefficient - " + dataset.getDatasetName());
 			newDataset.AddColumnName("Coefficient of variation");
 			for (PeakListRow lipid : newDataset.getRows()) {
 				double stdDev = this.CoefficientOfVariation(lipid);
 				lipid.setPeak("Coefficient of variation", stdDev);
 			}
-			progress += steps;
-			model = FileUtils.getTableModel(newDataset);
-
+			progress += steps;			
 			progress = 0.5f;
-			DataTable table = new PushableTable(model);
-			table.formatNumbers(newDataset.getType());
-			DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName() + " - Coefficient of Variation", table.getTable(), new Dimension(450, 450));
-			desktop.addInternalFrame(frame);
-			desktop.AddNewFile(newDataset);
-			frame.setVisible(true);
+			GUIUtils.showNewTable(newDataset);
 		}
 		progress = 1f;
 

@@ -20,7 +20,7 @@ package guineu.modules.file.saveLCMSFile;
 
 import guineu.data.Parameter;
 import guineu.data.ParameterType;
-import guineu.data.datamodels.LCMSColumnName;
+import guineu.data.LCMSColumnName;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 

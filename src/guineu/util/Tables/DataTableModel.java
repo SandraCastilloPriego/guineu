@@ -21,16 +21,40 @@ import guineu.data.DatasetType;
 import javax.swing.table.TableModel;
 
 /**
+ * interface of a model
  *
  * @author scsandra
  */
 public interface DataTableModel extends TableModel {
-   
+
+    /**
+     * Returns the number of columns corresponding to the fix parameters of
+     * each kind of dataset. For example, in LC-MS data sets they would be
+     * "retention time", "name", .., and in GCxGX-tof data sets "RT1", "RT2",...
+     *
+     * @return Number of parameter columns
+     */
     public int getFixColumns();
 
+    /**
+     * Removes selected rows from the table. It only removes the rows which are
+     * selected in the "Selection" column.
+     *
+     */
     public void removeRows();
-    
+
+    /**
+     * Returns the type of data set which correspons to this data model
+     *
+     * @return Data set type
+     */
     public DatasetType getType(); 
-    
-    public void addColumn(String ColumnName);
+
+
+    /**
+     * Adds a new column in the table.
+     *
+     * @param columnName Name of the new column
+     */
+    public void addColumn(String columnName);
 }

@@ -22,12 +22,8 @@ import guineu.data.Dataset;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
+import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.Vector;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -93,15 +89,10 @@ public class FoldTestTask implements Task {
                 newRow.setPeak("Fold test", t[cont++]);
                 newDataset.AddRow(newRow);
             }
-            DataTableModel model = FileUtils.getTableModel(newDataset);
-
             progress = 0.5f;
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(dataset.getType());
-            DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
-            desktop.addInternalFrame(frame);
-            desktop.AddNewFile(newDataset);
-            frame.setVisible(true);
+
+            GUIUtils.showNewTable(newDataset);
+
             progress = 1f;
             status = TaskStatus.FINISHED;
 
@@ -141,7 +132,7 @@ public class FoldTestTask implements Task {
         } else {
             // Determine groups for selected raw data files            
             Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
-            
+
             int numberOfGroups = availableParameterValues.size();
 
             if (numberOfGroups > 1) {

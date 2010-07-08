@@ -38,64 +38,53 @@ import guineu.util.Tables.DataTableModel;
  */
 public class FileUtils {
 
-	public static PeakListRow getPeakListRow(DatasetType type) {
-		if (type == DatasetType.LCMS) {
-			return new SimplePeakListRowLCMS();
-		} else if (type == DatasetType.GCGCTOF) {
-			return new SimplePeakListRowGCGC();
-		} else if (type == DatasetType.OTHER) {
-			return new SimplePeakListRowOther();
-		} else {
-			return null;
-		}
-	}
+        public static PeakListRow getPeakListRow(DatasetType type) {
+                switch (type) {
+                        case LCMS:
+                                return new SimplePeakListRowLCMS();
+                        case GCGCTOF:
+                                return new SimplePeakListRowGCGC();
+                        case OTHER:
+                                return new SimplePeakListRowOther();
+                }
+                return null;
+        }
 
-	public static Dataset getDataset(Dataset dataset, String Name) {
-		Dataset newDataset = null;
-		if (dataset.getType() == DatasetType.LCMS) {
-			newDataset = new SimpleLCMSDataset(Name + dataset.getDatasetName());
-		} else if (dataset.getType() == DatasetType.GCGCTOF) {
-			newDataset = new SimpleGCGCDataset(Name + dataset.getDatasetName());
-			((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
-			((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
-		} else if (dataset.getType() == DatasetType.OTHER) {
-			newDataset = new SimpleOtherDataset(Name + dataset.getDatasetName());
-		}
-		newDataset.setType(dataset.getType());
-		return newDataset;
-	}
+        public static Dataset getDataset(Dataset dataset, String Name) {
+                Dataset newDataset = null;
+                switch (dataset.getType()) {
+                        case LCMS:
+                                newDataset = new SimpleLCMSDataset(Name + dataset.getDatasetName());
+                                break;
+                        case GCGCTOF:
+                                newDataset = new SimpleGCGCDataset(Name + dataset.getDatasetName());
+                                ((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
+                                ((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
+                                break;
+                        case OTHER:
+                                newDataset = new SimpleOtherDataset(Name + dataset.getDatasetName());
+                                break;
+                }
+                newDataset.setType(dataset.getType());
+                return newDataset;
+        }
 
-	public static DataTableModel getTableModel(Dataset dataset) {
-		DataTableModel model = null;
-		if (dataset.getType() == DatasetType.LCMS) {
-			model = new DatasetLCMSDataModel(dataset);
-		} else if (dataset.getType() == DatasetType.GCGCTOF) {
-			model = new DatasetGCGCDataModel(dataset);
-		} else if (dataset.getType() == DatasetType.OTHER) {
-			model = new OtherDataModel(dataset);
-		} else if (dataset.getType() == DatasetType.EXPERIMENTINFO) {
-			model = new ExperimentDataModel(dataset);
-		}
-		return model;
-	}
-
-	public static Dataset cloneDataset(Dataset dataset, String name) {
-		Dataset newDataset = null;
-
-		if (dataset.getType() == DatasetType.LCMS) {
-			newDataset = ((SimpleLCMSDataset) dataset).clone();
-		} else if (dataset.getType() == DatasetType.GCGCTOF) {
-			newDataset = new SimpleGCGCDataset(name + dataset.getDatasetName());
-			newDataset.setType(DatasetType.GCGCTOF);
-			((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
-			((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
-			for (String ColumnName : dataset.getAllColumnNames()) {
-				newDataset.AddColumnName(ColumnName);
-			}
-			for (PeakListRow row : dataset.getRows()) {
-				((SimpleGCGCDataset) newDataset).addAlignmentRow((SimplePeakListRowGCGC) row);
-			}
-		}
-		return newDataset;
-	}
+        public static DataTableModel getTableModel(Dataset dataset) {
+                DataTableModel model = null;
+                switch (dataset.getType()) {
+                        case LCMS:
+                                model = new DatasetLCMSDataModel(dataset);
+                                break;
+                        case GCGCTOF:
+                                model = new DatasetGCGCDataModel(dataset);
+                                break;
+                        case OTHER:
+                                model = new OtherDataModel(dataset);
+                                break;
+                        case EXPERIMENTINFO:
+                                model = new ExperimentDataModel(dataset);
+                                break;
+                }
+                return model;
+        }
 }

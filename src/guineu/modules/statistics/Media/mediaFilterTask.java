@@ -19,7 +19,6 @@ package guineu.modules.statistics.Media;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.parser.impl.Lipidclass;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -39,12 +38,10 @@ public class mediaFilterTask implements Task {
     private String errorMessage;
     private Desktop desktop;
     private double progress;
-    private Lipidclass lipidClass;
 
     public mediaFilterTask(Dataset[] datasets, Desktop desktop) {
         this.datasets = datasets;
         this.desktop = desktop;
-        this.lipidClass = new Lipidclass();
     }
 
     public String getTaskDescription() {

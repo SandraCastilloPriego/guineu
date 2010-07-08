@@ -110,7 +110,7 @@ public class standardVariation implements GuineuModule, TaskListener, ActionList
         // prepare a new group of tasks
 
         Task tasks[] = new standarVariationTask[1];
-        tasks[0] = new standarVariationTask(group1, group2, dataset, desktop);
+        tasks[0] = new standarVariationTask(group1, group2, dataset);
 
         GuineuCore.getTaskController().addTasks(tasks);
 

@@ -26,14 +26,37 @@ import javax.swing.JTable;
  */
 public interface DataTable {
 
-    public void createTable(DataTableModel model);
+        /**
+         * Changes the model of the table.
+         *
+         * @param model
+         */
+        public void createTable(DataTableModel model);
 
-    public void setTableProperties();
+        /**
+         * Sets the properties of the table: selection mode, tooltips, actions with keys..
+         *
+         */
+        public void setTableProperties();
 
-    public JTable getTable();
+        /**
+         * Returns the table.
+         *
+         * @return Table
+         */
+        public JTable getTable();
 
-    public void formatNumbers(DatasetType type);
+        /**
+         * Formating of the numbers in the table depening on the data set type.
+         *
+         * @param type Type of dataset @see guineu.data.DatasetType
+         */
+        public void formatNumbers(DatasetType type);
 
-    public void formatNumbers(int column);
-    
+        /**
+         * Formating of the numbers in certaing column
+         *
+         * @param column Column where the numbers will be formated
+         */
+        public void formatNumbers(int column);
 }

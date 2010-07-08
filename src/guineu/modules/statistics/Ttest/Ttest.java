@@ -112,7 +112,7 @@ public class Ttest implements GuineuModule, TaskListener, ActionListener {
         // prepare a new group of tasks
 
         Task tasks[] = new TTestTask[1];
-        tasks[0] = new TTestTask(group1, group2, dataset, desktop, parameter);
+        tasks[0] = new TTestTask(group1, group2, dataset, parameter);
 
         GuineuCore.getTaskController().addTasks(tasks);
 

@@ -20,7 +20,7 @@ package guineu.modules.filter.report.RTShift;
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.LCMSColumnName;
+import guineu.data.LCMSColumnName;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;

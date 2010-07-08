@@ -19,15 +19,10 @@ package guineu.modules.statistics.anova;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
+import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -87,14 +82,7 @@ public class AnovaTestTask implements Task {
                 newDataset.AddRow(newRow);
                 progress++;
             }
-            DataTableModel model = FileUtils.getTableModel(newDataset);
-
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(dataset.getType());
-            DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
-            GuineuCore.getDesktop().addInternalFrame(frame);
-            GuineuCore.getDesktop().AddNewFile(newDataset);
-            frame.setVisible(true);
+            GUIUtils.showNewTable(newDataset);
             status = TaskStatus.FINISHED;
         } catch (Exception ex) {
             Logger.getLogger(AnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);

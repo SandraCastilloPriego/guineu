@@ -20,37 +20,58 @@ package guineu.data;
 import java.util.Vector;
 
 /**
+ * Definition of a Row.
  *
  * @author SCSANDRA
  */
 public interface PeakListRow {
 
-    public int getID();
+        /**
+         * Returns the identification number of the row.
+         *
+         * @return int with the ID of the row
+         */
+        public int getID();
 
-    public void setID(int i);
+        /**
+         * Sets the identification number of the row.
+         *
+         * @param i ID number
+         */
+        public void setID(int i);
 
-    public void setPeak(String name, Double value);
+        /**
+         * Adds a new double value (peak) to the list of "peaks". The peak
+         *
+         * @param columnName
+         * @param value
+         */
+        public void setPeak(String columnName, Double value);
 
-    public Object getPeak(String ExperimentName);
+        public void setPeak(String columnName, String value);
 
-    public Object getPeak(int col, Vector<String> sampleNames);
+        public Object getPeak(String columnName);
 
-    public Object[] getPeaks();
+        public Object getPeak(int column, Vector<String> sampleNames);
 
-    public void removePeaks();
+        public Object[] getPeaks();
 
-    public void removeNoSamplePeaks(String[] group);
+        public void removePeaks();
 
-    public int getNumberPeaks();
+        /**
+         * Removes the peaks which are not in the columns given by the parameter.
+         *
+         * @param columnName Array with the name of the columns that won't be removed
+         */
+        public void removeNoSamplePeaks(String[] columnName);
 
-    public PeakListRow clone();
+        public int getNumberPeaks();
 
-    public boolean isSelected();
+        public PeakListRow clone();
 
-    public void setPeak(String str, String get);
+        public boolean isSelected();
 
-    public Object getVar(String varName);
+        public Object getVar(String varName);
 
-    public void setVar(String varName, Object value);
-	
+        public void setVar(String varName, Object value);
 }
