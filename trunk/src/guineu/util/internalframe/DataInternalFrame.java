@@ -23,7 +23,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 /**
- *
+ * Internal frame which will contain a table with the data set.
+ * 
  * @author scsandra
  */
 public class DataInternalFrame extends JInternalFrame {

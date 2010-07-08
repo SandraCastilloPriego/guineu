@@ -94,7 +94,7 @@ public class VariationCoefficientTask implements Task {
 				vcdata.numberExperiments = dataset.getNumberCols();
 				data.addElement(vcdata);
 			}
-
+                        
 			DataTableModel model = new VariationCoefficientDataModel(data);
 			DataTable table = new PushableTable(model);
 			table.formatNumbers(1);

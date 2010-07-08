@@ -19,7 +19,6 @@ package guineu.modules.identification.normalizationNOMIS;
 
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleLCMSDataset;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -31,14 +30,12 @@ public class NormalizeNOMISFilterTask implements Task {
 
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
-    private Desktop desktop;
     private SimpleLCMSDataset dataset;
     private StandardUmol standards;
     private NormalizeNOMIS serum;
 
-    public NormalizeNOMISFilterTask(Dataset simpleDataset, Desktop desktop) {
-        this.dataset = ((SimpleLCMSDataset) simpleDataset).clone();
-        this.desktop = desktop;
+    public NormalizeNOMISFilterTask(Dataset simpleDataset) {
+        this.dataset = ((SimpleLCMSDataset) simpleDataset).clone();      
         this.standards = new StandardUmol();
         this.serum = new NormalizeNOMIS(dataset, standards);
     }
@@ -66,14 +63,7 @@ public class NormalizeNOMISFilterTask implements Task {
     public void run() {
         try {
             status = TaskStatus.PROCESSING;
-            serum.normalize();
-            /* dataset = serum.getDataset();            
-            desktop.AddNewFile(dataset);
-            DataTableModel model = new DatasetDataModel(dataset);                       
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(dataset.getType());
-            DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800,800));
-            desktop.addInternalFrame(frame);*/
+            serum.normalize();            
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;

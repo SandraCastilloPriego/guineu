@@ -87,7 +87,7 @@ public class NormalizeNOMISFilter implements GuineuModule, TaskListener, ActionL
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new NormalizeNOMISFilterTask[datasets.length];
         for (int i = 0; i < datasets.length; i++) {
-            tasks[i] = new NormalizeNOMISFilterTask(datasets[i], desktop);
+            tasks[i] = new NormalizeNOMISFilterTask(datasets[i]);
         }
         GuineuCore.getTaskController().addTasks(tasks);
 

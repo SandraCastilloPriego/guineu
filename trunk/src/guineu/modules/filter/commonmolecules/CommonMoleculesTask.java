@@ -17,32 +17,24 @@
  */
 package guineu.modules.filter.commonmolecules;
 
-import java.util.logging.Logger;
 
 
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.OtherDataModel;
 import guineu.data.impl.SimpleOtherDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
-import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import java.util.Vector;
 
 /**
  * 
  */
 class CommonMoleculesTask implements Task {
-
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	
 	private Dataset[] peakLists;
 	private TaskStatus status;
 	private String errorMessage;
@@ -122,13 +114,7 @@ class CommonMoleculesTask implements Task {
 
 				dataset.AddRow(row);
 			}
-			DataTableModel model = new OtherDataModel(dataset);
-			DataTable table = new PushableTable(model);
-			table.formatNumbers(dataset.getType());
-			DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-			GuineuCore.getDesktop().addInternalFrame(frame);
-			GuineuCore.getDesktop().AddNewFile(dataset);
+                        GUIUtils.showNewTable(dataset);
 
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;

@@ -37,74 +37,74 @@ import java.util.logging.Logger;
  */
 public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private int[] Datasets;
-    private String[] DatasetsType;  
-    DatasetOpenDialog dialog;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private int[] Datasets;
+        private String[] DatasetsType;
+        DatasetOpenDialog dialog;
 
-    public void initModule() {        
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
-                "TODO write description", KeyEvent.VK_O, this, null, null);
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Open Database");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished open database on " + ((OpenFileDBTask) task).getTaskDescription());
+        public void initModule() {
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
+                        "TODO write description", KeyEvent.VK_O, this, null, null);
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while open database on .. " + ((OpenFileDBTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {       
-        ExitCode exitCode = setupParameters();
-
-        if (exitCode != ExitCode.OK) {
-            return;
-        }       
-        runModule();
-    }
-
-    public ExitCode setupParameters() {
-        dialog = new DatasetOpenDialog();
-        dialog.setVisible(true);
-        return dialog.getExitCode();
-    }
-
-    public ParameterSet getParameterSet() {
-        return null;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {        
-    }
-
-    @Override
-    public String toString() {
-        return "Open Database";
-    }
-
-    public Task[] runModule() {
-
-        // prepare a new group of tasks
-        Task tasks[] = new OpenFileDBTask[Datasets.length];
-        for (int i = 0; i < Datasets.length; i++) {
-            tasks[i] = new OpenFileDBTask(Datasets[i], DatasetsType[i], desktop);
+        public void taskStarted(Task task) {
+                logger.info("Running Open Database");
         }
 
-        GuineuCore.getTaskController().addTasks(tasks);
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished open database on " + ((OpenFileDBTask) task).getTaskDescription());
+                }
 
-        return tasks;
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-    }
+                        String msg = "Error while open database on .. " + ((OpenFileDBTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = setupParameters();
+
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+                runModule();
+        }
+
+        public ExitCode setupParameters() {
+                dialog = new DatasetOpenDialog();
+                dialog.setVisible(true);
+                return dialog.getExitCode();
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
+        }
+
+        public void setParameters(ParameterSet parameterValues) {
+        }
+
+        @Override
+        public String toString() {
+                return "Open Database";
+        }
+
+        public Task[] runModule() {
+
+                // prepare a new group of tasks
+                Task tasks[] = new OpenFileDBTask[Datasets.length];
+                for (int i = 0; i < Datasets.length; i++) {
+                        tasks[i] = new OpenFileDBTask(Datasets[i], DatasetsType[i]);
+                }
+
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+        }
 }

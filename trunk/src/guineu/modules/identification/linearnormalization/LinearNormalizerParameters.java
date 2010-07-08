@@ -23,23 +23,24 @@ import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
 
 /**
- * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public class LinearNormalizerParameters extends SimpleParameterSet {
 
-    public static final String NormalizationTypeAverageIntensity = "Average intensity";
-    public static final String NormalizationTypeAverageSquaredIntensity = "Average squared intensity";
-    public static final String NormalizationTypeMaximumPeakHeight = "Maximum peak intensity";
-    public static final Object[] normalizationTypePossibleValues = {
-        NormalizationTypeAverageIntensity,
-        NormalizationTypeAverageSquaredIntensity,
-        NormalizationTypeMaximumPeakHeight};
-    public static final Parameter normalizationType = new SimpleParameter(
-            ParameterType.STRING, "Normalization type",
-            "Normalize intensities by...", NormalizationTypeAverageIntensity,
-            normalizationTypePossibleValues);
+        public static final String NormalizationTypeAverageIntensity = "Average intensity";
+        public static final String NormalizationTypeAverageSquaredIntensity = "Average squared intensity";
+        public static final String NormalizationTypeMaximumPeakHeight = "Maximum peak intensity";
+        public static final Object[] normalizationTypePossibleValues = {
+                NormalizationTypeAverageIntensity,
+                NormalizationTypeAverageSquaredIntensity,
+                NormalizationTypeMaximumPeakHeight};
+        public static final Parameter normalizationType = new SimpleParameter(
+                ParameterType.STRING, "Normalization type",
+                "Normalize intensities by...", NormalizationTypeAverageIntensity,
+                normalizationTypePossibleValues);
 
-    public LinearNormalizerParameters() {
-        super(new Parameter[]{normalizationType});
-    }
+        public LinearNormalizerParameters() {
+                super(new Parameter[]{normalizationType});
+        }
 }

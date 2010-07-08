@@ -18,19 +18,11 @@
 package guineu.modules.mylly.filter.ConcentrationsFromMass;
 
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.main.GuineuCore;
-import guineu.modules.mylly.datastruct.ComparablePair;
-import guineu.modules.mylly.datastruct.Spectrum;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -115,12 +107,8 @@ public class ConcentrationsFromMassFilterTask implements Task {
                 }
             }
 
-            DataTableModel model = new DatasetGCGCDataModel(newDataset);
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(newDataset.getType());
-            DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-            GuineuCore.getDesktop().addInternalFrame(frame);
-            GuineuCore.getDesktop().AddNewFile(newDataset);
+            GUIUtils.showNewTable(newDataset);
+           
             status = TaskStatus.FINISHED;
         } catch (Exception ex) {
             Logger.getLogger(ConcentrationsFromMassFilterTask.class.getName()).log(Level.SEVERE, null, ex);
