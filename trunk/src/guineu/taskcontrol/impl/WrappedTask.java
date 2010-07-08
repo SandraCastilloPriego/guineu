@@ -21,71 +21,74 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskPriority;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  * Wrapper class for Tasks that stores additional information
  */
 class WrappedTask {
 
-    private Task task;
-    private TaskPriority priority;
-    private WorkerThread assignedTo;
+        private Task task;
+        private TaskPriority priority;
+        private WorkerThread assignedTo;
 
-    WrappedTask(Task task, TaskPriority priority) {
-        this.task = task;
-        this.priority = priority;
-    }
-
-    /**
-     * @return Returns the priority.
-     */
-    TaskPriority getPriority() {
-        return priority;
-    }
-
-    /**
-     * @param priority The priority to set.
-     */
-    void setPriority(TaskPriority priority) {
-        this.priority = priority;
-        if (assignedTo != null) {
-            switch (priority) {
-                case HIGH:
-                    assignedTo.setPriority(Thread.MAX_PRIORITY);
-                    break;
-                case NORMAL:
-                    assignedTo.setPriority(Thread.NORM_PRIORITY);
-                    break;
-            }
+        WrappedTask(Task task, TaskPriority priority) {
+                this.task = task;
+                this.priority = priority;
         }
-    }
 
-    /**
-     * @return Returns the assigned.
-     */
-    boolean isAssigned() {
-        return assignedTo != null;
-    }
-
-    void assignTo(WorkerThread thread) {
-        assignedTo = thread;
-    }
-
-    /**
-     * @return Returns the task.
-     */
-    synchronized Task getActualTask() {
-        return task;
-    }
-
-    public synchronized String toString() {
-        try {
-            return task.getTaskDescription();
-        } catch (Exception e) {
-            return "";
+        /**
+         * @return Returns the priority.
+         */
+        TaskPriority getPriority() {
+                return priority;
         }
-    }
 
-    synchronized void removeTaskReference() {
-        task = new FinishedTask(task);
-    }
+        /**
+         * @param priority The priority to set.
+         */
+        void setPriority(TaskPriority priority) {
+                this.priority = priority;
+                if (assignedTo != null) {
+                        switch (priority) {
+                                case HIGH:
+                                        assignedTo.setPriority(Thread.MAX_PRIORITY);
+                                        break;
+                                case NORMAL:
+                                        assignedTo.setPriority(Thread.NORM_PRIORITY);
+                                        break;
+                        }
+                }
+        }
+
+        /**
+         * @return Returns the assigned.
+         */
+        boolean isAssigned() {
+                return assignedTo != null;
+        }
+
+        void assignTo(WorkerThread thread) {
+                assignedTo = thread;
+        }
+
+        /**
+         * @return Returns the task.
+         */
+        synchronized Task getActualTask() {
+                return task;
+        }
+
+        public synchronized String toString() {
+                try {
+                        return task.getTaskDescription();
+                } catch (Exception e) {
+                        return "";
+                }
+        }
+
+        synchronized void removeTaskReference() {
+                task = new FinishedTask(task);
+        }
 }
 

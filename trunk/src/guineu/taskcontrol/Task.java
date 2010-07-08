@@ -15,28 +15,27 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.taskcontrol;
+
 /**
- *
+ *@author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  *
  */
 public interface Task {
-  
 
-	public String getTaskDescription();
+        public String getTaskDescription();
 
-	public double getFinishedPercentage();
+        public double getFinishedPercentage();
 
-	public TaskStatus getStatus();
+        public TaskStatus getStatus();
 
-	public String getErrorMessage();
+        public String getErrorMessage();
 
-	public void run();
+        public void run();
 
-	/**
-	 * Cancel a running task by user request.
-	 */
-	public void cancel();	
-
+        /**
+         * Cancel a running task by user request.
+         */
+        public void cancel();
 }

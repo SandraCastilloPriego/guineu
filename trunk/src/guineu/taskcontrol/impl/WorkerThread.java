@@ -15,8 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.taskcontrol.impl;
 
 import guineu.main.GuineuCore;
@@ -26,85 +24,79 @@ import guineu.util.ExceptionUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  * Task controller worker thread, this thread will process one task and then
  * finish
  */
 class WorkerThread extends Thread {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private WrappedTask wrappedTask;
+        private boolean finished = false;
 
-	private WrappedTask wrappedTask;
-	private boolean finished = false;
+        WorkerThread(WrappedTask wrappedTask) {
+                super("Thread executing task " + wrappedTask);
+                this.wrappedTask = wrappedTask;
+                wrappedTask.assignTo(this);
+        }
 
-	WorkerThread(WrappedTask wrappedTask) {
-		super("Thread executing task " + wrappedTask);
-		this.wrappedTask = wrappedTask;
-		wrappedTask.assignTo(this);
-	}
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
 
-	/**
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
+                Task actualTask = wrappedTask.getActualTask();
 
-		Task actualTask = wrappedTask.getActualTask();
+                logger.finest("Starting processing of task: " + actualTask.getTaskDescription());
 
-		logger.finest("Starting processing of task: "
-				+ actualTask.getTaskDescription());
+                try {
 
-		try {
+                        // Process the actual task
+                        actualTask.run();
 
-			// Process the actual task
-			actualTask.run();
+                        // Check if task finished with an error
+                        if (actualTask.getStatus() == TaskStatus.ERROR) {
+                                logger.severe("Task error: " + actualTask.getErrorMessage());
 
-			// Check if task finished with an error
-			if (actualTask.getStatus() == TaskStatus.ERROR) {
-				logger.severe("Task error: " + actualTask.getErrorMessage());
+                                GuineuCore.getDesktop().displayErrorMessage(
+                                        "Error of task " + actualTask.getTaskDescription(),
+                                        actualTask.getErrorMessage());
+                        }
 
-				GuineuCore.getDesktop().displayErrorMessage(
-						"Error of task " + actualTask.getTaskDescription(),
-						actualTask.getErrorMessage());
-			}
+                        /*
+                         * This is important to allow the garbage collector to remove the task,
+                         * while keeping the task description in the "Tasks in progress" window
+                         */
+                        wrappedTask.removeTaskReference();
 
-			/*
-			 * This is important to allow the garbage collector to remove the task,
-			 * while keeping the task description in the "Tasks in progress" window
-			 */
-			wrappedTask.removeTaskReference();
+                } catch (Throwable e) {
 
-		} catch (Throwable e) {
+                        /*
+                         * This should never happen, it means the task did not handle its
+                         * exception properly, or there was some severe error, like
+                         * OutOfMemoryError
+                         */
 
-			/*
-			 * This should never happen, it means the task did not handle its
-			 * exception properly, or there was some severe error, like
-			 * OutOfMemoryError
-			 */
+                        logger.log(Level.SEVERE, "Unhandled exception " + e + " while processing task " + actualTask.getTaskDescription(), e);
 
-			logger.log(Level.SEVERE, "Unhandled exception " + e
-					+ " while processing task "
-					+ actualTask.getTaskDescription(), e);
+                        GuineuCore.getDesktop().displayErrorMessage(
+                                "Unhandled exception in task " + actualTask.getTaskDescription() + ": " + ExceptionUtils.exceptionToString(e));
 
-			GuineuCore.getDesktop().displayErrorMessage(
-					"Unhandled exception in task "
-							+ actualTask.getTaskDescription() + ": "
-							+ ExceptionUtils.exceptionToString(e));
+                        e.printStackTrace();
 
-			e.printStackTrace();
+                }
 
-		}
+                /*
+                 * Mark this thread as finished
+                 */
+                finished = true;
 
-		/*
-		 * Mark this thread as finished
-		 */
-		finished = true;
+        }
 
-	}
-
-	boolean isFinished() {
-		return finished;
-	}
-
+        boolean isFinished() {
+                return finished;
+        }
 }

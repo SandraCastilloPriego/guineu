@@ -15,25 +15,21 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.taskcontrol;
 
-
-
 /**
- * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public interface TaskController {
-    
-    public void addTask(Task task);
 
-    public void addTasks(Task tasks[]);
+        public void addTask(Task task);
 
-    public void addTask(Task task, TaskPriority priority);
+        public void addTasks(Task tasks[]);
 
-    public void addTasks(Task tasks[], TaskPriority priority);
+        public void addTask(Task task, TaskPriority priority);
 
-    public void setTaskPriority(Task task, TaskPriority priority);
+        public void addTasks(Task tasks[], TaskPriority priority);
 
+        public void setTaskPriority(Task task, TaskPriority priority);
 }

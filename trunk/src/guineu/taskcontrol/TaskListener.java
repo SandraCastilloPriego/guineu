@@ -15,16 +15,15 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.taskcontrol;
 
 /**
- *
+ *@author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public interface TaskListener {
-    
-    public void taskStarted(Task task);
 
-    public void taskFinished(Task task);
-    
+        public void taskStarted(Task task);
+
+        public void taskFinished(Task task);
 }

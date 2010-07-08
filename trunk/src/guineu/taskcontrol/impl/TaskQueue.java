@@ -15,8 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.taskcontrol.impl;
 
 import guineu.taskcontrol.Task;
@@ -29,167 +27,163 @@ import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
  * Task queue
  */
 class TaskQueue extends AbstractTableModel {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private static final int DEFAULT_CAPACITY = 64;
+        /**
+         * This array stores the actual tasks
+         */
+        private WrappedTask[] queue;
+        /**
+         * Current size of the queue
+         */
+        private int size;
+        private Hashtable<Integer, LabeledProgressBar> progressBars;
 
-	private static final int DEFAULT_CAPACITY = 64;
+        TaskQueue() {
+                size = 0;
+                queue = new WrappedTask[DEFAULT_CAPACITY];
+                progressBars = new Hashtable<Integer, LabeledProgressBar>();
+        }
 
-	/**
-	 * This array stores the actual tasks
-	 */
-	private WrappedTask[] queue;
+        synchronized void addWrappedTask(WrappedTask task) {
 
-	/**
-	 * Current size of the queue
-	 */
-	private int size;
+                logger.finest("Adding task \"" + task + "\" to the task controller queue");
 
-	private Hashtable<Integer, LabeledProgressBar> progressBars;
+                // If the queue is full, make a bigger queue
+                if (size == queue.length) {
+                        WrappedTask[] newQueue = new WrappedTask[queue.length * 2];
+                        System.arraycopy(queue, 0, newQueue, 0, size);
+                        queue = newQueue;
+                }
 
-	TaskQueue() {
-		size = 0;
-		queue = new WrappedTask[DEFAULT_CAPACITY];
-		progressBars = new Hashtable<Integer, LabeledProgressBar>();
-	}
+                queue[size] = task;
+                size++;
 
-	synchronized void addWrappedTask(WrappedTask task) {
+                // Call fireTableDataChanged because we have a new row and order of rows
+                // may have changed
+                fireTableDataChanged();
 
-		logger.finest("Adding task \"" + task
-				+ "\" to the task controller queue");
+        }
 
-		// If the queue is full, make a bigger queue
-		if (size == queue.length) {
-			WrappedTask[] newQueue = new WrappedTask[queue.length * 2];
-			System.arraycopy(queue, 0, newQueue, 0, size);
-			queue = newQueue;
-		}
+        synchronized void clear() {
+                size = 0;
+                queue = new WrappedTask[DEFAULT_CAPACITY];
+                fireTableDataChanged();
+        }
 
-		queue[size] = task;
-		size++;
+        /**
+         * Refresh the queue (reorder the tasks according to priority) and send a
+         * signal to Tasks in progress window to redraw updated data, such as task
+         * status and finished percentages.
+         */
+        synchronized void refresh() {
 
-		// Call fireTableDataChanged because we have a new row and order of rows
-		// may have changed
-		fireTableDataChanged();
+                // We must not call fireTableDataChanged, because that would clear the
+                // selection in the task window
+                fireTableRowsUpdated(0, size - 1);
 
-	}
+        }
 
-	synchronized void clear() {
-		size = 0;
-		queue = new WrappedTask[DEFAULT_CAPACITY];
-		fireTableDataChanged();
-	}
+        synchronized boolean isEmpty() {
+                return size == 0;
+        }
 
-	/**
-	 * Refresh the queue (reorder the tasks according to priority) and send a
-	 * signal to Tasks in progress window to redraw updated data, such as task
-	 * status and finished percentages.
-	 */
-	synchronized void refresh() {
+        synchronized boolean allTasksFinished() {
+                for (int i = 0; i < size; i++) {
+                        TaskStatus status = queue[i].getActualTask().getStatus();
+                        if ((status == TaskStatus.PROCESSING) || (status == TaskStatus.WAITING)) {
+                                return false;
+                        }
+                }
+                return true;
+        }
 
-		// We must not call fireTableDataChanged, because that would clear the
-		// selection in the task window
-		fireTableRowsUpdated(0, size - 1);
+        synchronized WrappedTask[] getQueueSnapshot() {
+                WrappedTask[] snapshot = new WrappedTask[size];
+                System.arraycopy(queue, 0, snapshot, 0, size);
+                return snapshot;
+        }
 
-	}
+        /* TableModel implementation */
+        private static final String columns[] = {"Item", "Priority", "Status",
+                "% done"};
 
-	synchronized boolean isEmpty() {
-		return size == 0;
-	}
+        /**
+         * @see javax.swing.table.TableModel#getRowCount()
+         */
+        public synchronized int getRowCount() {
+                return size;
+        }
 
-	synchronized boolean allTasksFinished() {
-		for (int i = 0; i < size; i++) {
-			TaskStatus status = queue[i].getActualTask().getStatus();
-			if ((status == TaskStatus.PROCESSING)
-					|| (status == TaskStatus.WAITING))
-				return false;
-		}
-		return true;
-	}
+        /**
+         * @see javax.swing.table.TableModel#getColumnCount()
+         */
+        public int getColumnCount() {
+                return columns.length;
+        }
 
-	synchronized WrappedTask[] getQueueSnapshot() {
-		WrappedTask[] snapshot = new WrappedTask[size];
-		System.arraycopy(queue, 0, snapshot, 0, size);
-		return snapshot;
-	}
+        public String getColumnName(int column) {
+                return columns[column];
+        }
 
-	/* TableModel implementation */
+        /**
+         * @see javax.swing.table.TableModel#getValueAt(int, int)
+         */
+        public synchronized Object getValueAt(int row, int column) {
 
-	private static final String columns[] = { "Item", "Priority", "Status",
-			"% done" };
+                if (row < size) {
 
-	/**
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	public synchronized int getRowCount() {
-		return size;
-	}
+                        WrappedTask wrappedTask = queue[row];
+                        Task actualTask = wrappedTask.getActualTask();
 
-	/**
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	public int getColumnCount() {
-		return columns.length;
-	}
+                        switch (column) {
+                                case 0:
+                                        return actualTask.getTaskDescription();
+                                case 1:
+                                        return wrappedTask.getPriority();
+                                case 2:
+                                        return actualTask.getStatus();
+                                case 3:
+                                        double finishedPercentage = actualTask.getFinishedPercentage();
+                                        LabeledProgressBar progressBar = progressBars.get(row);
+                                        if (progressBar == null) {
+                                                progressBar = new LabeledProgressBar(finishedPercentage);
+                                                progressBars.put(row, progressBar);
+                                        } else {
+                                                progressBar.setValue(finishedPercentage);
+                                        }
+                                        return progressBar;
+                        }
+                }
 
-	public String getColumnName(int column) {
-		return columns[column];
-	}
+                return null;
 
-	/**
-	 * @see javax.swing.table.TableModel#getValueAt(int, int)
-	 */
-	public synchronized Object getValueAt(int row, int column) {
+        }
 
-		if (row < size) {
+        /**
+         * @see javax.swing.table.TableModel#getColumnClass(int)
+         */
+        @Override
+        public Class<?> getColumnClass(int column) {
+                switch (column) {
+                        case 0:
+                                return String.class;
+                        case 1:
+                                return TaskPriority.class;
+                        case 2:
+                                return TaskStatus.class;
+                        case 3:
+                                return LabeledProgressBar.class;
+                }
+                return null;
 
-			WrappedTask wrappedTask = queue[row];
-			Task actualTask = wrappedTask.getActualTask();
-
-			switch (column) {
-			case 0:
-				return actualTask.getTaskDescription();
-			case 1:
-				return wrappedTask.getPriority();
-			case 2:
-				return actualTask.getStatus();
-			case 3:
-				double finishedPercentage = actualTask.getFinishedPercentage();
-				LabeledProgressBar progressBar = progressBars.get(row);
-				if (progressBar == null) {
-					progressBar = new LabeledProgressBar(finishedPercentage);
-					progressBars.put(row, progressBar);
-				} else {
-					progressBar.setValue(finishedPercentage);
-				}
-				return progressBar;
-			}
-		}
-
-		return null;
-
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#getColumnClass(int)
-	 */
-	public Class<?> getColumnClass(int column) {
-		switch (column) {
-		case 0:
-			return String.class;
-		case 1:
-			return TaskPriority.class;
-		case 2:
-			return TaskStatus.class;
-		case 3:
-			return LabeledProgressBar.class;
-		}
-		return null;
-
-	}
-
+        }
 }

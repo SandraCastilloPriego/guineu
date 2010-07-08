@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.taskcontrol.impl;
 
 import guineu.main.GuineuCore;
@@ -30,201 +29,201 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
  * Task controller implementation
  */
 public class TaskControllerImpl implements TaskController, Runnable {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        /**
+         * Update the task progress window every 300 ms
+         */
+        private final int TASKCONTROLLER_THREAD_SLEEP = 300;
+        private Thread taskControllerThread;
+        private TaskQueue taskQueue;
+        private TaskProgressWindow taskWindow;
+        /**
+         * This vector contains references to all running threads of NORMAL
+         * priority. Maximum number of concurrent threads is specified in the
+         * preferences dialog.
+         */
+        private Vector<WorkerThread> runningThreads;
 
-	/**
-	 * Update the task progress window every 300 ms
-	 */
-	private final int TASKCONTROLLER_THREAD_SLEEP = 300;
+        /**
+         * Initialize the task controller
+         */
+        public void initModule() {
 
-	private Thread taskControllerThread;
+                taskQueue = new TaskQueue();
 
-	private TaskQueue taskQueue;
-	private TaskProgressWindow taskWindow;
+                runningThreads = new Vector<WorkerThread>();
 
-	/**
-	 * This vector contains references to all running threads of NORMAL
-	 * priority. Maximum number of concurrent threads is specified in the
-	 * preferences dialog.
-	 */
-	private Vector<WorkerThread> runningThreads;
+                // Create a low-priority thread that will manage the queue and start
+                // worker threads for tasks
+                taskControllerThread = new Thread(this, "Task controller thread");
+                taskControllerThread.setPriority(Thread.MIN_PRIORITY);
+                taskControllerThread.start();
+                // Create the task progress window and add it to desktop
+                taskWindow = new TaskProgressWindow();
 
-	/**
-	 * Initialize the task controller
-	 */
-	public void initModule() {
+                GuineuCore.getDesktop().addInternalFrame(taskWindow);
 
-		taskQueue = new TaskQueue();
+                // Initially, hide the task progress window
+                taskWindow.setVisible(false);
 
-		runningThreads = new Vector<WorkerThread>();
+        }
 
-		// Create a low-priority thread that will manage the queue and start
-		// worker threads for tasks
-		taskControllerThread = new Thread(this, "Task controller thread");
-		taskControllerThread.setPriority(Thread.MIN_PRIORITY);
-		taskControllerThread.start();
-		// Create the task progress window and add it to desktop
-		taskWindow = new TaskProgressWindow();
-    
-		GuineuCore.getDesktop().addInternalFrame(taskWindow);
+        TaskQueue getTaskQueue() {
+                return taskQueue;
+        }
 
-		// Initially, hide the task progress window
-		taskWindow.setVisible(false);
+        public void addTask(Task task) {
+                addTasks(new Task[]{task}, TaskPriority.NORMAL);
+        }
 
-	}
+        public void addTask(Task task, TaskPriority priority) {
+                addTasks(new Task[]{task}, priority);
+        }
 
-	TaskQueue getTaskQueue() {
-		return taskQueue;
-	}
+        public void addTasks(Task tasks[]) {
+                addTasks(tasks, TaskPriority.NORMAL);
+        }
 
-	public void addTask(Task task) {
-		addTasks(new Task[] { task }, TaskPriority.NORMAL);
-	}
+        public void addTasks(Task tasks[], TaskPriority priority) {
 
-	public void addTask(Task task, TaskPriority priority) {
-		addTasks(new Task[] { task }, priority);
-	}
+                // It can sometimes happen during a batch that no tasks are actually
+                // executed --> tasks[] array may be empty
+                if ((tasks == null) || (tasks.length == 0)) {
+                        return;
+                }
 
-	public void addTasks(Task tasks[]) {
-		addTasks(tasks, TaskPriority.NORMAL);
-	}
+                for (Task task : tasks) {
+                        WrappedTask newQueueEntry = new WrappedTask(task, priority);
+                        taskQueue.addWrappedTask(newQueueEntry);
+                }
 
-	public void addTasks(Task tasks[], TaskPriority priority) {
+                // Wake up the task controller thread
+                synchronized (this) {
+                        this.notifyAll();
+                }
 
-		// It can sometimes happen during a batch that no tasks are actually
-		// executed --> tasks[] array may be empty
-		if ((tasks == null) || (tasks.length == 0))
-			return;
+                // Show the task list component
+                SwingUtilities.invokeLater(new Runnable() {
 
-		for (Task task : tasks) {
-			WrappedTask newQueueEntry = new WrappedTask(task, priority);
-			taskQueue.addWrappedTask(newQueueEntry);
-		}
+                        public void run() {
+                                taskWindow.setVisible(true);
+                        }
+                });
 
-		// Wake up the task controller thread
-		synchronized (this) {
-			this.notifyAll();
-		}
+        }
 
-		// Show the task list component
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				taskWindow.setVisible(true);
-			}
-		});
+        /**
+         * Task controller thread main method.
+         *
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
 
-	}
+                while (true) {
 
-	/**
-	 * Task controller thread main method.
-	 *
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
+                        // If the queue is empty, we can sleep. When new task is added into
+                        // the queue, we will be awaken by notify()
+                        synchronized (this) {
+                                while (taskQueue.isEmpty()) {
+                                        try {
+                                                this.wait();
+                                        } catch (InterruptedException e) {
+                                                // Ignore
+                                        }
+                                }
+                        }
 
-		while (true) {
+                        // Check if all tasks in the queue are finished
+                        if (taskQueue.allTasksFinished()) {
+                                SwingUtilities.invokeLater(new Runnable() {
 
-			// If the queue is empty, we can sleep. When new task is added into
-			// the queue, we will be awaken by notify()
-			synchronized (this) {
-				while (taskQueue.isEmpty()) {
-					try {
-						this.wait();
-					} catch (InterruptedException e) {
-						// Ignore
-					}
-				}
-			}
+                                        public void run() {
+                                                taskWindow.setVisible(false);
+                                        }
+                                });
+                                taskQueue.clear();
+                                continue;
+                        }
 
-			// Check if all tasks in the queue are finished
-			if (taskQueue.allTasksFinished()) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						taskWindow.setVisible(false);
-					}
-				});
-				taskQueue.clear();
-				continue;
-			}
+                        // Remove already finished threads from runningThreads
+                        Iterator<WorkerThread> threadIterator = runningThreads.iterator();
+                        while (threadIterator.hasNext()) {
+                                WorkerThread thread = threadIterator.next();
+                                if (thread.isFinished()) {
+                                        threadIterator.remove();
+                                }
+                        }
 
-			// Remove already finished threads from runningThreads
-			Iterator<WorkerThread> threadIterator = runningThreads.iterator();
-			while (threadIterator.hasNext()) {
-				WorkerThread thread = threadIterator.next();
-				if (thread.isFinished())
-					threadIterator.remove();
-			}
+                        // Get a snapshot of the queue
+                        WrappedTask[] queueSnapshot = taskQueue.getQueueSnapshot();
 
-			// Get a snapshot of the queue
-			WrappedTask[] queueSnapshot = taskQueue.getQueueSnapshot();
+                        // Get the settings for maximum # of threads
+                        //GuineuPreferences preferences = GuineuCore.getPreferences();
+                        int maxRunningThreads;
+                        //if (preferences.isAutoNumberOfThreads()) {
+                        maxRunningThreads = Runtime.getRuntime().availableProcessors();
+                        //} else {
+                        //	maxRunningThreads = preferences.getManualNumberOfThreads();
+                        //}
 
-			// Get the settings for maximum # of threads
-			//GuineuPreferences preferences = GuineuCore.getPreferences();
-			int maxRunningThreads;
-			//if (preferences.isAutoNumberOfThreads()) {
-				maxRunningThreads = Runtime.getRuntime().availableProcessors();
-			//} else {
-			//	maxRunningThreads = preferences.getManualNumberOfThreads();
-			//}
+                        // Check all tasks in the queue
+                        for (WrappedTask task : queueSnapshot) {
 
-			// Check all tasks in the queue
-			for (WrappedTask task : queueSnapshot) {
+                                // Skip assigned and canceled tasks
+                                if (task.isAssigned() || (task.getActualTask().getStatus() == TaskStatus.CANCELED)) {
+                                        continue;
+                                }
 
-				// Skip assigned and canceled tasks
-				if (task.isAssigned()
-						|| (task.getActualTask().getStatus() == TaskStatus.CANCELED))
-					continue;
+                                // Create a new thread if the task is high-priority or if we
+                                // have less then maximum # of threads running
+                                if ((task.getPriority() == TaskPriority.HIGH) || (runningThreads.size() < maxRunningThreads)) {
+                                        WorkerThread newThread = new WorkerThread(task);
 
-				// Create a new thread if the task is high-priority or if we
-				// have less then maximum # of threads running
-				if ((task.getPriority() == TaskPriority.HIGH)
-						|| (runningThreads.size() < maxRunningThreads)) {
-					WorkerThread newThread = new WorkerThread(task);
+                                        if (task.getPriority() == TaskPriority.NORMAL) {
+                                                runningThreads.add(newThread);
+                                        }
 
-					if (task.getPriority() == TaskPriority.NORMAL) {
-						runningThreads.add(newThread);
-					}
+                                        newThread.start();
+                                }
+                        }
 
-					newThread.start();
-				}
-			}
+                        // Tell the queue to refresh the Task progress window
+                        taskQueue.refresh();
 
-			// Tell the queue to refresh the Task progress window
-			taskQueue.refresh();
+                        // Sleep for a while until next update
+                        try {
+                                Thread.sleep(TASKCONTROLLER_THREAD_SLEEP);
+                        } catch (InterruptedException e) {
+                                // Ignore
+                        }
 
-			// Sleep for a while until next update
-			try {
-				Thread.sleep(TASKCONTROLLER_THREAD_SLEEP);
-			} catch (InterruptedException e) {
-				// Ignore
-			}
+                }
 
-		}
+        }
 
-	}
+        public void setTaskPriority(Task task, TaskPriority priority) {
 
-	public void setTaskPriority(Task task, TaskPriority priority) {
+                // Get a snapshot of current task queue
+                WrappedTask currentQueue[] = taskQueue.getQueueSnapshot();
 
-		// Get a snapshot of current task queue
-		WrappedTask currentQueue[] = taskQueue.getQueueSnapshot();
+                // Find the requested task
+                for (WrappedTask wrappedTask : currentQueue) {
 
-		// Find the requested task
-		for (WrappedTask wrappedTask : currentQueue) {
+                        if (wrappedTask.getActualTask() == task) {
+                                logger.finest("Setting priority of task \"" + task.getTaskDescription() + "\" to " + priority);
+                                wrappedTask.setPriority(priority);
 
-			if (wrappedTask.getActualTask() == task) {
-				logger.finest("Setting priority of task \""
-						+ task.getTaskDescription() + "\" to " + priority);
-				wrappedTask.setPriority(priority);
-
-				// Call refresh to re-sort the queue according to new priority
-				// and update the Task progress window
-				taskQueue.refresh();
-			}
-		}
-	}
-
+                                // Call refresh to re-sort the queue according to new priority
+                                // and update the Task progress window
+                                taskQueue.refresh();
+                        }
+                }
+        }
 }

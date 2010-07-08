@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.taskcontrol.impl;
 
 import guineu.main.GuineuCore;
@@ -38,103 +37,106 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  * This class represents a window with a table of running tasks
  */
 public class TaskProgressWindow extends JInternalFrame implements
         ActionListener {
 
-    private JTable taskTable;
-    private JPopupMenu popupMenu;
-    private JMenu priorityMenu;
-    private JMenuItem cancelTaskMenuItem,  highPriorityMenuItem,  normalPriorityMenuItem;
+        private JTable taskTable;
+        private JPopupMenu popupMenu;
+        private JMenu priorityMenu;
+        private JMenuItem cancelTaskMenuItem, highPriorityMenuItem, normalPriorityMenuItem;
 
-    /**
-     * Constructor
-     */
-    public TaskProgressWindow() {
+        /**
+         * Constructor
+         */
+        public TaskProgressWindow() {
 
-        super("Tasks in progress...", true, true, true, true);
-        try {
-            // We don't want this window to be closed until all tasks are finished
-            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+                super("Tasks in progress...", true, true, true, true);
+                try {
+                        // We don't want this window to be closed until all tasks are finished
+                        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-            TaskControllerImpl taskController = (TaskControllerImpl) GuineuCore.getTaskController();
+                        TaskControllerImpl taskController = (TaskControllerImpl) GuineuCore.getTaskController();
 
-            taskTable = new JTable(taskController.getTaskQueue());
-            taskTable.setCellSelectionEnabled(false);
-            taskTable.setColumnSelectionAllowed(false);
-            taskTable.setRowSelectionAllowed(true);
-            taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            taskTable.setDefaultRenderer(JComponent.class,
-                    new ComponentCellRenderer());
+                        taskTable = new JTable(taskController.getTaskQueue());
+                        taskTable.setCellSelectionEnabled(false);
+                        taskTable.setColumnSelectionAllowed(false);
+                        taskTable.setRowSelectionAllowed(true);
+                        taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                        taskTable.setDefaultRenderer(JComponent.class,
+                                new ComponentCellRenderer());
 
-            JScrollPane jJobScroll = new JScrollPane(taskTable);
-            add(jJobScroll, BorderLayout.CENTER);
+                        JScrollPane jJobScroll = new JScrollPane(taskTable);
+                        add(jJobScroll, BorderLayout.CENTER);
 
-            // Create popup menu and items
-            popupMenu = new JPopupMenu();
+                        // Create popup menu and items
+                        popupMenu = new JPopupMenu();
 
-            priorityMenu = new JMenu("Set priority...");
-            highPriorityMenuItem = GUIUtils.addMenuItem(priorityMenu, "High", this);
-            normalPriorityMenuItem = GUIUtils.addMenuItem(priorityMenu, "Normal",
-                    this);
-            popupMenu.add(priorityMenu);
+                        priorityMenu = new JMenu("Set priority...");
+                        highPriorityMenuItem = GUIUtils.addMenuItem(priorityMenu, "High", this);
+                        normalPriorityMenuItem = GUIUtils.addMenuItem(priorityMenu, "Normal",
+                                this);
+                        popupMenu.add(priorityMenu);
 
-            cancelTaskMenuItem = GUIUtils.addMenuItem(popupMenu, "Cancel task",
-                    this);
+                        cancelTaskMenuItem = GUIUtils.addMenuItem(popupMenu, "Cancel task",
+                                this);
 
-            // Addd popup menu to the task table
-            taskTable.setComponentPopupMenu(popupMenu);
+                        // Addd popup menu to the task table
+                        taskTable.setComponentPopupMenu(popupMenu);
 
-            // Set the width for first column (task description)
-            taskTable.getColumnModel().getColumn(0).setPreferredWidth(350);
+                        // Set the width for first column (task description)
+                        taskTable.getColumnModel().getColumn(0).setPreferredWidth(350);
 
-            pack();
+                        pack();
 
-            // Set position and size
-            setBounds(20, 20, 600, 150);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-        try {
-
-            TaskControllerImpl taskController = (TaskControllerImpl) GuineuCore.getTaskController();
-
-            WrappedTask currentQueue[] = taskController.getTaskQueue().getQueueSnapshot();
-
-            int selectedRow = taskTable.getSelectedRow();
-
-            if (selectedRow >= currentQueue.length) {
-                return;
-            }
-
-            Task selectedTask = currentQueue[selectedRow].getActualTask();
-
-            Object src = event.getSource();
-
-            if (src == cancelTaskMenuItem) {
-                TaskStatus status = selectedTask.getStatus();
-                if ((status == TaskStatus.WAITING) || (status == TaskStatus.PROCESSING)) {
-                    selectedTask.cancel();
+                        // Set position and size
+                        setBounds(20, 20, 600, 150);
+                } catch (Exception e) {
+                        e.printStackTrace();
                 }
-            }
 
-            if (src == highPriorityMenuItem) {
-                taskController.setTaskPriority(selectedTask, TaskPriority.HIGH);
-            }
-
-            if (src == normalPriorityMenuItem) {
-                taskController.setTaskPriority(selectedTask, TaskPriority.NORMAL);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
+
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent event) {
+                try {
+
+                        TaskControllerImpl taskController = (TaskControllerImpl) GuineuCore.getTaskController();
+
+                        WrappedTask currentQueue[] = taskController.getTaskQueue().getQueueSnapshot();
+
+                        int selectedRow = taskTable.getSelectedRow();
+
+                        if (selectedRow >= currentQueue.length) {
+                                return;
+                        }
+
+                        Task selectedTask = currentQueue[selectedRow].getActualTask();
+
+                        Object src = event.getSource();
+
+                        if (src == cancelTaskMenuItem) {
+                                TaskStatus status = selectedTask.getStatus();
+                                if ((status == TaskStatus.WAITING) || (status == TaskStatus.PROCESSING)) {
+                                        selectedTask.cancel();
+                                }
+                        }
+
+                        if (src == highPriorityMenuItem) {
+                                taskController.setTaskPriority(selectedTask, TaskPriority.HIGH);
+                        }
+
+                        if (src == normalPriorityMenuItem) {
+                                taskController.setTaskPriority(selectedTask, TaskPriority.NORMAL);
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+        }
 }

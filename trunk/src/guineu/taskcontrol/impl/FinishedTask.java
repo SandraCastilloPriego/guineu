@@ -15,15 +15,15 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.taskcontrol.impl;
 
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
-
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
  * This class serves as a replacement for Task within the task controller queue,
  * after the Task is finished. This allows the garbage collector to remove the
  * memory occupied by the actual Task while keeping the task description in the
@@ -31,42 +31,41 @@ import guineu.taskcontrol.TaskStatus;
  */
 public class FinishedTask implements Task {
 
-	private String description, errorMessage;
-	private TaskStatus status;
-	private double finishedPercentage;
+        private String description, errorMessage;
+        private TaskStatus status;
+        private double finishedPercentage;
 
-	public FinishedTask(Task task) {
-		description = task.getTaskDescription();
-		errorMessage = task.getErrorMessage();
-		status = task.getStatus();
-		finishedPercentage = task.getFinishedPercentage();
-	}
+        public FinishedTask(Task task) {
+                description = task.getTaskDescription();
+                errorMessage = task.getErrorMessage();
+                status = task.getStatus();
+                finishedPercentage = task.getFinishedPercentage();
+        }
 
-	public void cancel() {
-	}
+        public void cancel() {
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public double getFinishedPercentage() {
-		return finishedPercentage;
-	}
+        public double getFinishedPercentage() {
+                return finishedPercentage;
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public String getTaskDescription() {
-		return description;
-	}
+        public String getTaskDescription() {
+                return description;
+        }
 
-	public void run() {
-		throw new IllegalStateException();
-	}
+        public void run() {
+                throw new IllegalStateException();
+        }
 
-	public Object[] getCreatedObjects() {
-		return null;
-	}
-
+        public Object[] getCreatedObjects() {
+                return null;
+        }
 }
