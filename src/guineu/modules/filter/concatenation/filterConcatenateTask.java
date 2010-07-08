@@ -78,12 +78,7 @@ public class filterConcatenateTask implements Task {
 			// this.refillDataset(newDataset);
 			newDataset.setType(DatasetType.OTHER);
 			desktop.AddNewFile(newDataset);
-			//creates internal frame with the table
-            /*DataTableModel model = new DatasetDataModel_concatenate(newDataset);
-			DataTable table = new PushableTable(model);
-			DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-			desktop.addInternalFrame(frame);
-			frame.setVisible(true);*/
+			          
 			//desktop.removeData(datasets[0]);
 			//desktop.removeData(datasets[1]);
 			status = TaskStatus.FINISHED;

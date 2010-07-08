@@ -38,59 +38,59 @@ import java.util.logging.Logger;
  */
 public class NormalizeNOMISFilter implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
 
-    public void initModule() {
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "NOMIS Normalization Filter..",
-                "TODO write description", KeyEvent.VK_N, this, null, "icons/help.png");
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running NOMIS Normalization Filter");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished NOMIS Normalization Filter on " + ((NormalizeNOMISFilterTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while NOMIS Normalization Filter on .. " + ((NormalizeNOMISFilterTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+        public void initModule() {
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.IDENTIFICATION, "NOMIS Normalization Filter..",
+                        "TODO write description", KeyEvent.VK_N, this, null, "icons/help.png");
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        runModule();
-    }
-
-    public ParameterSet getParameterSet() {
-        return null;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-    }
-
-    public String toString() {
-        return "NOMIS Normalization Filter";
-    }
-
-    public Task[] runModule() {
-        // prepare a new group of tasks
-        Dataset[] datasets = desktop.getSelectedDataFiles();
-        Task tasks[] = new NormalizeNOMISFilterTask[datasets.length];
-        for (int i = 0; i < datasets.length; i++) {
-            tasks[i] = new NormalizeNOMISFilterTask(datasets[i], desktop);
+        public void taskStarted(Task task) {
+                logger.info("Running NOMIS Normalization Filter");
         }
-        GuineuCore.getTaskController().addTasks(tasks);
 
-        return tasks;
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished NOMIS Normalization Filter on " + ((NormalizeNOMISFilterTask) task).getTaskDescription());
+                }
 
-    }
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while NOMIS Normalization Filter on .. " + ((NormalizeNOMISFilterTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+                runModule();
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
+        }
+
+        public void setParameters(ParameterSet parameterValues) {
+        }
+
+        public String toString() {
+                return "NOMIS Normalization Filter";
+        }
+
+        public Task[] runModule() {
+                // prepare a new group of tasks
+                Dataset[] datasets = desktop.getSelectedDataFiles();
+                Task tasks[] = new NormalizeNOMISFilterTask[datasets.length];
+                for (int i = 0; i < datasets.length; i++) {
+                        tasks[i] = new NormalizeNOMISFilterTask(datasets[i]);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+        }
 }

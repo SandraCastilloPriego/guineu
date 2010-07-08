@@ -19,219 +19,197 @@ package guineu.modules.identification.linearnormalization;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.datamodels.OtherDataModel;
-import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ */
 class LinearNormalizerTask implements Task {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    static final double maximumOverallPeakHeightAfterNormalization = 100000.0;
-    private Dataset originalPeakList, normalizedPeakList;
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private int processedDataFiles, totalDataFiles;
-    private String normalizationType;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        static final double maximumOverallPeakHeightAfterNormalization = 100000.0;
+        private Dataset originalPeakList, normalizedPeakList;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private int processedDataFiles, totalDataFiles;
+        private String normalizationType;
 
-    public LinearNormalizerTask(Dataset peakList,
-            LinearNormalizerParameters parameters) {
+        public LinearNormalizerTask(Dataset peakList,
+                LinearNormalizerParameters parameters) {
 
-        this.originalPeakList = peakList;
+                this.originalPeakList = peakList;
 
-        this.normalizedPeakList = this.originalPeakList.clone();
-        this.normalizedPeakList.getRows().clear();
-        this.normalizedPeakList.setDatasetName("Linear Normalization - " + this.originalPeakList.getDatasetName());
+                this.normalizedPeakList = this.originalPeakList.clone();
+                this.normalizedPeakList.getRows().clear();
+                this.normalizedPeakList.setDatasetName("Linear Normalization - " + this.originalPeakList.getDatasetName());
 
-        totalDataFiles = originalPeakList.getNumberCols();
+                totalDataFiles = originalPeakList.getNumberCols();
 
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public double getFinishedPercentage() {
-        return (double) processedDataFiles / (double) totalDataFiles;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getTaskDescription() {
-        return "Linear normalization of " + originalPeakList + " by " + normalizationType;
-    }
-
-    public void run() {
-
-        status = TaskStatus.PROCESSING;
-        logger.info("Running linear normalizer");
-
-        // This hashtable maps rows from original alignment result to rows of
-        // the normalized alignment
-        Hashtable<PeakListRow, PeakListRow> rowMap = new Hashtable<PeakListRow, PeakListRow>();
-
-        // Create new peak list
-        //	normalizedPeakList = new Dataset(
-        //			originalPeakList + " " + suffix)
-
-        // Loop through all raw data files, and find the peak with biggest
-        // height
-        double maxOriginalHeight = 0.0;
-        for (String file : originalPeakList.getAllColumnNames()) {
-            for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
-                Double p = (Double) originalpeakListRow.getPeak(file);
-                if (p != null) {
-                    if (maxOriginalHeight <= p) {
-                        maxOriginalHeight = p;
-                    }
-                }
-            }
         }
 
-        // Loop through all raw data files, and normalize peak values
-        for (String file : originalPeakList.getAllColumnNames()) {
+        public void cancel() {
+                status = TaskStatus.CANCELED;
 
-            // Cancel?
-            if (status == TaskStatus.CANCELED) {
-                return;
-            }
+        }
 
-            // Determine normalization type and calculate normalization factor
-            double normalizationFactor = 1.0;
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-            // - normalization by average peak intensity
-            if (normalizationType == LinearNormalizerParameters.NormalizationTypeAverageIntensity) {
-                double intensitySum = 0;
-                int intensityCount = 0;
-                for (PeakListRow peakListRow : originalPeakList.getRows()) {
-                    Double p = (Double) peakListRow.getPeak(file);
-                    if (p != null) {
-                        intensitySum += p;
+        public double getFinishedPercentage() {
+                return (double) processedDataFiles / (double) totalDataFiles;
+        }
 
-                        intensityCount++;
-                    }
+        public TaskStatus getStatus() {
+                return status;
+        }
+
+        public String getTaskDescription() {
+                return "Linear normalization of " + originalPeakList + " by " + normalizationType;
+        }
+
+        public void run() {
+
+                status = TaskStatus.PROCESSING;
+                logger.info("Running linear normalizer");
+
+                // This hashtable maps rows from original alignment result to rows of
+                // the normalized alignment
+                Hashtable<PeakListRow, PeakListRow> rowMap = new Hashtable<PeakListRow, PeakListRow>();
+
+                // Create new peak list
+                //	normalizedPeakList = new Dataset(
+                //			originalPeakList + " " + suffix)
+
+                // Loop through all raw data files, and find the peak with biggest
+                // height
+                double maxOriginalHeight = 0.0;
+                for (String file : originalPeakList.getAllColumnNames()) {
+                        for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
+                                Double p = (Double) originalpeakListRow.getPeak(file);
+                                if (p != null) {
+                                        if (maxOriginalHeight <= p) {
+                                                maxOriginalHeight = p;
+                                        }
+                                }
+                        }
                 }
-                normalizationFactor = intensitySum / (double) intensityCount;
-            }
 
-            // - normalization by average squared peak intensity
-            if (normalizationType == LinearNormalizerParameters.NormalizationTypeAverageSquaredIntensity) {
-                double intensitySum = 0.0;
-                int intensityCount = 0;
-                for (PeakListRow peakListRow : originalPeakList.getRows()) {
-                    Double p = (Double) peakListRow.getPeak(file);
-                    if (p != null) {
-                        intensitySum += (p * p);
+                // Loop through all raw data files, and normalize peak values
+                for (String file : originalPeakList.getAllColumnNames()) {
 
-                        intensityCount++;
-                    }
-                }
-                normalizationFactor = intensitySum / (double) intensityCount;
-            }
+                        // Cancel?
+                        if (status == TaskStatus.CANCELED) {
+                                return;
+                        }
 
-            // - normalization by maximum peak intensity
-            if (normalizationType == LinearNormalizerParameters.NormalizationTypeMaximumPeakHeight) {
-                double maximumIntensity = 0.0;
-                for (PeakListRow peakListRow : originalPeakList.getRows()) {
-                    Double p = (Double) peakListRow.getPeak(file);
-                    if (p != null) {
-                        if (maximumIntensity < p) {
-                            maximumIntensity = p;
+                        // Determine normalization type and calculate normalization factor
+                        double normalizationFactor = 1.0;
+
+                        // - normalization by average peak intensity
+                        if (normalizationType == LinearNormalizerParameters.NormalizationTypeAverageIntensity) {
+                                double intensitySum = 0;
+                                int intensityCount = 0;
+                                for (PeakListRow peakListRow : originalPeakList.getRows()) {
+                                        Double p = (Double) peakListRow.getPeak(file);
+                                        if (p != null) {
+                                                intensitySum += p;
+
+                                                intensityCount++;
+                                        }
+                                }
+                                normalizationFactor = intensitySum / (double) intensityCount;
+                        }
+
+                        // - normalization by average squared peak intensity
+                        if (normalizationType == LinearNormalizerParameters.NormalizationTypeAverageSquaredIntensity) {
+                                double intensitySum = 0.0;
+                                int intensityCount = 0;
+                                for (PeakListRow peakListRow : originalPeakList.getRows()) {
+                                        Double p = (Double) peakListRow.getPeak(file);
+                                        if (p != null) {
+                                                intensitySum += (p * p);
+
+                                                intensityCount++;
+                                        }
+                                }
+                                normalizationFactor = intensitySum / (double) intensityCount;
+                        }
+
+                        // - normalization by maximum peak intensity
+                        if (normalizationType == LinearNormalizerParameters.NormalizationTypeMaximumPeakHeight) {
+                                double maximumIntensity = 0.0;
+                                for (PeakListRow peakListRow : originalPeakList.getRows()) {
+                                        Double p = (Double) peakListRow.getPeak(file);
+                                        if (p != null) {
+                                                if (maximumIntensity < p) {
+                                                        maximumIntensity = p;
+                                                }
+
+
+                                        }
+                                }
+                                normalizationFactor = maximumIntensity;
                         }
 
 
-                    }
+                        // Readjust normalization factor so that maximum height will be
+                        // equal to maximumOverallPeakHeightAfterNormalization after
+                        // normalization
+                        double maxNormalizedHeight = maxOriginalHeight / normalizationFactor;
+                        normalizationFactor = normalizationFactor * maxNormalizedHeight / maximumOverallPeakHeightAfterNormalization;
+
+                        // Normalize all peak intenisities using the normalization factor
+                        for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
+
+                                // Cancel?
+                                if (status == TaskStatus.CANCELED) {
+                                        return;
+                                }
+
+                                Double originalPeak = (Double) originalpeakListRow.getPeak(file);
+                                if (originalPeak != null) {
+                                        Double normalizedPeak;
+                                        double normalizedHeight = originalPeak / normalizationFactor;
+                                        normalizedPeak = normalizedHeight;
+
+                                        PeakListRow normalizedRow = rowMap.get(originalpeakListRow);
+
+                                        if (normalizedRow == null) {
+                                                normalizedRow = originalpeakListRow.clone();
+                                                rowMap.put(originalpeakListRow, normalizedRow);
+                                        }
+
+                                        normalizedRow.setPeak(file, normalizedPeak);
+
+                                }
+
+                        }
+
+                        // Progress
+                        processedDataFiles++;
+
                 }
-                normalizationFactor = maximumIntensity;
-            }
 
-
-            // Readjust normalization factor so that maximum height will be
-            // equal to maximumOverallPeakHeightAfterNormalization after
-            // normalization
-            double maxNormalizedHeight = maxOriginalHeight / normalizationFactor;
-            normalizationFactor = normalizationFactor * maxNormalizedHeight / maximumOverallPeakHeightAfterNormalization;
-
-            // Normalize all peak intenisities using the normalization factor
-            for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
-
-                // Cancel?
-                if (status == TaskStatus.CANCELED) {
-                    return;
+                // Finally add all normalized rows to normalized alignment result
+                for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
+                        PeakListRow normalizedRow = rowMap.get(originalpeakListRow);
+                        normalizedPeakList.AddRow(normalizedRow);
                 }
 
-                Double originalPeak = (Double) originalpeakListRow.getPeak(file);
-                if (originalPeak != null) {
-                    Double normalizedPeak;
-                    double normalizedHeight = originalPeak / normalizationFactor;
-                    normalizedPeak = normalizedHeight;
+                GUIUtils.showNewTable(normalizedPeakList);
 
-                    PeakListRow normalizedRow = rowMap.get(originalpeakListRow);
-
-                    if (normalizedRow == null) {
-                        normalizedRow = originalpeakListRow.clone();
-                        rowMap.put(originalpeakListRow, normalizedRow);
-                    }
-
-                    normalizedRow.setPeak(file, normalizedPeak);
-
-                }
-
-            }
-
-            // Progress
-            processedDataFiles++;
+                logger.info("Finished linear normalizer");
+                status = TaskStatus.FINISHED;
 
         }
 
-        // Finally add all normalized rows to normalized alignment result
-        for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
-            PeakListRow normalizedRow = rowMap.get(originalpeakListRow);
-            normalizedPeakList.AddRow(normalizedRow);
+        public Object[] getCreatedObjects() {
+                return new Object[]{normalizedPeakList};
         }
-
-        GuineuCore.getDesktop().AddNewFile(normalizedPeakList);
-        DataTableModel model = null;
-        switch (normalizedPeakList.getType()) {
-            case LCMS:
-                model = new DatasetLCMSDataModel(normalizedPeakList);
-                break;
-            case GCGCTOF:
-                model = new DatasetGCGCDataModel(normalizedPeakList);
-                break;
-            case OTHER:
-                model = new OtherDataModel(normalizedPeakList);
-                break;
-        }
-        DataTable table = new PushableTable(model);
-        table.formatNumbers(normalizedPeakList.getType());
-        DataInternalFrame frame = new DataInternalFrame(normalizedPeakList.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-        GuineuCore.getDesktop().addInternalFrame(frame);
-
-
-        logger.info("Finished linear normalizer");
-        status = TaskStatus.FINISHED;
-
-    }
-
-    public Object[] getCreatedObjects() {
-        return new Object[]{normalizedPeakList};
-    }
 }

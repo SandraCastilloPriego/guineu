@@ -61,278 +61,271 @@ import javax.swing.event.ListSelectionListener;
 public class ItemSelector extends JPanel implements ActionListener,
         MouseListener, ListSelectionListener {
 
-    public static final String DATA_FILES_LABEL = "Dataset Files";
-    private DragOrderedJList DatasetFiles;
-    private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
-    private DefaultListModel DatasetNamesModel = new DefaultListModel();
-    private JPopupMenu dataFilePopupMenu;
-    private int copies = 0;
-    private NameChangeParameter parameterName;
+        public static final String DATA_FILES_LABEL = "Dataset Files";
+        private DragOrderedJList DatasetFiles;
+        private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
+        private DefaultListModel DatasetNamesModel = new DefaultListModel();
+        private JPopupMenu dataFilePopupMenu;
+        private int copies = 0;
+        private NameChangeParameter parameterName;
 
-    /**
-     * Constructor
-     */
-    public ItemSelector(Desktop desktop) {
-
-
-        // Create panel for raw data objects
-        JPanel rawDataPanel = new JPanel();
-        JLabel rawDataTitle = new JLabel(DATA_FILES_LABEL);
-
-        DatasetFiles = new DragOrderedJList(DatasetNamesModel);
-        DatasetFiles.setCellRenderer(new ItemSelectorListRenderer());
-        DatasetFiles.addMouseListener(this);
-        DatasetFiles.addListSelectionListener(this);
-        JScrollPane rawDataScroll = new JScrollPane(DatasetFiles);
-
-        rawDataPanel.setLayout(new BorderLayout());
-        rawDataPanel.add(rawDataTitle, BorderLayout.NORTH);
-        rawDataPanel.add(rawDataScroll, BorderLayout.CENTER);
-        rawDataPanel.setMinimumSize(new Dimension(150, 10));
+        /**
+         * Constructor
+         */
+        public ItemSelector(Desktop desktop) {
 
 
+                // Create panel for raw data objects
+                JPanel rawDataPanel = new JPanel();
+                JLabel rawDataTitle = new JLabel(DATA_FILES_LABEL);
 
-        // Add panels to a split and put split on the main panel
-        setPreferredSize(new Dimension(200, 10));
-        setLayout(new BorderLayout());
-        add(rawDataPanel, BorderLayout.CENTER);
+                DatasetFiles = new DragOrderedJList(DatasetNamesModel);
+                DatasetFiles.setCellRenderer(new ItemSelectorListRenderer());
+                DatasetFiles.addMouseListener(this);
+                DatasetFiles.addListSelectionListener(this);
+                JScrollPane rawDataScroll = new JScrollPane(DatasetFiles);
 
-        dataFilePopupMenu = new JPopupMenu();
-        GUIUtils.addMenuItem(dataFilePopupMenu, "Change Name", this, "CHANGE_NAME");
-        GUIUtils.addMenuItem(dataFilePopupMenu, "Show Dataset", this, "SHOW_DATASET");
-        GUIUtils.addMenuItem(dataFilePopupMenu, "Add Comments", this, "ADD_COMMENT");
-        GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset in a File", this, "SAVE_DATASET");
-        GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
-        GUIUtils.addMenuItem(dataFilePopupMenu, "Remove", this, "REMOVE_FILE");
+                rawDataPanel.setLayout(new BorderLayout());
+                rawDataPanel.add(rawDataTitle, BorderLayout.NORTH);
+                rawDataPanel.add(rawDataScroll, BorderLayout.CENTER);
+                rawDataPanel.setMinimumSize(new Dimension(150, 10));
 
-        this.parameterName = new NameChangeParameter();
 
-    }
 
-    void addSelectionListener(ListSelectionListener listener) {
-        DatasetFiles.addListSelectionListener(listener);
-    }
+                // Add panels to a split and put split on the main panel
+                setPreferredSize(new Dimension(200, 10));
+                setLayout(new BorderLayout());
+                add(rawDataPanel, BorderLayout.CENTER);
 
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog nameDialog = new ParameterSetupDialog("Change Name", parameterName);
-            nameDialog.setVisible(true);
-            return nameDialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
+                dataFilePopupMenu = new JPopupMenu();
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Change Name", this, "CHANGE_NAME");
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Show Dataset", this, "SHOW_DATASET");
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Add Comments", this, "ADD_COMMENT");
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset in a File", this, "SAVE_DATASET");
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Remove", this, "REMOVE_FILE");
+
+                this.parameterName = new NameChangeParameter();
+
         }
-    }
 
-    public void setupInfoDialog(Dataset data) {
-        try {
-            InfoDataIF dialog = new InfoDataIF();
-            dialog.setData(data);
-            GuineuCore.getDesktop().getDesktopPane().add(dialog);
-            GuineuCore.getDesktop().getDesktopPane().validate();
-            dialog.setVisible(true);
-        } catch (Exception exception) {
+        void addSelectionListener(ListSelectionListener listener) {
+                DatasetFiles.addListSelectionListener(listener);
         }
-    }
 
-    // Implementation of action listener interface
-    public void actionPerformed(ActionEvent e) {
-        Runtime.getRuntime().freeMemory();
-        String command = e.getActionCommand();
-        Boolean changeName = false;
+        public ExitCode setupParameters() {
+                try {
+                        ParameterSetupDialog nameDialog = new ParameterSetupDialog("Change Name", parameterName);
+                        nameDialog.setVisible(true);
+                        return nameDialog.getExitCode();
+                } catch (Exception exception) {
+                        return ExitCode.CANCEL;
+                }
+        }
 
-        if (command.equals("CHANGE_NAME") || changeName) {
-            try {
-                Dataset[] selectedFiles = this.getSelectedDatasets();
-                this.parameterName.setParameterValue(NameChangeParameter.name, selectedFiles[0].getDatasetName());
-                ExitCode code = this.setupParameters();
-                changeName = true;
-                if (code != ExitCode.OK) {
-                    return;
+        public void setupInfoDialog(Dataset data) {
+                try {
+                        InfoDataIF dialog = new InfoDataIF();
+                        dialog.setData(data);
+                        GuineuCore.getDesktop().getDesktopPane().add(dialog);
+                        GuineuCore.getDesktop().getDesktopPane().validate();
+                        dialog.setVisible(true);
+                } catch (Exception exception) {
+                }
+        }
+
+        // Implementation of action listener interface
+        public void actionPerformed(ActionEvent e) {
+                Runtime.getRuntime().freeMemory();
+                String command = e.getActionCommand();
+                Boolean changeName = false;
+
+                if (command.equals("CHANGE_NAME") || changeName) {
+                        try {
+                                Dataset[] selectedFiles = this.getSelectedDatasets();
+                                this.parameterName.setParameterValue(NameChangeParameter.name, selectedFiles[0].getDatasetName());
+                                ExitCode code = this.setupParameters();
+                                changeName = true;
+                                if (code != ExitCode.OK) {
+                                        return;
+                                }
+
+
+                                int index = DatasetNamesModel.indexOf(selectedFiles[0].getDatasetName());
+                                selectedFiles[0].setDatasetName((String) parameterName.getParameterValue(NameChangeParameter.name));
+                                DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
+                        } catch (Exception exception) {
+                        }
+                        changeName = false;
+                }
+
+                if (command.equals("ADD_COMMENT")) {
+                        Dataset[] selectedFiles = this.getSelectedDatasets();
+                        try {
+                                for (Dataset data : selectedFiles) {
+                                        this.setupInfoDialog(data);
+                                }
+                        } catch (Exception exception) {
+                                return;
+                        }
+                }
+
+                if (command.equals("REMOVE_FILE")) {
+                        removeData();
+                }
+
+                if (command.equals("SHOW_DATASET")) {
+                        showData();
+                }
+
+                if (command.equals("SAVE_DATASET_DB")) {
+                        Dataset[] selectedFiles = getSelectedDatasets();
+                        for (Dataset dataset : selectedFiles) {
+                                if (dataset != null && (dataset.getType() == DatasetType.LCMS || selectedFiles[0].getType() == DatasetType.GCGCTOF)) {
+                                        SaveFileDB save = new SaveFileDB(dataset);
+                                        save.initModule();
+
+                                } else if (dataset != null && dataset.getType() == DatasetType.QUALITYCONTROL) {
+                                        SaveQualityControlFileDB save = new SaveQualityControlFileDB(dataset);
+                                        save.initModule();
+
+                                }
+                        }
+                }
+
+                if (command.equals("SAVE_DATASET")) {
+                        Dataset[] selectedFiles = getSelectedDatasets();
+                        if (selectedFiles[0] != null && selectedFiles[0].getType() == DatasetType.LCMS) {
+                                SaveLCMSFile save = new SaveLCMSFile(selectedFiles);
+                                save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveLCMSParameters());
+                                save.initModule();
+                                ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveLCMSParameters((SimpleParameterSet) save.getParameterSet());
+                        } else if (selectedFiles[0].getType() == DatasetType.GCGCTOF) {
+                                SaveGCGCFile save = new SaveGCGCFile(selectedFiles);
+                                save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveGCGCParameters());
+                                save.initModule();
+                                ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveGCGCParameters((SimpleParameterSet) save.getParameterSet());
+                        } else {
+                                SaveOtherFile save = new SaveOtherFile(selectedFiles);
+                                save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveOtherParameters());
+                                save.initModule();
+                                ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveOtherParameters((SimpleParameterSet) save.getParameterSet());
+                        }
                 }
 
 
-                int index = DatasetNamesModel.indexOf(selectedFiles[0].getDatasetName());
-                selectedFiles[0].setDatasetName((String) parameterName.getParameterValue(NameChangeParameter.name));
-                DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
-            } catch (Exception exception) {
-            }
-            changeName = false;
         }
 
-        if (command.equals("ADD_COMMENT")) {
-            Dataset[] selectedFiles = this.getSelectedDatasets();
-            try {
-                for (Dataset data : selectedFiles) {
-                    this.setupInfoDialog(data);
+        private void showData() {
+                Dataset[] selectedFiles = getSelectedDatasets();
+                for (Dataset file : selectedFiles) {
+                        if (file != null) {
+                                GUIUtils.showNewTable(file);
+                        }
                 }
-            } catch (Exception exception) {
-                return;
-            }
         }
 
-        if (command.equals("REMOVE_FILE")) {
-            removeData();
-        }
+        private void removeData() {
+                Dataset[] selectedFiles = getSelectedDatasets();
 
-        if (command.equals("SHOW_DATASET")) {
-            showData();
-        }
-
-        if (command.equals("SAVE_DATASET_DB")) {
-            Dataset[] selectedFiles = getSelectedDatasets();
-            for (Dataset dataset : selectedFiles) {
-                if (dataset != null && (dataset.getType() == DatasetType.LCMS || selectedFiles[0].getType() == DatasetType.GCGCTOF)) {
-                    SaveFileDB save = new SaveFileDB(dataset);
-                    save.initModule();
-
-                } else if (dataset != null && dataset.getType() == DatasetType.QUALITYCONTROL) {
-                    SaveQualityControlFileDB save = new SaveQualityControlFileDB(dataset);
-                    save.initModule();
-
+                for (Dataset file : selectedFiles) {
+                        if (file != null) {
+                                DatasetFilesModel.remove(file);
+                                DatasetNamesModel.removeElement(file.getDatasetName());
+                        }
                 }
-            }
         }
 
-        if (command.equals("SAVE_DATASET")) {
-            Dataset[] selectedFiles = getSelectedDatasets();
-            if (selectedFiles[0] != null && selectedFiles[0].getType() == DatasetType.LCMS) {
-                SaveLCMSFile save = new SaveLCMSFile(selectedFiles);
-                save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveLCMSParameters());
-                save.initModule();
-                ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveLCMSParameters((SimpleParameterSet) save.getParameterSet());
-            } else if (selectedFiles[0].getType() == DatasetType.GCGCTOF) {
-                SaveGCGCFile save = new SaveGCGCFile(selectedFiles);
-                save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveGCGCParameters());
-                save.initModule();
-                ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveGCGCParameters((SimpleParameterSet) save.getParameterSet());
-            } else {
-                SaveOtherFile save = new SaveOtherFile(selectedFiles);
-                save.setParameters(((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getSaveOtherParameters());
-                save.initModule();
-                ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setSaveOtherParameters((SimpleParameterSet) save.getParameterSet());
-            }
-        }
-
-
-    }
-
-    private void showData() {
-        Dataset[] selectedFiles = getSelectedDatasets();
-        Desktop desktop = GuineuCore.getDesktop();
-        for (Dataset file : selectedFiles) {
-            if (file != null) {
-                DataTableModel model = FileUtils.getTableModel(file);
-                DataTable table = new PushableTable(model);
-                table.formatNumbers(file.getType());
-                DataInternalFrame frame = new DataInternalFrame(file.getDatasetName(), table.getTable(), new Dimension(800, 800));
-                desktop.addInternalFrame(frame);
-            }
-        }
-
-
-    }
-
-    private void removeData() {
-        Dataset[] selectedFiles = getSelectedDatasets();
-
-        for (Dataset file : selectedFiles) {
-            if (file != null) {
-                DatasetFilesModel.remove(file);
-                DatasetNamesModel.removeElement(file.getDatasetName());
-            }
-        }
-    }
-
-    public void removeData(Dataset file) {
-        if (file != null) {
-            DatasetFilesModel.remove(file);
-            DatasetNamesModel.removeElement(file.getDatasetName());
-        }
-
-    }
-
-    /**
-     * Returns selected raw data objects in an array
-     */
-    public Dataset[] getSelectedDatasets() {
-
-        Object o[] = DatasetFiles.getSelectedValues();
-
-        Dataset res[] = new Dataset[o.length];
-
-        for (int i = 0; i < o.length; i++) {
-            for (Dataset dataset : DatasetFilesModel) {
-                if (dataset.getDatasetName().compareTo((String) o[i]) == 0) {
-                    res[i] = dataset;
+        public void removeData(Dataset file) {
+                if (file != null) {
+                        DatasetFilesModel.remove(file);
+                        DatasetNamesModel.removeElement(file.getDatasetName());
                 }
-            }
+
         }
 
-        return res;
+        /**
+         * Returns selected raw data objects in an array
+         */
+        public Dataset[] getSelectedDatasets() {
 
-    }
+                Object o[] = DatasetFiles.getSelectedValues();
 
-    /**
-     * Sets the active raw data item in the list
-     */
-    public void setActiveRawData(SimpleLCMSDataset rawData) {
-        DatasetFiles.setSelectedValue(rawData, true);
-    }
+                Dataset res[] = new Dataset[o.length];
 
-    public void mouseClicked(MouseEvent e) {
+                for (int i = 0; i < o.length; i++) {
+                        for (Dataset dataset : DatasetFilesModel) {
+                                if (dataset.getDatasetName().compareTo((String) o[i]) == 0) {
+                                        res[i] = dataset;
+                                }
+                        }
+                }
 
-        if ((e.getClickCount() == 2) && (e.getButton() == MouseEvent.BUTTON1)) {
-            showData();
+                return res;
+
         }
 
-    }
-
-    public void mouseEntered(MouseEvent e) {
-        // ignore
-    }
-
-    public void mouseExited(MouseEvent e) {
-        // ignore
-    }
-
-    public void mousePressed(MouseEvent e) {
-
-        if (e.isPopupTrigger()) {
-            if (e.getSource() == DatasetFiles) {
-                dataFilePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
+        /**
+         * Sets the active raw data item in the list
+         */
+        public void setActiveRawData(SimpleLCMSDataset rawData) {
+                DatasetFiles.setSelectedValue(rawData, true);
         }
 
-    }
+        public void mouseClicked(MouseEvent e) {
 
-    public void mouseReleased(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            if (e.getSource() == DatasetFiles) {
-                dataFilePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-        }
-    }
+                if ((e.getClickCount() == 2) && (e.getButton() == MouseEvent.BUTTON1)) {
+                        showData();
+                }
 
-    public void valueChanged(ListSelectionEvent event) {
-
-        Object src = event.getSource();
-
-        // Update the highlighting of peak list list in case raw data list
-        // selection has changed and vice versa.
-        if (src == DatasetFiles) {
-            DatasetFiles.revalidate();
         }
 
-    }
-
-    public void addNewFile(Dataset dataset) {
-        for (int i = 0; i < DatasetNamesModel.getSize(); i++) {
-            if (dataset.getDatasetName().matches(DatasetNamesModel.getElementAt(i).toString())) {
-                dataset.setDatasetName(dataset.getDatasetName() + "_" + ++copies);
-            }
+        public void mouseEntered(MouseEvent e) {
+                // ignore
         }
-        this.DatasetFilesModel.add(dataset);
-        DatasetNamesModel.addElement(dataset.getDatasetName());
-        this.DatasetFiles.revalidate();
-    }
+
+        public void mouseExited(MouseEvent e) {
+                // ignore
+        }
+
+        public void mousePressed(MouseEvent e) {
+
+                if (e.isPopupTrigger()) {
+                        if (e.getSource() == DatasetFiles) {
+                                dataFilePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        }
+                }
+
+        }
+
+        public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                        if (e.getSource() == DatasetFiles) {
+                                dataFilePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        }
+                }
+        }
+
+        public void valueChanged(ListSelectionEvent event) {
+
+                Object src = event.getSource();
+
+                // Update the highlighting of peak list list in case raw data list
+                // selection has changed and vice versa.
+                if (src == DatasetFiles) {
+                        DatasetFiles.revalidate();
+                }
+
+        }
+
+        public void addNewFile(Dataset dataset) {
+                for (int i = 0; i < DatasetNamesModel.getSize(); i++) {
+                        if (dataset.getDatasetName().matches(DatasetNamesModel.getElementAt(i).toString())) {
+                                dataset.setDatasetName(dataset.getDatasetName() + "_" + ++copies);
+                        }
+                }
+                this.DatasetFilesModel.add(dataset);
+                DatasetNamesModel.addElement(dataset.getDatasetName());
+                this.DatasetFiles.revalidate();
+        }
 }

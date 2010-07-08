@@ -36,105 +36,106 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
- * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public class LinearNormalizer implements GuineuModule, TaskListener,
         ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    final String helpID = GUIUtils.generateHelpID(this);
-    public static final String MODULE_NAME = "Linear normalizer";
-    private LinearNormalizerParameters parameters;
-    private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        final String helpID = GUIUtils.generateHelpID(this);
+        public static final String MODULE_NAME = "Linear normalizer";
+        private LinearNormalizerParameters parameters;
+        private Desktop desktop;
 
-    public void initModule() {
+        public void initModule() {
 
-        this.desktop = GuineuCore.getDesktop();
+                this.desktop = GuineuCore.getDesktop();
 
-        parameters = new LinearNormalizerParameters();
+                parameters = new LinearNormalizerParameters();
 
-        desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Linear Normalization Filter..",
-                "Peak list normalization using linear coefficients", KeyEvent.VK_S, this, null, null);
+                desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Linear Normalization Filter..",
+                        "Peak list normalization using linear coefficients", KeyEvent.VK_S, this, null, null);
 
-
-    }
-
-    public String toString() {
-        return MODULE_NAME;
-    }
-
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }
-
-    public void setParameters(ParameterSet parameters) {
-        this.parameters = (LinearNormalizerParameters) parameters;
-    }
-
-    public ExitCode setupParameters(ParameterSet currentParameters) {
-        ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (SimpleParameterSet) currentParameters, helpID);
-        dialog.setVisible(true);
-        return dialog.getExitCode();
-    }
-
-    public void actionPerformed(ActionEvent e) {
-
-        Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
-
-        // check peak lists
-        if ((selectedPeakLists == null) || (selectedPeakLists.length == 0)) {
-            desktop.displayErrorMessage("Please select peak lists for normalization");
-            return;
-        }
-
-        ExitCode exitCode = setupParameters(parameters);
-        if (exitCode != ExitCode.OK) {
-            return;
-        }
-
-        runModule(selectedPeakLists, parameters.clone());
-
-    }
-
-    public Task[] runModule(Dataset[] peakLists,
-            ParameterSet parameters) {
-
-        // check peak lists
-        if ((peakLists == null) || (peakLists.length == 0)) {
-            desktop.displayErrorMessage("Please select peak lists for normalization");
-            return null;
-        }
-
-        // prepare a new group of tasks
-        Task tasks[] = new LinearNormalizerTask[peakLists.length];
-        for (int i = 0; i < peakLists.length; i++) {
-            tasks[i] = new LinearNormalizerTask(peakLists[i],
-                    (LinearNormalizerParameters) parameters);
-        }
-
-        GuineuCore.getTaskController().addTasks(tasks);
-
-        return tasks;
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Serum Normalization Filter");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Linear Normalization Filter on " + ((LinearNormalizerTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Serum Normalization Filter on .. " + ((LinearNormalizerTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
 
         }
-    }
+
+        public String toString() {
+                return MODULE_NAME;
+        }
+
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        public void setParameters(ParameterSet parameters) {
+                this.parameters = (LinearNormalizerParameters) parameters;
+        }
+
+        public ExitCode setupParameters(ParameterSet currentParameters) {
+                ParameterSetupDialog dialog = new ParameterSetupDialog(
+                        "Please set parameter values for " + toString(),
+                        (SimpleParameterSet) currentParameters, helpID);
+                dialog.setVisible(true);
+                return dialog.getExitCode();
+        }
+
+        public void actionPerformed(ActionEvent e) {
+
+                Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
+
+                // check peak lists
+                if ((selectedPeakLists == null) || (selectedPeakLists.length == 0)) {
+                        desktop.displayErrorMessage("Please select peak lists for normalization");
+                        return;
+                }
+
+                ExitCode exitCode = setupParameters(parameters);
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+
+                runModule(selectedPeakLists, parameters.clone());
+
+        }
+
+        public Task[] runModule(Dataset[] peakLists,
+                ParameterSet parameters) {
+
+                // check peak lists
+                if ((peakLists == null) || (peakLists.length == 0)) {
+                        desktop.displayErrorMessage("Please select peak lists for normalization");
+                        return null;
+                }
+
+                // prepare a new group of tasks
+                Task tasks[] = new LinearNormalizerTask[peakLists.length];
+                for (int i = 0; i < peakLists.length; i++) {
+                        tasks[i] = new LinearNormalizerTask(peakLists[i],
+                                (LinearNormalizerParameters) parameters);
+                }
+
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+        }
+
+        public void taskStarted(Task task) {
+                logger.info("Running Serum Normalization Filter");
+        }
+
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Linear Normalization Filter on " + ((LinearNormalizerTask) task).getTaskDescription());
+                }
+
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Serum Normalization Filter on .. " + ((LinearNormalizerTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
+        }
 }

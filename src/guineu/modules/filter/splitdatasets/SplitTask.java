@@ -19,15 +19,10 @@ package guineu.modules.filter.splitdatasets;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
+import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
 import java.util.Vector;
 
 /**
@@ -36,102 +31,90 @@ import java.util.Vector;
  */
 public class SplitTask implements Task {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress = 0.0f;
-    private String[] group1, group2;
-    private Dataset dataset;
-    private String parameter;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private double progress = 0.0f;
+        private String[] group1, group2;
+        private Dataset dataset;
+        private String parameter;
 
-    public SplitTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop, String parameter) {
-        this.group1 = group1;
-        this.group2 = group2;
-        this.dataset = dataset;
-        this.desktop = desktop;
-        this.parameter = parameter;
-    }
-
-    public String getTaskDescription() {
-        return "Split dataset... ";
-    }
-
-    public double getFinishedPercentage() {
-        return progress;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            status = TaskStatus.PROCESSING;
-            progress = 0.5f;
-
-            Split(group1, "1");
-            Split(group2, "2");
-
-            if (parameter != null) {
-                SplitFromParameter();
-            }
-            progress = 1f;
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
-        }
-    }
-
-    private void Split(String[] group, String groupName) {
-        // If the group is empty
-        if (group.length == 0) {
-            return;
+        public SplitTask(String[] group1, String[] group2, Dataset dataset, String parameter) {
+                this.group1 = group1;
+                this.group2 = group2;
+                this.dataset = dataset;
+                this.parameter = parameter;
         }
 
-        Dataset DatasetSplit = FileUtils.getDataset(dataset, "Split dataset " + groupName + " - ");
-
-        for (String name : group) {
-            DatasetSplit.AddColumnName(name);
+        public String getTaskDescription() {
+                return "Split dataset... ";
         }
-        for (PeakListRow row : dataset.getRows()) {
-            PeakListRow newRow = row.clone();
-            newRow.removeNoSamplePeaks(group);
-            DatasetSplit.AddRow(newRow);
-        }
-        this.createNewDataset(DatasetSplit);
-    }
 
-    private void SplitFromParameter() {
-        Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
-        
-        for (String parameterVal : availableParameterValues) {
-            Vector<String> group = new Vector<String>();
-            for (String rawDataFile : dataset.getAllColumnNames()) {
-                if (dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
-                    group.addElement(rawDataFile);
+        public double getFinishedPercentage() {
+                return progress;
+        }
+
+        public TaskStatus getStatus() {
+                return status;
+        }
+
+        public String getErrorMessage() {
+                return errorMessage;
+        }
+
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
+
+        public void run() {
+                try {
+                        status = TaskStatus.PROCESSING;
+                        progress = 0.5f;
+
+                        Split(group1, "1");
+                        Split(group2, "2");
+
+                        if (parameter != null) {
+                                SplitFromParameter();
+                        }
+                        progress = 1f;
+                        status = TaskStatus.FINISHED;
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
                 }
-            }
-            Split(group.toArray(new String[0]), parameterVal);
         }
-    }
 
-    private void createNewDataset(Dataset newDataset) {
-        DataTableModel model = FileUtils.getTableModel(newDataset);
-        DataTable table = new PushableTable(model);
-        table.formatNumbers(newDataset.getType());
-        DataInternalFrame frame = new DataInternalFrame(newDataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
-        desktop.addInternalFrame(frame);
-        desktop.AddNewFile(newDataset);
-        frame.setVisible(true);
-    }
+        private void Split(String[] group, String groupName) {
+                // If the group is empty
+                if (group.length == 0) {
+                        return;
+                }
+
+                Dataset datasetSplit = FileUtils.getDataset(dataset, "Split dataset " + groupName + " - ");
+
+                for (String name : group) {
+                        datasetSplit.AddColumnName(name);
+                }
+                for (PeakListRow row : dataset.getRows()) {
+                        PeakListRow newRow = row.clone();
+                        newRow.removeNoSamplePeaks(group);
+                        datasetSplit.AddRow(newRow);
+                }
+                GUIUtils.showNewTable(datasetSplit);
+        }
+
+        private void SplitFromParameter() {
+                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+
+                for (String parameterVal : availableParameterValues) {
+                        Vector<String> group = new Vector<String>();
+                        for (String rawDataFile : dataset.getAllColumnNames()) {
+                                if (dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
+                                        group.addElement(rawDataFile);
+                                }
+                        }
+                        Split(group.toArray(new String[0]), parameterVal);
+                }
+        }
 }

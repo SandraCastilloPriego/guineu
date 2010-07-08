@@ -17,17 +17,11 @@
  */
 package guineu.modules.mylly.filter.SimilarityFilter;
 
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.DatasetType;
-import guineu.main.GuineuCore;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,67 +31,62 @@ import java.util.logging.Logger;
  */
 public class SimilarityFilterTask implements Task {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private SimpleGCGCDataset dataset;
-    private SimilarityParameters parameters;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private SimpleGCGCDataset dataset;
+        private SimilarityParameters parameters;
 
-    public SimilarityFilterTask(SimpleGCGCDataset dataset, SimilarityParameters parameters) {
-        this.dataset = dataset;
-        System.out.println(dataset.toString());
-        this.parameters = parameters;
-    }
-
-    public String getTaskDescription() {
-        return "Filtering files with Similarity Filter... ";
-    }
-
-    public double getFinishedPercentage() {
-        return 1f;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        status = TaskStatus.PROCESSING;
-        try {
-            double minValue = (Double) parameters.getParameterValue(SimilarityParameters.minSimilarity);
-            String typeSimilarity = (String) parameters.getParameterValue(SimilarityParameters.type);
-            String mode = Similarity.MEAN_SIMILARITY;
-            if (typeSimilarity.matches("maximum similarity")) {
-                mode = Similarity.MAX_SIMILARITY;
-            }
-
-            String typeAction = (String) parameters.getParameterValue(SimilarityParameters.action);
-            String action = Similarity.REMOVE;
-            if (typeAction.matches("Rename")) {
-                action = Similarity.RENAME;
-            }
-            Similarity filter = new Similarity(minValue, action, mode);
-            SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-            newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
-            newAlignment.setType(DatasetType.GCGCTOF);
-            DataTableModel model = new DatasetGCGCDataModel(newAlignment);
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(newAlignment.getType());
-            DataInternalFrame frame = new DataInternalFrame(newAlignment.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-            GuineuCore.getDesktop().addInternalFrame(frame);
-            GuineuCore.getDesktop().AddNewFile(newAlignment);
-            status = TaskStatus.FINISHED;
-        } catch (Exception ex) {
-            Logger.getLogger(SimilarityFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-            status = TaskStatus.ERROR;
+        public SimilarityFilterTask(SimpleGCGCDataset dataset, SimilarityParameters parameters) {
+                this.dataset = dataset;
+                System.out.println(dataset.toString());
+                this.parameters = parameters;
         }
-    }
+
+        public String getTaskDescription() {
+                return "Filtering files with Similarity Filter... ";
+        }
+
+        public double getFinishedPercentage() {
+                return 1f;
+        }
+
+        public TaskStatus getStatus() {
+                return status;
+        }
+
+        public String getErrorMessage() {
+                return errorMessage;
+        }
+
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
+
+        public void run() {
+                status = TaskStatus.PROCESSING;
+                try {
+                        double minValue = (Double) parameters.getParameterValue(SimilarityParameters.minSimilarity);
+                        String typeSimilarity = (String) parameters.getParameterValue(SimilarityParameters.type);
+                        String mode = Similarity.MEAN_SIMILARITY;
+                        if (typeSimilarity.matches("maximum similarity")) {
+                                mode = Similarity.MAX_SIMILARITY;
+                        }
+
+                        String typeAction = (String) parameters.getParameterValue(SimilarityParameters.action);
+                        String action = Similarity.REMOVE;
+                        if (typeAction.matches("Rename")) {
+                                action = Similarity.RENAME;
+                        }
+                        Similarity filter = new Similarity(minValue, action, mode);
+                        SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
+                        newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
+                        newAlignment.setType(DatasetType.GCGCTOF);
+                        // Shows the new data set
+                        GUIUtils.showNewTable(newAlignment);
+                        status = TaskStatus.FINISHED;
+                } catch (Exception ex) {
+                        Logger.getLogger(SimilarityFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        status = TaskStatus.ERROR;
+                }
+        }
 }

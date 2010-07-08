@@ -39,84 +39,84 @@ import java.util.logging.Logger;
  */
 public class Split implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private Dataset dataset;
-    private String[] group1,  group2;
-    private String parameter;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private Dataset dataset;
+        private String[] group1, group2;
+        private String parameter;
 
-    public void initModule() {
+        public void initModule() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILTER, "Split dataset..",
-                "TODO write description", KeyEvent.VK_S, this, null, null);
-        desktop.addMenuSeparator(GuineuMenu.FILTER);
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Split dataset");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Split dataset on " + ((SplitTask) task).getTaskDescription());
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.FILTER, "Split dataset..",
+                        "TODO write description", KeyEvent.VK_S, this, null, null);
+                desktop.addMenuSeparator(GuineuMenu.FILTER);
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Split dataset on .. " + ((SplitTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public void taskStarted(Task task) {
+                logger.info("Running Split dataset");
         }
 
-        runModule();
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Split dataset on " + ((SplitTask) task).getTaskDescription());
+                }
 
-    public ExitCode setupParameters() {
-        try {
-            Dataset[] datasets = desktop.getSelectedDataFiles();
-            dataset = datasets[0];
-            SplitDataDialog dialog = new SplitDataDialog(dataset);
-            dialog.setVisible(true);
-            group1 = dialog.getGroup1();
-            group2 = dialog.getGroup2();
-            parameter = dialog.getParameter();
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Split dataset on .. " + ((SplitTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = setupParameters();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
 
-    public void setParameters(ParameterSet parameterValues) {
-    }
+                runModule();
+        }
 
-    public String toString() {
-        return "Split dataset";
-    }
+        public ExitCode setupParameters() {
+                try {
+                        Dataset[] datasets = desktop.getSelectedDataFiles();
+                        dataset = datasets[0];
+                        SplitDataDialog dialog = new SplitDataDialog(dataset);
+                        dialog.setVisible(true);
+                        group1 = dialog.getGroup1();
+                        group2 = dialog.getGroup2();
+                        parameter = dialog.getParameter();
+                        return dialog.getExitCode();
+                } catch (Exception exception) {
+                        return ExitCode.CANCEL;
+                }
+        }
 
-    public Task[] runModule() {
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-        // prepare a new group of tasks
+        public void setParameters(ParameterSet parameterValues) {
+        }
 
-        Task tasks[] = new SplitTask[1];
-        tasks[0] = new SplitTask(group1, group2, dataset, desktop, parameter);
+        public String toString() {
+                return "Split dataset";
+        }
 
-        GuineuCore.getTaskController().addTasks(tasks);
+        public Task[] runModule() {
 
-        return tasks;
+                // prepare a new group of tasks
+
+                Task tasks[] = new SplitTask[1];
+                tasks[0] = new SplitTask(group1, group2, dataset, parameter);
+
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
 
 
-    }
+        }
 }

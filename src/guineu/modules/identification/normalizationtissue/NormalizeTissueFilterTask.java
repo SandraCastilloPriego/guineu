@@ -18,17 +18,9 @@
 package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
-import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.datamodels.OtherDataModel;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.internalframe.DataInternalFrame;
-import java.awt.Dimension;
+import guineu.util.GUIUtils;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -38,69 +30,50 @@ import java.util.Vector;
  */
 public class NormalizeTissueFilterTask implements Task {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private Dataset dataset;
-    private NormalizeTissue serum;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private Dataset dataset;
+        private NormalizeTissue serum;
 
-    public NormalizeTissueFilterTask(Dataset simpleDataset, Desktop desktop, Vector<StandardUmol> standards, Hashtable<String, Double> weights) {
-        this.dataset = simpleDataset.clone();
-        this.desktop = desktop;
-        this.serum = new NormalizeTissue(dataset, standards, weights);
-    }
-
-    public String getTaskDescription() {
-        return "Sample Normalization Filter... ";
-    }
-
-    public double getFinishedPercentage() {
-        return (double) serum.getProgress();
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            status = TaskStatus.PROCESSING;
-            serum.normalize(status);
-            if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
-                return;
-            }
-            dataset = serum.getDataset();
-            desktop.AddNewFile(dataset);
-            DataTableModel model = null;
-            switch (dataset.getType()) {
-                case LCMS:
-                    model = new DatasetLCMSDataModel(dataset);
-                    break;
-                case GCGCTOF:
-                    model = new DatasetGCGCDataModel(dataset);
-                    break;
-                case OTHER:
-                    model = new OtherDataModel(dataset);
-                    break;
-            }
-            DataTable table = new PushableTable(model);
-            table.formatNumbers(dataset.getType());
-            DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(800, 800));
-
-            desktop.addInternalFrame(frame);
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
+        public NormalizeTissueFilterTask(Dataset simpleDataset, Vector<StandardUmol> standards, Hashtable<String, Double> weights) {
+                this.dataset = simpleDataset.clone();
+                this.serum = new NormalizeTissue(dataset, standards, weights);
         }
-    }
+
+        public String getTaskDescription() {
+                return "Sample Normalization Filter... ";
+        }
+
+        public double getFinishedPercentage() {
+                return (double) serum.getProgress();
+        }
+
+        public TaskStatus getStatus() {
+                return status;
+        }
+
+        public String getErrorMessage() {
+                return errorMessage;
+        }
+
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
+
+        public void run() {
+                try {
+                        status = TaskStatus.PROCESSING;
+                        serum.normalize(status);
+                        if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
+                                return;
+                        }
+                        dataset = serum.getDataset();
+                        GUIUtils.showNewTable(dataset);
+                        status = TaskStatus.FINISHED;
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
 }

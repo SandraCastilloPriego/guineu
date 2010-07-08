@@ -39,86 +39,86 @@ import java.util.logging.Logger;
  */
 public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private String FilePath;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private String FilePath;
 
-    public void initModule() {
+        public void initModule() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILE, "Open Mass Lynx Files..",
-                "TODO write description", KeyEvent.VK_O, this, null, "icons/masslynx.png");
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Mass Lynx Files");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Mass Lynx Files on " + ((OpenFileTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Mass Lynx Files on .. " + ((OpenFileTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.FILE, "Open Mass Lynx Files..",
+                        "TODO write description", KeyEvent.VK_O, this, null, "icons/masslynx.png");
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public void taskStarted(Task task) {
+                logger.info("Running Mass Lynx Files");
         }
 
-        runModule();
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Mass Lynx Files on " + ((OpenFileTask) task).getTaskDescription());
+                }
 
-    public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
-        if (lastPath == null) {
-            lastPath = "";
-        }
-        File lastFilePath = new File(lastPath);
-        DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-        dialog.setVisible(true);
-        try {
-            this.FilePath = dialog.getCurrentDirectory();
-        } catch (Exception e) {
-        }
-        return dialog.getExitCode();
-    }
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+                        String msg = "Error while Mass Lynx Files on .. " + ((OpenFileTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-    public void setParameters(ParameterSet parameterValues) {
-    }
-
-    public String toString() {
-        return "Mass Lynx Files";
-    }
-
-    public Task[] runModule() {
-
-        // prepare a new group of tasks
-        if (FilePath != null) {
-            Task tasks[] = new OpenFileTask[1];
-            tasks[0] = new OpenFileTask(FilePath, desktop);
-
-            GuineuCore.getTaskController().addTasks(tasks);
-
-            return tasks;
-
-        } else {
-            return null;
+                }
         }
 
-    }
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = setupParameters();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+
+                runModule();
+        }
+
+        public ExitCode setupParameters() {
+                DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
+                String lastPath = deskParameters.getLastOpenProjectPath();
+                if (lastPath == null) {
+                        lastPath = "";
+                }
+                File lastFilePath = new File(lastPath);
+                DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
+                dialog.setVisible(true);
+                try {
+                        this.FilePath = dialog.getCurrentDirectory();
+                } catch (Exception e) {
+                }
+                return dialog.getExitCode();
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
+        }
+
+        public void setParameters(ParameterSet parameterValues) {
+        }
+
+        public String toString() {
+                return "Mass Lynx Files";
+        }
+
+        public Task[] runModule() {
+
+                // prepare a new group of tasks
+                if (FilePath != null) {
+                        Task tasks[] = new OpenFileTask[1];
+                        tasks[0] = new OpenFileTask(FilePath);
+
+                        GuineuCore.getTaskController().addTasks(tasks);
+
+                        return tasks;
+
+                } else {
+                        return null;
+                }
+
+        }
 }
