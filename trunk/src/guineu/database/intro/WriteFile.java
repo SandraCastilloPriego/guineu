@@ -62,7 +62,7 @@ public class WriteFile {
 			String[] data = new String[dataset.getNumberCols() + fieldsNumber];
 			int cont = 0;
 			for (LCMSColumnName p : elements) {
-				if (p.isCommon()) {
+				if (p.isColumnShown()) {
 					data[cont++] = p.getColumnName();
 				}
 			}
@@ -78,7 +78,7 @@ public class WriteFile {
 
 				cont = 0;
 				for (LCMSColumnName p : elements) {
-					if (p.isCommon()) {
+					if (p.isColumnShown()) {
 						try {
 							data[cont++] = String.valueOf(lipid.getVar(p.getGetFunctionName()));
 						} catch (Exception ee) {
@@ -135,7 +135,7 @@ public class WriteFile {
 			int fieldsNumber = this.getNumFields(elements);
 			int cont = 0;
 			for (LCMSColumnName p : elements) {
-				if (p.isCommon()) {
+				if (p.isColumnShown()) {
 					this.setCell(row, cont++, p.getColumnName());
 				}
 			}
@@ -154,7 +154,7 @@ public class WriteFile {
 
 				cont = 0;
 				for (LCMSColumnName p : elements) {
-					if (p.isCommon()) {
+					if (p.isColumnShown()) {
 						try {
 							this.setCell(row, cont++, lipid.getVar(p.getGetFunctionName()));
 						} catch (Exception ee) {
@@ -265,7 +265,7 @@ public class WriteFile {
 	public int getNumFields(LCMSColumnName[] elements) {
 		int cont = 0;
 		for (LCMSColumnName p : elements) {
-			if (p.isCommon()) {
+			if (p.isColumnShown()) {
 				cont++;
 			}
 		}
@@ -275,7 +275,7 @@ public class WriteFile {
 	public int getNumFields(GCGCColumnName[] elements) {
 		int cont = 0;
 		for (GCGCColumnName p : elements) {
-			if (p.isCommon()) {
+			if (p.isColumnShown()) {
 				cont++;
 			}
 		}
@@ -346,7 +346,7 @@ public class WriteFile {
 			int fieldsNumber = this.getNumFields(elements);
 			int cont = 0;
 			for (GCGCColumnName p : elements) {
-				if (p.isCommon()) {
+				if (p.isColumnShown()) {
 					this.setCell(row, cont++, p.getColumnName());
 				}
 			}
@@ -365,7 +365,7 @@ public class WriteFile {
 				cont = 0;
 
 				for (GCGCColumnName p : elements) {
-					if (p.isCommon()) {
+					if (p.isColumnShown()) {
 						try {
 							this.setCell(row, cont++, metabolite.getVar(p.getGetFunctionName()));
 						} catch (Exception ee) {
@@ -409,7 +409,7 @@ public class WriteFile {
 			String[] data = new String[dataset.getNumberCols() + fieldsNumber];
 			int cont = 0;
 			for (GCGCColumnName p : elements) {
-				if (p.isCommon()) {
+				if (p.isColumnShown()) {
 					data[cont++] = p.getColumnName();
 				}
 			}
@@ -427,7 +427,7 @@ public class WriteFile {
 					cont = 0;
 
 					for (GCGCColumnName p : elements) {
-						if (p.isCommon()) {
+						if (p.isColumnShown()) {
 							try {
 								data[cont++] = String.valueOf(metabolite.getVar(p.getGetFunctionName()));
 							} catch (Exception ee) {

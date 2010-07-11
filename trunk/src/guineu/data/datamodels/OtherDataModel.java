@@ -59,7 +59,8 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
         if (column == 0) {
             return (Boolean) this.dataset.getRow(row).isSelected();
         } else {
-            return (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(column - this.getFixColumns(), this.dataset.getAllColumnNames());
+            int index = column - this.getFixColumns();
+            return (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(this.dataset.getAllColumnNames().elementAt(index));
         }
     }
 

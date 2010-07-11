@@ -319,10 +319,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         return aPeaks;
     }
 
-    public Object getPeak(int col, Vector<String> sampleNames) {
-        return this.getPeak(sampleNames.elementAt(col));
-    }
-
+   
     public boolean isSelected() {
         return this.selection;
     }
