@@ -18,7 +18,10 @@
 package guineu.data;
 
 public enum GCGCColumnName {
-
+        /**
+         * Fix columns for GCxGC-MS files. Each column has:
+         * Column name, isShown, getVar function, setVar function, regular Expresion to parse files and type of data. *
+         */
         SELECTION("Selection", true, "isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
         ID("ID", true, "getID", "setID", "^ID.*", ParameterType.INTEGER),
         RT1("RT1", true, "getRT1", "setRT1", ".*RT1.*", ParameterType.DOUBLE),
@@ -38,16 +41,16 @@ public enum GCGCColumnName {
         SPECTRUM("Spectrum", true, "getSpectrumString", "setSpectrumString", ".*Spectrum.*|.*Spectra.*", ParameterType.STRING);
         private final String columnName;
         private final String getFunctionName, setFunctionName;
-        private final boolean common;
+        private final boolean isShown;
         private final String regExp;
         private final ParameterType type;
 
-        GCGCColumnName(String columnName, boolean common, String getFunctionName,
+        GCGCColumnName(String columnName, boolean isShown, String getFunctionName,
                 String setFunctionName, String regExp, ParameterType type) {
                 this.columnName = columnName;
                 this.getFunctionName = getFunctionName;
                 this.setFunctionName = setFunctionName;
-                this.common = common;
+                this.isShown = isShown;
                 this.regExp = regExp;
                 this.type = type;
         }
@@ -64,8 +67,8 @@ public enum GCGCColumnName {
                 return this.setFunctionName;
         }
 
-        public boolean isCommon() {
-                return this.common;
+        public boolean isColumnShown() {
+                return this.isShown;
         }
 
         public String getRegularExpression() {

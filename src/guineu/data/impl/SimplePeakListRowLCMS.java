@@ -233,16 +233,6 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         return aPeaks;
     }
 
-    public Object getPeak(int col, Vector<String> sampleNames) {
-        if (this.peaks.containsKey(sampleNames.elementAt(col))) {
-            return this.peaks.get(sampleNames.elementAt(col));
-        }
-        if (this.peaksString.containsKey(sampleNames.elementAt(col))) {
-            return this.peaksString.get(sampleNames.elementAt(col));
-        }
-        return null;
-    }
-
     public boolean isSelected() {
         return this.selection;
     }

@@ -55,7 +55,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
 		elements = CollectionUtils.changeArrayType(elementsObjects,
 				LCMSColumnName.class);
 		for (LCMSColumnName column : elements) {
-			if (column.isCommon()) {
+			if (column.isColumnShown()) {
 				columns.add(column);
 				fixNumberColumns++;
 			}

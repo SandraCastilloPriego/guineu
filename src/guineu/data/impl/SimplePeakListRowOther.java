@@ -96,10 +96,7 @@ public class SimplePeakListRowOther implements PeakListRow {
     public void setPeak(String name, Double value) {
     }
 
-    public Object getPeak(int col, Vector<String> sampleNames) {
-        return this.peaks.get(sampleNames.elementAt(col));
-    }
-
+   
     public boolean isSelected() {
         return this.selection;
     }

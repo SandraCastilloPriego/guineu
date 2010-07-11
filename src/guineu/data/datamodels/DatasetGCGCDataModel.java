@@ -58,7 +58,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 		elements = CollectionUtils.changeArrayType(elementsObjects,
 				GCGCColumnName.class);
 		for (GCGCColumnName column : elements) {
-			if (column.isCommon()) {
+			if (column.isColumnShown()) {
 				columns.add(column);
 				fixNumberColumns++;
 			}
