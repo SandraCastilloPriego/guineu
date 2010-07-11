@@ -27,6 +27,11 @@ import guineu.data.impl.SimpleParameterSet;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public class ProjectionPlotParameters extends SimpleParameterSet {
 
 	// Normal (stored) parameters

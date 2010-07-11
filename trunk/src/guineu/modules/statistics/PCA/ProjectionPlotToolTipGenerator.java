@@ -23,6 +23,11 @@ import org.jfree.chart.labels.XYZToolTipGenerator;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYZDataset;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
 
 	private ProjectionPlotParameters parameters;

@@ -31,6 +31,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class ProjectionPlot implements GuineuModule, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());

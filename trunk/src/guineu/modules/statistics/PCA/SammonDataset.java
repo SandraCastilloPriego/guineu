@@ -31,6 +31,12 @@ import jmprojection.ProjectionStatus;
 import jmprojection.Sammons;
 import org.jfree.data.xy.AbstractXYDataset;
 
+
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public class SammonDataset extends AbstractXYDataset implements
         ProjectionPlotDataset {
 

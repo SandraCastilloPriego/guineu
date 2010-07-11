@@ -35,6 +35,11 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.RectangleInsets;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class ProjectionPlotPanel extends ChartPanel {
 
 	private static final Color gridColor = Color.lightGray;

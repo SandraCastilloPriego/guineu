@@ -26,7 +26,11 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JToolBar;
 
-
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class ProjectionPlotToolbar extends JToolBar {
 
 	static final Icon axesIcon = new ImageIcon("icons/axesicon.png");

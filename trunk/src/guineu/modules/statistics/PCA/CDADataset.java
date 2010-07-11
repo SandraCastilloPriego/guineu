@@ -31,6 +31,11 @@ import jmprojection.ProjectionStatus;
 
 import org.jfree.data.xy.AbstractXYDataset;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public class CDADataset extends AbstractXYDataset implements
         ProjectionPlotDataset {
 
