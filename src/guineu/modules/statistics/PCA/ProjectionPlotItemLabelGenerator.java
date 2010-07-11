@@ -22,6 +22,11 @@ import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYZDataset;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public class ProjectionPlotItemLabelGenerator extends
 		StandardXYItemLabelGenerator {
 

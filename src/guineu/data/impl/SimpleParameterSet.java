@@ -30,6 +30,9 @@ import java.util.Vector;
 import org.dom4j.Element;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
  * Simple storage for the parameters and their values. Typical module will
  * inherit this class and define the parameters for the constructor.
  */

@@ -27,7 +27,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JInternalFrame;
 
-
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public class ProjectionPlotWindow extends JInternalFrame implements
 		ActionListener {
 

@@ -28,6 +28,11 @@ import org.jfree.chart.plot.DrawingSupplier;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class ProjectionPlotRenderer extends XYLineAndShapeRenderer {
 
 	private Paint[] paintsForGroups;

@@ -23,6 +23,9 @@ import guineu.util.Range;
 import java.text.NumberFormat;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  * Simple Parameter implementation
  */
 public class SimpleParameter implements Parameter {

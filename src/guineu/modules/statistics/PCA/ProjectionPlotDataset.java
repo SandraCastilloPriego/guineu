@@ -23,6 +23,11 @@ package guineu.modules.statistics.PCA;
 import guineu.taskcontrol.Task;
 import org.jfree.data.xy.XYDataset;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public interface ProjectionPlotDataset extends XYDataset, Task {
 
 	public String getRawDataFile(int item);
