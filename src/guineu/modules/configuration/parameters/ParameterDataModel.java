@@ -24,147 +24,158 @@ import javax.swing.table.AbstractTableModel;
 
 public class ParameterDataModel extends AbstractTableModel {
 
-    /**
-     * All data in the main windows. It can be LCMS or GCGC-Tof data.
-     */
-    private static final long serialVersionUID = 1L;
-    private Vector<String> columns;
-    private Vector<String> parameters;
-    private Vector<String[]> rows; //content all data
-    private int numColumns;
-    private int numRows;
-    private JTable table;
+        /**
+         * All data in the main windows. It can be LCMS or GCGC-Tof data.
+         */
+        private static final long serialVersionUID = 1L;
+        private Vector<String> columns;
+        private Vector<String> parameters;
+        private Vector<String[]> rows; //content all data
+        private int numColumns;
+        private int numRows;
+        private JTable table;
 
-    public ParameterDataModel(Dataset dataset, JTable table) {
-        this.table = table;
+        public ParameterDataModel(Dataset dataset, JTable table) {
+                this.table = table;
 
-        // Column names
-        columns = new Vector<String>();
-        columns.addElement("Samples");
-        parameters = dataset.getParametersName();
-        for(String parameter : parameters){
-            columns.addElement(parameter);
-        }
-        numColumns = columns.size();
-
-
-        // First column with the name of the samples
-        String[] col = dataset.getAllColumnNames().toArray(new String[0]);
-        rows = new Vector<String[]>();
-        rows.addElement(col);
-        numRows = dataset.getAllColumnNames().size();
-
-        // Parameter columns
-        for (int i = 0; i < dataset.getParametersName().size(); i++) {
-            String parameterName = dataset.getParametersName().elementAt(i);
-            col = new String[dataset.getAllColumnNames().size()];
-
-            for (int e = 0; e < dataset.getAllColumnNames().size(); e++) {
-                String experimentName = dataset.getAllColumnNames().elementAt(e);
-                col[e] = dataset.getParametersValue(experimentName, parameterName);
-            }
-            rows.addElement(col);
-        }
-    }
-
-    public void addColumn(String column) {
-        this.columns.addElement(column);
-        this.parameters.addElement(column);
-        String[] newCol = new String[numRows];
-        rows.addElement(newCol);
-        numColumns++;
-    }
-
-    public int getColumnCount() {
-        return numColumns;
-    }
-
-    public int getRowCount() {
-        return numRows;
-    }
-
-    public String getValueAt(final int row, final int column) {
-        try {
-            return rows.elementAt(column)[row];
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    @Override
-    public String getColumnName(int columnIndex) {
-        try {
-            return columns.elementAt(columnIndex);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    @Override
-    public Class<?> getColumnClass(int c) {
-        if (getValueAt(0, c) != null) {
-            return getValueAt(0, c).getClass();
-        } else {
-            return Object.class;
-        }
-    }
-
-    @Override
-    public void setValueAt(Object aValue, int row, int column) {
-        try {
-            int[] trows = table.getSelectedRows();
-            int[] tcolumns = table.getSelectedColumns();
-            for (int trow : trows) {
-                for (int tcolumn : tcolumns) {
-                    rows.elementAt(tcolumn)[trow] = aValue.toString();
+                // Column names
+                columns = new Vector<String>();
+                columns.addElement("Samples");
+                parameters = dataset.getParametersName();
+                for (String parameter : parameters) {
+                        columns.addElement(parameter);
                 }
-            }
-            rows.elementAt(column)[row] = aValue.toString();
-            fireTableCellUpdated(row, column);
-        } catch (Exception e) {
+                numColumns = columns.size();
+
+
+                // First column with the name of the samples
+                String[] col = dataset.getAllColumnNames().toArray(new String[0]);
+                rows = new Vector<String[]>();
+                rows.addElement(col);
+                numRows = dataset.getAllColumnNames().size();
+
+                // Parameter columns
+                for (int i = 0; i < dataset.getParametersName().size(); i++) {
+                        String parameterName = dataset.getParametersName().elementAt(i);
+                        col = new String[dataset.getAllColumnNames().size()];
+
+                        for (int e = 0; e < dataset.getAllColumnNames().size(); e++) {
+                                String experimentName = dataset.getAllColumnNames().elementAt(e);
+                                col[e] = dataset.getParametersValue(experimentName, parameterName);
+                        }
+                        rows.addElement(col);
+                }
         }
 
-    }
-
-    @Override
-    public boolean isCellEditable(int row, int column) {
-        return true;
-    }
-
-    public void addColumnObject(Object[][] o) {
-        Object[][] oldRows = o.clone();
-        o = new Object[oldRows.length][oldRows[0].length + 1];
-        for (int i = 0; i < oldRows.length; i++) {
-            for (int j = 0; j < oldRows[0].length; j++) {
-                o[i][j] = oldRows[i][j];
-            }
-            o[i][oldRows[0].length] = " ";
+        public void addColumn(String column) {
+                this.columns.addElement(column);
+                this.parameters.addElement(column);
+                String[] newCol = new String[numRows];
+                rows.addElement(newCol);
+                numColumns++;
         }
-    }
 
-    public void addColumnObject(int[][] o) {
-        int[][] oldRows = o.clone();
-        o = new int[oldRows.length][oldRows[0].length + 1];
-        for (int i = 0; i < oldRows.length; i++) {
-            for (int j = 0; j < oldRows[0].length; j++) {
-                o[i][j] = oldRows[i][j];
-            }
-            o[i][oldRows[0].length] = 0;
+        public int getColumnCount() {
+                return numColumns;
         }
-    }
 
-    public void setColumnCount(int count) {
-        this.numColumns = count;
-    }
-
-    public void addParameters(Dataset dataset) {
-        for (int i = 1; i < this.getColumnCount(); i++) {
-            String parameterName = this.parameters.elementAt(i-1);
-            for (int e = 0; e < this.rows.elementAt(i).length; e++) {
-                String experimentName = this.rows.elementAt(0)[e];
-                String parameterValue = this.rows.elementAt(i)[e];
-                dataset.addParameterValue(experimentName, parameterName, parameterValue);
-            }
+        public int getRowCount() {
+                return numRows;
         }
-    }
+
+        public String getValueAt(final int row, final int column) {
+                try {
+                        return rows.elementAt(column)[row];
+                } catch (Exception e) {
+                        return "";
+                }
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+                try {
+                        return columns.elementAt(columnIndex);
+                } catch (Exception e) {
+                        return null;
+                }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int c) {
+                if (getValueAt(0, c) != null) {
+                        return getValueAt(0, c).getClass();
+                } else {
+                        return Object.class;
+                }
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int row, int column) {
+                try {
+                        int[] trows = table.getSelectedRows();
+                        int[] tcolumns = table.getSelectedColumns();
+                        for (int trow : trows) {
+                                for (int tcolumn : tcolumns) {
+                                        rows.elementAt(tcolumn)[trow] = aValue.toString();
+                                }
+                        }
+                        rows.elementAt(column)[row] = aValue.toString();
+                        fireTableCellUpdated(row, column);
+                } catch (Exception e) {
+                }
+        }
+
+        public void setValueAt(Object aValue, int row, int column, boolean fillAllCells) {
+                try {
+                        if (fillAllCells) {
+                                this.setValueAt(aValue, row, column);
+                        } else {
+                                rows.elementAt(column)[row] = aValue.toString();
+                                fireTableCellUpdated(row, column);
+                        }
+                } catch (Exception e) {
+                }
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+                return true;
+        }
+
+        public void addColumnObject(Object[][] o) {
+                Object[][] oldRows = o.clone();
+                o = new Object[oldRows.length][oldRows[0].length + 1];
+                for (int i = 0; i < oldRows.length; i++) {
+                        for (int j = 0; j < oldRows[0].length; j++) {
+                                o[i][j] = oldRows[i][j];
+                        }
+                        o[i][oldRows[0].length] = " ";
+                }
+        }
+
+        public void addColumnObject(int[][] o) {
+                int[][] oldRows = o.clone();
+                o = new int[oldRows.length][oldRows[0].length + 1];
+                for (int i = 0; i < oldRows.length; i++) {
+                        for (int j = 0; j < oldRows[0].length; j++) {
+                                o[i][j] = oldRows[i][j];
+                        }
+                        o[i][oldRows[0].length] = 0;
+                }
+        }
+
+        public void setColumnCount(int count) {
+                this.numColumns = count;
+        }
+
+        public void addParameters(Dataset dataset) {
+                for (int i = 1; i < this.getColumnCount(); i++) {
+                        String parameterName = this.parameters.elementAt(i - 1);
+                        for (int e = 0; e < this.rows.elementAt(i).length; e++) {
+                                String experimentName = this.rows.elementAt(0)[e];
+                                String parameterValue = this.rows.elementAt(i)[e];
+                                dataset.addParameterValue(experimentName, parameterName, parameterValue);
+                        }
+                }
+        }
 }

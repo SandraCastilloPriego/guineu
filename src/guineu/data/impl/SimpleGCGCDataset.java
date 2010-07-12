@@ -31,318 +31,317 @@ import guineu.data.PeakListRow;
 import java.util.Hashtable;
 import java.util.Vector;
 
-
 public class SimpleGCGCDataset implements Dataset {
 
-    private List<PeakListRow> peakList;
-    private Vector<String> nameExperiments;
-    private AlignmentSorterFactory.SORT_MODE lastSortMode;
-    private ScoreAlignmentParameters params;
-    private Aligner aligner;
-    private String datasetName;
-    private DatasetType type;
-    private String infoDataset = "";
-    private Hashtable<String, Parameters> parameters;
-    private Vector<String> parameterNames;
+        private List<PeakListRow> peakList;
+        private Vector<String> nameExperiments;
+        private AlignmentSorterFactory.SORT_MODE lastSortMode;
+        private ScoreAlignmentParameters params;
+        private Aligner aligner;
+        private String datasetName;
+        private DatasetType type;
+        private String infoDataset = "";
+        private Hashtable<String, Parameters> parameters;
+        private Vector<String> parameterNames;
 
-    public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
-        this.nameExperiments = new Vector<String>();
-        for (String experimentName : names) {
-            this.nameExperiments.addElement(experimentName);
-        }
-        peakList = new ArrayList<PeakListRow>();
-        lastSortMode = SORT_MODE.none;
-        this.params = parameters;
-        this.aligner = aligner;
-        datasetName = "Alignment";
-        this.parameters = new Hashtable<String, Parameters>();
-        this.parameterNames = new Vector<String>();
-    }
-
-    public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
-        if (parameters.containsKey(experimentName)) {
-            Parameters p = parameters.get(experimentName);
-            p.addParameter(parameterName, parameterValue);
-        } else {
-            Parameters p = new Parameters();
-            p.addParameter(parameterName, parameterValue);
-            parameters.put(experimentName, p);
-        }
-        if (!this.parameterNames.contains(parameterName)) {
-            parameterNames.addElement(parameterName);
-        }
-    }
-
-    public void deleteParameter(String parameterName) {
-        for (String experimentName : nameExperiments) {
-            if (parameters.containsKey(experimentName)) {
-                Parameters p = parameters.get(experimentName);
-                p.deleteParameter(parameterName);
-            }
-        }
-        this.parameterNames.remove(parameterName);
-    }
-
-    public String getParametersValue(String experimentName, String parameterName) {
-        if (parameters.containsKey(experimentName)) {
-            Parameters p = parameters.get(experimentName);
-            return p.getParameter(parameterName);
-        } else {
-            return null;
-        }
-    }
-
-    public Vector<String> getParameterAvailableValues(String parameter) {
-        Vector<String> availableParameterValues = new Vector<String>();
-        for (String rawDataFile : this.getAllColumnNames()) {
-            String paramValue = this.getParametersValue(rawDataFile, parameter);
-            if (!availableParameterValues.contains(paramValue)) {
-                availableParameterValues.add(paramValue);
-            }
-        }
-        return availableParameterValues;
-    }
-
-    public Vector<String> getParametersName() {
-        return parameterNames;
-    }
-
-    public SimpleGCGCDataset(String datasetName) {
-        this.nameExperiments = new Vector<String>();
-        peakList = new ArrayList<PeakListRow>();
-        lastSortMode = SORT_MODE.none;
-        this.datasetName = datasetName;
-    }
-
-    public void setParameters(ScoreAlignmentParameters parameters) {
-        this.params = parameters;
-    }
-
-    public void setAligner(Aligner aligner) {
-        this.aligner = aligner;
-    }
-
-    public void setGCGCDataConcentration() {
-        if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
-            for (PeakListRow row : peakList) {
-                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
-                    if (data.getConcentration() > 0) {
-                        data.setUseConcentration(true);
-                    } else {
-                        data.setUseConcentration(false);
-                    }
+        public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
+                this.nameExperiments = new Vector<String>();
+                for (String experimentName : names) {
+                        this.nameExperiments.addElement(experimentName);
                 }
-            }
-        } else {
-            for (PeakListRow row : peakList) {
-                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
-                    data.setUseConcentration(false);
+                peakList = new ArrayList<PeakListRow>();
+                lastSortMode = SORT_MODE.none;
+                this.params = parameters;
+                this.aligner = aligner;
+                datasetName = "Alignment";
+                this.parameters = new Hashtable<String, Parameters>();
+                this.parameterNames = new Vector<String>();
+        }
+
+        public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
+                if (parameters.containsKey(experimentName)) {
+                        Parameters p = parameters.get(experimentName);
+                        p.addParameter(parameterName, parameterValue);
+                } else {
+                        Parameters p = new Parameters();
+                        p.addParameter(parameterName, parameterValue);
+                        parameters.put(experimentName, p);
                 }
-            }
-        }
-    }
-
-    public void sort(SORT_MODE mode) {
-        if (lastSortMode != mode && mode != AlignmentSorterFactory.SORT_MODE.none) {
-            Collections.sort(peakList, AlignmentSorterFactory.getComparator(mode));
-            lastSortMode = mode;
-        }
-    }
-
-    /**
-     * @return a list containing the AlignmentRows in this Alignment
-     */
-    public List<PeakListRow> getAlignment() {
-        return peakList;
-    }
-
-    public GCGCDatum[][] toArray() {
-        GCGCDatum tempArray[][] = new GCGCDatum[rowCount()][];
-        GCGCDatum returnedArray[][] = new GCGCDatum[colCount()][rowCount()];
-        for (int i = 0; i < rowCount(); i++) {
-            tempArray[i] = ((List<GCGCDatum>) peakList.get(i).getVar("getDatumArray")).toArray(new GCGCDatum[0]);
-        }
-        for (int i = 0; i < rowCount(); i++) {
-            for (int j = 0; j < colCount(); j++) {
-                returnedArray[j][i] = tempArray[i][j];
-            }
-        }
-
-        return returnedArray;
-    }
-
-    public List<PeakListRow> getSortedAlignment(SORT_MODE mode) {
-        sort(mode);
-        return getAlignment();
-    }
-
-    public ScoreAlignmentParameters getParameters() {
-        return params;
-    }
-
-    public Aligner getAligner() {
-        return aligner;
-    }
-
-    public boolean containsMainPeaks() {
-        boolean contains = false;
-        for (PeakListRow row : peakList) {
-            if (!((DistValue) row.getVar("getDistValue")).isNull()) {
-                contains = true;
-                break;
-            }
-        }
-        return contains;
-    }
-
-    public List<SimplePeakListRowGCGC> getQuantMassAlignments() {
-        List<SimplePeakListRowGCGC> QuantMassList = new ArrayList<SimplePeakListRowGCGC>();
-        for (int i = 0; i < peakList.size(); i++) {
-            PeakListRow alignmentRow = peakList.get(i);
-            if ((Double) alignmentRow.getVar("getMass") > -1) {
-                QuantMassList.add((SimplePeakListRowGCGC) alignmentRow);
-            }
-        }
-        return QuantMassList;
-    }
-
-    public GCGCDatum getPeak(int rowIx, int colIx) {
-        if (rowIx < 0 || rowIx >= rowCount() || colIx < 0 || colIx >= colCount()) {
-            throw new IndexOutOfBoundsException("indices out of bounds: rowIx = " +
-                    rowIx + " valid range [0," + rowCount() + "]" +
-                    " colIx = " + colIx + " valid range [0," + colCount() +
-                    "]");
-        }
-        return ((List<GCGCDatum>) peakList.get(rowIx).getVar("getDatumArray")).get(colIx);
-    }
-
-    public int colCount() {
-        return nameExperiments.size();
-    }
-
-    public int rowCount() {
-        return peakList.size();
-    }
-
-    public String[] getColumnNames() {
-        return (String[]) nameExperiments.toArray(new String[0]).clone();
-    }
-
-    public boolean addAlignmentRow(SimplePeakListRowGCGC row) {
-        return peakList.add(row);
-    }
-
-    public void addAll(Collection<? extends SimplePeakListRowGCGC> rows) {
-        for (SimplePeakListRowGCGC r : rows) {
-            peakList.add(r);
-        }
-    }
-
-    public String toString() {
-        return datasetName;
-    }
-
-    public String getDatasetName() {
-        return datasetName;
-    }
-
-    public Vector<String> getAllColumnNames() {
-        return nameExperiments;
-    }
-
-    public int getNumberCols() {
-        return nameExperiments.size();
-    }
-
-    public int getNumberRows() {
-        return this.rowCount();
-    }
-
-    public void setDatasetName(String name) {
-        this.datasetName = name;
-    }
-
-    public DatasetType getType() {
-        return this.type;
-    }
-
-    public void setType(DatasetType type) {
-        this.type = type;
-    }
-
-    public PeakListRow getRow(int row) {
-        return this.peakList.get(row);
-    }
-
-    public void removeRow(PeakListRow row) {
-        this.peakList.remove(row);
-    }
-
-    public void AddColumnName(String nameExperiment) {
-        this.nameExperiments.add(nameExperiment);
-    }
-
-    public void AddColumnName(String nameExperiment, int position) {
-        this.nameExperiments.insertElementAt(nameExperiment, position);
-    }
-
-    public List<PeakListRow> getRows() {
-        return this.peakList;
-    }
-
-    public Dataset clone() {
-        SimpleGCGCDataset newDataset = new SimpleGCGCDataset(datasetName);
-        for (String experimentName : this.nameExperiments) {
-            newDataset.AddColumnName(experimentName);
-        }
-        newDataset.setAligner(aligner);
-        newDataset.setParameters(params);
-        for (PeakListRow peakListRow : this.peakList) {
-            newDataset.AddRow(peakListRow.clone());
-        }
-        newDataset.setType(this.type);
-        return newDataset;
-
-    }
-
-    public void AddRow(PeakListRow peakListRow) {
-        this.peakList.add(peakListRow);
-    }
-
-    public String getInfo() {
-        return infoDataset;
-    }
-
-    public void setInfo(String info) {
-        this.infoDataset = info;
-    }
-
-    class Parameters {
-
-        Hashtable<String, String> parameters;
-
-        public Parameters() {
-            parameters = new Hashtable<String, String>();
-        }
-
-        public void addParameter(String parameterName, String parameterValue) {
-            if (parameterName != null && parameterValue != null) {
-                parameters.put(parameterName, parameterValue);
-            }
+                if (!this.parameterNames.contains(parameterName)) {
+                        parameterNames.addElement(parameterName);
+                }
         }
 
         public void deleteParameter(String parameterName) {
-            if (parameters.containsKey(parameterName)) {
-                parameters.remove(parameterName);
-            }
+                for (String experimentName : nameExperiments) {
+                        if (parameters.containsKey(experimentName)) {
+                                Parameters p = parameters.get(experimentName);
+                                p.deleteParameter(parameterName);
+                        }
+                }
+                this.parameterNames.remove(parameterName);
         }
 
-        public String getParameter(String parameterName) {
-            if (parameters.containsKey(parameterName)) {
-                return parameters.get(parameterName);
-            } else {
-                return null;
-            }
+        public String getParametersValue(String experimentName, String parameterName) {
+                if (parameters.containsKey(experimentName)) {
+                        Parameters p = parameters.get(experimentName);
+                        return p.getParameter(parameterName);
+                } else {
+                        return null;
+                }
         }
-    }
+
+        public Vector<String> getParameterAvailableValues(String parameter) {
+                Vector<String> availableParameterValues = new Vector<String>();
+                for (String rawDataFile : this.getAllColumnNames()) {
+                        String paramValue = this.getParametersValue(rawDataFile, parameter);
+                        if (!availableParameterValues.contains(paramValue)) {
+                                availableParameterValues.add(paramValue);
+                        }
+                }
+                return availableParameterValues;
+        }
+
+        public Vector<String> getParametersName() {
+                return parameterNames;
+        }
+
+        public SimpleGCGCDataset(String datasetName) {
+                this.nameExperiments = new Vector<String>();
+                peakList = new ArrayList<PeakListRow>();
+                lastSortMode = SORT_MODE.none;
+                this.datasetName = datasetName;
+        }
+
+        public void setParameters(ScoreAlignmentParameters parameters) {
+                this.params = parameters;
+        }
+
+        public void setAligner(Aligner aligner) {
+                this.aligner = aligner;
+        }
+
+        public void setGCGCDataConcentration() {
+                if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
+                        for (PeakListRow row : peakList) {
+                                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
+                                        if (data.getConcentration() > 0) {
+                                                data.setUseConcentration(true);
+                                        } else {
+                                                data.setUseConcentration(false);
+                                        }
+                                }
+                        }
+                } else {
+                        for (PeakListRow row : peakList) {
+                                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
+                                        data.setUseConcentration(false);
+                                }
+                        }
+                }
+        }
+
+        public void sort(SORT_MODE mode) {
+                if (lastSortMode != mode && mode != AlignmentSorterFactory.SORT_MODE.none) {
+                        Collections.sort(peakList, AlignmentSorterFactory.getComparator(mode));
+                        lastSortMode = mode;
+                }
+        }
+
+        /**
+         * @return a list containing the AlignmentRows in this Alignment
+         */
+        public List<PeakListRow> getAlignment() {
+                return peakList;
+        }
+
+        public GCGCDatum[][] toArray() {
+                GCGCDatum tempArray[][] = new GCGCDatum[rowCount()][];
+                GCGCDatum returnedArray[][] = new GCGCDatum[colCount()][rowCount()];
+                for (int i = 0; i < rowCount(); i++) {
+                        tempArray[i] = ((List<GCGCDatum>) peakList.get(i).getVar("getDatumArray")).toArray(new GCGCDatum[0]);
+                }
+                for (int i = 0; i < rowCount(); i++) {
+                        for (int j = 0; j < colCount(); j++) {
+                                returnedArray[j][i] = tempArray[i][j];
+                        }
+                }
+
+                return returnedArray;
+        }
+
+        public List<PeakListRow> getSortedAlignment(SORT_MODE mode) {
+                sort(mode);
+                return getAlignment();
+        }
+
+        public ScoreAlignmentParameters getParameters() {
+                return params;
+        }
+
+        public Aligner getAligner() {
+                return aligner;
+        }
+
+        public boolean containsMainPeaks() {
+                boolean contains = false;
+                for (PeakListRow row : peakList) {
+                        if (!((DistValue) row.getVar("getDistValue")).isNull()) {
+                                contains = true;
+                                break;
+                        }
+                }
+                return contains;
+        }
+
+        public List<SimplePeakListRowGCGC> getQuantMassAlignments() {
+                List<SimplePeakListRowGCGC> QuantMassList = new ArrayList<SimplePeakListRowGCGC>();
+                for (int i = 0; i < peakList.size(); i++) {
+                        PeakListRow alignmentRow = peakList.get(i);
+                        if ((Double) alignmentRow.getVar("getMass") > -1) {
+                                QuantMassList.add((SimplePeakListRowGCGC) alignmentRow);
+                        }
+                }
+                return QuantMassList;
+        }
+
+        public GCGCDatum getPeak(int rowIx, int colIx) {
+                if (rowIx < 0 || rowIx >= rowCount() || colIx < 0 || colIx >= colCount()) {
+                        throw new IndexOutOfBoundsException("indices out of bounds: rowIx = " +
+                                rowIx + " valid range [0," + rowCount() + "]" +
+                                " colIx = " + colIx + " valid range [0," + colCount() +
+                                "]");
+                }
+                return ((List<GCGCDatum>) peakList.get(rowIx).getVar("getDatumArray")).get(colIx);
+        }
+
+        public int colCount() {
+                return nameExperiments.size();
+        }
+
+        public int rowCount() {
+                return peakList.size();
+        }
+
+        public String[] getColumnNames() {
+                return (String[]) nameExperiments.toArray(new String[0]).clone();
+        }
+
+        public boolean addAlignmentRow(SimplePeakListRowGCGC row) {
+                return peakList.add(row);
+        }
+
+        public void addAll(Collection<? extends SimplePeakListRowGCGC> rows) {
+                for (SimplePeakListRowGCGC r : rows) {
+                        peakList.add(r);
+                }
+        }
+
+        public String toString() {
+                return datasetName;
+        }
+
+        public String getDatasetName() {
+                return datasetName;
+        }
+
+        public Vector<String> getAllColumnNames() {
+                return nameExperiments;
+        }
+
+        public int getNumberCols() {
+                return nameExperiments.size();
+        }
+
+        public int getNumberRows() {
+                return this.rowCount();
+        }
+
+        public void setDatasetName(String name) {
+                this.datasetName = name;
+        }
+
+        public DatasetType getType() {
+                return this.type;
+        }
+
+        public void setType(DatasetType type) {
+                this.type = type;
+        }
+
+        public PeakListRow getRow(int row) {
+                return this.peakList.get(row);
+        }
+
+        public void removeRow(PeakListRow row) {
+                this.peakList.remove(row);
+        }
+
+        public void AddColumnName(String nameExperiment) {
+                this.nameExperiments.add(nameExperiment);
+        }
+
+        public void AddColumnName(String nameExperiment, int position) {
+                this.nameExperiments.insertElementAt(nameExperiment, position);
+        }
+
+        public List<PeakListRow> getRows() {
+                return this.peakList;
+        }
+
+        public Dataset clone() {
+                SimpleGCGCDataset newDataset = new SimpleGCGCDataset(datasetName);
+                for (String experimentName : this.nameExperiments) {
+                        newDataset.AddColumnName(experimentName);
+                }
+                newDataset.setAligner(aligner);
+                newDataset.setParameters(params);
+                for (PeakListRow peakListRow : this.peakList) {
+                        newDataset.AddRow(peakListRow.clone());
+                }
+                newDataset.setType(this.type);
+                return newDataset;
+
+        }
+
+        public void AddRow(PeakListRow peakListRow) {
+                this.peakList.add(peakListRow);
+        }
+
+        public String getInfo() {
+                return infoDataset;
+        }
+
+        public void setInfo(String info) {
+                this.infoDataset = info;
+        }
+
+        class Parameters {
+
+                Hashtable<String, String> parameters;
+
+                public Parameters() {
+                        parameters = new Hashtable<String, String>();
+                }
+
+                public void addParameter(String parameterName, String parameterValue) {
+                        if (parameterName != null && parameterValue != null) {
+                                parameters.put(parameterName, parameterValue);
+                        }
+                }
+
+                public void deleteParameter(String parameterName) {
+                        if (parameters.containsKey(parameterName)) {
+                                parameters.remove(parameterName);
+                        }
+                }
+
+                public String getParameter(String parameterName) {
+                        if (parameters.containsKey(parameterName)) {
+                                return parameters.get(parameterName);
+                        } else {
+                                return null;
+                        }
+                }
+        }
 }

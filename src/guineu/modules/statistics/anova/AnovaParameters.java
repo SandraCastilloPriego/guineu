@@ -34,7 +34,9 @@ public class AnovaParameters extends SimpleParameterSet {
             ParameterType.STRING, "Select the parameter",
             "The groups to perform anova test will be taken from the choosen parameter", null, parameters);
 
-    public AnovaParameters() {
+
+    public AnovaParameters(String[] parameters) {
         super(new Parameter[]{groups});
+        groups.setPossibleValues(parameters);
     }
 }
