@@ -18,7 +18,6 @@
 package guineu.database.intro;
 
 import guineu.data.Dataset;
-import guineu.data.impl.Bexperiments;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
@@ -30,7 +29,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
 import oracle.jdbc.pool.OracleDataSource;
 
 /**
@@ -214,9 +212,5 @@ public class InOracle implements InDataBase {
         }
         progress = 1f;
     }
-
-    public void tableEXPERIMENT(Connection conn, Vector<Bexperiments> experiment, String logidir, String sysdir) {
-        ExperimentTable table = new ExperimentTable();
-        table.IntroExperimentTable(conn, experiment, logidir, sysdir, progress);
-    }
+    
 }

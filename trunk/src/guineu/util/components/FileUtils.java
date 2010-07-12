@@ -21,7 +21,6 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.datamodels.ExperimentDataModel;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
@@ -80,10 +79,7 @@ public class FileUtils {
                                 break;
                         case OTHER:
                                 model = new OtherDataModel(dataset);
-                                break;
-                        case EXPERIMENTINFO:
-                                model = new ExperimentDataModel(dataset);
-                                break;
+                                break;                        
                 }
                 return model;
         }
