@@ -41,82 +41,81 @@ import java.util.logging.Logger;
  */
 public class AnovaTest implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private AnovaParameters parameters;
-    final String helpID = GUIUtils.generateHelpID(this);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private AnovaParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
-    public void initModule() {
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.STATISTICS, "Anova Test..",
-                "Anova statistical test", KeyEvent.VK_U, this, null, null);
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Anova Test");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Anova Test ");
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Anova Test .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+        public void initModule() {
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.STATISTICS, "Anova Test..",
+                        "Anova statistical test", KeyEvent.VK_U, this, null, null);
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        try {
-            Dataset[] DataFiles = desktop.getSelectedDataFiles();
-            if (DataFiles != null && DataFiles[0].getParametersName().size() > 0) {
-                parameters = new AnovaParameters();
-                setupParameters(parameters);
-            }else{
-                
-            }
-        } catch (Exception exception) {
+        public void taskStarted(Task task) {
+                logger.info("Anova Test");
         }
-    }
 
-    public void setupParameters(ParameterSet currentParameters) {
-        final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (AnovaParameters) currentParameters, helpID);
-        dialog.setVisible(true);
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Anova Test ");
+                }
 
-        if (dialog.getExitCode() == ExitCode.OK) {
-            runModule();
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Anova Test .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return this.parameters;
-    }
+        public void actionPerformed(ActionEvent e) {
+                try {
+                        Dataset[] dataFiles = desktop.getSelectedDataFiles();
+                        if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {
+                                String[] parameterList = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
+                                parameters = new AnovaParameters(parameterList);
+                                setupParameters(parameters);
+                        } else {
+                        }
+                } catch (Exception exception) {
+                }
+        }
 
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (AnovaParameters) parameters;
-    }
+        public void setupParameters(ParameterSet currentParameters) {
+                final ParameterSetupDialog dialog = new ParameterSetupDialog(
+                        "Please set parameter values for " + toString(),
+                        (AnovaParameters) currentParameters, helpID);
+                dialog.setVisible(true);
+                if (dialog.getExitCode() == ExitCode.OK) {
+                        runModule();
+                }
+        }
 
-    public String toString() {
-        return "Anova Test";
-    }
+        public ParameterSet getParameterSet() {
+                return this.parameters;
+        }
 
-    public Task[] runModule() {
+        public void setParameters(ParameterSet parameterValues) {
+                parameters = (AnovaParameters) parameters;
+        }
 
-        Dataset[] DataFiles = desktop.getSelectedDataFiles();
-        // prepare a new group of tasks
-        Task tasks[] = new AnovaTestTask[1];
-        tasks[0] = new AnovaTestTask(DataFiles[0], parameters);
-        GuineuCore.getTaskController().addTasks(tasks);
+        public String toString() {
+                return "Anova Test";
+        }
 
-        return tasks;
+        public Task[] runModule() {
+
+                Dataset[] DataFiles = desktop.getSelectedDataFiles();
+                // prepare a new group of tasks
+                Task tasks[] = new AnovaTestTask[1];
+                tasks[0] = new AnovaTestTask(DataFiles[0], parameters);
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
 
 
-    }
+        }
 }

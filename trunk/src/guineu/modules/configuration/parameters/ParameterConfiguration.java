@@ -19,7 +19,6 @@ package guineu.modules.configuration.parameters;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -39,50 +38,51 @@ import java.util.logging.Logger;
  */
 public class ParameterConfiguration implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;  
-    final String helpID = GUIUtils.generateHelpID(this);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        final String helpID = GUIUtils.generateHelpID(this);
 
-    public void initModule() {
+        public void initModule() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Parameters Configuration..",
-                "Parameters configuration", KeyEvent.VK_P, this, null, null); 
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Parameters configuration");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Parameters configuration ");
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Parameters Configuration..",
+                        "Parameters configuration", KeyEvent.VK_P, this, null, null);
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Parameters configuration  .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
+        public void taskStarted(Task task) {
+                logger.info("Parameters configuration");
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        Dataset dataset = desktop.getSelectedDataFiles()[0];
-        ParameterDialog dialog = new ParameterDialog("Proxy configuration parameters", helpID, dataset);
-        dialog.setVisible(true);
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Parameters configuration ");
+                }
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-    public void setParameters(ParameterSet parameterValues) {
-       
-    }
+                        String msg = "Error while Parameters configuration  .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-    public String toString() {
-        return "Parameters configuration";
-    }
+                }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+                Dataset[] dataset = desktop.getSelectedDataFiles();
+                if (dataset.length > 0) {
+                        ParameterDialog dialog = new ParameterDialog("Data parameters configuration", helpID, dataset[0]);
+                        dialog.setVisible(true);
+                }
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
+        }
+
+        public void setParameters(ParameterSet parameterValues) {
+        }
+
+        public String toString() {
+                return "Parameters configuration";
+        }
 }

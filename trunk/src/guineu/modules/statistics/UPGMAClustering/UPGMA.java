@@ -112,7 +112,7 @@ public class UPGMA implements GuineuModule, TaskListener, ActionListener {
         // prepare a new group of tasks
 
         Task tasks[] = new UPGMATask[1];
-        tasks[0] = new UPGMATask(group1, dataset, desktop);
+        tasks[0] = new UPGMATask(group1, dataset);
         GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;

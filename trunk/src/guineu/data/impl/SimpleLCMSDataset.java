@@ -51,10 +51,10 @@ public class SimpleLCMSDataset implements Dataset {
     public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
         if (parameters.containsKey(experimentName)) {
             Parameters p = parameters.get(experimentName);
-            p.addParameter(parameterName, parameterValue);
+p.addParameter(parameterName, parameterValue);
         } else {
             Parameters p = new Parameters();
-            p.addParameter(parameterName, parameterValue);
+p.addParameter(parameterName, parameterValue);
             parameters.put(experimentName, p);
         }
         if (!this.parameterNames.contains(parameterName)) {
@@ -208,5 +208,5 @@ public class SimpleLCMSDataset implements Dataset {
                 return null;
             }
         }
-    }
+}
 }
