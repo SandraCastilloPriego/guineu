@@ -31,11 +31,7 @@ public enum DatasetType {
         /**
          * GCxGC-Tof data
          */
-        GCGCTOF,
-        /**
-         * Experiment data
-         */
-        EXPERIMENTINFO,
+        GCGCTOF,        
         /**
          * Other data
          */
