@@ -19,6 +19,10 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 
 import guineu.modules.mylly.alignment.*;
 
+/**
+ *
+ * @author Jarkko Miettinen
+ */
 public class DistValue implements Comparable<DistValue>, Cloneable
 {
 	public final static DistValue nullObject;
@@ -84,12 +88,14 @@ public class DistValue implements Comparable<DistValue>, Cloneable
 		return comparison;
 	}
 	
+        @Override
 	public boolean equals(Object o)
 	{
 		return (o instanceof DistValue &&
 				((DistValue) o)._dist == _dist);
 	}
 	
+        @Override
 	public DistValue clone()
 	{
 		DistValue val;
@@ -103,6 +109,7 @@ public class DistValue implements Comparable<DistValue>, Cloneable
 		return val;
 	}
 	
+        @Override
 	public String toString()
 	{
 		return isNull() ? "" : Double.toString(_dist);

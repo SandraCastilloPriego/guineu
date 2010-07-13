@@ -27,6 +27,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ *
+ * @author Jarkko Miettinen
+ */
 public class LinearNormalizer {
 
 	private final static double BASE_LEVEL = 100.0;
@@ -70,7 +74,7 @@ public class LinearNormalizer {
 		}
 
 		_input = input;
-		_total = input == null ? 0 : input.rowCount();
+		_total = input == null ? 0 : input.getNumberRows();
 	}
 
 	public LinearNormalizer(Collection<SimplePeakListRowGCGC> standards) {
@@ -84,7 +88,7 @@ public class LinearNormalizer {
 
 	protected SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
 		_input = input;
-		_total = input.rowCount();
+		_total = input.getNumberRows();
 
 		try {
 			return call();

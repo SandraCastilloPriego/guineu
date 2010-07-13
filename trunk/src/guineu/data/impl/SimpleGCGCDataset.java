@@ -41,29 +41,263 @@ public class SimpleGCGCDataset implements Dataset {
         private String datasetName;
         private DatasetType type;
         private String infoDataset = "";
-        private Hashtable<String, Parameters> parameters;
+        private Hashtable<String, SampleDescription> parameters;
         private Vector<String> parameterNames;
 
+        /**
+         * Constructor
+         *
+         * @param names Sample Names
+         * @param parameters Alignment parameters
+         * @param aligner Class which performed the alignment of the sample files to create this data set
+         */
         public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
+
                 this.nameExperiments = new Vector<String>();
                 for (String experimentName : names) {
                         this.nameExperiments.addElement(experimentName);
                 }
+
+                this.params = parameters;
+
+                this.aligner = aligner;
+
+                // Peak list
                 peakList = new ArrayList<PeakListRow>();
                 lastSortMode = SORT_MODE.none;
-                this.params = parameters;
-                this.aligner = aligner;
+
+                // The data set name is "Alignment" when it is create as a result of the
+                // alignment of different sample files
                 datasetName = "Alignment";
-                this.parameters = new Hashtable<String, Parameters>();
+
+
+                // SampleDescription to describe the samples from guineu.modules.configuration.parameters
+                this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
+        }
+
+        /**
+         * Constructor
+         *
+         * @param datasetName Name of data set
+         */
+        public SimpleGCGCDataset(String datasetName) {
+                this.nameExperiments = new Vector<String>();
+                peakList = new ArrayList<PeakListRow>();
+                lastSortMode = SORT_MODE.none;
+                this.datasetName = datasetName;
+        }
+
+        /**
+         * Sets the aligment parameters.
+         *
+         * @param parameters Alignemnt parameters
+         */
+        public void setParameters(ScoreAlignmentParameters parameters) {
+                this.params = parameters;
+        }
+
+        /**
+         * Sets the class which performed the alignment to create this data set.
+         *
+         * @param aligner Aligner
+         */
+        public void setAligner(Aligner aligner) {
+                this.aligner = aligner;
+        }
+
+        /**
+         * Returns the class which performed the alignment to create this data set.
+         * 
+         * @return Aligner
+         */
+        public Aligner getAligner() {
+                return aligner;
+        }
+
+        /**
+         * It sets for each class GCGCDatum inside the data set the option "setUseConcentration()" as true or
+         * false depending on the alignemnt parameters and the amount of concentration.
+         *
+         * When the check box int he alignment parameters is checked the data set will show
+         * concentrations instead areas. It only will use concentrations when the amount is
+         * larger than 0.
+         *
+         * @see guineu.modules.mylly.datastruct.GCGCDatum
+         *
+         */
+        public void setGCGCDataConcentration() {
+                if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
+                        for (PeakListRow row : peakList) {
+                                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
+                                        if (data.getConcentration() > 0) {
+                                                data.setUseConcentration(true);
+                                        } else {
+                                                data.setUseConcentration(false);
+                                        }
+                                }
+                        }
+                } else {
+                        for (PeakListRow row : peakList) {
+                                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
+                                        data.setUseConcentration(false);
+                                }
+                        }
+                }
+        }
+
+        /**
+         * Defines the order of the rows in the data set.
+         * @see guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory
+         *
+         * @param mode Sort mode
+         */
+        public void sort(SORT_MODE mode) {
+                if (lastSortMode != mode && mode != AlignmentSorterFactory.SORT_MODE.none) {
+                        Collections.sort(peakList, AlignmentSorterFactory.getComparator(mode));
+                        lastSortMode = mode;
+                }
+        }
+
+        /**
+         * Returns a list of every row in the data set.
+         * 
+         * @return List containing the AlignmentRows in this Alignment
+         */
+        public List<PeakListRow> getAlignment() {
+                return peakList;
+        }
+
+        /**
+         * The rows are lists of GCGCDatum. One GCGCDatum represents a "peak". Returns and array
+         * bidimensional of peaks where the first dimension represents each row and the second
+         * each peak.
+         *
+         * @see guineu.modules.mylly.datastruct.GCGCDatum
+         *
+         * @return Array bidimensional of peaks (GCGCDatum)
+         */
+        public GCGCDatum[][] toArray() {
+                GCGCDatum tempArray[][] = new GCGCDatum[getNumberRows()][];
+                GCGCDatum returnedArray[][] = new GCGCDatum[getNumberCols()][getNumberRows()];
+                for (int i = 0; i < getNumberRows(); i++) {
+                        tempArray[i] = ((List<GCGCDatum>) peakList.get(i).getVar("getDatumArray")).toArray(new GCGCDatum[0]);
+                }
+                for (int i = 0; i < getNumberRows(); i++) {
+                        for (int j = 0; j < getNumberCols(); j++) {
+                                returnedArray[j][i] = tempArray[i][j];
+                        }
+                }
+
+                return returnedArray;
+        }
+
+        /**
+         * Returns a list of rows sorted depending on the chosen sort mode.
+         *
+         * @param mode Sort mode
+         * @return Sorted list of rows
+         */
+        public List<PeakListRow> getSortedAlignment(SORT_MODE mode) {
+                sort(mode);
+                return getAlignment();
+        }
+
+        /**
+         * Returns the alignment parameters.
+         *
+         * @return alignment parameters
+         */
+        public ScoreAlignmentParameters getParameters() {
+                return params;
+        }
+
+        /**
+         * True or False depending on the distance value.
+         * Returns true when the distance value of the compound in any row is not null.
+         *
+         * @return Returns true when the distance value of the compound in any row is not null
+         */
+        public boolean containsMainPeaks() {
+                boolean contains = false;
+                for (PeakListRow row : peakList) {
+                        if (!((DistValue) row.getVar("getDistValue")).isNull()) {
+                                contains = true;
+                                break;
+                        }
+                }
+                return contains;
+        }
+
+        /**
+         * Returns a list of rows which contain mass value.
+         *
+         * @return List of rows
+         */
+        public List<SimplePeakListRowGCGC> getQuantMassAlignments() {
+                List<SimplePeakListRowGCGC> QuantMassList = new ArrayList<SimplePeakListRowGCGC>();
+                for (int i = 0; i < peakList.size(); i++) {
+                        PeakListRow alignmentRow = peakList.get(i);
+                        if ((Double) alignmentRow.getVar("getMass") > -1) {
+                                QuantMassList.add((SimplePeakListRowGCGC) alignmentRow);
+                        }
+                }
+                return QuantMassList;
+        }
+
+        /**
+         * Returns the peak in the described position with the indexes rowIx and colIx.
+         *
+         * @param rowIx row index
+         * @param colIx column index
+         * @return peak in the described position
+         */
+        public GCGCDatum getPeak(int rowIx, int colIx) {
+                if (rowIx < 0 || rowIx >= getNumberRows() || colIx < 0 || colIx >= getNumberCols()) {
+                        throw new IndexOutOfBoundsException("indices out of bounds: rowIx = " +
+                                rowIx + " valid range [0," + getNumberRows() + "]" +
+                                " colIx = " + colIx + " valid range [0," + getNumberCols() +
+                                "]");
+                }
+                return ((List<GCGCDatum>) peakList.get(rowIx).getVar("getDatumArray")).get(colIx);
+        }
+
+        /**
+         * Returns an array of a copy of sample names.
+         *
+         * @return Array with the name of the samples
+         */
+        public String[] getColumnNames() {
+                return (String[]) nameExperiments.toArray(new String[0]).clone();
+        }
+
+        /**
+         * Adds a new row into the row list inside the class
+         *
+         * @param row Row
+         * @return true when the row was added without problems
+         */
+        public boolean addAlignmentRow(SimplePeakListRowGCGC row) {
+                return peakList.add(row);
+        }
+
+        /**
+         * Add new rows into the data set. The rows can be in any kind of Collection class.
+         *
+         * @param rows Rows to be added.
+         */
+        public void addAll(Collection<? extends SimplePeakListRowGCGC> rows) {
+                for (SimplePeakListRowGCGC r : rows) {
+                        peakList.add(r);
+                }
         }
 
         public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
                 if (parameters.containsKey(experimentName)) {
-                        Parameters p = parameters.get(experimentName);
+                        SampleDescription p = parameters.get(experimentName);
                         p.addParameter(parameterName, parameterValue);
                 } else {
-                        Parameters p = new Parameters();
+                        SampleDescription p = new SampleDescription();
                         p.addParameter(parameterName, parameterValue);
                         parameters.put(experimentName, p);
                 }
@@ -75,7 +309,7 @@ public class SimpleGCGCDataset implements Dataset {
         public void deleteParameter(String parameterName) {
                 for (String experimentName : nameExperiments) {
                         if (parameters.containsKey(experimentName)) {
-                                Parameters p = parameters.get(experimentName);
+                                SampleDescription p = parameters.get(experimentName);
                                 p.deleteParameter(parameterName);
                         }
                 }
@@ -84,7 +318,7 @@ public class SimpleGCGCDataset implements Dataset {
 
         public String getParametersValue(String experimentName, String parameterName) {
                 if (parameters.containsKey(experimentName)) {
-                        Parameters p = parameters.get(experimentName);
+                        SampleDescription p = parameters.get(experimentName);
                         return p.getParameter(parameterName);
                 } else {
                         return null;
@@ -106,137 +340,7 @@ public class SimpleGCGCDataset implements Dataset {
                 return parameterNames;
         }
 
-        public SimpleGCGCDataset(String datasetName) {
-                this.nameExperiments = new Vector<String>();
-                peakList = new ArrayList<PeakListRow>();
-                lastSortMode = SORT_MODE.none;
-                this.datasetName = datasetName;
-        }
-
-        public void setParameters(ScoreAlignmentParameters parameters) {
-                this.params = parameters;
-        }
-
-        public void setAligner(Aligner aligner) {
-                this.aligner = aligner;
-        }
-
-        public void setGCGCDataConcentration() {
-                if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
-                        for (PeakListRow row : peakList) {
-                                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
-                                        if (data.getConcentration() > 0) {
-                                                data.setUseConcentration(true);
-                                        } else {
-                                                data.setUseConcentration(false);
-                                        }
-                                }
-                        }
-                } else {
-                        for (PeakListRow row : peakList) {
-                                for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
-                                        data.setUseConcentration(false);
-                                }
-                        }
-                }
-        }
-
-        public void sort(SORT_MODE mode) {
-                if (lastSortMode != mode && mode != AlignmentSorterFactory.SORT_MODE.none) {
-                        Collections.sort(peakList, AlignmentSorterFactory.getComparator(mode));
-                        lastSortMode = mode;
-                }
-        }
-
-        /**
-         * @return a list containing the AlignmentRows in this Alignment
-         */
-        public List<PeakListRow> getAlignment() {
-                return peakList;
-        }
-
-        public GCGCDatum[][] toArray() {
-                GCGCDatum tempArray[][] = new GCGCDatum[rowCount()][];
-                GCGCDatum returnedArray[][] = new GCGCDatum[colCount()][rowCount()];
-                for (int i = 0; i < rowCount(); i++) {
-                        tempArray[i] = ((List<GCGCDatum>) peakList.get(i).getVar("getDatumArray")).toArray(new GCGCDatum[0]);
-                }
-                for (int i = 0; i < rowCount(); i++) {
-                        for (int j = 0; j < colCount(); j++) {
-                                returnedArray[j][i] = tempArray[i][j];
-                        }
-                }
-
-                return returnedArray;
-        }
-
-        public List<PeakListRow> getSortedAlignment(SORT_MODE mode) {
-                sort(mode);
-                return getAlignment();
-        }
-
-        public ScoreAlignmentParameters getParameters() {
-                return params;
-        }
-
-        public Aligner getAligner() {
-                return aligner;
-        }
-
-        public boolean containsMainPeaks() {
-                boolean contains = false;
-                for (PeakListRow row : peakList) {
-                        if (!((DistValue) row.getVar("getDistValue")).isNull()) {
-                                contains = true;
-                                break;
-                        }
-                }
-                return contains;
-        }
-
-        public List<SimplePeakListRowGCGC> getQuantMassAlignments() {
-                List<SimplePeakListRowGCGC> QuantMassList = new ArrayList<SimplePeakListRowGCGC>();
-                for (int i = 0; i < peakList.size(); i++) {
-                        PeakListRow alignmentRow = peakList.get(i);
-                        if ((Double) alignmentRow.getVar("getMass") > -1) {
-                                QuantMassList.add((SimplePeakListRowGCGC) alignmentRow);
-                        }
-                }
-                return QuantMassList;
-        }
-
-        public GCGCDatum getPeak(int rowIx, int colIx) {
-                if (rowIx < 0 || rowIx >= rowCount() || colIx < 0 || colIx >= colCount()) {
-                        throw new IndexOutOfBoundsException("indices out of bounds: rowIx = " +
-                                rowIx + " valid range [0," + rowCount() + "]" +
-                                " colIx = " + colIx + " valid range [0," + colCount() +
-                                "]");
-                }
-                return ((List<GCGCDatum>) peakList.get(rowIx).getVar("getDatumArray")).get(colIx);
-        }
-
-        public int colCount() {
-                return nameExperiments.size();
-        }
-
-        public int rowCount() {
-                return peakList.size();
-        }
-
-        public String[] getColumnNames() {
-                return (String[]) nameExperiments.toArray(new String[0]).clone();
-        }
-
-        public boolean addAlignmentRow(SimplePeakListRowGCGC row) {
-                return peakList.add(row);
-        }
-
-        public void addAll(Collection<? extends SimplePeakListRowGCGC> rows) {
-                for (SimplePeakListRowGCGC r : rows) {
-                        peakList.add(r);
-                }
-        }
-
+        @Override
         public String toString() {
                 return datasetName;
         }
@@ -254,7 +358,7 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         public int getNumberRows() {
-                return this.rowCount();
+                return peakList.size();
         }
 
         public void setDatasetName(String name) {
@@ -289,6 +393,7 @@ public class SimpleGCGCDataset implements Dataset {
                 return this.peakList;
         }
 
+        @Override
         public Dataset clone() {
                 SimpleGCGCDataset newDataset = new SimpleGCGCDataset(datasetName);
                 for (String experimentName : this.nameExperiments) {
@@ -314,34 +419,5 @@ public class SimpleGCGCDataset implements Dataset {
 
         public void setInfo(String info) {
                 this.infoDataset = info;
-        }
-
-        class Parameters {
-
-                Hashtable<String, String> parameters;
-
-                public Parameters() {
-                        parameters = new Hashtable<String, String>();
-                }
-
-                public void addParameter(String parameterName, String parameterValue) {
-                        if (parameterName != null && parameterValue != null) {
-                                parameters.put(parameterName, parameterValue);
-                        }
-                }
-
-                public void deleteParameter(String parameterName) {
-                        if (parameters.containsKey(parameterName)) {
-                                parameters.remove(parameterName);
-                        }
-                }
-
-                public String getParameter(String parameterName) {
-                        if (parameters.containsKey(parameterName)) {
-                                return parameters.get(parameterName);
-                        } else {
-                                return null;
-                        }
-                }
         }
 }

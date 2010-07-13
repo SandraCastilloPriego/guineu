@@ -20,18 +20,38 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 
-
-
-
 /**
  * All Aligners should implement a null-argument constructor.
- * @author jmjarkko
- *
+ * 
+ * @author Jarkko Miettinen
  */
-public interface Aligner 
-{	
-	public SimpleGCGCDataset align();
-	public Aligner setScoreCalculator(ScoreCalculator calc);
-	public String getName();
-	public double getProgress();
+public interface Aligner {
+
+        /**
+         * Aligns all the sample files creating a new data set.
+         *
+         * @return New GCxGC-MS data set as a result of the alignment
+         */
+        public SimpleGCGCDataset align();
+
+        /**
+         * Sets the type of score calculator to perform the alignment. The result
+         * of the alignment will depend on the kind of score calculator used. 
+         * 
+         * @param calc Score calculator class
+         * @return Aligner 
+         */
+        public Aligner setScoreCalculator(ScoreCalculator calc);
+
+        /**
+         *       
+         * @return Name of the final data set 
+         */
+        public String getName();
+
+        /**
+         * 
+         * @return Progress of the algorithm
+         */
+        public double getProgress();
 }

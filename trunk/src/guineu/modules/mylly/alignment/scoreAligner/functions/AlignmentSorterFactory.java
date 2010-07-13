@@ -20,7 +20,10 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 import guineu.data.PeakListRow;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.Comparator;
-
+/**
+ *
+ * @author Jarkko Miettinen
+ */
 public class AlignmentSorterFactory {
 
     public static enum SORT_MODE {

@@ -34,24 +34,24 @@ public class SimpleOtherDataset implements Dataset {
         Vector<String> nameExperiments;
         protected DatasetType type;
         String infoDataset = "";
-        private Hashtable<String, Parameters> parameters;
+        private Hashtable<String, SampleDescription> parameters;
         private Vector<String> parameterNames;
 
         public SimpleOtherDataset(String datasetName) {
                 this.datasetName = datasetName;
                 this.PeakList = new Vector<PeakListRow>();
                 this.nameExperiments = new Vector<String>();
-                this.parameters = new Hashtable<String, Parameters>();
+                this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
                 type = DatasetType.OTHER;
         }
 
         public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
                 if (parameters.containsKey(experimentName)) {
-                        Parameters p = parameters.get(experimentName);
+                        SampleDescription p = parameters.get(experimentName);
                         p.addParameter(parameterName, parameterValue);
                 } else {
-                        Parameters p = new Parameters();
+                        SampleDescription p = new SampleDescription();
                         p.addParameter(parameterName, parameterValue);
                         parameters.put(experimentName, p);
                 }
@@ -63,7 +63,7 @@ public class SimpleOtherDataset implements Dataset {
         public void deleteParameter(String parameterName) {
                 for (String experimentName : nameExperiments) {
                         if (parameters.containsKey(experimentName)) {
-                                Parameters p = parameters.get(experimentName);
+                                SampleDescription p = parameters.get(experimentName);
                                 p.deleteParameter(parameterName);
                         }
                 }
@@ -72,7 +72,7 @@ public class SimpleOtherDataset implements Dataset {
 
         public String getParametersValue(String experimentName, String parameterName) {
                 if (parameters.containsKey(experimentName)) {
-                        Parameters p = parameters.get(experimentName);
+                        SampleDescription p = parameters.get(experimentName);
                         return p.getParameter(parameterName);
                 } else {
                         return null;
@@ -199,33 +199,6 @@ public class SimpleOtherDataset implements Dataset {
         public void setInfo(String info) {
                 this.infoDataset = info;
         }
-
-        class Parameters {
-
-                Hashtable<String, String> parameters;
-
-                public Parameters() {
-                        parameters = new Hashtable<String, String>();
-                }
-
-                public void addParameter(String parameterName, String parameterValue) {
-                        if (parameterName != null && parameterValue != null) {
-                                parameters.put(parameterName, parameterValue);
-                        }
-                }
-
-                public void deleteParameter(String parameterName) {
-                        if (parameters.containsKey(parameterName)) {
-                                parameters.remove(parameterName);
-                        }
-                }
-
-                public String getParameter(String parameterName) {
-                        if (parameters.containsKey(parameterName)) {
-                                return parameters.get(parameterName);
-                        } else {
-                                return null;
-                        }
-                }
-        }
 }
+
+       

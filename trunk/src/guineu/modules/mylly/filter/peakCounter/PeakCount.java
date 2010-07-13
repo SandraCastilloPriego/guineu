@@ -27,9 +27,9 @@ import guineu.modules.mylly.filter.NameFilter.FilterFunction;
 
 /**
  * Filters out {@link AlignmentRow}s with at most <code>n</code> peaks.
- * Here <code>n</code> is an parameter given to PeakCountFilter
- * @author jmjarkko
+ * Here <code>n</code> is a parameter given to PeakCountFilter
  *
+ * Jarkko Miettinen
  */
 public class PeakCount implements FilterFunction<PeakListRow>
 {
