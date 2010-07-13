@@ -17,11 +17,12 @@
  */
 package guineu.data;
 
+/**
+ * Fix columns for GCxGC-MS files. Each column has:
+ * Column name, isShown, getVar function, setVar function, regular Expresion to parse files and type of data.
+ */
 public enum GCGCColumnName {
-        /**
-         * Fix columns for GCxGC-MS files. Each column has:
-         * Column name, isShown, getVar function, setVar function, regular Expresion to parse files and type of data. *
-         */
+
         SELECTION("Selection", true, "isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
         ID("ID", true, "getID", "setID", "^ID.*", ParameterType.INTEGER),
         RT1("RT1", true, "getRT1", "setRT1", ".*RT1.*", ParameterType.DOUBLE),

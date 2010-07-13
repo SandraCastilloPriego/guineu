@@ -38,7 +38,7 @@ public interface Dataset {
          * Every dataset has a name to allow the user to identify it
          * Returns the name of the data set.
          *
-         * @return String with the name of the data set
+         * @return Name of the data set
          */
         public String getDatasetName();
 
@@ -56,21 +56,21 @@ public interface Dataset {
          * Returns number of columns. It doesn't take into account the columns corresponding
          * to a parameter of the data such as "m/z" or "retention time".
          *
-         * @return Int with the number of columns
+         * @return Number of columns
          */
         public int getNumberCols();
 
         /**
          * Returns the number of rows in the data set.
          *
-         * @return Int with the number of rows
+         * @return Number of rows
          */
         public int getNumberRows();
 
         /**
          * Sets the name of the dataset.
          *
-         * @param String with the name of the dataset
+         * @param Name of the dataset
          */
         public void setDatasetName(String name);
 
@@ -110,15 +110,15 @@ public interface Dataset {
         /**
          * Adds a new name to the list of columns names.
          *
-         * @param columnName String with a new column name
+         * @param columnName New column name
          */
         public void AddColumnName(String columnName);
 
         /**
          * Adds a new name to the list of columns names in the position indicated.
          *
-         * @param columnName String with a new column name
-         * @param position int with the position of this colmun in the list
+         * @param columnName New column name
+         * @param position Position of this colmun in the list
          */
         public void AddColumnName(String columnName, int position);
 
@@ -140,14 +140,14 @@ public interface Dataset {
          * Returns general information about the data set.
          * It will be written by the user.
          *
-         * @return String with general information about the data set
+         * @return General information about the data set
          */
         public String getInfo();
 
         /**
          * Adds general information about the data set.
          *
-         * @param info String with information about the data set
+         * @param info Information about the data set
          */
         public void setInfo(String info);
 
@@ -155,31 +155,31 @@ public interface Dataset {
          * Adds a new parameter value for one column. The parameters define the
          * metadata related with the columns.
          *
-         * @param columnName String with the column name
-         * @param parameterName String with the parameter name
-         * @param parameterValue String with the value of the parameter
+         * @param columnName Column name
+         * @param parameterName Parameter name
+         * @param parameterValue Value of the parameter
          */
         public void addParameterValue(String columnName, String parameterName, String parameterValue);
 
         /**
          * Deletes the value of on parameter for all the columns.
          *
-         * @param parameterName String with the name of the parameter
+         * @param parameterName Name of the parameter
          */
         public void deleteParameter(String parameterName);
 
         /**
          * Returns the name of all the parameters defined.
          *
-         * @return Vector of Strings with the name of all the parameters
+         * @return List of every parameters name
          */
         public Vector<String> getParametersName();
 
         /**
          * Returns the value of one concrete parameter in one column.
          *
-         * @param columnName String with the column's name
-         * @param parameterName String with the name of the parameter
+         * @param columnName Column's name
+         * @param parameterName Name of the parameter
          * @return String with the parameter value in the columnName
          */
         public String getParametersValue(String columnName, String parameterName);
@@ -187,8 +187,8 @@ public interface Dataset {
         /**
          * Returns a list of all possible values of one parameter in the columns.
          *
-         * @param parameter String with the parameter's name
-         * @return Vector of Strings with all possible values of this parameter
+         * @param parameter Parameter's name
+         * @return Vector of All possible values of this parameter
          */
         public Vector<String> getParameterAvailableValues(String parameter);
 }
