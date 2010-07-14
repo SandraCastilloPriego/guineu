@@ -37,15 +37,18 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
+ * Writes the data sets into a file.
  *
  * @author SCSANDRA
  */
 public class WriteFile {
 
         /**
-         * Write Comma Separated file for LCMS experiments.
-         * @param dataset
-         * @param path
+         * Writes Comma Separated file for LC-MS data set.
+         *
+         * @param dataset LC-MS data set
+         * @param path Path where the new file will be created
+         * @param parameters Parameters for saving the file (columns saved in the new file)
          */
         public void WriteCommaSeparatedFileLCMS(Dataset dataset, String path, SimpleParameterSet parameters) {
                 try {
@@ -99,14 +102,16 @@ public class WriteFile {
         }
 
         /**
-         * Write the data into an excel file.
-         * @param dataset
-         * @param path
+         * Writes the LC-MS data set into an excel file.
+         *
+         * @param dataset LC-MS data set
+         * @param path Path where the new file will be created
+         * @param parameters Parameters for saving the file (columns saved in the new file)
          */
         public void WriteExcelFileLCMS(Dataset dataset, String path, SimpleParameterSet parameters) {
                 FileOutputStream fileOut = null;
                 try {
-                        // Prepare sheet
+                        // Prepares sheet
                         HSSFWorkbook wb;
                         HSSFSheet sheet;
                         try {
@@ -131,7 +136,7 @@ public class WriteFile {
                                 LCMSColumnName.class);
 
 
-                        // Write head
+                        // Writes head
                         int fieldsNumber = this.getNumFields(elements);
                         int cont = 0;
                         for (LCMSColumnName p : elements) {
@@ -144,7 +149,7 @@ public class WriteFile {
                                 this.setCell(row, c++, experimentName);
                         }
 
-                        // Write content
+                        // Writes content
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
                                 SimplePeakListRowLCMS lipid = (SimplePeakListRowLCMS) dataset.getRow(i);
                                 row = sheet.getRow(i + 1);
@@ -166,7 +171,7 @@ public class WriteFile {
                                         this.setCell(row, c++, lipid.getPeak(experimentName));
                                 }
                         }
-                        //Write the output to a file
+                        //Writes the output to a file
                         fileOut = new FileOutputStream(path);
                         wb.write(fileOut);
                         fileOut.close();
@@ -176,11 +181,12 @@ public class WriteFile {
         }
 
         /**
-         * Write Comma Separated file for LCMS experiments.
-         * @param dataset
-         * @param path
+         * Writes Comma Separated file for basic data set.
+         *
+         * @param dataset basic data set
+         * @param path Path where the new file will be created
          */
-        public void WriteCommaSeparatedFileconcatenate(Dataset dataset, String path) {
+        public void WriteCommaSeparatedBasicDataset(Dataset dataset, String path) {
                 try {
                         CsvWriter w = new CsvWriter(path);
                         String[] data = new String[dataset.getNumberCols()];
@@ -208,12 +214,13 @@ public class WriteFile {
                 }
         }
 
-        /**
-         * Write Comma Separated file for LCMS experiments.
-         * @param dataset
-         * @param path
+       /**
+         * Writes the basic data set into an excel file.
+         *
+         * @param dataset basic data set
+         * @param path Path where the new file will be created
          */
-        public void WriteXLSFileconcatenate(Dataset dataset, String path) {
+        public void WriteXLSFileBasicDataset(Dataset dataset, String path) {
                 FileOutputStream fileOut = null;
                 try {
                         HSSFWorkbook wb;
@@ -262,9 +269,15 @@ public class WriteFile {
                 }
         }
 
-        public int getNumFields(LCMSColumnName[] elements) {
+        /**
+         * Returns the number of columns of the new file.
+         *
+         * @param possibleColumns LC-MS possible columns
+         * @return Number of columns of the new file
+         */
+        public int getNumFields(LCMSColumnName[] possibleColumns) {
                 int cont = 0;
-                for (LCMSColumnName p : elements) {
+                for (LCMSColumnName p : possibleColumns) {
                         if (p.isColumnShown()) {
                                 cont++;
                         }
@@ -272,6 +285,12 @@ public class WriteFile {
                 return cont;
         }
 
+        /**
+         * Returns the number of columns of the new file.
+         *
+         * @param possibleColumns GCxGC-MS possible columns
+         * @return Number of columns of the new file
+         */
         public int getNumFields(GCGCColumnName[] elements) {
                 int cont = 0;
                 for (GCGCColumnName p : elements) {
@@ -283,10 +302,11 @@ public class WriteFile {
         }
 
         /**
-         * Write data in a cell of a Excel file.
-         * @param row
-         * @param Index
-         * @param data
+         * Write data in a cell of the excel file.
+         *
+         * @param row Cell row
+         * @param Index Cell column
+         * @param data data to be writen into the cell
          */
         private void setCell(HSSFRow row, int Index, Object data) {
                 if (data.getClass().toString().contains("String")) {
@@ -311,10 +331,12 @@ public class WriteFile {
                 }
         }
 
-        /**
-         * Write the data into an excel file.
-         * @param dataset
-         * @param path
+       /**
+         * Writes the GCxGC-MS data set into an excel file.
+         *
+         * @param dataset GCxGC-MS data set
+         * @param path Path where the new file will be created
+         * @param parameters Parameters for saving the file (columns saved in the new file)
          */
         public void WriteExcelFileGCGC(Dataset dataset, String path, SimpleParameterSet parameters) {
                 FileOutputStream fileOut = null;
@@ -391,9 +413,12 @@ public class WriteFile {
         }
 
         /**
-         * Write Comma Separated file for GCGCTof experiments.
-         * @param dataset
-         * @param path
+         *
+         * Writes Comma Separated file for GCxGC-MS data set.
+         *
+         * @param dataset GCxGC-MS data set
+         * @param path Path where the new file will be created
+         * @param parameters Parameters for saving the file (columns saved in the new file)
          */
         public void WriteCommaSeparatedFileGCGC(Dataset dataset, String path, SimpleParameterSet parameters) {
                 try {

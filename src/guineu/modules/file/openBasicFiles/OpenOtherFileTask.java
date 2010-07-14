@@ -15,9 +15,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.file.openOtherFiles;
+package guineu.modules.file.openBasicFiles;
 
-import guineu.data.parser.impl.OtherFilesParserCSV;
+import guineu.data.parser.impl.BasicFilesParserCSV;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.parser.Parser;
@@ -82,7 +82,7 @@ public class OpenOtherFileTask implements Task {
                 status = TaskStatus.PROCESSING;
                 try {
                         if (status == TaskStatus.PROCESSING) {
-                                parser = new OtherFilesParserCSV(fileDir);
+                                parser = new BasicFilesParserCSV(fileDir);
                                 parser.fillData();
                                 Dataset dataset = (SimpleBasicDataset) parser.getDataset();
                                 desktop.AddNewFile(dataset);

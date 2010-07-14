@@ -18,9 +18,9 @@
 package guineu.modules.database.openDataDB;
 
 import guineu.data.parser.Parser;
-import guineu.data.parser.impl.LCMSParserDataBase;
+import guineu.data.parser.impl.database.LCMSParserDataBase;
 import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.parser.impl.GCGCParserDataBase;
+import guineu.data.parser.impl.database.GCGCParserDataBase;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;

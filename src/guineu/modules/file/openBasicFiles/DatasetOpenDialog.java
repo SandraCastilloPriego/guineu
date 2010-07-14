@@ -16,7 +16,7 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.modules.file.openOtherFiles;
+package guineu.modules.file.openBasicFiles;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

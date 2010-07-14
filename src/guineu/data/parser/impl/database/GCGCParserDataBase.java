@@ -16,7 +16,7 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.data.parser.impl;
+package guineu.data.parser.impl.database;
 
 
 import guineu.data.parser.Parser;

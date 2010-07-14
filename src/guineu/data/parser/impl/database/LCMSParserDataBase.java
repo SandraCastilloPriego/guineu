@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.data.parser.impl;
+package guineu.data.parser.impl.database;
 
 
 import guineu.data.parser.Parser;
