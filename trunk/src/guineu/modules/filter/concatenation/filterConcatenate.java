@@ -17,7 +17,7 @@
  */
 package guineu.modules.filter.concatenation;
 
-import guineu.modules.file.openOtherFiles.*;
+import guineu.modules.file.openBasicFiles.*;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;

@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  *
  * @author scsandra
  */
-public class OtherFilesParserCSV implements Parser {
+public class BasicFilesParserCSV implements Parser {
 
     private String datasetPath;
     private SimpleBasicDataset dataset;
@@ -40,7 +40,7 @@ public class OtherFilesParserCSV implements Parser {
     private int rowsReaded;
     Lipidclass LipidClassLib;
 
-    public OtherFilesParserCSV(String datasetPath) {
+    public BasicFilesParserCSV(String datasetPath) {
         this.rowsNumber = 0;
         this.rowsReaded = 0;
         this.datasetPath = datasetPath;

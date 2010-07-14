@@ -22,7 +22,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 /**
- *
+ * MySQL connection
+ * 
  * @author scsandra
  */
 public class Inmysql extends InOracle implements InDataBase {
