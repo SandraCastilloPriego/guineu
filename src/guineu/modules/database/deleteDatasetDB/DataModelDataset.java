@@ -18,8 +18,8 @@
 */
 package guineu.modules.database.deleteDatasetDB;
 
-import guineu.database.ask.DBask;
-import guineu.database.ask.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
+import guineu.database.retrieve.DataBase;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
@@ -40,7 +40,7 @@ public class DataModelDataset extends AbstractTableModel{
 	int numRows;
 	
 	public DataModelDataset(){		
-		DataBase db = new DBask();	
+		DataBase db = new OracleRetrievement();
 		this.rows = db.get_dataset();
 		this.numColumns = this.columns.length;
 		this.numRows = this.rows.length;

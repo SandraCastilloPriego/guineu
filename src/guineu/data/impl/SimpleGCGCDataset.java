@@ -31,6 +31,11 @@ import guineu.data.PeakListRow;
 import java.util.Hashtable;
 import java.util.Vector;
 
+/**
+ * GCxGC-MS data set implementation.
+ *
+ * @author scsandra
+ */
 public class SimpleGCGCDataset implements Dataset {
 
         private List<PeakListRow> peakList;
@@ -45,8 +50,7 @@ public class SimpleGCGCDataset implements Dataset {
         private Vector<String> parameterNames;
 
         /**
-         * Constructor
-         *
+         *     
          * @param names Sample Names
          * @param parameters Alignment parameters
          * @param aligner Class which performed the alignment of the sample files to create this data set
@@ -77,8 +81,7 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * Constructor
-         *
+         * 
          * @param datasetName Name of data set
          */
         public SimpleGCGCDataset(String datasetName) {
@@ -381,11 +384,11 @@ public class SimpleGCGCDataset implements Dataset {
                 this.peakList.remove(row);
         }
 
-        public void AddColumnName(String nameExperiment) {
+        public void addColumnName(String nameExperiment) {
                 this.nameExperiments.add(nameExperiment);
         }
 
-        public void AddColumnName(String nameExperiment, int position) {
+        public void addColumnName(String nameExperiment, int position) {
                 this.nameExperiments.insertElementAt(nameExperiment, position);
         }
 
@@ -397,19 +400,19 @@ public class SimpleGCGCDataset implements Dataset {
         public Dataset clone() {
                 SimpleGCGCDataset newDataset = new SimpleGCGCDataset(datasetName);
                 for (String experimentName : this.nameExperiments) {
-                        newDataset.AddColumnName(experimentName);
+                        newDataset.addColumnName(experimentName);
                 }
                 newDataset.setAligner(aligner);
                 newDataset.setParameters(params);
                 for (PeakListRow peakListRow : this.peakList) {
-                        newDataset.AddRow(peakListRow.clone());
+                        newDataset.addRow(peakListRow.clone());
                 }
                 newDataset.setType(this.type);
                 return newDataset;
 
         }
 
-        public void AddRow(PeakListRow peakListRow) {
+        public void addRow(PeakListRow peakListRow) {
                 this.peakList.add(peakListRow);
         }
 

@@ -22,7 +22,7 @@ import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.database.intro.InDataBase;
-import guineu.database.intro.InOracle;
+import guineu.database.intro.impl.InOracle;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.sql.Connection;
@@ -36,13 +36,11 @@ public class SaveFileDBTask implements Task {
 	private Dataset dataset;
 	private TaskStatus status = TaskStatus.WAITING;
 	private String errorMessage;
-	private SaveFileParameters parameters;
 	private String author,  datasetName,  parameterFileName,  study;
 	private InDataBase db;
 
 	public SaveFileDBTask(Dataset dataset, SaveFileParameters parameters) {
 		this.dataset = dataset;
-		this.parameters = parameters;
 		this.author = (String) parameters.getParameterValue(SaveFileParameters.author);
 		this.datasetName = (String) parameters.getParameterValue(SaveFileParameters.name);
 		this.parameterFileName = (String) parameters.getParameterValue(SaveFileParameters.parameters);

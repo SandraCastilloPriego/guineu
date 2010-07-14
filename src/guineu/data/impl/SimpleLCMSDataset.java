@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Vector;
 
 /**
+ * LC-MS data set implementation.
  *
  * @author SCSANDRA
  */
@@ -33,16 +34,20 @@ public class SimpleLCMSDataset implements Dataset {
 
         private String datasetName;
         private List<PeakListRow> peakList;
-        private Vector<String> nameExperiments;
+        private Vector<String> sampleNames;
         private Vector<String> parameterNames;
         private Hashtable<String, SampleDescription> parameters;
         private DatasetType type;
         private String infoDataset = "";
 
+        /**
+         * 
+         * @param datasetName Name of the dataset
+         */
         public SimpleLCMSDataset(String datasetName) {
                 this.datasetName = datasetName;
                 this.peakList = new ArrayList<PeakListRow>();
-                this.nameExperiments = new Vector<String>();
+                this.sampleNames = new Vector<String>();
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
                 type = DatasetType.LCMS;
@@ -63,7 +68,7 @@ public class SimpleLCMSDataset implements Dataset {
         }
 
         public void deleteParameter(String parameterName) {
-                for (String experimentName : nameExperiments) {
+                for (String experimentName : sampleNames) {
                         if (parameters.containsKey(experimentName)) {
                                 SampleDescription p = parameters.get(experimentName);
                                 p.deleteParameter(parameterName);
@@ -104,12 +109,20 @@ public class SimpleLCMSDataset implements Dataset {
                 this.datasetName = datasetName;
         }
 
-        public void AddRow(PeakListRow peakListRow) {
+        public void addRow(PeakListRow peakListRow) {
                 this.peakList.add(peakListRow);
         }
 
-        public void AddColumnName(String nameExperiment) {
-                this.nameExperiments.addElement(nameExperiment);
+        public void addColumnName(String sampleName) {
+                this.sampleNames.addElement(sampleName);
+        }
+
+        public void addColumnName(String columnName, int position) {
+                this.sampleNames.insertElementAt(columnName, position);
+        }
+
+        public Vector<String> getAllColumnNames() {
+                return this.sampleNames;
         }
 
         public PeakListRow getRow(int i) {
@@ -125,15 +138,7 @@ public class SimpleLCMSDataset implements Dataset {
         }
 
         public int getNumberCols() {
-                return this.nameExperiments.size();
-        }
-
-        public Vector<String> getAllColumnNames() {
-                return this.nameExperiments;
-        }
-
-        public void setNameExperiments(Vector<String> experimentNames) {
-                this.nameExperiments = experimentNames;
+                return this.sampleNames.size();
         }
 
         public DatasetType getType() {
@@ -144,19 +149,6 @@ public class SimpleLCMSDataset implements Dataset {
                 this.type = type;
         }
 
-        @Override
-        public SimpleLCMSDataset clone() {
-                SimpleLCMSDataset newDataset = new SimpleLCMSDataset(this.datasetName);
-                for (String experimentName : this.nameExperiments) {
-                        newDataset.AddColumnName(experimentName);
-                }
-                for (PeakListRow peakListRow : this.peakList) {
-                        newDataset.AddRow(peakListRow.clone());
-                }
-                newDataset.setType(this.type);
-                return newDataset;
-        }
-
         public void removeRow(PeakListRow row) {
                 try {
                         this.peakList.remove(row);
@@ -165,19 +157,29 @@ public class SimpleLCMSDataset implements Dataset {
                 }
         }
 
-        public void AddColumnName(String columnName, int position) {
-                this.nameExperiments.insertElementAt(columnName, position);
-        }
-
-        public String toString() {
-                return this.getDatasetName();
-        }
-
         public String getInfo() {
                 return infoDataset;
         }
 
         public void setInfo(String info) {
                 this.infoDataset = info;
+        }
+
+        @Override
+        public SimpleLCMSDataset clone() {
+                SimpleLCMSDataset newDataset = new SimpleLCMSDataset(this.datasetName);
+                for (String experimentName : this.sampleNames) {
+                        newDataset.addColumnName(experimentName);
+                }
+                for (PeakListRow peakListRow : this.peakList) {
+                        newDataset.addRow(peakListRow.clone());
+                }
+                newDataset.setType(this.type);
+                return newDataset;
+        }
+
+        @Override
+        public String toString() {
+                return this.getDatasetName();
         }
 }

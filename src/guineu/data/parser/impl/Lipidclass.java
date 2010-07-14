@@ -1,5 +1,7 @@
 package guineu.data.parser.impl;
 
+import guineu.data.parser.Lipidclass_enum;
+
 
 public class Lipidclass {
 

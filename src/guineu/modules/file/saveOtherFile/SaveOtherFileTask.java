@@ -20,7 +20,7 @@ package guineu.modules.file.saveOtherFile;
 import guineu.data.Dataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
-import guineu.database.intro.InOracle;
+import guineu.database.intro.impl.InOracle;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 

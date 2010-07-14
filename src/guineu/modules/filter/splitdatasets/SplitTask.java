@@ -94,12 +94,12 @@ public class SplitTask implements Task {
                 Dataset datasetSplit = FileUtils.getDataset(dataset, "Split dataset " + groupName + " - ");
 
                 for (String name : group) {
-                        datasetSplit.AddColumnName(name);
+                        datasetSplit.addColumnName(name);
                 }
                 for (PeakListRow row : dataset.getRows()) {
                         PeakListRow newRow = row.clone();
                         newRow.removeNoSamplePeaks(group);
-                        datasetSplit.AddRow(newRow);
+                        datasetSplit.addRow(newRow);
                 }
                 GUIUtils.showNewTable(datasetSplit);
         }

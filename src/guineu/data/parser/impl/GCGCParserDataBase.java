@@ -21,8 +21,8 @@ package guineu.data.parser.impl;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.database.ask.DBask;
-import guineu.database.ask.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
+import guineu.database.retrieve.DataBase;
 
 /**
  *
@@ -36,7 +36,7 @@ public class GCGCParserDataBase implements Parser{
  
     
     public GCGCParserDataBase(int ID){
-        db = new DBask();
+        db = new OracleRetrievement();
         this.datasetID = ID;    
     }
 

@@ -22,12 +22,12 @@ import guineu.data.Parameter;
 import guineu.data.ParameterType;
 import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.SimpleParameterSet;
-import guineu.database.ask.DBask;
+import guineu.database.retrieve.impl.OracleRetrievement;
 
 
 public class SaveFileParameters extends SimpleParameterSet{
  	
-	private static Object[] studies = DBask.getStudies();
+	private static Object[] studies = OracleRetrievement.getStudies();
 
     public static final Parameter author = new SimpleParameter(
             ParameterType.STRING, "Author: ",

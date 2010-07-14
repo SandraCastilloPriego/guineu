@@ -80,7 +80,7 @@ public class mediaFilterTask implements Task {
             progress = 0.0f;
             for (Dataset dataset : datasets) {
                 double[] median = this.getSTDDev(dataset);
-                dataset.AddColumnName("Median");
+                dataset.addColumnName("Median");
                 int cont = 0;
                 for (PeakListRow row : dataset.getRows()) {
                     row.setPeak("Median", median[cont++]);

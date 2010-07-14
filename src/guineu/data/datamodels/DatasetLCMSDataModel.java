@@ -196,6 +196,6 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
          * @see guineu.util.Tables.DataTableModel
          */
         public void addColumn(String columnName) {
-                this.dataset.AddColumnName(columnName);
+                this.dataset.addColumnName(columnName);
         }
 }

@@ -19,7 +19,7 @@ package guineu.modules.file.openOtherFiles;
 
 import guineu.data.parser.impl.OtherFilesParserCSV;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -84,7 +84,7 @@ public class OpenOtherFileTask implements Task {
                         if (status == TaskStatus.PROCESSING) {
                                 parser = new OtherFilesParserCSV(fileDir);
                                 parser.fillData();
-                                Dataset dataset = (SimpleOtherDataset) parser.getDataset();
+                                Dataset dataset = (SimpleBasicDataset) parser.getDataset();
                                 desktop.AddNewFile(dataset);
                         }
                 } catch (Exception ex) {

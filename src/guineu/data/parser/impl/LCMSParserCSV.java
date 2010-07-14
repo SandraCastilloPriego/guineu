@@ -140,7 +140,7 @@ public class LCMSParserCSV implements Parser {
                 // lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
             }
             lipid.setSelectionMode(false);
-            this.dataset.AddRow(lipid);
+            this.dataset.addRow(lipid);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -160,7 +160,7 @@ public class LCMSParserCSV implements Parser {
             }
             for (int i = 0; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
-                    this.dataset.AddColumnName(header[i]);
+                    this.dataset.addColumnName(header[i]);
                 }
             }
 

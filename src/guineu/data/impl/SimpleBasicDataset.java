@@ -24,26 +24,68 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 /**
+ * Basic data set implementation.
  *
  * @author SCSANDRA
  */
-public class SimpleOtherDataset implements Dataset {
+public class SimpleBasicDataset implements Dataset {
 
         String datasetName;
         Vector<PeakListRow> PeakList;
-        Vector<String> nameExperiments;
+        Vector<String> columnNames;
         protected DatasetType type;
         String infoDataset = "";
         private Hashtable<String, SampleDescription> parameters;
         private Vector<String> parameterNames;
 
-        public SimpleOtherDataset(String datasetName) {
+        /**
+         *
+         * @param datasetName Name of the data set
+         */
+        public SimpleBasicDataset(String datasetName) {
                 this.datasetName = datasetName;
                 this.PeakList = new Vector<PeakListRow>();
-                this.nameExperiments = new Vector<String>();
+                this.columnNames = new Vector<String>();
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
-                type = DatasetType.OTHER;
+                type = DatasetType.BASIC;
+        }
+
+        /**
+         * Returns true when the list of column names contain the parameter <b>columnName</b>.
+         *
+         * @param columnName Name of the column to be searched
+         * @return true or false depending if the parameter <b>columnName</b> is in the name of any column
+         */
+        public boolean containtName(String columnName) {
+                for (String name : this.columnNames) {
+                        if (name.compareTo(columnName) == 0) {
+                                return true;
+                        }
+                        if (name.matches(".*" + columnName + ".*")) {
+                                return true;
+                        }
+                        if (columnName.matches(".*" + name + ".*")) {
+                                return true;
+                        }
+                }
+                return false;
+        }
+
+        /**
+         * Returns true when any row of the data set contains the String <b>str</b> into a
+         * column called "Name"
+         *
+         * @param str
+         * @return true or false depending if the parameter <b>str</b> is in the column called "Name"
+         */
+        public boolean containRowName(String srt) {
+                for (PeakListRow row : this.getRows()) {
+                        if (((String) row.getPeak("Name")).contains(srt) || srt.contains((CharSequence) row.getPeak("Name"))) {
+                                return true;
+                        }
+                }
+                return false;
         }
 
         public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
@@ -61,7 +103,7 @@ public class SimpleOtherDataset implements Dataset {
         }
 
         public void deleteParameter(String parameterName) {
-                for (String experimentName : nameExperiments) {
+                for (String experimentName : columnNames) {
                         if (parameters.containsKey(experimentName)) {
                                 SampleDescription p = parameters.get(experimentName);
                                 p.deleteParameter(parameterName);
@@ -102,12 +144,12 @@ public class SimpleOtherDataset implements Dataset {
                 this.datasetName = datasetName;
         }
 
-        public void AddRow(PeakListRow peakListRow) {
+        public void addRow(PeakListRow peakListRow) {
                 this.PeakList.addElement(peakListRow);
         }
 
-        public void AddColumnName(String nameExperiment) {
-                this.nameExperiments.addElement(nameExperiment);
+        public void addColumnName(String nameExperiment) {
+                this.columnNames.addElement(nameExperiment);
         }
 
         public PeakListRow getRow(int i) {
@@ -123,15 +165,15 @@ public class SimpleOtherDataset implements Dataset {
         }
 
         public int getNumberCols() {
-                return this.nameExperiments.size();
+                return this.columnNames.size();
         }
 
         public Vector<String> getAllColumnNames() {
-                return this.nameExperiments;
+                return this.columnNames;
         }
 
         public void setNameExperiments(Vector<String> experimentNames) {
-                this.nameExperiments = experimentNames;
+                this.columnNames = experimentNames;
         }
 
         public DatasetType getType() {
@@ -140,43 +182,6 @@ public class SimpleOtherDataset implements Dataset {
 
         public void setType(DatasetType type) {
                 this.type = type;
-        }
-
-        public boolean containtName(String Name) {
-                for (String name : this.nameExperiments) {
-                        if (name.compareTo(Name) == 0) {
-                                return true;
-                        }
-                        if (name.matches(".*" + Name + ".*")) {
-                                return true;
-                        }
-                        if (Name.matches(".*" + name + ".*")) {
-                                return true;
-                        }
-                }
-                return false;
-        }
-
-        public boolean containRowName(String Name) {
-                for (PeakListRow row : this.getRows()) {
-                        if (((String) row.getPeak("Name")).contains(Name) || Name.contains((CharSequence) row.getPeak("Name"))) {
-                                return true;
-                        }
-                }
-                return false;
-        }
-
-        @Override
-        public SimpleOtherDataset clone() {
-                SimpleOtherDataset newDataset = new SimpleOtherDataset(this.datasetName);
-                for (String experimentName : this.nameExperiments) {
-                        newDataset.AddColumnName(experimentName);
-                }
-                for (PeakListRow peakListRow : this.PeakList) {
-                        newDataset.AddRow(peakListRow.clone());
-                }
-                newDataset.setType(this.type);
-                return newDataset;
         }
 
         public void removeRow(PeakListRow row) {
@@ -188,8 +193,8 @@ public class SimpleOtherDataset implements Dataset {
                 }
         }
 
-        public void AddColumnName(String nameExperiment, int position) {
-                this.nameExperiments.insertElementAt(datasetName, position);
+        public void addColumnName(String nameExperiment, int position) {
+                this.columnNames.insertElementAt(datasetName, position);
         }
 
         public String getInfo() {
@@ -198,6 +203,19 @@ public class SimpleOtherDataset implements Dataset {
 
         public void setInfo(String info) {
                 this.infoDataset = info;
+        }
+
+        @Override
+        public SimpleBasicDataset clone() {
+                SimpleBasicDataset newDataset = new SimpleBasicDataset(this.datasetName);
+                for (String experimentName : this.columnNames) {
+                        newDataset.addColumnName(experimentName);
+                }
+                for (PeakListRow peakListRow : this.PeakList) {
+                        newDataset.addRow(peakListRow.clone());
+                }
+                newDataset.setType(this.type);
+                return newDataset;
         }
 }
 

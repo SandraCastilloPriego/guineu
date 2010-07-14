@@ -153,7 +153,7 @@ public class GCGCParserCSV implements Parser {
             }
             for (int i = numColumns; i < header.length; i++) {
                 if (!header[i].matches(regExpression)) {
-                    this.dataset.AddColumnName(header[i]);
+                    this.dataset.addColumnName(header[i]);
                 }
             }
 

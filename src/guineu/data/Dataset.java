@@ -112,7 +112,7 @@ public interface Dataset {
          *
          * @param columnName New column name
          */
-        public void AddColumnName(String columnName);
+        public void addColumnName(String columnName);
 
         /**
          * Adds a new name to the list of columns names in the position indicated.
@@ -120,7 +120,7 @@ public interface Dataset {
          * @param columnName New column name
          * @param position Position of this colmun in the list
          */
-        public void AddColumnName(String columnName, int position);
+        public void addColumnName(String columnName, int position);
 
         /**
          * Returns all the rows in the data set.
@@ -134,7 +134,7 @@ public interface Dataset {
          *
          * @param peakListRow Row
          */
-        public void AddRow(PeakListRow peakListRow);
+        public void addRow(PeakListRow peakListRow);
 
         /**
          * Returns general information about the data set.

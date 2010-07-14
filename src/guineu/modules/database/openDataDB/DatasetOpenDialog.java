@@ -17,8 +17,8 @@
  */
 package guineu.modules.database.openDataDB;
 
-import guineu.database.ask.DBask;
-import guineu.database.ask.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
+import guineu.database.retrieve.DataBase;
 import guineu.util.dialogs.ExitCode;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -220,7 +220,7 @@ public class DatasetOpenDialog extends JFrame implements ActionListener {
     }
 
     private void createTree() {
-        DataBase db = new DBask();
+        DataBase db = new OracleRetrievement();
         String rows[][] = db.get_dataset();
         String rootName = "Data";
         CheckNode rootNode = new CheckNode(rootName);
@@ -297,7 +297,7 @@ public class DatasetOpenDialog extends JFrame implements ActionListener {
                 if (node.getLevel() == Levels.PROJECTS.ordinal()) {
                 } else {
                     try {
-                        DataBase db = new DBask();
+                        DataBase db = new OracleRetrievement();
                         String[] data = node.toString().split(" - ");
                         Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
                         for (String sampleName : sampleNames) {

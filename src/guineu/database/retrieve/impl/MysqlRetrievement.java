@@ -16,8 +16,9 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.database.ask;
+package guineu.database.retrieve.impl;
 
+import guineu.database.retrieve.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -25,7 +26,7 @@ import java.sql.DriverManager;
  *
  * @author SCSANDRA
  */
-public class MysqlAsk extends DBask implements DataBase{
+public class MysqlRetrievement extends OracleRetrievement implements DataBase{
     
     @Override
     public synchronized Connection connect()	

@@ -20,7 +20,7 @@ package guineu.modules.filter.transpose;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
@@ -67,8 +67,8 @@ public class TransposeFilterTask implements Task {
 
     public void run() {
         try {
-            SimpleOtherDataset newDataset = new SimpleOtherDataset(dataset.getDatasetName() + "- transposed");
-            newDataset.AddColumnName("Name");
+            SimpleBasicDataset newDataset = new SimpleBasicDataset(dataset.getDatasetName() + "- transposed");
+            newDataset.addColumnName("Name");
             status = TaskStatus.PROCESSING;
 
             List<String> newNames = new ArrayList<String>();
@@ -81,20 +81,20 @@ public class TransposeFilterTask implements Task {
                             newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getMZ")).toString() + " - " + ((Double) row.getVar("getRT")).toString() + " - " + ((Double) row.getVar("getNumFound")).toString();
                         case GCGCTOF:
                             newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getRT1")).toString() + " - " + ((Double) row.getVar("getRT2")).toString() + " - " + ((Double) row.getVar("getRTI")).toString();
-                        case OTHER:
+                        case BASIC:
                             newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
                     }
                 } catch (Exception e) {
                     newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
                 }
-                newDataset.AddColumnName(newName);
+                newDataset.addColumnName(newName);
 
                 newNames.add(newName);
             }
             for (String samples : dataset.getAllColumnNames()) {
                 SimplePeakListRowOther row = new SimplePeakListRowOther();
                 row.setPeak("Name", samples);
-                newDataset.AddRow(row);
+                newDataset.addRow(row);
             }
             int cont = 0;
             for (PeakListRow row2 : dataset.getRows()) {
@@ -104,7 +104,7 @@ public class TransposeFilterTask implements Task {
                 }
                 cont++;
             }
-            newDataset.setType(DatasetType.OTHER);
+            newDataset.setType(DatasetType.BASIC);
             desktop.AddNewFile(newDataset);
             status = TaskStatus.FINISHED;
         } catch (Exception e) {

@@ -17,7 +17,7 @@
  */
 package guineu.data.datamodels;
 
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
@@ -28,10 +28,10 @@ import javax.swing.table.AbstractTableModel;
 public class OtherDataModel extends AbstractTableModel implements DataTableModel {
 
         private int numColumns;
-        private SimpleOtherDataset dataset;
+        private SimpleBasicDataset dataset;
 
         public OtherDataModel(Dataset dataset) {
-                this.dataset = (SimpleOtherDataset) dataset;
+                this.dataset = (SimpleBasicDataset) dataset;
                 numColumns = this.dataset.getNumberCols() + 1;
         }
 
@@ -120,6 +120,6 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
          * @see guineu.util.Tables.DataTableModel
          */
         public void addColumn(String ColumnName) {
-                this.dataset.AddColumnName(ColumnName);
+                this.dataset.addColumnName(ColumnName);
         }
 }

@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.database.intro;
+package guineu.database.intro.impl;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
@@ -24,7 +24,7 @@ import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimplePeakListRowLCMS;
-import guineu.database.ask.DBask;
+import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.modules.filter.report.qualityReport.SimpleQualityControlDataset;
 import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.BufferedReader;
@@ -112,7 +112,7 @@ public class WriteDataBase {
                         if (info.length() > 3999) {
                             info = info.substring(0, 3999);
                         }
-                        statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION) VALUES ('" + excel_name + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + DBask.getStudyID(study, conn) + "', '" + info + "')");
+                        statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION) VALUES ('" + excel_name + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + OracleRetrievement.getStudyID(study, conn) + "', '" + info + "')");
                     } catch (SQLException sqlexception) {
                         sqlexception.printStackTrace();
                     }

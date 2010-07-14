@@ -18,9 +18,9 @@
 package guineu.modules.database.saveQualityControFileDB;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.database.intro.InDataBase;
-import guineu.database.intro.InOracle;
+import guineu.database.intro.impl.InOracle;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.sql.Connection;
@@ -75,7 +75,7 @@ public class SaveQualityControlFileDBTask implements Task {
         try {
             status = TaskStatus.PROCESSING;
             Connection connection = db.connect();
-            db.qualityControlFiles(connection, (SimpleOtherDataset) dataset);
+            db.qualityControlFiles(connection, (SimpleBasicDataset) dataset);
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;

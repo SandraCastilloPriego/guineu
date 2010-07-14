@@ -180,7 +180,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 				//exception.printStackTrace();
 			}
 		}
-		this.dataset.AddRow(lipid);
+		this.dataset.addRow(lipid);
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
 			for (int i = 0; i < header.size(); i++) {
 				if (!header.elementAt(i).matches(regExpression)) {
-					this.dataset.AddColumnName(header.elementAt(i));
+					this.dataset.addColumnName(header.elementAt(i));
 				}
 			}
 

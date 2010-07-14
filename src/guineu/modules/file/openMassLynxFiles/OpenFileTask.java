@@ -18,7 +18,7 @@
 package guineu.modules.file.openMassLynxFiles;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
@@ -76,7 +76,7 @@ public class OpenFileTask implements Task {
                         if (status == TaskStatus.PROCESSING) {
                                 LCMSParserMassLynx parser = new LCMSParserMassLynx(fileDir);
                                 progress = parser.getProgress();
-                                Dataset dataset = (SimpleOtherDataset) parser.getDataset();
+                                Dataset dataset = (SimpleBasicDataset) parser.getDataset();
                                 progress = parser.getProgress();
                                 GUIUtils.showNewTable(dataset);
                         }

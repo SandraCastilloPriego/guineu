@@ -15,8 +15,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.database.ask;
+package guineu.database.retrieve.impl;
 
+import guineu.database.retrieve.*;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import java.sql.Connection;
@@ -30,9 +31,9 @@ import oracle.jdbc.pool.OracleDataSource;
  * @author scsandra
  *
  */
-public class DBask implements DataBase {
+public class OracleRetrievement implements DataBase {
 
-	public DBask() {
+	public OracleRetrievement() {
 	}
 
 	public synchronized Connection connect() {
@@ -303,7 +304,7 @@ public class DBask implements DataBase {
 
 			while (r.next()) {
 				try {
-					dataset.AddColumnName(r.getString("NAME"));
+					dataset.addColumnName(r.getString("NAME"));
 				} catch (Exception exception) {
 				}
 			}
@@ -568,7 +569,7 @@ public class DBask implements DataBase {
 				peakListRow.setIdentificationType(r.getString("IDENTIFICATION_TYPE"));
 				peakListRow.setPubChemID(r.getString("PUBCHEM_ID"));
 				this.setPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn);
-				dataset.AddRow(peakListRow);
+				dataset.addRow(peakListRow);
 			}
 			r.close();
 			st.close();

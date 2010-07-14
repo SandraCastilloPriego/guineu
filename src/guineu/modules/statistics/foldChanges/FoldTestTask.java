@@ -81,13 +81,13 @@ public class FoldTestTask implements Task {
 
             Dataset newDataset = FileUtils.getDataset(dataset, "Fold Test - ");
             progress = 0.3f;
-            newDataset.AddColumnName("Fold test");
+            newDataset.addColumnName("Fold test");
             int cont = 0;
             for (PeakListRow row : dataset.getRows()) {
                 PeakListRow newRow = row.clone();
                 newRow.removePeaks();
                 newRow.setPeak("Fold test", t[cont++]);
-                newDataset.AddRow(newRow);
+                newDataset.addRow(newRow);
             }
             progress = 0.5f;
 
