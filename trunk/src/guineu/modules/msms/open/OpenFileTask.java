@@ -22,7 +22,7 @@ import guineu.data.DatasetType;
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
 import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
@@ -126,7 +126,7 @@ public class OpenFileTask implements Task {
 			if (status != TaskStatus.CANCELED) {
 				SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
 
-				SimpleOtherDataset otherDataset = modifyDataset(dataset);
+				SimpleBasicDataset otherDataset = modifyDataset(dataset);
 
 				desktop.AddNewFile(otherDataset);
 
@@ -136,11 +136,11 @@ public class OpenFileTask implements Task {
 		}
 	}
 
-	private SimpleOtherDataset modifyDataset(SimpleLCMSDataset dataset) {
-		SimpleOtherDataset datasetOther = new SimpleOtherDataset(dataset.getDatasetName());
-		datasetOther.setType(DatasetType.OTHER);
-		datasetOther.AddColumnName("m/z");
-		datasetOther.AddColumnName("rt");
+	private SimpleBasicDataset modifyDataset(SimpleLCMSDataset dataset) {
+		SimpleBasicDataset datasetOther = new SimpleBasicDataset(dataset.getDatasetName());
+		datasetOther.setType(DatasetType.BASIC);
+		datasetOther.addColumnName("m/z");
+		datasetOther.addColumnName("rt");
 		double margin = (Double) parameters.getParameterValue(OpenMSMSFileParameters.rtTolerance);
 		int i = 1;
 		int maxim = 1;
@@ -169,7 +169,7 @@ public class OpenFileTask implements Task {
 					rtAverage /= 60;
 					newRow = orderRow(newRow);
 					newRow.setPeak("rt", String.valueOf(rtAverage));
-					datasetOther.AddRow(newRow);
+					datasetOther.addRow(newRow);
 					if (i > maxim) {
 						maxim = i;
 					}
@@ -180,7 +180,7 @@ public class OpenFileTask implements Task {
 			e.printStackTrace();
 		}
 		for (int e = 1; e <= maxim; e++) {
-			datasetOther.AddColumnName("fragment" + e);
+			datasetOther.addColumnName("fragment" + e);
 		}
 
 		return datasetOther;

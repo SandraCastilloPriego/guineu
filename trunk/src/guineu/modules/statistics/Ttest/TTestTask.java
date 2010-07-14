@@ -81,14 +81,14 @@ public class TTestTask implements Task {
             progress = 0.5f;
 
             Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
-            newDataset.AddColumnName("Ttest");
+            newDataset.addColumnName("Ttest");
             int cont = 0;
 
             for (PeakListRow row : dataset.getRows()) {
                 PeakListRow newRow = row.clone();
                 newRow.removePeaks();
                 newRow.setPeak("Ttest", t[cont++]);
-                newDataset.AddRow(newRow);
+                newDataset.addRow(newRow);
             }
             GUIUtils.showNewTable(newDataset);
             progress = 1f;

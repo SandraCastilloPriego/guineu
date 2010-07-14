@@ -73,13 +73,13 @@ public class AnovaTestTask implements Task {
         try {
             Vector<String> groups = dataset.getParameterAvailableValues(parameter);
             Dataset newDataset = FileUtils.getDataset(dataset, "Anova Test - ");
-            newDataset.AddColumnName("Anova test");
+            newDataset.addColumnName("Anova test");
 
             for (PeakListRow row : dataset.getRows()) {
                 PeakListRow newRow = row.clone();
                 newRow.removePeaks();
                 newRow.setPeak("Anova test", anova(groups, row));
-                newDataset.AddRow(newRow);
+                newDataset.addRow(newRow);
                 progress++;
             }
             GUIUtils.showNewTable(newDataset);

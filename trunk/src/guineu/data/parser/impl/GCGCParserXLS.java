@@ -162,7 +162,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 //exception.printStackTrace();
             }
         }
-        this.dataset.AddRow(metabolite);
+        this.dataset.addRow(metabolite);
     }
 
     /**
@@ -215,7 +215,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 
             for (int i = numColumns; i < header.size(); i++) {
                 if (!header.elementAt(i).matches(regExpression)) {
-                    this.dataset.AddColumnName(header.elementAt(i));
+                    this.dataset.addColumnName(header.elementAt(i));
                 }
             }
 

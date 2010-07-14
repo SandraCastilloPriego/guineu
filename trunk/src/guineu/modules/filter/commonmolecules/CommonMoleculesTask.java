@@ -22,7 +22,7 @@ package guineu.modules.filter.commonmolecules;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.taskcontrol.Task;
@@ -97,12 +97,12 @@ class CommonMoleculesTask implements Task {
 				}
 			}
 
-			SimpleOtherDataset dataset = new SimpleOtherDataset("Common peaks");
-			dataset.AddColumnName("m/z");
-			dataset.AddColumnName("rt");
-			dataset.AddColumnName("Molecule Name");
-			dataset.AddColumnName("Number of datasets");
-			dataset.AddColumnName("Dataset names");
+			SimpleBasicDataset dataset = new SimpleBasicDataset("Common peaks");
+			dataset.addColumnName("m/z");
+			dataset.addColumnName("rt");
+			dataset.addColumnName("Molecule Name");
+			dataset.addColumnName("Number of datasets");
+			dataset.addColumnName("Dataset names");
 			
 			for (lipid mol : commonNames) {
 				SimplePeakListRowOther row = new SimplePeakListRowOther();
@@ -112,7 +112,7 @@ class CommonMoleculesTask implements Task {
 				row.setPeak("Number of datasets", String.valueOf(mol.apears));
 				row.setPeak("Dataset names", String.valueOf(mol.DatasetNames));
 
-				dataset.AddRow(row);
+				dataset.addRow(row);
 			}
                         GUIUtils.showNewTable(dataset);
 

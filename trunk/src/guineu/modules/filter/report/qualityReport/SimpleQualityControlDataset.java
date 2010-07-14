@@ -6,14 +6,14 @@ package guineu.modules.filter.report.qualityReport;
 
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import java.util.Vector;
 
 /**
  *
  * @author scsandra
  */
-public class SimpleQualityControlDataset extends SimpleOtherDataset {
+public class SimpleQualityControlDataset extends SimpleBasicDataset {
 
     private String date, sampleSet, ionMode, sampleType, comments = "", injection;
     

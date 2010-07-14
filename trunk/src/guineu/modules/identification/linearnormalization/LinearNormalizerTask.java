@@ -199,7 +199,7 @@ class LinearNormalizerTask implements Task {
                 // Finally add all normalized rows to normalized alignment result
                 for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
                         PeakListRow normalizedRow = rowMap.get(originalpeakListRow);
-                        normalizedPeakList.AddRow(normalizedRow);
+                        normalizedPeakList.addRow(normalizedRow);
                 }
 
                 GUIUtils.showNewTable(normalizedPeakList);

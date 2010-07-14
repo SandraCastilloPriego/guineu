@@ -87,7 +87,7 @@ public class OpenFileTask implements Task {
 	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data) {
 
 		SimpleGCGCDataset dataset = new SimpleGCGCDataset(file.getName());
-		dataset.AddColumnName(file.getName());
+		dataset.addColumnName(file.getName());
 		dataset.setType(DatasetType.GCGCTOF);
 
 		for (GCGCDatum mol : data) {

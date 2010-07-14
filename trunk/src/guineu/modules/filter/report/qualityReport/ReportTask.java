@@ -19,7 +19,7 @@ package guineu.modules.filter.report.qualityReport;
 
 import com.csvreader.CsvReader;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.taskcontrol.Task;
@@ -237,29 +237,29 @@ public class ReportTask implements Task {
         private void writeDataset(List<sample> samples) {
                 DecimalFormat formatter = new DecimalFormat("####.##");
 
-                SimpleOtherDataset dataset = new SimpleQualityControlDataset("Summary Report");
+                SimpleBasicDataset dataset = new SimpleQualityControlDataset("Summary Report");
                 ((SimpleQualityControlDataset) dataset).setParameters(date, sampleSet, ionMode, injection, sampleType, comments);
 
                 for (int i = 1; i <= 12; i++) {
-                        dataset.AddColumnName(String.valueOf(i));
+                        dataset.addColumnName(String.valueOf(i));
                 }
 
-                dataset.AddRow(getRow("Date:", date));
+                dataset.addRow(getRow("Date:", date));
 
-                dataset.AddRow(getRow("SampleSet:", sampleSet));
+                dataset.addRow(getRow("SampleSet:", sampleSet));
 
-                dataset.AddRow(getRow("Ion Mode:", ionMode));
+                dataset.addRow(getRow("Ion Mode:", ionMode));
 
-                dataset.AddRow(getRow("Injection volume:", injection));
+                dataset.addRow(getRow("Injection volume:", injection));
 
-                dataset.AddRow(getRow("Sample type:", sampleType));
+                dataset.addRow(getRow("Sample type:", sampleType));
 
-                dataset.AddRow(getRow("", ""));
-                dataset.AddRow(getRow("", ""));
+                dataset.addRow(getRow("", ""));
+                dataset.addRow(getRow("", ""));
 
-                dataset.AddRow(getRow("Basic parameters for seronorm control samples & batch standard:", ""));
+                dataset.addRow(getRow("Basic parameters for seronorm control samples & batch standard:", ""));
 
-                dataset.AddRow(this.getTitle());
+                dataset.addRow(this.getTitle());
 
                 Stats = new DescriptiveStatistics[9];
                 for (int i = 0; i < 9; i++) {
@@ -267,7 +267,7 @@ public class ReportTask implements Task {
                 }
                 for (sample s : samples) {
                         PeakListRow row = s.getRow(Stats);
-                        dataset.AddRow(row);
+                        dataset.addRow(row);
                         ((SimpleQualityControlDataset) dataset).setRow(row);
                 }
 
@@ -276,23 +276,23 @@ public class ReportTask implements Task {
                 for (int i = 0; i < 9; i++) {
                         row.setPeak(String.valueOf(i + 2), formatter.format(Stats[i].getMean()).toString());
                 }
-                dataset.AddRow(row);
+                dataset.addRow(row);
 
                 row = new SimplePeakListRowOther();
                 row.setPeak("1", "RSD");
                 for (int i = 0; i < 9; i++) {
                         row.setPeak(String.valueOf(i + 2), formatter.format((Stats[i].getStandardDeviation() * 100) / Stats[i].getMean()).toString());
                 }
-                dataset.AddRow(row);
+                dataset.addRow(row);
 
-                dataset.AddRow(getRow("", ""));
-                dataset.AddRow(getRow("", ""));
+                dataset.addRow(getRow("", ""));
+                dataset.addRow(getRow("", ""));
                 // row8
                 SimplePeakListRowOther row8 = new SimplePeakListRowOther();
                 row8.setPeak("1", "Additional parameters for seronorm control samples & batch standard:");
-                dataset.AddRow(row8);
+                dataset.addRow(row8);
 
-                dataset.AddRow(this.getTitle2());
+                dataset.addRow(this.getTitle2());
 
                 superStats = new DescriptiveStatistics[9];
                 for (int i = 0; i < 9; i++) {
@@ -300,7 +300,7 @@ public class ReportTask implements Task {
                 }
                 for (sample s : samples) {
                         PeakListRow row2 = s.getRow2(superStats);
-                        dataset.AddRow(row2);
+                        dataset.addRow(row2);
                         ((SimpleQualityControlDataset) dataset).setAdditionalRow(row2);
                 }
 
@@ -309,18 +309,18 @@ public class ReportTask implements Task {
                 for (int i = 0; i < 9; i++) {
                         row.setPeak(String.valueOf(i + 2), formatter.format(superStats[i].getMean()).toString());
                 }
-                dataset.AddRow(row);
+                dataset.addRow(row);
 
                 row = new SimplePeakListRowOther();
                 row.setPeak("1", "RSD");
                 for (int i = 0; i < 9; i++) {
                         row.setPeak(String.valueOf(i + 2), formatter.format((superStats[i].getStandardDeviation() * 100) / superStats[i].getMean()).toString());
                 }
-                dataset.AddRow(row);
+                dataset.addRow(row);
 
-                dataset.AddRow(getRow("", ""));
-                dataset.AddRow(getRow("", ""));
-                dataset.AddRow(getRow("Comments:", comments));
+                dataset.addRow(getRow("", ""));
+                dataset.addRow(getRow("", ""));
+                dataset.addRow(getRow("Comments:", comments));
                 //creates internal frame with the table
                 GUIUtils.showNewTable(dataset);
         }

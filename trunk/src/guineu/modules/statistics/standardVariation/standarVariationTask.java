@@ -90,7 +90,7 @@ public class standarVariationTask implements Task {
 	public Dataset StandardVariation(String[] group) {
 		Dataset newDataset = FileUtils.getDataset(dataset, "Standard Variation -");
 		for (String experimentName : group) {
-			newDataset.AddColumnName(experimentName);
+			newDataset.addColumnName(experimentName);
 		}
 
 		StandardUmol std = new StandardUmol(group);
@@ -102,7 +102,7 @@ public class standarVariationTask implements Task {
 		std.run();
 		Vector<PeakListRow> mols = std.getMols();
 		for (PeakListRow mol : mols) {
-			newDataset.AddRow(mol);
+			newDataset.addRow(mol);
 		}
 		return newDataset;
 	}

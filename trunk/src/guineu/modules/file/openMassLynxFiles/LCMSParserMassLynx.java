@@ -21,7 +21,7 @@ package guineu.modules.file.openMassLynxFiles;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import java.io.BufferedReader;
@@ -37,14 +37,14 @@ import java.util.regex.Pattern;
 public class LCMSParserMassLynx implements Parser {
 
 	private String datasetPath;
-	private SimpleOtherDataset dataset;
+	private SimpleBasicDataset dataset;
 	private float progress;
 
 	public LCMSParserMassLynx(String datasetPath) {
 		progress = 0.1f;
 		this.datasetPath = datasetPath;
-		this.dataset = new SimpleOtherDataset(this.getDatasetName());
-		this.dataset.setType(DatasetType.OTHER);	
+		this.dataset = new SimpleBasicDataset(this.getDatasetName());
+		this.dataset.setType(DatasetType.BASIC);
 		progress = 0.5f;
 		fillData();
 		progress = 1.0f;
@@ -104,7 +104,7 @@ public class LCMSParserMassLynx implements Parser {
 							getData(lipid, line, header, compound);
 						}
 						if (contLipids == 1) {
-							this.dataset.AddRow(lipid);
+							this.dataset.addRow(lipid);
 						}
 
 					}
@@ -142,7 +142,7 @@ public class LCMSParserMassLynx implements Parser {
 
 			}
 
-		//this.dataset.AddRow(lipid);
+		//this.dataset.addRow(lipid);
 
 		} catch (Exception exception) {
 		}
@@ -163,10 +163,10 @@ public class LCMSParserMassLynx implements Parser {
 					} else if (header[i].matches("#")) {
 						name = "#";
 					}if (header[i] != null && !header[i].isEmpty()){
-						this.dataset.AddColumnName(name);
+						this.dataset.addColumnName(name);
 					}
 				} else if (header[i] != null && !header[i].isEmpty() && !header[i].matches("Name") && !header[i].matches("#") ) {
-					this.dataset.AddColumnName(compound + " - " + header[i]);
+					this.dataset.addColumnName(compound + " - " + header[i]);
 				}
 			}
 

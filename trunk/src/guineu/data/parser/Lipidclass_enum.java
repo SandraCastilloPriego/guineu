@@ -1,4 +1,4 @@
-package guineu.data.parser.impl;
+package guineu.data.parser;
 
 public enum Lipidclass_enum {
     unknown (0),

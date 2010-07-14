@@ -25,7 +25,7 @@ import guineu.data.datamodels.OtherDataModel;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import guineu.data.impl.SimplePeakListRowOther;
@@ -43,7 +43,7 @@ public class FileUtils {
                                 return new SimplePeakListRowLCMS();
                         case GCGCTOF:
                                 return new SimplePeakListRowGCGC();
-                        case OTHER:
+                        case BASIC:
                                 return new SimplePeakListRowOther();
                 }
                 return null;
@@ -60,8 +60,8 @@ public class FileUtils {
                                 ((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
                                 ((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
                                 break;
-                        case OTHER:
-                                newDataset = new SimpleOtherDataset(Name + dataset.getDatasetName());
+                        case BASIC:
+                                newDataset = new SimpleBasicDataset(Name + dataset.getDatasetName());
                                 break;
                 }
                 newDataset.setType(dataset.getType());
@@ -77,7 +77,7 @@ public class FileUtils {
                         case GCGCTOF:
                                 model = new DatasetGCGCDataModel(dataset);
                                 break;
-                        case OTHER:
+                        case BASIC:
                                 model = new OtherDataModel(dataset);
                                 break;                        
                 }

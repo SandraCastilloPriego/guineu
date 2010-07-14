@@ -15,13 +15,14 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.database.intro;
+package guineu.database.intro.impl;
 
+import guineu.database.intro.*;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.modules.filter.report.qualityReport.SimpleQualityControlDataset;
 import java.io.IOException;
@@ -125,7 +126,7 @@ public class InOracle implements InDataBase {
         }
     }
 
-    public void qualityControlFiles(Connection conn, SimpleOtherDataset QCDataset) throws IOException {
+    public void qualityControlFiles(Connection conn, SimpleBasicDataset QCDataset) throws IOException {
         WriteDataBase writer = new WriteDataBase();
         progress = 0.25f;
         int QC_ID = writer.TableQUALITYC(conn, (SimpleQualityControlDataset) QCDataset);

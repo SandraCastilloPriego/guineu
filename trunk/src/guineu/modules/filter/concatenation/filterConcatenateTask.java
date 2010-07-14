@@ -17,7 +17,7 @@
  */
 package guineu.modules.filter.concatenation;
 
-import guineu.data.impl.SimpleOtherDataset;
+import guineu.data.impl.SimpleBasicDataset;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
@@ -61,13 +61,13 @@ public class filterConcatenateTask implements Task {
 		try {
 			status = TaskStatus.PROCESSING;
 			Dataset[] datasets = this.desktop.getSelectedDataFiles();
-			Dataset[] otherDatasets = new SimpleOtherDataset[datasets.length - 1];
-			SimpleOtherDataset newDataset = null;
+			Dataset[] otherDatasets = new SimpleBasicDataset[datasets.length - 1];
+			SimpleBasicDataset newDataset = null;
 			int cont = 0;
 			for (Dataset dataset : datasets) {
 				// newDataset = createDataset(datasets);
 				if (cont == 0) {
-					newDataset = ((SimpleOtherDataset) dataset).clone();
+					newDataset = ((SimpleBasicDataset) dataset).clone();
 					cont++;
 				} else {
 					otherDatasets[cont - 1] = dataset;
@@ -76,7 +76,7 @@ public class filterConcatenateTask implements Task {
 			}
 			this.fillDataset(newDataset, otherDatasets);
 			// this.refillDataset(newDataset);
-			newDataset.setType(DatasetType.OTHER);
+			newDataset.setType(DatasetType.BASIC);
 			desktop.AddNewFile(newDataset);
 			          
 			//desktop.removeData(datasets[0]);
@@ -89,14 +89,14 @@ public class filterConcatenateTask implements Task {
 		}
 	}
 
-	private SimpleOtherDataset createDataset(Dataset[] datasets) {
-		SimpleOtherDataset dataset = new SimpleOtherDataset("concatenated");
+	private SimpleBasicDataset createDataset(Dataset[] datasets) {
+		SimpleBasicDataset dataset = new SimpleBasicDataset("concatenated");
 		for (int i = 0; i < datasets.length; i++) {
-			for (PeakListRow row : ((SimpleOtherDataset) datasets[i]).getRows()) {
+			for (PeakListRow row : ((SimpleBasicDataset) datasets[i]).getRows()) {
 				if (!dataset.containRowName((String) row.getPeak("Name"))) {
 					SimplePeakListRowOther newRow = new SimplePeakListRowOther();
 					newRow.setPeak("Name", (String) row.getPeak("Name"));
-					dataset.AddRow(newRow);
+					dataset.addRow(newRow);
 				}
 			}
 		}
@@ -104,20 +104,20 @@ public class filterConcatenateTask implements Task {
 		return dataset;
 	}
 
-	private void fillDataset(SimpleOtherDataset newDataset, Dataset[] otherDatasets) {
+	private void fillDataset(SimpleBasicDataset newDataset, Dataset[] otherDatasets) {
 
 		for (Dataset data : otherDatasets) {
 			//Vector<String> experimentsNames = newDataset.getAllColumnNames();
-			for (String Name : ((SimpleOtherDataset) data).getAllColumnNames()) {
+			for (String Name : ((SimpleBasicDataset) data).getAllColumnNames()) {
 				if (!Name.matches(".*Name.*")/* && !Name.matches(".*dg present.*")*/) {
-					newDataset.AddColumnName(Name);
+					newDataset.addColumnName(Name);
 				}
 			}
-			newDataset.AddColumnName("Name2");
+			newDataset.addColumnName("Name2");
 		}
 		for (PeakListRow row2 : newDataset.getRows()) {
 			for (Dataset data : otherDatasets) {
-				for (PeakListRow row : ((SimpleOtherDataset) data).getRows()) {
+				for (PeakListRow row : ((SimpleBasicDataset) data).getRows()) {
 
 					try {
 						//	String realName = row.getPeak("Name").toString().replace("b", "");
@@ -179,7 +179,7 @@ public class filterConcatenateTask implements Task {
 
 	}
 
-	private void refillDataset(SimpleOtherDataset newDataset) {
+	private void refillDataset(SimpleBasicDataset newDataset) {
 		for (PeakListRow row : newDataset.getRows()) {
 			/* try {
 			if (!row.getPeak("is_ICA_Positive").matches("1")) {

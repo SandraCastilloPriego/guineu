@@ -35,7 +35,7 @@ public enum DatasetType {
         /**
          * Other data
          */
-        OTHER,
+        BASIC,
         /**
          * Quality control data
          */

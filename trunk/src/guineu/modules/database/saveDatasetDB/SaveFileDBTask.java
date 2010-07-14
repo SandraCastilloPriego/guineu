@@ -22,7 +22,7 @@ import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.database.intro.InDataBase;
-import guineu.database.intro.InOracle;
+import guineu.database.intro.impl.InOracle;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.sql.Connection;

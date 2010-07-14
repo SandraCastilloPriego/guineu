@@ -22,8 +22,8 @@ import guineu.data.parser.Parser;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
-import guineu.database.ask.DBask;
-import guineu.database.ask.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
+import guineu.database.retrieve.DataBase;
 import java.util.Vector;
 
 
@@ -39,7 +39,7 @@ public class LCMSParserDataBase implements Parser{
     private float progress = 0.0f;
     
     public LCMSParserDataBase(int datasetID){
-        db = new DBask();
+        db = new OracleRetrievement();
         this.datasetID = datasetID; 
         this.dataset = new SimpleLCMSDataset(db.getDatasetName(datasetID));		
     }

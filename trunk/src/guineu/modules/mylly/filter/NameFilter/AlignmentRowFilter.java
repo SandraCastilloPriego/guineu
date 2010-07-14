@@ -62,7 +62,7 @@ public class AlignmentRowFilter
 
 		for(PeakListRow row: input.getAlignment()){
 			if(f.include((SimplePeakListRowGCGC)row)){
-				newAlignment.AddRow(row);
+				newAlignment.addRow(row);
 			}
 		}
 		return newAlignment;

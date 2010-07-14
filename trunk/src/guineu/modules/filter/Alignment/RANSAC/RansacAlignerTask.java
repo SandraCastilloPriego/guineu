@@ -121,7 +121,7 @@ class RansacAlignerTask implements Task {
 
 		for (Dataset dataset : this.peakLists) {
 			for (String experimentName : dataset.getAllColumnNames()) {
-				this.alignedPeakList.AddColumnName(experimentName);
+				this.alignedPeakList.addColumnName(experimentName);
 			}
 		}
 
@@ -136,7 +136,7 @@ class RansacAlignerTask implements Task {
 				if (getPeakRow(alignedPeakList, dataset, row) == null) {
 					PeakListRow newRow = row.clone();
 					newRow.setVar("setNumberAlignment", 1);
-					alignedPeakList.AddRow(newRow);
+					alignedPeakList.addRow(newRow);
 				}
 			}
 		}
@@ -335,7 +335,7 @@ class RansacAlignerTask implements Task {
 						PeakListRow row3 = FileUtils.getPeakListRow(newDataset.getType());
 						this.addPeaks(row3, mol.row1);
 						this.addPeaks(row3, mol.row2);
-						newDataset.AddRow(row3);
+						newDataset.addRow(row3);
 
 					} else {
 						// if one of them is already in the new peak list, add the other aligned peak in the same row
@@ -350,12 +350,12 @@ class RansacAlignerTask implements Task {
 					if (row1 == null) {
 						PeakListRow row3 = FileUtils.getPeakListRow(newDataset.getType());
 						this.addPeaks(row3, mol.row1);
-						newDataset.AddRow(row3);
+						newDataset.addRow(row3);
 					}
 					if (row2 == null) {
 						PeakListRow row3 = FileUtils.getPeakListRow(newDataset.getType());
 						this.addPeaks(row3, mol.row2);
-						newDataset.AddRow(row3);
+						newDataset.addRow(row3);
 					}
 				}
 			}
