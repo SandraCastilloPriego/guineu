@@ -118,7 +118,7 @@ public class OpenFileTask implements Task {
                                 SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
 
                                 //creates internal frame with the table
-                                GUIUtils.showNewTable(dataset);
+                                GUIUtils.showNewTable(dataset,true);
                         }
                 } catch (Exception exception) {
                         // exception.printStackTrace();

@@ -322,7 +322,7 @@ public class ReportTask implements Task {
                 dataset.addRow(getRow("", ""));
                 dataset.addRow(getRow("Comments:", comments));
                 //creates internal frame with the table
-                GUIUtils.showNewTable(dataset);
+                GUIUtils.showNewTable(dataset, true);
         }
 
         private SimplePeakListRowOther getRow(String title, String content) {

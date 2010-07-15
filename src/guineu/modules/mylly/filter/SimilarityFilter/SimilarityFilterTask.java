@@ -82,7 +82,7 @@ public class SimilarityFilterTask implements Task {
                         newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
                         newAlignment.setType(DatasetType.GCGCTOF);
                         // Shows the new data set
-                        GUIUtils.showNewTable(newAlignment);
+                        GUIUtils.showNewTable(newAlignment, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception ex) {
                         Logger.getLogger(SimilarityFilterTask.class.getName()).log(Level.SEVERE, null, ex);

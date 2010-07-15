@@ -68,7 +68,7 @@ public class NormalizeTissueFilterTask implements Task {
                                 return;
                         }
                         dataset = serum.getDataset();
-                        GUIUtils.showNewTable(dataset);
+                        GUIUtils.showNewTable(dataset, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception e) {
                         status = TaskStatus.ERROR;

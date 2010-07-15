@@ -29,7 +29,7 @@ import guineu.taskcontrol.TaskStatus;
  *
  * @author scsandra
  */
-public class OpenOtherFileTask implements Task {
+public class OpenBasicFileTask implements Task {
 
         private String fileDir;
         private TaskStatus status = TaskStatus.WAITING;
@@ -37,7 +37,7 @@ public class OpenOtherFileTask implements Task {
         private Desktop desktop;
         private Parser parser;
 
-        public OpenOtherFileTask(String fileDir, Desktop desktop) {
+        public OpenBasicFileTask(String fileDir, Desktop desktop) {
                 if (fileDir != null) {
                         this.fileDir = fileDir;
                 }

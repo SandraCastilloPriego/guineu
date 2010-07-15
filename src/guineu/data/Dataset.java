@@ -35,6 +35,19 @@ public interface Dataset {
         public Dataset clone();
 
         /**
+         * Sets data set ID
+         *
+         */
+        public void setID(int ID);
+
+        /**
+         * Retruns data set ID
+         *
+         * @return data set ID
+         */
+        public int getID();
+
+        /**
          * Every dataset has a name to allow the user to identify it
          * Returns the name of the data set.
          *
@@ -66,6 +79,13 @@ public interface Dataset {
          * @return Number of rows
          */
         public int getNumberRows();
+
+        /**
+         * Sets the number or rows in the data set.
+         *
+         * @param numberRows Number of rows
+         */
+        public void setNumberRows(int numberRows);
 
         /**
          * Sets the name of the dataset.

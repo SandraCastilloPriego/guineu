@@ -64,7 +64,7 @@ public class InOracle implements InDataBase {
                 return progress;
         }
 
-        public void lcms(Connection conn, SimpleLCMSDataset LipidMol, String type, String author, String DatasetName, String parameters, String study) throws IOException {
+        public void lcms(Connection conn, SimpleLCMSDataset dataset, String type, String author, String DatasetName, String parameters, String study) throws IOException {
                 WriteDataBase writer = new WriteDataBase();
                 String excel_name = DatasetName;
                 if (excel_name == null) {
@@ -72,24 +72,24 @@ public class InOracle implements InDataBase {
                 }
 
                 //Intro table DATASET
-                int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters, study, LipidMol.getInfo());
+                int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters, study, dataset.getInfo(), dataset.getNumberRows());
                 progress = 0.25f;
 
                 if (excel_id != -1) {
-                        writer.tableEXPERIMENT(conn, LipidMol, excel_id);
+                        writer.tableEXPERIMENT(conn, dataset, excel_id);
                         progress = 0.50f;
 
                         //Intro table MOL_LCMMS
-                        int[] mol_ID = writer.tableMOL_LCMS(conn, LipidMol, excel_id);
+                        int[] mol_ID = writer.tableMOL_LCMS(conn, dataset, excel_id);
                         progress = 0.75f;
 
                         //Intro table MEASUREMENT
-                        writer.tableMEASUREMENT(conn, LipidMol, mol_ID, excel_id);
+                        writer.tableMEASUREMENT(conn, dataset, mol_ID, excel_id);
                 }
                 progress = 1f;
         }
 
-        public void gcgctof(Connection conn, SimpleGCGCDataset mol, String type, String author, String DatasetName, String study) throws IOException {
+        public void gcgctof(Connection conn, SimpleGCGCDataset dataset, String type, String author, String DatasetName, String study) throws IOException {
                 try {
                         WriteDataBase writer = new WriteDataBase();
                         Statement st = null;
@@ -97,22 +97,22 @@ public class InOracle implements InDataBase {
                         //Intro table DATASET
                         String excel_name = DatasetName;
                         progress = 0.15f;
-                        int exp_id = writer.tableDATASET(conn, excel_name, type, author, null, study, mol.getInfo());
+                        int exp_id = writer.tableDATASET(conn, excel_name, type, author, null, study, dataset.getInfo(), dataset.getNumberRows());
                         progress = 0.25f;
 
                         //Intro table DATASET_EXPERIMENTS
-                        writer.tableEXPERIMENT(conn, mol, exp_id);
+                        writer.tableEXPERIMENT(conn, dataset, exp_id);
 
                         //Intro table GCGCTof
-                        int[] mol_ID = writer.tableMOL_GCGCTOF(conn, mol, exp_id);
+                        int[] mol_ID = writer.tableMOL_GCGCTOF(conn, dataset, exp_id);
                         progress = 0.50f;
 
                         //Intro table MEASUREMENT
-                        writer.tableMEASUREMENT(conn, mol, mol_ID, exp_id);
+                        writer.tableMEASUREMENT(conn, dataset, mol_ID, exp_id);
                         progress = 0.75f;
 
                         //Intro table SPECTRUM
-                        writer.tableSPECTRUM(conn, mol, st, mol_ID);
+                        writer.tableSPECTRUM(conn, dataset, st, mol_ID);
 
                         progress = 1f;
                 } catch (Exception exception) {

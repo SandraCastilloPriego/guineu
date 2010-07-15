@@ -99,7 +99,7 @@ public class NameFilterTask implements Task {
                     dataset = filter.actualMap((SimpleGCGCDataset) alignment);
                     dataset.setDatasetName(dataset.toString() + (String) parameters.getParameterValue(NameFilterParameters.suffix));
                     dataset.setType(DatasetType.GCGCTOF);
-                    GUIUtils.showNewTable(dataset);
+                    GUIUtils.showNewTable(dataset, true);
                 }
             }
 

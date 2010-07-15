@@ -74,7 +74,7 @@ public class SinglingFilterTask implements Task {
                         if (newAlignment != null) {
                                 newAlignment.setDatasetName(newAlignment.toString() + suffix);
                                 newAlignment.setType(DatasetType.GCGCTOF);
-                                GUIUtils.showNewTable(newAlignment);
+                                GUIUtils.showNewTable(newAlignment, true);
                         } else {
                                 System.out.println("The result is null");
                         }

@@ -110,6 +110,7 @@ public class WriteDataBase {
          *       PARAMETERS	BFILE
          *       DATASETID	NUMBER
          *       INFORMATION	VARCHAR2(4000 BYTE)
+         *       NUMBER_ROWS	NUMBER
          *
          * @param conn Connection
          * @param excelName The name of the excel file where the experiments are.
@@ -120,7 +121,7 @@ public class WriteDataBase {
          * @param info Information about the dataset (writen by the user in a textbox)
          * @return the ID of the data in the database.
          */
-        public int tableDATASET(Connection conn, String excelName, String type, String author, String parameters, String study, String info) {
+        public int tableDATASET(Connection conn, String excelName, String type, String author, String parameters, String study, String info, int numberRows) {
                 {
                         try {
                                 int exp_id = 0;
@@ -142,7 +143,7 @@ public class WriteDataBase {
                                                 if (info.length() > 3999) {
                                                         info = info.substring(0, 3999);
                                                 }
-                                                statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION) VALUES ('" + excelName + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + OracleRetrievement.getStudyID(study, conn) + "', '" + info + "')");
+                                                statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION, NUMBER_ROWS) VALUES ('" + excelName + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + OracleRetrievement.getStudyID(study, conn) + "', '" + info + "', '" + author + "')");
                                         } catch (SQLException sqlexception) {
                                                 sqlexception.printStackTrace();
                                         }

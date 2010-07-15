@@ -67,7 +67,7 @@ public class standarVariationTask implements Task {
 		try {
 			status = TaskStatus.PROCESSING;
 			Dataset newDataset = this.StandardVariation(group1);			
-			GUIUtils.showNewTable(newDataset);
+			GUIUtils.showNewTable(newDataset, true);
 
 			/*for(int i = 0; i < newDataset.getNumberMolecules(); i++){
 			RegressionChart chart = new RegressionChart(newDataset.getConcentrationsID(i), newDataset.getDatasetName(), newDataset.getMolecule(i).getMolName());
@@ -77,7 +77,7 @@ public class standarVariationTask implements Task {
 		
 			progress = 0.5f;
 			newDataset = this.StandardVariation(group2);
-                        GUIUtils.showNewTable(newDataset);
+                        GUIUtils.showNewTable(newDataset, true);
 			progress = 1f;
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {

@@ -202,7 +202,7 @@ class LinearNormalizerTask implements Task {
                         normalizedPeakList.addRow(normalizedRow);
                 }
 
-                GUIUtils.showNewTable(normalizedPeakList);
+                GUIUtils.showNewTable(normalizedPeakList, true);
 
                 logger.info("Finished linear normalizer");
                 status = TaskStatus.FINISHED;

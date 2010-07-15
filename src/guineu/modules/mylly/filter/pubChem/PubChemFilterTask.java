@@ -72,7 +72,7 @@ public class PubChemFilterTask implements Task {
                         SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
                         alignment.setDatasetName(alignment.getDatasetName() + (String) parameters.getParameterValue(PubChemParameters.suffix));
                         alignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(alignment);
+                        GUIUtils.showNewTable(alignment, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception ex) {
                         Logger.getLogger(PubChemFilterTask.class.getName()).log(Level.SEVERE, null, ex);

@@ -39,6 +39,8 @@ public class SimpleLCMSDataset implements Dataset {
         private Hashtable<String, SampleDescription> parameters;
         private DatasetType type;
         private String infoDataset = "";
+        private int ID;
+        private int numberRows = 0;
 
         /**
          * 
@@ -51,6 +53,14 @@ public class SimpleLCMSDataset implements Dataset {
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
                 type = DatasetType.LCMS;
+        }
+
+        public void setID(int ID) {
+                this.ID = ID;
+        }
+
+        public int getID() {
+                return ID;
         }
 
         public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
@@ -135,6 +145,14 @@ public class SimpleLCMSDataset implements Dataset {
 
         public int getNumberRows() {
                 return this.peakList.size();
+        }
+
+        public int getNumberRowsdb() {
+                return this.numberRows;
+        }
+
+        public void setNumberRows(int numberRows) {
+                this.numberRows = numberRows;
         }
 
         public int getNumberCols() {

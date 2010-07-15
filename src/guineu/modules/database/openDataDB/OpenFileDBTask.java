@@ -17,9 +17,10 @@
  */
 package guineu.modules.database.openDataDB;
 
+import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.database.LCMSParserDataBase;
-import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.parser.impl.database.GCGCParserDataBase;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -35,11 +36,11 @@ public class OpenFileDBTask implements Task {
         private String errorMessage;
         private Parser parser;
 
-        public OpenFileDBTask(int datasetID, String type) {
-                if (type.contains("GCxGC")) {
-                        parser = new GCGCParserDataBase(datasetID);
+        public OpenFileDBTask(Dataset dataset) {
+                if (dataset.getType() == DatasetType.GCGCTOF) {
+                        parser = new GCGCParserDataBase(dataset);
                 } else {
-                        parser = new LCMSParserDataBase(datasetID);
+                        parser = new LCMSParserDataBase(dataset);
                 }
 
         }
@@ -75,13 +76,13 @@ public class OpenFileDBTask implements Task {
         }
 
         public void openFile() {
-                try {
+                try {                     
                         status = TaskStatus.PROCESSING;
                         parser.fillData();
-                        SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
-
+                        Dataset dataset =  parser.getDataset();
+                        
                         //creates internal frame with the table
-                        GUIUtils.showNewTable(dataset);
+                        GUIUtils.showNewTable(dataset, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception e) {
                         status = TaskStatus.ERROR;

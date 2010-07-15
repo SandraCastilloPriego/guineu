@@ -30,14 +30,9 @@ import guineu.modules.file.saveGCGCFile.SaveGCGCFile;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
 import guineu.modules.file.saveOtherFile.SaveOtherFile;
 import guineu.util.GUIUtils;
-import guineu.util.Tables.DataTable;
-import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
 import guineu.util.components.DragOrderedJList;
-import guineu.util.components.FileUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
-import guineu.util.internalframe.DataInternalFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -220,7 +215,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                 Dataset[] selectedFiles = getSelectedDatasets();
                 for (Dataset file : selectedFiles) {
                         if (file != null) {
-                                GUIUtils.showNewTable(file);
+                                GUIUtils.showNewTable(file, false);
                         }
                 }
         }
