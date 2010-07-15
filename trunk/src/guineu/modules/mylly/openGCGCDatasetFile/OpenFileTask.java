@@ -122,7 +122,7 @@ public class OpenFileTask implements Task {
         try {
             if (status != TaskStatus.CANCELED) {
                 SimpleGCGCDataset dataset = (SimpleGCGCDataset) parser.getDataset();
-                GUIUtils.showNewTable(dataset);
+                GUIUtils.showNewTable(dataset, true);
             }
         } catch (Exception exception) {
             // exception.printStackTrace();

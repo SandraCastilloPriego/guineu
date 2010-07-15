@@ -35,9 +35,8 @@ public class GCGCParserDataBase implements Parser{
     private String datasetName;
  
     
-    public GCGCParserDataBase(int ID){
-        db = new OracleRetrievement();
-        this.datasetID = ID;    
+    public GCGCParserDataBase(Dataset dataset){
+        db = new OracleRetrievement();       
     }
 
     public String getDatasetName() {

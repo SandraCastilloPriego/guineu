@@ -48,6 +48,8 @@ public class SimpleGCGCDataset implements Dataset {
         private String infoDataset = "";
         private Hashtable<String, SampleDescription> parameters;
         private Vector<String> parameterNames;
+        private int ID;
+        private int numberRows = 0;
 
         /**
          *     
@@ -295,6 +297,14 @@ public class SimpleGCGCDataset implements Dataset {
                 }
         }
 
+        public void setID(int ID) {
+                this.ID = ID;
+        }
+
+        public int getID() {
+                return ID;
+        }
+
         public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
                 if (parameters.containsKey(experimentName)) {
                         SampleDescription p = parameters.get(experimentName);
@@ -361,7 +371,15 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         public int getNumberRows() {
-                return peakList.size();
+                return this.peakList.size();
+        }
+
+        public int getNumberRowsdb() {
+                return this.numberRows;
+        }
+
+        public void setNumberRows(int numberRows) {
+                this.numberRows = numberRows;
         }
 
         public void setDatasetName(String name) {

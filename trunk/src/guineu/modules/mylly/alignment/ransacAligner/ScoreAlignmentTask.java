@@ -67,7 +67,7 @@ public class ScoreAlignmentTask implements Task {
                 try {
                         SimpleGCGCDataset alignment = aligner.align();
                         alignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(alignment);
+                        GUIUtils.showNewTable(alignment, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception ex) {
                         Logger.getLogger(ScoreAlignmentTask.class.getName()).log(Level.SEVERE, null, ex);

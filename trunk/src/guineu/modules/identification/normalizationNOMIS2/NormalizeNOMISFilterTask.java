@@ -66,7 +66,7 @@ public class NormalizeNOMISFilterTask implements Task {
                         status = TaskStatus.PROCESSING;
                         serum.normalize();
                         dataset = serum.getDataset();
-                        GUIUtils.showNewTable(dataset);
+                        GUIUtils.showNewTable(dataset, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception e) {
                         status = TaskStatus.ERROR;

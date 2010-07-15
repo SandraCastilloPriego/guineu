@@ -101,7 +101,7 @@ public class SplitTask implements Task {
                         newRow.removeNoSamplePeaks(group);
                         datasetSplit.addRow(newRow);
                 }
-                GUIUtils.showNewTable(datasetSplit);
+                GUIUtils.showNewTable(datasetSplit, true);
         }
 
         private void SplitFromParameter() {

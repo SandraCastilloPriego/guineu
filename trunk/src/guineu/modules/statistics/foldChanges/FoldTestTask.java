@@ -91,7 +91,7 @@ public class FoldTestTask implements Task {
             }
             progress = 0.5f;
 
-            GUIUtils.showNewTable(newDataset);
+            GUIUtils.showNewTable(newDataset, true);
 
             progress = 1f;
             status = TaskStatus.FINISHED;

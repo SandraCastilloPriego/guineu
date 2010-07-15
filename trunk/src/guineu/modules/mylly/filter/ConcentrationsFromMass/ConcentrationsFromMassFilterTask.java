@@ -107,7 +107,7 @@ public class ConcentrationsFromMassFilterTask implements Task {
                 }
             }
 
-            GUIUtils.showNewTable(newDataset);
+            GUIUtils.showNewTable(newDataset, true);
            
             status = TaskStatus.FINISHED;
         } catch (Exception ex) {

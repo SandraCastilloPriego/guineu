@@ -30,74 +30,74 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  */
 public class variationCoefficientRowFilterTask implements Task {
 
-	private Dataset[] datasets;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;	
-	private double progress;
+        private Dataset[] datasets;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private double progress;
 
-	public variationCoefficientRowFilterTask(Dataset[] datasets) {
-		this.datasets = datasets;
-		
-	}
+        public variationCoefficientRowFilterTask(Dataset[] datasets) {
+                this.datasets = datasets;
 
-	public String getTaskDescription() {
-		return "std Dev scores... ";
-	}
+        }
 
-	public double getFinishedPercentage() {
-		return progress;
-	}
+        public String getTaskDescription() {
+                return "std Dev scores... ";
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public double getFinishedPercentage() {
+                return progress;
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			this.variationCoefficient();
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
 
-	public void variationCoefficient() {
-		progress = 0.0f;
-		double steps = 1f / datasets.length;
-		for (Dataset dataset : datasets) {			
-			Dataset newDataset = dataset.clone();
+        public void run() {
+                try {
+                        status = TaskStatus.PROCESSING;
+                        this.variationCoefficient();
+                        status = TaskStatus.FINISHED;
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
+
+        public void variationCoefficient() {
+                progress = 0.0f;
+                double steps = 1f / datasets.length;
+                for (Dataset dataset : datasets) {
+                        Dataset newDataset = dataset.clone();
                         newDataset.setDatasetName("Var Coefficient - " + dataset.getDatasetName());
-			newDataset.addColumnName("Coefficient of variation");
-			for (PeakListRow lipid : newDataset.getRows()) {
-				double stdDev = this.CoefficientOfVariation(lipid);
-				lipid.setPeak("Coefficient of variation", stdDev);
-			}
-			progress += steps;			
-			progress = 0.5f;
-			GUIUtils.showNewTable(newDataset);
-		}
-		progress = 1f;
+                        newDataset.addColumnName("Coefficient of variation");
+                        for (PeakListRow lipid : newDataset.getRows()) {
+                                double stdDev = this.CoefficientOfVariation(lipid);
+                                lipid.setPeak("Coefficient of variation", stdDev);
+                        }
+                        progress += steps;
+                        progress = 0.5f;
+                        GUIUtils.showNewTable(newDataset, true);
+                }
+                progress = 1f;
 
-	}
+        }
 
-	public double CoefficientOfVariation(PeakListRow row) {
-		DescriptiveStatistics stats = new DescriptiveStatistics();
-		for (Object peak : row.getPeaks()) {
-			if (peak != null) {
-				stats.addValue((Double) peak);
-			}
-		}
-		return stats.getStandardDeviation() / stats.getMean();
-	}
+        public double CoefficientOfVariation(PeakListRow row) {
+                DescriptiveStatistics stats = new DescriptiveStatistics();
+                for (Object peak : row.getPeaks()) {
+                        if (peak != null) {
+                                stats.addValue((Double) peak);
+                        }
+                }
+                return stats.getStandardDeviation() / stats.getMean();
+        }
 }

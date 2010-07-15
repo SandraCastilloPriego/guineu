@@ -75,7 +75,7 @@ public class AlignmentDatasetsTask implements Task {
                 SimpleLCMSDataset dataset = comb.getDataset();
 
                 //creates internal frame with the table
-                GUIUtils.showNewTable(dataset);
+                GUIUtils.showNewTable(dataset, true);
 
 
                 status = TaskStatus.FINISHED;

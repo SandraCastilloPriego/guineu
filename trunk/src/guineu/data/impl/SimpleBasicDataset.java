@@ -31,12 +31,14 @@ import java.util.Vector;
 public class SimpleBasicDataset implements Dataset {
 
         String datasetName;
-        Vector<PeakListRow> PeakList;
+        Vector<PeakListRow> peakList;
         Vector<String> columnNames;
         protected DatasetType type;
         String infoDataset = "";
         private Hashtable<String, SampleDescription> parameters;
         private Vector<String> parameterNames;
+        private int ID;
+        private int numberRows = 0;
 
         /**
          *
@@ -44,7 +46,7 @@ public class SimpleBasicDataset implements Dataset {
          */
         public SimpleBasicDataset(String datasetName) {
                 this.datasetName = datasetName;
-                this.PeakList = new Vector<PeakListRow>();
+                this.peakList = new Vector<PeakListRow>();
                 this.columnNames = new Vector<String>();
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
@@ -86,6 +88,14 @@ public class SimpleBasicDataset implements Dataset {
                         }
                 }
                 return false;
+        }
+
+        public void setID(int ID) {
+                this.ID = ID;
+        }
+
+        public int getID() {
+                return ID;
         }
 
         public void addParameterValue(String experimentName, String parameterName, String parameterValue) {
@@ -145,7 +155,7 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         public void addRow(PeakListRow peakListRow) {
-                this.PeakList.addElement(peakListRow);
+                this.peakList.addElement(peakListRow);
         }
 
         public void addColumnName(String nameExperiment) {
@@ -153,15 +163,23 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         public PeakListRow getRow(int i) {
-                return (PeakListRow) this.PeakList.elementAt(i);
+                return (PeakListRow) this.peakList.elementAt(i);
         }
 
         public Vector<PeakListRow> getRows() {
-                return this.PeakList;
+                return this.peakList;
         }
 
         public int getNumberRows() {
-                return this.PeakList.size();
+                return this.peakList.size();
+        }
+
+        public int getNumberRowsdb() {
+                return this.numberRows;
+        }
+
+        public void setNumberRows(int numberRows) {
+                this.numberRows = numberRows;
         }
 
         public int getNumberCols() {
@@ -185,8 +203,8 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         public void removeRow(PeakListRow row) {
-                try {
-                        this.PeakList.removeElement(row);
+                try {                 
+                        this.peakList.removeElement(row);
 
                 } catch (Exception e) {
                         System.out.println("No row found");
@@ -211,7 +229,7 @@ public class SimpleBasicDataset implements Dataset {
                 for (String experimentName : this.columnNames) {
                         newDataset.addColumnName(experimentName);
                 }
-                for (PeakListRow peakListRow : this.PeakList) {
+                for (PeakListRow peakListRow : this.peakList) {
                         newDataset.addRow(peakListRow.clone());
                 }
                 newDataset.setType(this.type);

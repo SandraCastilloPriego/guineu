@@ -82,7 +82,7 @@ public class AnovaTestTask implements Task {
                 newDataset.addRow(newRow);
                 progress++;
             }
-            GUIUtils.showNewTable(newDataset);
+            GUIUtils.showNewTable(newDataset, true);
             status = TaskStatus.FINISHED;
         } catch (Exception ex) {
             Logger.getLogger(AnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);

@@ -73,7 +73,7 @@ public class PeakCountFilterTask implements Task {
                         SimpleGCGCDataset newAlignment = this.actualMap(dataset, filter);
                         newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(PeakCountParameters.suffix));
                         newAlignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(newAlignment);
+                        GUIUtils.showNewTable(newAlignment, true);
                         status = TaskStatus.FINISHED;
                 } catch (Exception ex) {
                         Logger.getLogger(PeakCountFilterTask.class.getName()).log(Level.SEVERE, null, ex);

@@ -87,7 +87,7 @@ public class LinearNormalizerFilterTask implements Task {
                         newAlignment.setDatasetName(newAlignment.toString() + "-Normalized");
                         newAlignment.setType(DatasetType.GCGCTOF);
 
-                        GUIUtils.showNewTable(newAlignment);
+                        GUIUtils.showNewTable(newAlignment, true);
 
                         status = TaskStatus.FINISHED;
                 } catch (Exception ex) {

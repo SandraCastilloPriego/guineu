@@ -17,6 +17,7 @@
  */
 package guineu.modules.database.openDataDB;
 
+import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
@@ -39,9 +40,8 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
-        private int[] Datasets;
-        private String[] DatasetsType;
         DatasetOpenDialog dialog;
+        Dataset[] datasets;
 
         public void initModule() {
                 this.desktop = GuineuCore.getDesktop();
@@ -69,16 +69,17 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 
         public void actionPerformed(ActionEvent e) {
                 ExitCode exitCode = setupParameters();
-
-                if (exitCode != ExitCode.OK) {
+                if (exitCode != ExitCode.OK) {                       
                         return;
                 }
+               
                 runModule();
         }
 
         public ExitCode setupParameters() {
                 dialog = new DatasetOpenDialog();
                 dialog.setVisible(true);
+                datasets = dialog.getDatasets().toArray(new Dataset[0]);
                 return dialog.getExitCode();
         }
 
@@ -94,12 +95,11 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
                 return "Open Database";
         }
 
-        public Task[] runModule() {
-
+        public Task[] runModule() {               
                 // prepare a new group of tasks
-                Task tasks[] = new OpenFileDBTask[Datasets.length];
-                for (int i = 0; i < Datasets.length; i++) {
-                        tasks[i] = new OpenFileDBTask(Datasets[i], DatasetsType[i]);
+                Task tasks[] = new OpenFileDBTask[datasets.length];
+                for (int i = 0; i < datasets.length; i++) {
+                        tasks[i] = new OpenFileDBTask(datasets[i]);
                 }
 
                 GuineuCore.getTaskController().addTasks(tasks);

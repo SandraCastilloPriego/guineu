@@ -78,7 +78,7 @@ public class OpenFileTask implements Task {
                                 progress = parser.getProgress();
                                 Dataset dataset = (SimpleBasicDataset) parser.getDataset();
                                 progress = parser.getProgress();
-                                GUIUtils.showNewTable(dataset);
+                                GUIUtils.showNewTable(dataset, true);
                         }
                 } catch (Exception ex) {
                 }

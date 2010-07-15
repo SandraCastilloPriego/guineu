@@ -55,7 +55,7 @@ class MainMenu extends JMenuBar implements ActionListener {
 
         databaseMenu = new JMenu("Database");
         databaseMenu.setMnemonic(KeyEvent.VK_D);
-       // add(databaseMenu);
+        add(databaseMenu);
 
         filterMenu = new JMenu("Filter");
         filterMenu.setMnemonic(KeyEvent.VK_L);

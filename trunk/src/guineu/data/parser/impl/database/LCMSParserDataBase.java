@@ -17,56 +17,40 @@
  */
 package guineu.data.parser.impl.database;
 
-
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.DatasetType;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
-import java.util.Vector;
-
 
 /**
  *
  * @author scsandra
  */
-public class LCMSParserDataBase implements Parser{
-    private DataBase db;
-    private SimpleLCMSDataset dataset;
-    private int datasetID;
-    private String datasetName;    
-    private float progress = 0.0f;
-    
-    public LCMSParserDataBase(int datasetID){
-        db = new OracleRetrievement();
-        this.datasetID = datasetID; 
-        this.dataset = new SimpleLCMSDataset(db.getDatasetName(datasetID));		
-    }
-    
-    public void fillData(){         
-        progress = 0.1f;
-		
-        db.get_samplenames(datasetID, dataset);
-			
-        progress = 0.4f;
-        db.getLCMSRows(this.datasetID, dataset);
-			
-        progress = 0.8f;
-        dataset.setType(DatasetType.LCMS);
-        progress = 1f;
-    }
-    
-    public String getDatasetName() {
-        return datasetName;
-    }
-     
-    public float getProgress() {
-        return progress;
-    }
+public class LCMSParserDataBase implements Parser {
 
-    public Dataset getDataset() {
-        return this.dataset;
-    }
-    
+        private DataBase db;
+        private SimpleLCMSDataset dataset;
+        private String datasetName;
+
+        public LCMSParserDataBase(Dataset dataset) {
+                db = new OracleRetrievement();
+                this.dataset = (SimpleLCMSDataset) dataset;
+        }
+
+        public void fillData() {
+                db.getLCMSRows(dataset);
+        }
+
+        public String getDatasetName() {
+                return datasetName;
+        }
+
+        public float getProgress() {
+                return db.getProgress();
+        }
+
+        public Dataset getDataset() {
+                return this.dataset;
+        }
 }

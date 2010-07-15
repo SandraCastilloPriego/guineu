@@ -41,7 +41,7 @@ public class DataModelDataset extends AbstractTableModel{
 	
 	public DataModelDataset(){		
 		DataBase db = new OracleRetrievement();
-		this.rows = db.get_dataset();
+		this.rows = db.getDatasetInfo();
 		this.numColumns = this.columns.length;
 		this.numRows = this.rows.length;
 	}

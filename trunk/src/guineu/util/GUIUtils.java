@@ -505,13 +505,15 @@ public class GUIUtils {
          *
          * @param dataset data set which will be shown
          */
-        public static void showNewTable(Dataset dataset) {
+        public static void showNewTable(Dataset dataset, boolean addDataset) {
                 DataTableModel model = FileUtils.getTableModel(dataset);
                 DataTable table = new PushableTable(model);
                 table.formatNumbers(dataset.getType());
                 DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
                 GuineuCore.getDesktop().addInternalFrame(frame);
-                GuineuCore.getDesktop().AddNewFile(dataset);
+                if (addDataset) {
+                        GuineuCore.getDesktop().AddNewFile(dataset);
+                }
                 frame.setVisible(true);
         }
 }

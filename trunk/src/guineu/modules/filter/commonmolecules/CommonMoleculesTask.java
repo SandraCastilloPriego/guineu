@@ -114,7 +114,7 @@ class CommonMoleculesTask implements Task {
 
 				dataset.addRow(row);
 			}
-                        GUIUtils.showNewTable(dataset);
+                        GUIUtils.showNewTable(dataset, true);
 
 		} catch (Exception e) {
 			status = TaskStatus.ERROR;

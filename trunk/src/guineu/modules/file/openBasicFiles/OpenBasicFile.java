@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class OpenOtherFile implements GuineuModule, TaskListener, ActionListener {
+public class OpenBasicFile implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
@@ -57,12 +57,12 @@ public class OpenOtherFile implements GuineuModule, TaskListener, ActionListener
 
     public void taskFinished(Task task) {
         if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished other Files on " + ((OpenOtherFileTask) task).getTaskDescription());
+            logger.info("Finished other Files on " + ((OpenBasicFileTask) task).getTaskDescription());
         }
 
         if (task.getStatus() == TaskStatus.ERROR) {
 
-            String msg = "Error while other Files on .. " + ((OpenOtherFileTask) task).getErrorMessage();
+            String msg = "Error while other Files on .. " + ((OpenBasicFileTask) task).getErrorMessage();
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
@@ -109,8 +109,8 @@ public class OpenOtherFile implements GuineuModule, TaskListener, ActionListener
 
         // prepare a new group of tasks
         if (FilePath != null) {
-            Task tasks[] = new OpenOtherFileTask[1];
-            tasks[0] = new OpenOtherFileTask(FilePath, desktop);
+            Task tasks[] = new OpenBasicFileTask[1];
+            tasks[0] = new OpenBasicFileTask(FilePath, desktop);
 
             GuineuCore.getTaskController().addTasks(tasks);
 
