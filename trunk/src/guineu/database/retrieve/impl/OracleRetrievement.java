@@ -18,7 +18,6 @@
 package guineu.database.retrieve.impl;
 
 import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.database.retrieve.*;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.data.impl.SimplePeakListRowLCMS;
@@ -100,19 +99,21 @@ public class OracleRetrievement implements DataBase {
 
                         Vector<String[]> vt = new Vector<String[]>();
                         while (r.next()) {
-                                String[] data = new String[6];
+                                String[] data = new String[7];
                                 data[0] = r.getString("DATASETID");
                                 data[1] = r.getString("EXCEL_NAME");
                                 data[2] = r.getString("D_TYPE");
                                 data[3] = r.getString("AUTHOR");
                                 data[4] = r.getString("D_DATE");
                                 data[5] = r.getString("NUMBER_ROWS");
+                                data[6] = r.getString("STUDY");
+                                data[6] = getStudyName(data[6], conn);
                                 vt.add(data);
                         }
-                        String[][] datafinal = new String[vt.size()][6];
+                        String[][] datafinal = new String[vt.size()][7];
                         for (int i = 0; i < vt.size(); i++) {
                                 String[] data = (String[]) vt.elementAt(i);
-                                for (int e = 0; e < 6; e++) {
+                                for (int e = 0; e < 7; e++) {
                                         datafinal[i][e] = data[e];
                                 }
                         }
@@ -123,6 +124,30 @@ public class OracleRetrievement implements DataBase {
                 } catch (Exception e) {
                         return null;
                 }
+        }
+
+        public String getStudyName(String ID, Connection conn) {
+                Statement st = null;
+                try {
+
+                        st = conn.createStatement();
+                        ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES WHERE ID = '" + ID + "'");
+                        String name = " ";
+                        if (r.next()) {
+                                try {
+                                        name = r.getString("NAMES");
+                                } catch (Exception ee) {
+                                }
+                        }
+
+                        r.close();
+                        st.close();
+
+                        return name;
+                } catch (Exception e) {
+                        return " ";
+                }
+
         }
 
         public Vector<Double> get_concentration(String sampleName) {
@@ -505,7 +530,9 @@ public class OracleRetrievement implements DataBase {
                         Hashtable<Integer, String> vt = new Hashtable<Integer, String>();
                         while (r.next()) {
                                 try {
-                                        vt.put(r.getInt("COLUMN_ID"), r.getString("NAME"));
+                                        if (dataset.getAllColumnNames().contains(r.getString("NAME"))) {
+                                                vt.put(r.getInt("COLUMN_ID"), r.getString("NAME"));
+                                        }
 
                                 } catch (Exception ee) {
                                 }
@@ -551,7 +578,7 @@ public class OracleRetrievement implements DataBase {
                                 peakListRow.setAllVTTD(r.getString("VTTALLIDS"));
                                 peakListRow.setIdentificationType(r.getString("IDENTIFICATION_TYPE"));
                                 peakListRow.setPubChemID(r.getString("PUBCHEM_ID"));
-                                this.setPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn);
+                                this.setLCMSPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn);
                                 dataset.addRow(peakListRow);
                                 completedRows++;
                         }
@@ -563,31 +590,7 @@ public class OracleRetrievement implements DataBase {
                 }
         }
 
-        public synchronized void setPeaks(int rowID, PeakListRow row, Hashtable<Integer, String> experimentIDs, Connection conn) {
-                Statement st = null;
-                try {
-                        st = conn.createStatement();
-
-                        ResultSet r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE MOL_LCMS_ID = '" + rowID + "' ORDER BY ID asc");
-
-                        if (r.next()) {
-                                try {
-                                        //System.out.println(experimentIDs.get(r.getInt("DATASET_CID")));
-                                        row.setPeak(experimentIDs.get(r.getInt("DATASET_CID")), r.getDouble("CONCENTRATION"));
-                                } catch (Exception ee) {
-                                        ee.printStackTrace();
-                                }
-                        }
-
-                        r.close();
-                        st.close();
-
-                } catch (Exception e) {
-                }
-
-        }
-
-        private synchronized void setPeaks(Hashtable<Integer, String> experimentIDs, SimplePeakListRowLCMS peakListRow, int molID, Connection conn) {
+        private synchronized void setLCMSPeaks(Hashtable<Integer, String> experimentIDs, SimplePeakListRowLCMS peakListRow, int molID, Connection conn) {
                 Statement st = null;
                 try {
 
@@ -597,7 +600,6 @@ public class OracleRetrievement implements DataBase {
                         while (r.next()) {
                                 try {
                                         if (experimentIDs.containsKey(new Integer(r.getInt("DATASET_CID")))) {
-                                                // System.out.println(new Double(r.getFloat("CONCENTRATION")));
                                                 peakListRow.setPeak(experimentIDs.get(new Integer(r.getInt("DATASET_CID"))), new Double(r.getFloat("CONCENTRATION")));
                                         }
                                 } catch (Exception ee) {

@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JDialog;
@@ -50,13 +51,15 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         private List<Rule> rules;
         private List<newParameterDialog> parameters;
         private List<Dataset> datasets;
-        JTree tree;
+        private JTree tree;
+        Hashtable<CheckNode, String[]> nodeTable;
 
         /** Creates new form DatasetOpenDialog */
         public DatasetOpenDialog() {
                 super(GuineuCore.getDesktop().getMainFrame(), "Database...", true);
                 initComponents();
-                this.createTree();
+                nodeTable = new Hashtable<CheckNode, String[]>();
+
                 newParameterDialog parameter = new newParameterDialog();
                 this.parameterContiner.add(parameter);
                 parameter.removeButton.setVisible(false);
@@ -64,6 +67,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 rules = new ArrayList<Rule>();
                 parameters = new ArrayList<newParameterDialog>();
                 datasets = new ArrayList<Dataset>();
+                this.createTree();
 
         }
 
@@ -178,63 +182,71 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
             if (tree != null) {
-                    tree.setExpandsSelectedPaths(true);
                     for (int index = 0; index < tree.getRowCount(); index++) {
                             TreePath path = tree.getPathForRow(index);
                             if (path != null) {
                                     CheckNode node = (CheckNode) path.getLastPathComponent();
                                     if (node != null) {
-                                            String[] data = node.toString().split(" // ");
-                                            if (data.length > 1 && data[1].contains("LC-MS")) {
-
-                                                    // Creates a new data set
-                                                    Dataset dataset = new SimpleLCMSDataset(data[2]);
-
-                                                    // Sets the data set ID
-                                                    dataset.setID(Integer.parseInt(data[0]));
-
-                                                    // Sets the number of rows
-                                                    try {
-                                                            data[4] = data[4].substring(0, data[4].indexOf("rows") - 1);
-                                                            dataset.setNumberRows(Integer.parseInt(data[4]));
-                                                    } catch (Exception e) {
-                                                    }
-
-                                                    // Sets column names
-                                                    for (int i = 0; i < node.getChildCount(); i++) {
-                                                            if (((CheckNode)node.getChildAt(i)).isSelected) {
-                                                                   dataset.addColumnName(node.getChildAt(i).toString());
-                                                            }
-                                                    }
-                                                    if (dataset.getNumberCols() > 0) {
-                                                            datasets.add(dataset);
-                                                    }
-
-
-
-                                            } else if (data.length > 1 && data[1].contains("GCxGC-MS")) {
-
-                                                    if (node.isSelected) {
-                                                            Dataset dataset = new SimpleGCGCDataset(data[2]);
-                                                            dataset.setID(Integer.parseInt(data[0]));
-                                                            for (int i = 0; i < node.getChildCount(); i++) {
-                                                                    if (node.isSelected) {
-                                                                            // System.out.println(node.getChildAt(i).toString() + "-is selected");
-                                                                            dataset.addColumnName(node.getChildAt(i).toString());
-                                                                    }
-                                                            }
-                                                            datasets.add(dataset);
-                                                    }
-
-                                            }
+                                            createDataset(node);
                                     }
                             }
                     }
-
             }
+
             exitCode = ExitCode.OK;
             dispose();
     }//GEN-LAST:event_okButtonActionPerformed
+
+        private void createDataset(CheckNode node) {
+                Dataset dataset = null;
+                //System.out.println("node - " + node.toString());
+                String[] data = nodeTable.get(node);
+                if (data != null) {
+                        try {
+                                // Creates a new data set
+                                if (data[2].contains("LC-MS")) {
+                                        dataset = new SimpleLCMSDataset(data[1]);
+                                } else if (data[1].contains("GCxGC-MS")) {
+                                        dataset = new SimpleGCGCDataset(data[1]);
+                                }
+
+                                // Sets the data set ID
+                                dataset.setID(Integer.parseInt(data[0]));
+
+                                // Sets the number of rows
+                                dataset.setNumberRows(Integer.parseInt(data[5]));
+
+                                // Sets column names
+                                if (node.getChildCount() > 0) {
+                                        for (int i = 0; i < node.getChildCount(); i++) {
+                                                CheckNode child = (CheckNode) node.getChildAt(i);
+
+                                                if (child.isSelected()) {
+                                                        dataset.addColumnName(child.toString());
+                                                } else {
+                                                        child.setSelected(false);
+                                                }
+                                        }
+                                } else if(node.isSelected) {
+                                        try {
+                                                DataBase db = new OracleRetrievement();
+                                                Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
+                                                for (String sampleName : sampleNames) {
+                                                       dataset.addColumnName(sampleName);
+                                                }
+
+                                        } catch (Exception exception) {
+                                        }
+                                }
+                                System.out.println(dataset.getNumberCols());
+                                if (dataset.getNumberCols() > 0) {
+                                        datasets.add(dataset);
+                                }
+                        } catch (Exception e) {
+                        }
+                }
+
+        }
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
             exitCode = ExitCode.CANCEL;
@@ -248,8 +260,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             parameter.removeButton.addActionListener(this);
             this.parameters.add(parameter);
             this.parameterContiner.add(parameter);
-            size +=
-                    30;
+            size += 30;
             this.parameterContiner.setPreferredSize(new Dimension(100, size));
             parameter.setVisible(true);
             this.parameterContiner.revalidate();
@@ -277,13 +288,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 break;
 
                         }
-
-
-
-
-
-
-
                 }
 
         }
@@ -298,35 +302,27 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         private void createTree() {
                 DataBase db = new OracleRetrievement();
                 String rows[][] = db.getDatasetInfo();
-                String rootName = "Data";
+                String rootName = "Studies";
                 CheckNode rootNode = new CheckNode(rootName);
 
-                CheckNode projectNode = new CheckNode("Projects");
 
-                /* String[] projectList = db.getProjectList();
-                for (String project : projectList) {
-                projectNode.add(new CheckNode(project));
+                String[] studies = OracleRetrievement.getStudies();
+
+                for (String study : studies) {
+                        CheckNode stNode = new CheckNode(study);
+                        for (String[] row : rows) {
+                                if (row[6].equals(study)) {
+                                        String name = row[1];
+                                        CheckNode node = new CheckNode(name);
+                                        stNode.add(node);
+                                        nodeTable.put(node, row);
+                                }
+                        }
+                        rootNode.add(stNode);
                 }
 
-                projectNode.add(new CheckNode("No project assigned"));
-                rootNode.add(projectNode);*/
 
-
-
-                CheckNode datasetNode = new CheckNode("Datasets");
-
-                for (String[] row : rows) {
-                        String name = row[0] + " // " + row[2] + " // " + row[1] + " // " + row[3] + " // " + row[5] + " rows";
-                        CheckNode node = new CheckNode(name);
-                        datasetNode.add(node);
-                }
-
-                rootNode.add(datasetNode);
-
-
-
-                tree =
-                        new JTree(rootNode);
+                tree = new JTree(rootNode);
                 tree.setCellRenderer(new CheckRenderer());
                 tree.getSelectionModel().setSelectionMode(
                         TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -340,7 +336,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
         enum Levels {
 
-                DATA, PROJECTS, STUDIES, DATASETS
+                STUDIES, DATASETS, SAMPLES
         }
 
         class NodeSelectionListener extends MouseAdapter {
@@ -352,41 +348,32 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 }
 
                 @Override
-                public void mouseClicked(MouseEvent e) {
+                public void mousePressed(MouseEvent e) {
                         int x = e.getX();
                         int y = e.getY();
                         int row = tree.getRowForLocation(x, y);
                         TreePath path = tree.getPathForRow(row);
-                        //TreePath  path = tree.getSelectionPath();
                         if (path != null) {
                                 CheckNode node = (CheckNode) path.getLastPathComponent();
+
                                 boolean isSelected = !(node.isSelected());
                                 node.setSelected(isSelected);
-                                /* if (node.getSelectionMode() == CheckNode.DIG_IN_SELECTION) {
-                                if (isSelected) {
-                                tree.expandPath(path);
-                                } else {
-                                tree.collapsePath(path);
-                                }
-                                }*/
-                                ((DefaultTreeModel) tree.getModel()).nodeChanged(node);
-                                //  System.out.print(node.getLevel());
-                                if (node.getLevel() == Levels.PROJECTS.ordinal()) {
-                                } else {
+                               // if (node.getLevel() == Levels.SAMPLES.ordinal()) {
                                         try {
                                                 DataBase db = new OracleRetrievement();
-                                                String[] data = node.toString().split(" // ");
+                                                String[] data = nodeTable.get(node);
                                                 Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
                                                 for (String sampleName : sampleNames) {
-                                                        CheckNode childNode = new CheckNode(sampleName);
-                                                        childNode.setSelected(true);
+                                                        CheckNode childNode = new CheckNode(sampleName, true, true);
                                                         node.add(childNode);
                                                 }
-                                                tree.revalidate();
-                                                tree.repaint();
+
                                         } catch (Exception exception) {
                                         }
-                                }
+                              //  }
+                                ((DefaultTreeModel) tree.getModel()).nodeChanged(node);
+                                tree.revalidate();
+                                tree.repaint();
                         }
                 }
         }
