@@ -74,7 +74,7 @@ public class ClassIdentificationFilterTask implements Task {
 			SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
 			alignment.setDatasetName(alignment.getDatasetName() + (String) parameters.getParameterValue(ClassIdentificationParameters.suffix));
 			alignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(alignment);
+                        GUIUtils.showNewTable(alignment,true);
 			status = TaskStatus.FINISHED;
 		} catch (Exception ex) {
 			Logger.getLogger(ClassIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
