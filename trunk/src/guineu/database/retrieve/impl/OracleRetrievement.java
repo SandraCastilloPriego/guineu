@@ -550,6 +550,42 @@ public class OracleRetrievement implements DataBase {
                 return (float) completedRows / totalRows;
         }
 
+        private synchronized void getParameters(Dataset dataset, Connection conn) {
+
+                Statement st = null;
+                for (String columnName : dataset.getAllColumnNames()) {
+                        String[] tempStr = columnName.split("_");
+                        String barcode = null;
+                        try {
+                                barcode = (tempStr[0] + "_" + tempStr[1]).toUpperCase();                               
+                        } catch (Exception e) {
+                        }
+                        if (barcode != null) {
+                                try {
+                                        st = conn.createStatement();
+                                        ResultSet r = st.executeQuery("SELECT * FROM SAMPLE WHERE UPPER(BARCODE) LIKE '%" + barcode + "%'");
+                                        if (r.next()) {
+                                                dataset.addParameterValue(columnName, "Label", r.getString("LABEL"));
+                                                dataset.addParameterValue(columnName, "Type", r.getString("TYPE"));
+                                                dataset.addParameterValue(columnName, "Subtype", r.getString("SUBTYPE"));
+                                                dataset.addParameterValue(columnName, "Organism", r.getString("ORGANISM"));
+                                        }
+
+                                        st = conn.createStatement();
+                                        r = st.executeQuery("SELECT * FROM SAMPLEPS WHERE UPPER(BARCODE) = '" + barcode + "'");
+                                        while (r.next()) {
+                                                dataset.addParameterValue(columnName, r.getString("FIELD"), r.getString("DATA"));
+                                        }
+
+
+                                } catch (Exception e) {
+                                        e.printStackTrace();
+                                }
+                        }
+
+                }
+        }
+
         public synchronized void getLCMSRows(SimpleLCMSDataset dataset) {
                 this.totalRows = dataset.getNumberRowsdb();
 
@@ -585,6 +621,7 @@ public class OracleRetrievement implements DataBase {
 
                         r.close();
                         st.close();
+                        this.getParameters(dataset, conn);
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
