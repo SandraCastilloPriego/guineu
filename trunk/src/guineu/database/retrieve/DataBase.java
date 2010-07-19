@@ -19,6 +19,7 @@ package guineu.database.retrieve;
 
 import guineu.data.impl.SimpleLCMSDataset;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -50,27 +51,13 @@ public interface DataBase {
          * @param ID
          * @return
          */
-        public Vector<String> get_samplenames(int ID);
-
-        public Vector get_allsamplenames();
-
-        public String get_ID(String sampleName);
-
-        public boolean getType(int ID);
-
-        public Vector get_lipid_info(String commonName);
-
-        public String getDatasetName(Vector ExperimentNames);
-
-        public String getDatasetName(int ID);
-
-        public Vector<Double> get_concentration(String sampleName, int exp_id);
+        public Vector<String> getSampleNames(int ID);
 
         public void getLCMSRows(SimpleLCMSDataset dataset);
 
         public float getProgress();
 
-        public void get_samplenames(int datasetID, SimpleLCMSDataset dataset);
-
         public String[] getProjectList();
+
+        public List<String[]> getStudiesInfo();
 }
