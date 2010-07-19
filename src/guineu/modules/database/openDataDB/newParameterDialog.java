@@ -25,10 +25,10 @@ import javax.swing.DefaultComboBoxModel;
  */
 public class newParameterDialog extends javax.swing.JPanel {
 
-    DefaultComboBoxModel tissueModel = new DefaultComboBoxModel(new String[]{"All", "Serum", "Liver", "Adipocites", "Muscle"});
-    DefaultComboBoxModel organismModel = new DefaultComboBoxModel(new String[]{"All", "Mouse", "Human"});
+    DefaultComboBoxModel tissueModel = new DefaultComboBoxModel(new String[]{"All", "Serum", "Liver", "Adipocites", "Muscle", "Brain", "Custom"});
+    DefaultComboBoxModel organismModel = new DefaultComboBoxModel(new String[]{"All", "Mouse", "Human", "Custom"});
     DefaultComboBoxModel methodModel = new DefaultComboBoxModel(new String[]{"All", "LC-MS", "GCxGC-MS"});
-    DefaultComboBoxModel subtypeModel = new DefaultComboBoxModel(new String[]{"All", "WT", "Disease"});
+    DefaultComboBoxModel subtypeModel = new DefaultComboBoxModel(new String[]{"All", "WT", "Disease", "Custom"});
 
     /** Creates new form newParameterDialog */
     public newParameterDialog() {
