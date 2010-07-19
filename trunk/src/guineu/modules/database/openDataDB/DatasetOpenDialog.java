@@ -220,19 +220,18 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 if (node.getChildCount() > 0) {
                                         for (int i = 0; i < node.getChildCount(); i++) {
                                                 CheckNode child = (CheckNode) node.getChildAt(i);
-
                                                 if (child.isSelected()) {
                                                         dataset.addColumnName(child.toString());
                                                 } else {
                                                         child.setSelected(false);
                                                 }
                                         }
-                                } else if(node.isSelected) {
+                                } else if (node.isSelected) {
                                         try {
                                                 DataBase db = new OracleRetrievement();
                                                 Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
                                                 for (String sampleName : sampleNames) {
-                                                       dataset.addColumnName(sampleName);
+                                                        dataset.addColumnName(sampleName);
                                                 }
 
                                         } catch (Exception exception) {
@@ -358,7 +357,8 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
                                 boolean isSelected = !(node.isSelected());
                                 node.setSelected(isSelected);
-                               // if (node.getLevel() == Levels.SAMPLES.ordinal()) {
+                                // if (node.getLevel() == Levels.SAMPLES.ordinal()) {
+                                if (node.getChildCount() == 0) {
                                         try {
                                                 DataBase db = new OracleRetrievement();
                                                 String[] data = nodeTable.get(node);
@@ -370,7 +370,8 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
                                         } catch (Exception exception) {
                                         }
-                              //  }
+                                        //  }
+                                }
                                 ((DefaultTreeModel) tree.getModel()).nodeChanged(node);
                                 tree.revalidate();
                                 tree.repaint();
