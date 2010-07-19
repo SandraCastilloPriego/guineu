@@ -45,7 +45,7 @@ public class GCGCParserDataBase implements Parser{
 
     public void fillData() {
         progress = 0.1f;
-        datasetName = db.getDatasetName(datasetID);
+       // datasetName = db.getDatasetName(datasetID);
         progress = 0.4f;
   
         
@@ -63,7 +63,7 @@ public class GCGCParserDataBase implements Parser{
     }
     
    /* public void fillExperimentVector(){
-        Vector<String> experimentNames = db.get_samplenames(datasetID); 
+        Vector<String> experimentNames = db.getSampleNames(datasetID);
         for(String Name : experimentNames){
             progress += 0.2f/experimentNames.size();
             SimpleExperiment experiment = new SimpleExperiment(Name);

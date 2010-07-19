@@ -199,10 +199,11 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
         private void createDataset(CheckNode node) {
                 Dataset dataset = null;
-                //System.out.println("node - " + node.toString());
+
                 String[] data = nodeTable.get(node);
-                if (data != null) {
-                        try {
+                try {
+                        if (data != null) {
+
                                 // Creates a new data set
                                 if (data[2].contains("LC-MS")) {
                                         dataset = new SimpleLCMSDataset(data[1]);
@@ -218,6 +219,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
                                 // Sets column names
                                 if (node.getChildCount() > 0) {
+
                                         for (int i = 0; i < node.getChildCount(); i++) {
                                                 CheckNode child = (CheckNode) node.getChildAt(i);
                                                 if (child.isSelected()) {
@@ -226,10 +228,13 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                                         child.setSelected(false);
                                                 }
                                         }
-                                } else if (node.isSelected) {
+                                }
+
+                                // If the complete dataset is selected
+                                if (node.isSelected) {
                                         try {
                                                 DataBase db = new OracleRetrievement();
-                                                Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
+                                                Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
                                                 for (String sampleName : sampleNames) {
                                                         dataset.addColumnName(sampleName);
                                                 }
@@ -237,12 +242,23 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                         } catch (Exception exception) {
                                         }
                                 }
-                                System.out.println(dataset.getNumberCols());
+
                                 if (dataset.getNumberCols() > 0) {
                                         datasets.add(dataset);
+                                        return;
                                 }
-                        } catch (Exception e) {
+
                         }
+
+                        // If the complete study is selected
+                        if (node.isSelected && node.getLevel() == 1) {
+                                for (int i = 0; i < node.getChildCount(); i++) {
+                                        createDataset((CheckNode) node.getChildAt(i));
+                                }
+                        }
+
+
+                } catch (Exception e) {
                 }
 
         }
@@ -259,7 +275,8 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             parameter.removeButton.addActionListener(this);
             this.parameters.add(parameter);
             this.parameterContiner.add(parameter);
-            size += 30;
+            size +=
+                    30;
             this.parameterContiner.setPreferredSize(new Dimension(100, size));
             parameter.setVisible(true);
             this.parameterContiner.revalidate();
@@ -287,6 +304,20 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 break;
 
                         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 }
 
         }
@@ -305,21 +336,21 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 CheckNode rootNode = new CheckNode(rootName);
 
 
-                String[] studies = OracleRetrievement.getStudies();
+                List<String[]> studies = db.getStudiesInfo();
 
-                for (String study : studies) {
-                        CheckNode stNode = new CheckNode(study);
+                for (String[] study : studies) {
+                        CheckNode stNode = new CheckNode(study[0] + " - " + study[1]);
                         for (String[] row : rows) {
-                                if (row[6].equals(study)) {
+                                if (row[6].equals(study[0])) {
                                         String name = row[1];
                                         CheckNode node = new CheckNode(name);
                                         stNode.add(node);
                                         nodeTable.put(node, row);
                                 }
+
                         }
                         rootNode.add(stNode);
                 }
-
 
                 tree = new JTree(rootNode);
                 tree.setCellRenderer(new CheckRenderer());
@@ -362,7 +393,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                         try {
                                                 DataBase db = new OracleRetrievement();
                                                 String[] data = nodeTable.get(node);
-                                                Vector<String> sampleNames = db.get_samplenames(Integer.valueOf(data[0]));
+                                                Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
                                                 for (String sampleName : sampleNames) {
                                                         CheckNode childNode = new CheckNode(sampleName, true, true);
                                                         node.add(childNode);

@@ -36,8 +36,10 @@ public class OracleRetrievement implements DataBase {
 
         private int totalRows;
         private int completedRows;
+        private Connection conn;
 
         public OracleRetrievement() {
+                conn = this.connect();
         }
 
         public synchronized Connection connect() {
@@ -63,7 +65,6 @@ public class OracleRetrievement implements DataBase {
                 Statement st = null;
                 String[] noProjects = {"No Projects"};
                 List<String> projectNames = new ArrayList<String>();
-
 
                 try {
                         Connection conn = this.connect();
@@ -150,129 +151,9 @@ public class OracleRetrievement implements DataBase {
 
         }
 
-        public Vector<Double> get_concentration(String sampleName) {
-                Statement st = null;
-                Connection conn = this.connect();
-                int id_exp = 0;
-                Vector<Double> vt = new Vector<Double>();
-                try {
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sampleName + "' ORDER BY EPID asc");
-
-                        if (r.next()) {
-                                id_exp = r.getInt(1);
-                        }
-                        r.close();
-
-                        if (id_exp != 0) {
-                                r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE SAMPLE_ID = '" + id_exp + "' ORDER BY ID asc");
-
-                                while (r.next()) {
-                                        vt.add(r.getDouble(5));
-                                }
-
-                                r.close();
-                                st.close();
-                        }
-                        return vt;
-                } catch (Exception exception) {
-                        return null;
-                }
-        }
-
-        /**
-         *
-         * @param sampleName
-         * @param exp_id
-         * @return
-         */
-        public Vector<Double> get_concentration(String sampleName, int datasetID) {
-                Statement st = null;
-                Connection conn = this.connect();
-                int id_exp = 0;
-                Vector<Double> vt = new Vector<Double>();
-                try {
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sampleName + "' ORDER BY EPID asc");
-
-                        if (r.next()) {
-                                id_exp = r.getInt(1);
-                        }
-                        r.close();
-
-                        if (id_exp != 0) {
-                                r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE SAMPLE_ID = '" + id_exp + "'AND DATASETID ='" + datasetID + "' ORDER BY ID asc");
-
-                                while (r.next()) {
-                                        vt.add(r.getDouble(5));
-                                }
-
-                                r.close();
-                                st.close();
-                        }
-                        return vt;
-                } catch (Exception exception) {
-                        return null;
-                }
-        }
-
-        public Vector<String> get_dataset_experiment(Vector sample_names, int exp_id) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-                        int id_exp = 0;
-                        Vector<String> vt = new Vector<String>();
-                        for (int i = 0; i < sample_names.size(); i++) {
-                                st = conn.createStatement();
-                                ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sample_names.elementAt(i) + "' DATASETID = '" + exp_id + "' ORDER BY EPID asc");
-
-                                if (r.next()) {
-                                        id_exp = r.getInt(1);
-                                }
-                                r.close();
-                                if (id_exp != 0) {
-                                        r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE SAMPLE_ID = '" + id_exp + "' ORDER BY ID asc");
-
-                                        while (r.next()) {
-                                                vt.add(r.getString(5));
-                                        }
-
-                                        r.close();
-                                        st.close();
-                                }
-                        }
-                        return vt;
-
-                } catch (Exception e) {
-                        return null;
-                }
-        }
-
-        public Vector<String> get_dataset_experiment(int exp_id) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-                        int id_exp = 0;
-                        Vector<String> vt = new Vector<String>();
-
-                        st = conn.createStatement();
-                        if (id_exp != 0) {
-                                ResultSet r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE DATASETID = '" + exp_id + "' ORDER BY ID asc");
-
-                                while (r.next()) {
-                                        vt.add(r.getString(5));
-                                }
-                                r.close();
-                                st.close();
-                        }
-                        return vt;
-
-                } catch (Exception e) {
-                        return null;
-                }
-        }
-
-        public Vector<String> get_samplenames(int datasetID) {
+       
+        
+        public Vector<String> getSampleNames(int datasetID) {
                 Statement st = null;
                 try {
                         Connection conn = this.connect();
@@ -294,216 +175,9 @@ public class OracleRetrievement implements DataBase {
                 }
         }
 
-        public void get_samplenames(int datasetID, SimpleLCMSDataset dataset) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + datasetID + "' ");
-
-                        while (r.next()) {
-                                try {
-                                        dataset.addColumnName(r.getString("NAME"));
-                                } catch (Exception exception) {
-                                }
-                        }
-                        r.close();
-                        st.close();
-
-
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-
-        }
-
-        public Vector<Integer> get_sampleID(int datasetID) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM DATASET WHERE DATASETID = '" + datasetID + "'");
-                        Vector<Integer> vt = new Vector<Integer>();
-                        if (r.next()) {
-                                vt.addElement(r.getInt("EXPERIMENTID"));
-                        }
-                        r.close();
-                        st.close();
-                        return vt;
-
-                } catch (Exception e) {
-                        return null;
-                }
-        }
-
-        public Vector get_allsamplenames() {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT ORDER BY EPID asc");
-
-                        Vector<String[]> vt = new Vector<String[]>();
-                        while (r.next()) {
-                                String[] dataSample = new String[2];
-                                dataSample[0] = r.getString(2);
-                                dataSample[1] = r.getString(1);
-                                vt.add(dataSample);
-                        }
-                        r.close();
-                        st.close();
-                        return vt;
-
-                } catch (Exception e) {
-                        return null;
-                }
-        }
-
-        public String get_ID(String sampleName) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM EXPERIMENT WHERE NAME = '" + sampleName + "'ORDER BY EPID asc");
-
-                        String ID = new String();
-                        if (r.next()) {
-                                ID = r.getString(14);
-                        }
-                        r.close();
-                        st.close();
-                        return ID;
-
-                } catch (Exception e) {
-                        return null;
-                }
-        }
-
-        public boolean getType(int ID) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM DATASET WHERE DATASETID = '" + ID + "'");
-
-                        String type = new String();
-                        if (r.next()) {
-                                type = r.getString(3);
-                        }
-
-                        r.close();
-                        st.close();
-                        if (type.compareTo("LCMS") == 0) {
-                                return false;
-                        } else {
-                                return true;
-                        }
-
-                } catch (Exception e) {
-                        return false;
-                }
-        }
-
-        public Vector get_lipid_info(String commonName) {
-                Statement st = null;
-
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM LIPID_NAME WHERE AVR_COMMON_NAME = '" + commonName + "'");
-                        Vector<String[]> vt = new Vector<String[]>();
-                        while (r.next()) {
-                                String[] lipid_info = new String[5];
-                                for (int i = 3; i < 8; i++) {
-                                        lipid_info[i - 3] = r.getString(i);
-                                }
-                                vt.addElement(lipid_info);
-                        }
-
-                        r.close();
-                        st.close();
-
-                        return vt;
-
-                } catch (Exception e) {
-                        return null;
-                }
-
-        }
-
-        public String getDatasetName(Vector ExperimentNames) {
-                Statement st = null;
-
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        String query = "SELECT * FROM EXPERIMENT WHERE NAME LIKE '" + ExperimentNames.elementAt(0) + "'";
-                        for (int i = 1; i < ExperimentNames.size(); i++) {
-                                query = query + "OR NAME LIKE '" + ExperimentNames.elementAt(i) + "'";
-                        }
-                        query = query + "ORDER BY EPID asc";
-
-                        ResultSet r = st.executeQuery(query);
-
-                        Vector<String> vt = new Vector<String>();
-                        while (r.next()) {
-                                vt.addElement(r.getString(3));
-                        }
-                        String DatasetID = vt.elementAt(0);
-                        for (int i = 0; i < vt.size(); i++) {
-                                if (DatasetID.compareTo(vt.elementAt(i)) != 0) {
-                                        return "unknown";
-                                }
-                        }
-
-                        r = st.executeQuery("SELECT * FROM DATASET WHERE DATASETID = '" + vt.elementAt(0) + "'");
-
-                        String DatasetName = new String();
-                        if (r.next()) {
-                                DatasetName = r.getString(2);
-                        }
-
-                        r.close();
-                        st.close();
-
-                        return DatasetName;
-
-                } catch (Exception e) {
-                        return null;
-                }
-
-        }
-
-        public String getDatasetName(int ID) {
-                Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
-                        st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM DATASET WHERE DATASETID = '" + ID + "'");
-
-                        String name = new String();
-                        if (r.next()) {
-                                name = r.getString(2);
-                        }
-
-                        r.close();
-                        st.close();
-                        return name;
-
-                } catch (Exception e) {
-                        return null;
-                }
-
-        }
-
+       
+       
+       
         /*public synchronized Vector<String> get_spectrum(String ID){
         Statement st = null;
         try {
@@ -550,7 +224,7 @@ public class OracleRetrievement implements DataBase {
                 return (float) completedRows / totalRows;
         }
 
-        private synchronized void getParameters(Dataset dataset, Connection conn) {
+        private synchronized void getParameters(Dataset dataset) {
 
                 Statement st = null;
                 for (String columnName : dataset.getAllColumnNames()) {
@@ -591,9 +265,7 @@ public class OracleRetrievement implements DataBase {
 
                 Statement st = null;
 
-                try {
-
-                        Connection conn = this.connect();
+                try {                       
 
                         Hashtable<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
 
@@ -621,7 +293,7 @@ public class OracleRetrievement implements DataBase {
 
                         r.close();
                         st.close();
-                        this.getParameters(dataset, conn);
+                        this.getParameters(dataset);
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
@@ -675,6 +347,33 @@ public class OracleRetrievement implements DataBase {
 
         }
 
+        
+        public synchronized List<String[]> getStudiesInfo() {
+                 Statement st = null;
+                try {                       
+                        st = conn.createStatement();
+                        ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES ORDER BY ID asc");
+                        List<String[]> studies = new ArrayList<String[]>();
+                        
+                        while (r.next()) {
+                                try {
+                                        String[] studyInfo = new String[2];
+                                        studyInfo[0] = r.getString("NAMES");
+                                        studyInfo[1] = r.getString("PROJECT");
+                                        studies.add(studyInfo);
+                                } catch (Exception ee) {
+                                }
+                        }
+
+                        r.close();
+                        st.close();                    
+
+                        return studies;
+                } catch (Exception e) {
+                        return null;
+                }
+        }
+        
         public static synchronized String[] getStudies() {
                 Statement st = null;
                 try {
