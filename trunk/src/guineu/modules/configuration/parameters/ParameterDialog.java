@@ -121,6 +121,9 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 btnPanel = new javax.swing.JPanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                setMinimumSize(new java.awt.Dimension(700, 500));
+
+                jScrollPane1.setPreferredSize(new java.awt.Dimension(699, 402));
 
                 table.setModel(new javax.swing.table.DefaultTableModel(
                         new Object [][] {
@@ -137,10 +140,23 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 table.setFillsViewportHeight(true);
                 jScrollPane1.setViewportView(table);
 
-                getContentPane().add(jScrollPane1, java.awt.BorderLayout.PAGE_START);
-
                 btnPanel.setPreferredSize(new java.awt.Dimension(699, 50));
-                getContentPane().add(btnPanel, java.awt.BorderLayout.PAGE_END);
+
+                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+                getContentPane().setLayout(layout);
+                layout.setHorizontalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                );
+                layout.setVerticalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(5, 5, 5)
+                                .addComponent(btnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                );
 
                 pack();
         }// </editor-fold>//GEN-END:initComponents
@@ -153,7 +169,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
         public void actionPerformed(ActionEvent e) {
 
                 Object src = e.getSource();
-
+                this.setPreferredSize(new Dimension(700,500));
                 // Adding the new parameters to the dataset configuration and closing the dialog.
                 if (src == btnOK) {
                         exitCode = ExitCode.OK;

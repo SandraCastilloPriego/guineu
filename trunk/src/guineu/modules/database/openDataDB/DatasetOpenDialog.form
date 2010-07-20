@@ -48,7 +48,7 @@
                 <StringItem index="0" value="AND"/>
                 <StringItem index="1" value="OR"/>
                 <StringItem index="2" value="NOT"/>
-                <StringItem index="3" value="XOR"/>
+                <StringItem index="3" value=" "/>
               </StringArray>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

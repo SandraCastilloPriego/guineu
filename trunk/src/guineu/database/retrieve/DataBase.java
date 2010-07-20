@@ -60,4 +60,6 @@ public interface DataBase {
         public String[] getProjectList();
 
         public List<String[]> getStudiesInfo();
+
+        public String[] getParameters(String name);
 }

@@ -151,8 +151,6 @@ public class OracleRetrievement implements DataBase {
 
         }
 
-       
-        
         public Vector<String> getSampleNames(int datasetID) {
                 Statement st = null;
                 try {
@@ -175,9 +173,6 @@ public class OracleRetrievement implements DataBase {
                 }
         }
 
-       
-       
-       
         /*public synchronized Vector<String> get_spectrum(String ID){
         Statement st = null;
         try {
@@ -231,7 +226,7 @@ public class OracleRetrievement implements DataBase {
                         String[] tempStr = columnName.split("_");
                         String barcode = null;
                         try {
-                                barcode = (tempStr[0] + "_" + tempStr[1]).toUpperCase();                               
+                                barcode = (tempStr[0] + "_" + tempStr[1]).toUpperCase();
                         } catch (Exception e) {
                         }
                         if (barcode != null) {
@@ -244,13 +239,14 @@ public class OracleRetrievement implements DataBase {
                                                 dataset.addParameterValue(columnName, "Subtype", r.getString("SUBTYPE"));
                                                 dataset.addParameterValue(columnName, "Organism", r.getString("ORGANISM"));
                                         }
-
+                                        r.close();
                                         st = conn.createStatement();
                                         r = st.executeQuery("SELECT * FROM SAMPLEPS WHERE UPPER(BARCODE) = '" + barcode + "'");
                                         while (r.next()) {
                                                 dataset.addParameterValue(columnName, r.getString("FIELD"), r.getString("DATA"));
                                         }
-
+                                        r.close();
+                                        st.close();
 
                                 } catch (Exception e) {
                                         e.printStackTrace();
@@ -260,12 +256,46 @@ public class OracleRetrievement implements DataBase {
                 }
         }
 
+        public synchronized String[] getParameters(String name) {
+
+                Statement st = null;
+
+                String[] tempStr = name.split("_");
+                String barcode = null;
+                try {
+                        barcode = (tempStr[0] + "_" + tempStr[1]).toUpperCase();
+                } catch (Exception e) {
+                }
+                if (barcode != null) {
+                        try {
+                                st = conn.createStatement();
+                                ResultSet r = st.executeQuery("SELECT * FROM SAMPLE WHERE UPPER(BARCODE) LIKE '%" + barcode + "%'");
+                                String[] parameters = new String[4];
+                                if (r.next()) {
+                                        parameters[0] = r.getString("LABEL");
+                                        parameters[1] = r.getString("TYPE");
+                                        parameters[2] = r.getString("SUBTYPE");
+                                        parameters[3] = r.getString("ORGANISM");
+                                }
+
+                                r.close();
+                                st.close();
+                                return parameters;
+
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+                }
+                return null;
+
+        }
+
         public synchronized void getLCMSRows(SimpleLCMSDataset dataset) {
                 this.totalRows = dataset.getNumberRowsdb();
 
                 Statement st = null;
 
-                try {                       
+                try {
 
                         Hashtable<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
 
@@ -347,14 +377,13 @@ public class OracleRetrievement implements DataBase {
 
         }
 
-        
         public synchronized List<String[]> getStudiesInfo() {
-                 Statement st = null;
-                try {                       
+                Statement st = null;
+                try {
                         st = conn.createStatement();
                         ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES ORDER BY ID asc");
                         List<String[]> studies = new ArrayList<String[]>();
-                        
+
                         while (r.next()) {
                                 try {
                                         String[] studyInfo = new String[2];
@@ -366,14 +395,14 @@ public class OracleRetrievement implements DataBase {
                         }
 
                         r.close();
-                        st.close();                    
+                        st.close();
 
                         return studies;
                 } catch (Exception e) {
                         return null;
                 }
         }
-        
+
         public static synchronized String[] getStudies() {
                 Statement st = null;
                 try {
