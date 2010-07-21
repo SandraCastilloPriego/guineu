@@ -17,6 +17,7 @@
  */
 package guineu.database.retrieve;
 
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
 import java.sql.Connection;
 import java.util.List;
@@ -39,13 +40,7 @@ public interface DataBase {
          * @return
          */
         public String[][] getDatasetInfo();
-
-        /**
-         *
-         * @param sample_names
-         * @return
-         */
-        // public Vector<String> get_dataset_experiment(Vector sample_names);
+       
         /**
          *
          * @param ID
@@ -54,6 +49,8 @@ public interface DataBase {
         public Vector<String> getSampleNames(int ID);
 
         public void getLCMSRows(SimpleLCMSDataset dataset);
+
+        public void getGCGCRows(SimpleGCGCDataset dataset);
 
         public float getProgress();
 

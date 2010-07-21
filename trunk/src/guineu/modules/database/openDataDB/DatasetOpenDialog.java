@@ -18,6 +18,7 @@
 package guineu.modules.database.openDataDB;
 
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.impl.SimpleGCGCDataset;
 import guineu.data.impl.SimpleLCMSDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
@@ -200,7 +201,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 parent.setSelected(selection);
                         }
                 } else {
-
                         /**
                          * TO-DO: Implement the deselection of the nodes...
                          */
@@ -224,6 +224,12 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
+        /**
+         * Creates the datasets from selected nodes. Each selected node can be the name of one sample, or
+         * the name of a complete data set. 
+         * 
+         * @param node Node from the tree
+         */
         private void createDataset(CheckNode node) {
                 Dataset dataset = null;
 
@@ -234,8 +240,10 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 // Creates a new data set
                                 if (data[2].contains("LC-MS")) {
                                         dataset = new SimpleLCMSDataset(data[1]);
-                                } else if (data[1].contains("GCxGC-MS")) {
+                                        dataset.setType(DatasetType.LCMS);
+                                } else if (data[2].contains("GCxGC-MS")) {
                                         dataset = new SimpleGCGCDataset(data[1]);
+                                        dataset.setType(DatasetType.GCGCTOF);
                                 }
 
                                 // Sets the data set ID
@@ -308,6 +316,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 }//GEN-LAST:event_addParameterButtonActionPerformed
 
     private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyRulesButtonActionPerformed
+            rules.clear();
             for (newParameterDialog parameter : parameters) {
                     Rule rule = new Rule();
 
@@ -341,8 +350,13 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                         }
 
                 }
-                for (Rule rule : rules) {
-                        setRule(rule.type, rule.value, rule.logic);
+                Set<CheckNode> set = this.nodeInfoTable.keySet();
+
+                Iterator<CheckNode> itr = set.iterator();
+                while (itr.hasNext()) {
+                        CheckNode node = itr.next();
+                        node.setSelected(false);
+                        setRule(node);
                 }
         }
 
@@ -353,16 +367,36 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
          * @param node CheckNode
          * @param logic Logic string: "AND", "OR", "NOT"
          */
-        private void setLogic(CheckNode node, String logic) {
+        private void setLogic(CheckNode node, String logic, boolean lastStatus, boolean status) {
                 if (logic.contains("OR")) {
-                        node.setSelected(true);
-                        selectParents(node, true);
+                        System.out.println("entra en Or");
+                        if (lastStatus || status) {
+                                node.setSelected(true);
+                                selectParents(node, true);
+                        } else {
+                                node.setSelected(false);
+                        }
                 } else if (logic.contains("NOT")) {
-                        node.setSelected(false);
-                        CheckNode parent = (CheckNode) node.getParent();
-                        parent.setSelected(false);
+                        System.out.println("entra en Not");
+                        if (status) {
+                                System.out.println("setting non selected node");
+                                node.setSelected(false);
+                                CheckNode parent = (CheckNode) node.getParent();
+                                parent.setSelected(false);
+                        }
                 } else if (logic.contains("AND")) {
-                        selectParents(node, true);
+                        System.out.println("entra en and");
+                        if (lastStatus && status) {
+                                node.setSelected(true);
+                                selectParents(node, true);
+                        } else {
+                                node.setSelected(false);
+                        }
+                } else {
+                        if (status) {
+                                node.setSelected(true);
+                                selectParents(node, true);
+                        }
                 }
         }
 
@@ -374,52 +408,58 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
          * @param value Value of the parameter
          * @param logic Logic string: "AND", "OR", "NOT"
          */
-        private void setRule(Type type, String value, String logic) {
+        private void setRule(CheckNode node) {
+                NodeInfo info = this.nodeInfoTable.get(node);
 
-                Set<CheckNode> set = this.nodeInfoTable.keySet();
+                for (Rule rule : rules) {
+                        System.out.println("------------------------------" + rule.logic + "---------------------------");
+                        boolean lastStatus = node.isSelected;
+                        boolean status = false;
+                        try {
+                                switch (rule.type) {
 
-                Iterator<CheckNode> itr = set.iterator();
-                while (itr.hasNext()) {
-                        CheckNode node = itr.next();
-                        NodeInfo info = this.nodeInfoTable.get(node);
-                        switch (type) {
-                                case Method:
-                                        if (info.method.equals(value)) {
-                                                setLogic(node, logic);
-                                        } else {
-                                                node.setSelected(false);
-                                        }
-                                        break;
-                                case Tissue:
-                                        if (info.tissue.equals(value)) {
-                                                setLogic(node, logic);
-                                        } else {
-                                                node.setSelected(false);
-                                        }
-                                        break;
-                                case Organism:
-                                        if (info.Organism.equals(value)) {
-                                                setLogic(node, logic);
-                                        } else {
-                                                node.setSelected(false);
-                                        }
-                                        break;
-                                case Subtype:
-                                        if (info.phenotype.equals(value)) {
-                                                setLogic(node, logic);
-                                        } else {
-                                                node.setSelected(false);
-                                        }
-                                        break;
-                                case Custom:
-                                        if (node.toString().equals(value)) {
-                                                setLogic(node, logic);
-                                        } else {
-                                                node.setSelected(false);
-                                        }
-                                        break;
-
+                                        case Method:
+                                                if (info.method.equals(rule.value)) {
+                                                        status = true;
+                                                } else {
+                                                        status = false;
+                                                }
+                                                System.out.println(node.toString() + " - " + info.method + " - " + rule.value + " - " + status + " - " + lastStatus);
+                                                break;
+                                        case Tissue:
+                                                if (info.tissue.equals(rule.value)) {
+                                                        status = true;
+                                                } else {
+                                                        status = false;
+                                                }
+                                                break;
+                                        case Organism:
+                                                if (info.Organism.equals(rule.value)) {
+                                                        status = true;
+                                                } else {
+                                                        status = false;
+                                                }
+                                                break;
+                                        case Subtype:
+                                                if (info.phenotype.equals(rule.value)) {
+                                                        status = true;
+                                                } else {
+                                                        status = false;
+                                                }
+                                                break;
+                                        case Custom:
+                                                if (node.toString().equals(rule.value)) {
+                                                        status = true;
+                                                } else {
+                                                        status = false;
+                                                }
+                                                break;
+                                }
+                                setLogic(node, rule.logic, lastStatus, status);
+                        } catch (Exception exception) {
+                                exception.printStackTrace();
                         }
+
                 }
 
         }

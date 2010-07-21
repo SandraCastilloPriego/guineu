@@ -91,6 +91,10 @@ public class SimpleGCGCDataset implements Dataset {
                 peakList = new ArrayList<PeakListRow>();
                 lastSortMode = SORT_MODE.none;
                 this.datasetName = datasetName;
+                
+                // SampleDescription to describe the samples from guineu.modules.configuration.parameters
+                this.parameters = new Hashtable<String, SampleDescription>();
+                this.parameterNames = new Vector<String>();
         }
 
         /**
