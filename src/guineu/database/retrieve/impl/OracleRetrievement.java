@@ -18,8 +18,12 @@
 package guineu.database.retrieve.impl;
 
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
+import guineu.data.PeakListRow;
+import guineu.data.impl.SimpleGCGCDataset;
 import guineu.database.retrieve.*;
 import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.SimplePeakListRowGCGC;
 import guineu.data.impl.SimplePeakListRowLCMS;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -316,7 +320,7 @@ public class OracleRetrievement implements DataBase {
                                 peakListRow.setAllVTTD(r.getString("VTTALLIDS"));
                                 peakListRow.setIdentificationType(r.getString("IDENTIFICATION_TYPE"));
                                 peakListRow.setPubChemID(r.getString("PUBCHEM_ID"));
-                                this.setLCMSPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn);
+                                this.setPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn, dataset.getType());
                                 dataset.addRow(peakListRow);
                                 completedRows++;
                         }
@@ -329,13 +333,17 @@ public class OracleRetrievement implements DataBase {
                 }
         }
 
-        private synchronized void setLCMSPeaks(Hashtable<Integer, String> experimentIDs, SimplePeakListRowLCMS peakListRow, int molID, Connection conn) {
+        private synchronized void setPeaks(Hashtable<Integer, String> experimentIDs, PeakListRow peakListRow, int molID, Connection conn, DatasetType type) {
                 Statement st = null;
                 try {
 
                         st = conn.createStatement();
-                        ResultSet r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE MOL_LCMS_ID = '" + molID + "' ORDER BY ID asc");
-
+                        ResultSet r = null;
+                        if (type == DatasetType.LCMS) {
+                                r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE MOL_LCMS_ID = '" + molID + "' ORDER BY ID asc");
+                        } else if (type == DatasetType.GCGCTOF) {
+                                r = st.executeQuery("SELECT * FROM MEASUREMENT WHERE MOL_GCGCTOF_ID = '" + molID + "' ORDER BY ID asc");
+                        }
                         while (r.next()) {
                                 try {
                                         if (experimentIDs.containsKey(new Integer(r.getInt("DATASET_CID")))) {
@@ -439,6 +447,58 @@ public class OracleRetrievement implements DataBase {
                         return null;
                 }
 
+        }
+
+        public synchronized void getGCGCRows(SimpleGCGCDataset dataset) {
+                this.totalRows = dataset.getNumberRowsdb();
+
+                Statement st = null;
+
+                try {
+
+                        Hashtable<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
+
+                        st = conn.createStatement();
+                        ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF WHERE EPID = '" + dataset.getID() + "'");
+
+                        while (r.next()) {
+                                SimplePeakListRowGCGC peakListRow = new SimplePeakListRowGCGC();
+                                peakListRow.setRT1(r.getFloat("RT1"));
+                                peakListRow.setRT2(r.getFloat("RT2"));
+                                peakListRow.setRTI(r.getFloat("RTI"));
+                                peakListRow.setNumFound(r.getDouble("N_FOUND"));
+                                peakListRow.setMaxSimilarity(r.getDouble("MAX_SIMILARITY"));
+                                peakListRow.setMeanSimilarity(r.getFloat("MEAN_SIMILARITY"));
+                                peakListRow.setSimilaritySTDDev(r.getFloat("SIMILARITY_STD_DEV"));
+                                String name = r.getString("METABOLITE_NAME");
+                                try {
+                                        name = name.replaceAll("ç", "'");                                        
+                                } catch (Exception exception) {
+                                }
+                                peakListRow.setName(name);
+                                peakListRow.setPubChemID(r.getString("PUBCHEM_ID"));
+                                name = r.getString("METABOLITE_ALLNAMES");
+                                try {
+                                        name = name.replaceAll("ç", "'");                                     
+                                } catch (Exception exception) {
+                                }
+                                peakListRow.setAllNames(name);
+                                peakListRow.setMass(r.getFloat("MASS"));
+                                peakListRow.setDifference(r.getFloat("DIFFERENCE"));
+                                peakListRow.setSpectrumString(r.getString("SPECTRUM"));
+                                peakListRow.setCAS(r.getString("CAS"));
+                                peakListRow.setMolClass(r.getString("CLASS"));
+                                this.setPeaks(experimentIDs, peakListRow, r.getInt("ID"), conn, dataset.getType());
+                                dataset.addRow(peakListRow);
+                                completedRows++;
+                        }
+
+                        r.close();
+                        st.close();
+                        this.getParameters(dataset);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
         }
 }
 

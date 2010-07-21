@@ -83,6 +83,7 @@ public class PeakListRowSorter implements Comparator<PeakListRow> {
                         case MZ:
                                 return (Double) row.getVar(LCMSColumnName.MZ.getGetFunctionName());
                         case RT:
+
                                 return (Double) row.getVar(LCMSColumnName.RT.getGetFunctionName());
                         case ID:
                                 return row.getID();
