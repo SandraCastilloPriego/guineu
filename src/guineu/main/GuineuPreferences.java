@@ -224,22 +224,6 @@ public class GuineuPreferences implements StorableParameterSet {
             }
         }
 
-
-         if (proxyElement != null) {
-            proxyServer = (proxyElement.attributeValue("activated") != null);
-
-            Element AddressElement = proxyElement.element(PROXY_ADDRESS);
-            if (AddressElement != null) {
-                setProxyAddress(AddressElement.getText());
-            }
-
-            Element portElement = proxyElement.element(PROXY_PORT);
-            if (portElement != null) {
-                setProxyPort(portElement.getText());
-            }
-        }
-
-
     }
 
     public GuineuPreferences clone() {

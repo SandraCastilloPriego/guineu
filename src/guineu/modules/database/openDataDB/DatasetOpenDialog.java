@@ -51,7 +51,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
         private ExitCode exitCode = ExitCode.UNKNOWN;
         private int size = 50;
-        private List<Rule> rules;
         private List<newParameterDialog> parameters;
         private List<Dataset> datasets;
         private JTree tree;
@@ -64,7 +63,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 initComponents();
                 nodeTable = new Hashtable<CheckNode, String[]>();
                 nodeInfoTable = new Hashtable<CheckNode, NodeInfo>();
-                rules = new ArrayList<Rule>();
                 parameters = new ArrayList<newParameterDialog>();
                 datasets = new ArrayList<Dataset>();
                 tree = createTree();
@@ -185,28 +183,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 return datasets;
         }
 
-        /**
-         * Selects or deselects the parents of the node.
-         *
-         * @param node node
-         * @param selection selection
-         */
-        private void selectParents(CheckNode node, boolean selection) {
-                if (selection) {
-                        int level = node.getLevel();
-                        CheckNode parent = (CheckNode) node.getParent();
-                        parent.setSelected(selection);
-                        for (int i = 0; i < level - 1; i++) {
-                                parent = (CheckNode) parent.getParent();
-                                parent.setSelected(selection);
-                        }
-                } else {
-                        /**
-                         * TO-DO: Implement the deselection of the nodes...
-                         */
-                }
-        }
-
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
             if (tree != null) {
                     for (int index = 0; index < tree.getRowCount(); index++) {
@@ -258,7 +234,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                                 CheckNode child = (CheckNode) node.getChildAt(i);
                                                 if (child.isSelected()) {
                                                         dataset.addColumnName(child.toString());
-                                                } 
+                                                }
                                         }
                                 }
 
@@ -312,49 +288,56 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             parameter.setVisible(true);
             this.parameterContiner.revalidate();
 }//GEN-LAST:event_addParameterButtonActionPerformed
-
-    private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyRulesButtonActionPerformed
-            rules.clear();
-            for (newParameterDialog parameter : parameters) {
-                    Rule rule = new Rule();
-
-                    String strType = parameter.getType();
-                    for (Type type : Type.values()) {
-                            if (type.toString().equals(strType)) {
-                                    rule.type = type;
-                            }
-                    }
-
-                    rule.value = parameter.getValue();
-                    rule.logic = parameter.getLogic();
-                    rules.add(rule);
-            }
-            applyRules();
-
-}//GEN-LAST:event_applyRulesButtonActionPerformed
-
         /**
          * Applies every rule to select or deselect nodes. First open the children of all the datasets
          * from the database. It could take some time and can be more sofisticated in the future.
          */
-        private void applyRules() {
+    private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyRulesButtonActionPerformed
 
-                for (int i = 0; i < tree.getRowCount(); i++) {
-                        TreePath path = tree.getPathForRow(i);
-                        tree.expandPath(path);
-                        if (path != null) {
-                                CheckNode node = (CheckNode) path.getLastPathComponent();
-                                addChildren(node);
+            for (int i = 0; i < tree.getRowCount(); i++) {
+                    TreePath path = tree.getPathForRow(i);
+                    tree.expandPath(path);
+                    if (path != null) {
+                            CheckNode node = (CheckNode) path.getLastPathComponent();
+                            addChildren(node);
+                    }                    
+
+            }
+
+            for (int i = 2; i < tree.getRowCount(); i++) {
+                    TreePath path = tree.getPathForRow(i);
+                    tree.collapsePath(path); 
+            }
+            Set<CheckNode> set = this.nodeInfoTable.keySet();
+
+            Iterator<CheckNode> itr = set.iterator();
+            while (itr.hasNext()) {
+                    CheckNode node = itr.next();
+                    node.setSelected(false);
+                    setRule(node);
+            }
+
+}//GEN-LAST:event_applyRulesButtonActionPerformed
+
+        /**
+         * Selects or deselects the parents of the node.
+         *
+         * @param node node
+         * @param selection selection
+         */
+        private void selectParents(CheckNode node, boolean selection) {
+                if (selection) {
+                        int level = node.getLevel();
+                        CheckNode parent = (CheckNode) node.getParent();
+                        parent.setSelectedOnlyMe(selection);
+                        for (int i = 0; i < level - 1; i++) {
+                                parent = (CheckNode) parent.getParent();
+                                parent.setSelectedOnlyMe(selection);
                         }
-
-                }
-                Set<CheckNode> set = this.nodeInfoTable.keySet();
-
-                Iterator<CheckNode> itr = set.iterator();
-                while (itr.hasNext()) {
-                        CheckNode node = itr.next();
-                        node.setSelected(false);
-                        setRule(node);
+                } else {
+                        /**
+                         * TO-DO: Implement the deselection of the nodes...
+                         */
                 }
         }
 
@@ -367,33 +350,38 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
          */
         private void setLogic(CheckNode node, String logic, boolean lastStatus, boolean status) {
                 if (logic.contains("OR")) {
-                        System.out.println("entra en Or");
+                        //System.out.println("entra en Or");
                         if (lastStatus || status) {
                                 node.setSelected(true);
                                 selectParents(node, true);
+                                //  System.out.println("setting selected node: " + node.isSelected());
                         } else {
                                 node.setSelected(false);
+                                //  System.out.println("setting non selected node: " + node.isSelected());
                         }
                 } else if (logic.contains("NOT")) {
-                        System.out.println("entra en Not");
+                        /// System.out.println("entra en Not");
                         if (status) {
-                                System.out.println("setting non selected node");
                                 node.setSelected(false);
                                 CheckNode parent = (CheckNode) node.getParent();
-                                parent.setSelected(false);
+                                parent.setSelectedOnlyMe(false);
+                                //    System.out.println("setting non selected node: " + node.isSelected());
                         }
                 } else if (logic.contains("AND")) {
-                        System.out.println("entra en and");
+                        //  System.out.println("entra en and");
                         if (lastStatus && status) {
                                 node.setSelected(true);
                                 selectParents(node, true);
+                                ///     System.out.println("setting selected node: " + node.isSelected());
                         } else {
                                 node.setSelected(false);
+                                //     System.out.println("setting non selected node: " + node.isSelected());
                         }
                 } else {
                         if (status) {
                                 node.setSelected(true);
                                 selectParents(node, true);
+                                //     System.out.println("setting selected node: " + node.isSelected());
                         }
                 }
         }
@@ -409,51 +397,60 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         private void setRule(CheckNode node) {
                 NodeInfo info = this.nodeInfoTable.get(node);
 
-                for (Rule rule : rules) {
-                        System.out.println("------------------------------" + rule.logic + "---------------------------");
-                        boolean lastStatus = node.isSelected;
+                for (newParameterDialog rule : parameters) {
+                        //  System.out.println("------------------------------" + rule.getLogic() + "---------------------------");
+                        boolean lastStatus = node.isSelected();
                         boolean status = false;
+                        Type ruleType = null;
+                        String strType = rule.getType();
+                        for (Type type : Type.values()) {
+                                if (type.toString().equals(strType)) {
+                                        ruleType = type;
+
+                                }
+                        }
+
                         try {
-                                switch (rule.type) {
+                                switch (ruleType) {
 
                                         case Method:
-                                                if (info.method.equals(rule.value)) {
+                                                if (info.method.equals(rule.getValue())) {
                                                         status = true;
                                                 } else {
                                                         status = false;
                                                 }
-                                                System.out.println(node.toString() + " - " + info.method + " - " + rule.value + " - " + status + " - " + lastStatus);
+                                                //    System.out.println(node.toString() + " - " + info.method + " - " + rule.getValue() + " - " + status + " - " + lastStatus);
                                                 break;
                                         case Tissue:
-                                                if (info.tissue.equals(rule.value)) {
+                                                if (info.tissue.equals(rule.getValue())) {
                                                         status = true;
                                                 } else {
                                                         status = false;
                                                 }
                                                 break;
                                         case Organism:
-                                                if (info.Organism.equals(rule.value)) {
+                                                if (info.Organism.equals(rule.getValue())) {
                                                         status = true;
                                                 } else {
                                                         status = false;
                                                 }
                                                 break;
                                         case Subtype:
-                                                if (info.phenotype.equals(rule.value)) {
+                                                if (info.phenotype.equals(rule.getValue())) {
                                                         status = true;
                                                 } else {
                                                         status = false;
                                                 }
                                                 break;
                                         case Custom:
-                                                if (node.toString().equals(rule.value)) {
+                                                if (node.toString().equals(rule.getValue())) {
                                                         status = true;
                                                 } else {
                                                         status = false;
                                                 }
                                                 break;
                                 }
-                                setLogic(node, rule.logic, lastStatus, status);
+                                setLogic(node, rule.getLogic(), lastStatus, status);
                         } catch (Exception exception) {
                                 exception.printStackTrace();
                         }
@@ -557,7 +554,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 for (String sampleName : sampleNames) {
                                         String[] param = db.getParameters(sampleName);
 
-                                        CheckNode childNode = new CheckNode(sampleName, true, true);
+                                        CheckNode childNode = new CheckNode(sampleName, false, true, 0);
                                         node.add(childNode);
 
                                         setParameters(childNode, param, data);
@@ -592,13 +589,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         enum Type {
 
                 Method, Tissue, Organism, Subtype, Custom, All;
-        }
-
-        class Rule {
-
-                Type type;
-                String value;
-                String logic;
         }
 
         class NodeInfo {
