@@ -33,7 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.util.GUIUtils;

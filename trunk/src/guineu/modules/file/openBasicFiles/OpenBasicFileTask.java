@@ -19,7 +19,7 @@ package guineu.modules.file.openBasicFiles;
 
 import guineu.data.parser.impl.BasicFilesParserCSV;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;

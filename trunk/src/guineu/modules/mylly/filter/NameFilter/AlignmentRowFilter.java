@@ -19,8 +19,8 @@ package guineu.modules.mylly.filter.NameFilter;
 
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 
 import java.util.Collection;
 import java.util.HashSet;

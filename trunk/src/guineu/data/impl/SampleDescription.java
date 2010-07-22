@@ -28,9 +28,7 @@ public class SampleDescription {
 
         Hashtable<String, String> parameters;
 
-        /**
-         * Constructor
-         */
+        
         public SampleDescription() {
                 parameters = new Hashtable<String, String>();
         }

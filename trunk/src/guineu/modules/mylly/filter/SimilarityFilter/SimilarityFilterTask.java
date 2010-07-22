@@ -18,7 +18,7 @@
 package guineu.modules.mylly.filter.SimilarityFilter;
 
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;

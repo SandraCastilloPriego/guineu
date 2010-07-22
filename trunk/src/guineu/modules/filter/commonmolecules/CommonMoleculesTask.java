@@ -22,9 +22,9 @@ package guineu.modules.filter.commonmolecules;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleBasicDataset;
-import guineu.data.impl.SimplePeakListRowLCMS;
-import guineu.data.impl.SimplePeakListRowOther;
+import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;

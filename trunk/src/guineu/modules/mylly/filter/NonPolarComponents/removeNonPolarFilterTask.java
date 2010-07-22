@@ -18,7 +18,7 @@
 package guineu.modules.mylly.filter.NonPolarComponents;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;

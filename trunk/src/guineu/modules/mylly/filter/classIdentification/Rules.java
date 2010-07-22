@@ -17,7 +17,7 @@
  */
 package guineu.modules.mylly.filter.classIdentification;
 
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.ComparablePair;
 import java.util.ArrayList;
 import java.util.List;

@@ -17,8 +17,8 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.QuantMassScoreCalc;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;

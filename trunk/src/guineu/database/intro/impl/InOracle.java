@@ -20,11 +20,11 @@ package guineu.database.intro.impl;
 import guineu.database.intro.*;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.SimpleParameterSet;
-import guineu.modules.filter.report.qualityReport.SimpleQualityControlDataset;
+import guineu.data.impl.datasets.SimpleQualityControlDataset;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -39,8 +39,14 @@ import oracle.jdbc.pool.OracleDataSource;
  */
 public class InOracle implements InDataBase {
 
-        float progress;
+        private WriteDataBase writer;
+        private String task;
 
+        /**
+         * Returns a connection with the database
+         *
+         * @return Database connection
+         */
         public Connection connect() {
                 try {
                         OracleDataSource oracleDataSource;
@@ -61,100 +67,98 @@ public class InOracle implements InDataBase {
         }
 
         public float getProgress() {
-                return progress;
+                if (writer != null) {
+                        return (float) writer.getProgress();
+                } else {
+                        return 0.0f;
+                }
         }
 
         public void lcms(Connection conn, SimpleLCMSDataset dataset, String type, String author, String DatasetName, String parameters, String study) throws IOException {
-                WriteDataBase writer = new WriteDataBase();
+                writer = new WriteDataBase();
                 String excel_name = DatasetName;
                 if (excel_name == null) {
                         excel_name = "unknown";
                 }
 
                 //Intro table DATASET
+                task = "Writing data set information into the database";
                 int excel_id = writer.tableDATASET(conn, excel_name, type, author, parameters, study, dataset.getInfo(), dataset.getNumberRows());
-                progress = 0.25f;
 
+                task = "Writing experiment information into the database";
                 if (excel_id != -1) {
                         writer.tableEXPERIMENT(conn, dataset, excel_id);
-                        progress = 0.50f;
-
+                        task = "Writing compound information into the database";
                         //Intro table MOL_LCMMS
                         int[] mol_ID = writer.tableMOL_LCMS(conn, dataset, excel_id);
-                        progress = 0.75f;
-
+                        task = "Writing measurements into the database";
                         //Intro table MEASUREMENT
                         writer.tableMEASUREMENT(conn, dataset, mol_ID, excel_id);
                 }
-                progress = 1f;
         }
 
         public void gcgctof(Connection conn, SimpleGCGCDataset dataset, String type, String author, String DatasetName, String study) throws IOException {
                 try {
-                        WriteDataBase writer = new WriteDataBase();
+                        writer = new WriteDataBase();
                         Statement st = null;
 
                         //Intro table DATASET
+                        task = "Writing data set information into the database";
                         String excel_name = DatasetName;
-                        progress = 0.15f;
                         int exp_id = writer.tableDATASET(conn, excel_name, type, author, null, study, dataset.getInfo(), dataset.getNumberRows());
-                        progress = 0.25f;
 
                         //Intro table DATASET_EXPERIMENTS
+                        task = "Writing experiment information into the database";
                         writer.tableEXPERIMENT(conn, dataset, exp_id);
 
                         //Intro table GCGCTof
+                        task = "Writing compound information into the database";
                         int[] mol_ID = writer.tableMOL_GCGCTOF(conn, dataset, exp_id);
-                        progress = 0.50f;
 
                         //Intro table MEASUREMENT
+                        task = "Writing measurements into the database";
                         writer.tableMEASUREMENT(conn, dataset, mol_ID, exp_id);
-                        progress = 0.75f;
 
                         //Intro table SPECTRUM
+                        task = "Writing spectra information into the database";
                         writer.tableSPECTRUM(conn, dataset, st, mol_ID);
 
-                        progress = 1f;
                 } catch (Exception exception) {
                         System.out.println("Inoracle.java ---> gcgctof() " + exception);
                 }
         }
 
         public void qualityControlFiles(Connection conn, SimpleBasicDataset QCDataset) throws IOException {
-                WriteDataBase writer = new WriteDataBase();
-                progress = 0.25f;
+                writer = new WriteDataBase();
                 int QC_ID = writer.TableQUALITYC(conn, (SimpleQualityControlDataset) QCDataset);
-
-                progress = 1f;
+                writer.TableQCSample(conn, (SimpleQualityControlDataset) QCDataset, QC_ID);
         }
 
         public void WriteExcelFile(Dataset dataset, String path, SimpleParameterSet parameters) {
-                WriteFile writer = new WriteFile();
+                WriteFile fileWriter = new WriteFile();
                 if (dataset.getType() == DatasetType.LCMS) {
-                        writer.WriteExcelFileLCMS(dataset, path, parameters);
+                        fileWriter.WriteExcelFileLCMS(dataset, path, parameters);
                 } else if (dataset.getType() == DatasetType.GCGCTOF) {
-                        writer.WriteExcelFileGCGC(dataset, path, parameters);
+                        fileWriter.WriteExcelFileGCGC(dataset, path, parameters);
                 } else {
-                        writer.WriteXLSFileBasicDataset(dataset, path);
+                        fileWriter.WriteXLSFileBasicDataset(dataset, path);
                 }
         }
 
         public void WriteCommaSeparatedFile(Dataset dataset, String path, SimpleParameterSet parameters) {
-                WriteFile writer = new WriteFile();
+                WriteFile fileWriter = new WriteFile();
                 if (dataset.getType() == DatasetType.LCMS) {
-                        writer.WriteCommaSeparatedFileLCMS(dataset, path, parameters);
+                        fileWriter.WriteCommaSeparatedFileLCMS(dataset, path, parameters);
                 } else if (dataset.getType() == DatasetType.GCGCTOF) {
-                        writer.WriteCommaSeparatedFileGCGC(dataset, path, parameters);
+                        fileWriter.WriteCommaSeparatedFileGCGC(dataset, path, parameters);
                 } else {
-                        writer.WriteCommaSeparatedBasicDataset(dataset, path);
+                        fileWriter.WriteCommaSeparatedBasicDataset(dataset, path);
                 }
         }
 
         public void deleteDataset(Connection conn, int datasetID) {
-                progress = 0.1f;
                 try {
                         Statement statement = conn.createStatement();
-                        progress = 0.2f;
 
                         //Updating EXPERIMENT table
                         int experimentID = 0;
@@ -170,9 +174,12 @@ public class InOracle implements InDataBase {
 
 
                         statement.executeUpdate("DELETE FROM DATASET WHERE DATASETID = '" + datasetID + "'");
-                        progress = 0.9f;
+
                 } catch (Exception exception) {
                 }
-                progress = 1f;
+        }
+
+        public String getTaskDescription() {
+                return task;
         }
 }

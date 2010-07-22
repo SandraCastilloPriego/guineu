@@ -19,7 +19,7 @@ package guineu.modules.mylly.alignment.ransacAligner;
 
 import guineu.data.DatasetType;
 import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;

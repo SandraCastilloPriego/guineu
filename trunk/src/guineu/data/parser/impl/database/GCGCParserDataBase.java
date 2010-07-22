@@ -19,7 +19,7 @@ package guineu.data.parser.impl.database;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
 

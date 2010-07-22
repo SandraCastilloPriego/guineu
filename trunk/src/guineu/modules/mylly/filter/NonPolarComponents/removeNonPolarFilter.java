@@ -19,7 +19,7 @@ package guineu.modules.mylly.filter.NonPolarComponents;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;

@@ -18,8 +18,8 @@
 package guineu.modules.mylly.openFiles;
 
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;

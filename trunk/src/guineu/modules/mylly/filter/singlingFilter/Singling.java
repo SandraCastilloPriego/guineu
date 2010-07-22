@@ -18,8 +18,8 @@
 package guineu.modules.mylly.filter.singlingFilter;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.filter.NameFilter.AlignmentRowFilter;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.Pair;

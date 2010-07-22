@@ -17,7 +17,7 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 
 /**

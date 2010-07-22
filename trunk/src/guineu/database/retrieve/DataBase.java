@@ -17,8 +17,8 @@
  */
 package guineu.database.retrieve;
 
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Vector;

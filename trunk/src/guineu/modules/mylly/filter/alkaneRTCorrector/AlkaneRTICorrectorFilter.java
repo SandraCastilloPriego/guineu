@@ -35,7 +35,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.ArrayList;
 

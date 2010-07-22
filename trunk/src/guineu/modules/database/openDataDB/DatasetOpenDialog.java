@@ -19,8 +19,8 @@ package guineu.modules.database.openDataDB;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
 import guineu.main.GuineuCore;
@@ -258,14 +258,12 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                                 CheckNode child = (CheckNode) node.getChildAt(i);
                                                 if (child.isSelected()) {
                                                         dataset.addColumnName(child.toString());
-                                                } else {
-                                                        child.setSelected(false);
-                                                }
+                                                } 
                                         }
                                 }
 
                                 // If the complete dataset is selected
-                                if (node.isSelected) {
+                                if (node.isSelected && dataset.getNumberCols() == 0) {
                                         try {
                                                 DataBase db = new OracleRetrievement();
                                                 Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));

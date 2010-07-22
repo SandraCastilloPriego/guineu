@@ -19,7 +19,7 @@ package guineu.modules.file.openLCMSDatasetFile;
 
 import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.parser.Parser;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;

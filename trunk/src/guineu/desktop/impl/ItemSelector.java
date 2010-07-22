@@ -20,7 +20,7 @@ package guineu.desktop.impl;
 import guineu.data.Dataset;
 
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
