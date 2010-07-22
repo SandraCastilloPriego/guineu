@@ -17,8 +17,8 @@
  */
 package guineu.modules.mylly.filter.linearNormalizer;
 
-import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import java.util.ArrayList;

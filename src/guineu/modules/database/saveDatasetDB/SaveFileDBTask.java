@@ -19,8 +19,9 @@ package guineu.modules.database.saveDatasetDB;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
 import guineu.taskcontrol.Task;
@@ -33,68 +34,73 @@ import java.sql.Connection;
  */
 public class SaveFileDBTask implements Task {
 
-	private Dataset dataset;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private SaveFileParameters parameters;
-	private String author,  datasetName,  parameterFileName,  study;
-	private InDataBase db;
+        private Dataset dataset;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private String author, datasetName, parameterFileName, study;
+        private InDataBase db;
 
-	public SaveFileDBTask(Dataset dataset, SaveFileParameters parameters) {
-		this.dataset = dataset;
-		this.parameters = parameters;
-		this.author = (String) parameters.getParameterValue(SaveFileParameters.author);
-		this.datasetName = (String) parameters.getParameterValue(SaveFileParameters.name);
-		this.parameterFileName = (String) parameters.getParameterValue(SaveFileParameters.parameters);
-		this.study = (String) parameters.getParameterValue(SaveFileParameters.studyId);
-		db = new InOracle();
-	}
+        public SaveFileDBTask(Dataset dataset, SaveFileParameters parameters) {
+                this.dataset = dataset;
+                this.author = (String) parameters.getParameterValue(SaveFileParameters.author);
+                this.datasetName = (String) parameters.getParameterValue(SaveFileParameters.name);
+                this.parameterFileName = (String) parameters.getParameterValue(SaveFileParameters.parameters);
+                this.study = (String) parameters.getParameterValue(SaveFileParameters.studyId);
+                db = new InOracle();
+        }
 
-	public String getTaskDescription() {
-		return "Saving Dataset into the database... ";
-	}
+        public String getTaskDescription() {
+                if (db != null) {
+                        return db.getTaskDescription();
+                } else {
+                        return "Saving Dataset into the database... ";
+                }
+        }
 
-	public double getFinishedPercentage() {
-		return db.getProgress();
-	}
+        public double getFinishedPercentage() {
+                return db.getProgress();
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
 
-	public void run() {
-		try {
-			saveFile();
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
+        public void run() {
+                try {
+                        saveFile();
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
 
-	public synchronized void saveFile() {
-		try {
-			status = TaskStatus.PROCESSING;
-			Connection connection = db.connect();
-			String type;
-			if (dataset.getType() == DatasetType.LCMS) {
-				type = "LC-MS";
-				db.lcms(connection, (SimpleLCMSDataset) dataset, type, author, datasetName, parameterFileName, study);
-			} else if (dataset.getType() == DatasetType.GCGCTOF) {
-				type = "GCxGC-MS";
-				db.gcgctof(connection, (SimpleGCGCDataset) dataset, type, author, datasetName, study);
-			}
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-		}
-	}
+        public synchronized void saveFile() {
+                try {
+                        status = TaskStatus.PROCESSING;
+                        Connection connection = db.connect();
+                        String type;
+                        if (dataset.getType() == DatasetType.LCMS) {
+                                type = "LC-MS";
+                                db.lcms(connection, (SimpleLCMSDataset) dataset, type, author, datasetName, parameterFileName, study);
+                        } else if (dataset.getType() == DatasetType.GCGCTOF) {
+                                type = "GCxGC-MS";
+                                db.gcgctof(connection, (SimpleGCGCDataset) dataset, type, author, datasetName, study);
+                        }else if (dataset.getType() == DatasetType.QUALITYCONTROL) {                               
+                                db.qualityControlFiles(connection,(SimpleBasicDataset) dataset);
+                        }
+                        
+                        status = TaskStatus.FINISHED;
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                }
+        }
 }

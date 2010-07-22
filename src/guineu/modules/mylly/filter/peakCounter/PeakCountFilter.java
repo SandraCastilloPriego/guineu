@@ -22,7 +22,7 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
  

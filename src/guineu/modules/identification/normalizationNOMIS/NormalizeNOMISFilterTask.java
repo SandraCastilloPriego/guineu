@@ -18,7 +18,7 @@
 package guineu.modules.identification.normalizationNOMIS;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 

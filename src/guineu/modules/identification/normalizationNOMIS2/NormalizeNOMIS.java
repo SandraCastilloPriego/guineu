@@ -21,7 +21,7 @@ package guineu.modules.identification.normalizationNOMIS2;
 
 
 
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import java.util.Vector;
 
 

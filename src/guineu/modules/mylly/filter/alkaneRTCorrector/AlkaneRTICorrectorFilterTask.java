@@ -18,8 +18,8 @@
 package guineu.modules.mylly.filter.alkaneRTCorrector;
 
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;

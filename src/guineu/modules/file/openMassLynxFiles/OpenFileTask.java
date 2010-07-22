@@ -18,7 +18,7 @@
 package guineu.modules.file.openMassLynxFiles;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;

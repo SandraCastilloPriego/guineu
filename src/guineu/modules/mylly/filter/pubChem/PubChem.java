@@ -19,8 +19,8 @@ package guineu.modules.mylly.filter.pubChem;
 
 import com.csvreader.CsvReader;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -18,7 +18,7 @@
 package guineu.modules.database.saveQualityControFileDB;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
 import guineu.taskcontrol.Task;

@@ -18,8 +18,8 @@
 package guineu.modules.mylly.filter.ConcentrationsFromMass;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;

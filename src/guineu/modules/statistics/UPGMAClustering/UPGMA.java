@@ -19,7 +19,7 @@ package guineu.modules.statistics.UPGMAClustering;
 
 import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.desktop.impl.DesktopParameters;

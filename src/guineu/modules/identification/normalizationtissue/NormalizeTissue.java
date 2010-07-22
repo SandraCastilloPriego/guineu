@@ -20,7 +20,7 @@ package guineu.modules.identification.normalizationtissue;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimplePeakListRowLCMS;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.TaskStatus;
 import java.util.Hashtable;
 import java.util.Vector;

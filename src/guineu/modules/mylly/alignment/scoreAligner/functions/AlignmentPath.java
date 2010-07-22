@@ -17,7 +17,7 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
-import guineu.data.impl.SimplePeakListRowGCGC;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 import guineu.modules.mylly.datastruct.ConsensusSpectrum;

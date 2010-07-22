@@ -19,7 +19,7 @@ package guineu.data.parser.impl.database;
 
 import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
 
@@ -52,5 +52,5 @@ public class LCMSParserDataBase implements Parser {
 
         public Dataset getDataset() {
                 return this.dataset;
-        }
+        } 
 }

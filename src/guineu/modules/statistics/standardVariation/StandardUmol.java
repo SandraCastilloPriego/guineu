@@ -18,7 +18,7 @@
 package guineu.modules.statistics.standardVariation;
 
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimplePeakListRowLCMS;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import java.util.Hashtable;
 import java.util.Vector;
 

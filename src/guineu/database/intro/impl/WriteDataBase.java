@@ -20,12 +20,12 @@ package guineu.database.intro.impl;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.data.impl.SimplePeakListRowLCMS;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.database.retrieve.impl.OracleRetrievement;
-import guineu.modules.filter.report.qualityReport.SimpleQualityControlDataset;
+import guineu.data.impl.datasets.SimpleQualityControlDataset;
 import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -49,6 +49,12 @@ import java.util.logging.Logger;
  */
 public class WriteDataBase {
 
+        private double progress;
+
+        public double getProgress() {
+                return progress;
+        }
+
         /**
          * Fills Table EXPERIMENT
          * 
@@ -71,6 +77,7 @@ public class WriteDataBase {
          * @param datasetId data set ID
          */
         public void tableEXPERIMENT(Connection conn, Dataset dataset, int datasetId) {
+                double progressDone = 0;
                 try {
                         Statement statement = conn.createStatement();
                         ResultSet r = null;
@@ -89,6 +96,8 @@ public class WriteDataBase {
                                                 statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME,DATASET_ID) VALUES ('" + sampleName + "', '" + datasetId + "')");
                                         }
                                 }
+                                progressDone++;
+                                progress = progressDone / dataset.getNumberCols();
                         }
                         r.close();
                         statement.close();
@@ -122,45 +131,43 @@ public class WriteDataBase {
          * @return the ID of the data in the database.
          */
         public int tableDATASET(Connection conn, String excelName, String type, String author, String parameters, String study, String info, int numberRows) {
-                {
-                        try {
-                                int exp_id = 0;
-                                if (excelName != null) {
-                                        Statement statement = conn.createStatement();
+                try {
+                        int exp_id = 0;
+                        if (excelName != null) {
+                                Statement statement = conn.createStatement();
+                                try {
+                                        String dir = "";
+                                        String file = "";
                                         try {
-                                                String dir = "";
-                                                String file = "";
-                                                try {
-                                                        int line = parameters.lastIndexOf("\\");
-                                                        dir = parameters;
-                                                        file = parameters;
-                                                        if (line > 0) {
-                                                                dir = parameters.substring(0, line);
-                                                                file = parameters.substring(line + 1);
-                                                        }
-                                                } catch (Exception exception) {
+                                                int line = parameters.lastIndexOf("\\");
+                                                dir = parameters;
+                                                file = parameters;
+                                                if (line > 0) {
+                                                        dir = parameters.substring(0, line);
+                                                        file = parameters.substring(line + 1);
                                                 }
-                                                if (info.length() > 3999) {
-                                                        info = info.substring(0, 3999);
-                                                }
-                                                statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION, NUMBER_ROWS) VALUES ('" + excelName + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + OracleRetrievement.getStudyID(study, conn) + "', '" + info + "', '" + numberRows + "')");
-                                        } catch (SQLException sqlexception) {
-                                                sqlexception.printStackTrace();
+                                        } catch (Exception exception) {
                                         }
-                                        ResultSet r = statement.executeQuery("SELECT * FROM DATASET WHERE EXCEL_NAME = '" + excelName + "' ORDER BY DATASETID desc");
-                                        if (r.next()) {
-                                                exp_id = r.getInt(8);
+                                        if (info.length() > 3999) {
+                                                info = info.substring(0, 3999);
                                         }
-                                        statement.close();
-
-                                        return exp_id;
+                                        statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION, NUMBER_ROWS) VALUES ('" + excelName + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + OracleRetrievement.getStudyID(study, conn) + "', '" + info + "', '" + numberRows + "')");
+                                } catch (SQLException sqlexception) {
+                                        sqlexception.printStackTrace();
                                 }
-                                return -1;
-                        } catch (Exception exception) {
-                                System.out.println("ERROR : " + exception);
-                                exception.printStackTrace();
-                                return -1;
+                                ResultSet r = statement.executeQuery("SELECT * FROM DATASET WHERE EXCEL_NAME = '" + excelName + "' ORDER BY DATASETID desc");
+                                if (r.next()) {
+                                        exp_id = r.getInt(8);
+                                }
+                                statement.close();
+
+                                return exp_id;
                         }
+                        return -1;
+                } catch (Exception exception) {
+                        System.out.println("ERROR : " + exception);
+                        exception.printStackTrace();
+                        return -1;
                 }
         }
 
@@ -188,7 +195,7 @@ public class WriteDataBase {
          * @return Array with the IDs of the data set metabolites
          */
         public int[] tableMOL_LCMS(Connection conn, SimpleLCMSDataset dataset, int datasetID) {
-
+                double progressDone = 0;
                 try {
                         int[] mol_ID = new int[dataset.getNumberRows()];
                         Statement statement = conn.createStatement();
@@ -220,6 +227,8 @@ public class WriteDataBase {
                                         System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
                                         se.printStackTrace();
                                 }
+                                progressDone++;
+                                progress = progressDone / dataset.getNumberRows();
 
                         }
                         statement.close();
@@ -248,6 +257,8 @@ public class WriteDataBase {
          * @param datasetID
          */
         public void tableMEASUREMENT(Connection conn, Dataset dataset, int[] metaboliteID, int datasetID) {
+                double progressDone = 0;
+                double totalDone = dataset.getNumberRows() * dataset.getNumberCols();
                 Statement statement = null;
                 try {
                         statement = conn.createStatement();
@@ -281,6 +292,8 @@ public class WriteDataBase {
                                                 }
                                         } catch (Exception e) {
                                         }
+                                        progressDone++;
+                                        progress = progressDone / totalDone;
                                 }
                         }
                         statement.close();
@@ -321,6 +334,7 @@ public class WriteDataBase {
          * @return Array with the IDs of the data set metabolites
          */
         public int[] tableMOL_GCGCTOF(Connection conn, SimpleGCGCDataset dataset, int datasetID) {
+                double progressDone = 0;
                 try {
                         //intro table MOL_GCGCTOF
                         Statement st = conn.createStatement();
@@ -331,10 +345,10 @@ public class WriteDataBase {
                                 if (mass < 0) {
                                         mass = 0;
                                 }
-                                String name = metabolite.getName().replaceAll("'", "ç");                           
-                                String allNames = metabolite.getAllNames().replaceAll("'", "ç");                            
+                                String name = metabolite.getName().replaceAll("'", "ç");
+                                String allNames = metabolite.getAllNames().replaceAll("'", "ç");
                                 try {
-                                        st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES " + "('" + (float) metabolite.getRT1() + "', '" + (float) metabolite.getRT2() + "', '" + (float) metabolite.getRTI() + "', '" + (int) metabolite.getNumFound() + "', '" + (int) metabolite.getMaxSimilarity() + "', '" + (float) metabolite.getMeanSimilarity() + "', '" + (float) metabolite.getSimilaritySTDDev() + "', '" + name + "', '" + metabolite.getPubChemID() + "', '" + allNames + "', '" + (int) datasetID + "', '" + (float)mass + "', '" + (float) metabolite.getDifference() + "', '" + metabolite.getSpectrumString() + "', '" + metabolite.getCAS() + "', '" + metabolite.getMolClass() + "') ");
+                                        st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES " + "('" + (float) metabolite.getRT1() + "', '" + (float) metabolite.getRT2() + "', '" + (float) metabolite.getRTI() + "', '" + (int) metabolite.getNumFound() + "', '" + (int) metabolite.getMaxSimilarity() + "', '" + (float) metabolite.getMeanSimilarity() + "', '" + (float) metabolite.getSimilaritySTDDev() + "', '" + name + "', '" + metabolite.getPubChemID() + "', '" + allNames + "', '" + (int) datasetID + "', '" + (float) mass + "', '" + (float) metabolite.getDifference() + "', '" + metabolite.getSpectrumString() + "', '" + metabolite.getCAS() + "', '" + metabolite.getMolClass() + "') ");
                                         //System.out.println(metabolite.getName());
                                         ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");
                                         r.next();
@@ -346,6 +360,9 @@ public class WriteDataBase {
                                         System.out.println("Hola We got an exception while preparing a statement:" + "Probably bad SQL.");
                                         se.printStackTrace();
                                 }
+                                progressDone++;
+                                progress = progressDone / dataset.getNumberRows();
+
                         }
                         st.close();
                         return mol_ID;
@@ -369,6 +386,7 @@ public class WriteDataBase {
          * @param metabolitesID Array with the IDs of the data set metabolites in the table MOL_GCGCTOF
          */
         public void tableSPECTRUM(Connection conn, SimpleGCGCDataset dataset, Statement st, int[] metabolitesID) {
+                double progressDone = 0;
                 try {
                         st = conn.createStatement();
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
@@ -393,6 +411,8 @@ public class WriteDataBase {
                                                 se.printStackTrace();
                                         }
                                 }
+                                progressDone++;
+                                progress = progressDone / dataset.getNumberRows();
                         }
                 } catch (SQLException ex) {
                         Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
@@ -520,6 +540,7 @@ public class WriteDataBase {
          */
         public void TableQCSample(Connection conn, SimpleQualityControlDataset QCDataset, int QC_ID) {
                 try {
+                        double progressDone = 0;
                         Statement statement = conn.createStatement();
                         for (PeakListRow row : QCDataset.getRowsDB()) {
                                 Object[] peaks = row.getPeaks();
@@ -554,6 +575,8 @@ public class WriteDataBase {
                                         System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
                                         se.printStackTrace();
                                 }
+                                progressDone++;
+                                progress = progressDone / QCDataset.getRowsDB().size();
 
                         }
                         statement.close();

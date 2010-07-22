@@ -23,12 +23,12 @@ import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleBasicDataset;
-import guineu.data.impl.SimplePeakListRowGCGC;
-import guineu.data.impl.SimplePeakListRowLCMS;
-import guineu.data.impl.SimplePeakListRowOther;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.util.Tables.DataTableModel;
 
 /**

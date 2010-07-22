@@ -18,9 +18,9 @@
 package guineu.database.intro;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleLCMSDataset;
-import guineu.data.impl.SimpleGCGCDataset;
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;
@@ -45,6 +45,13 @@ public interface InDataBase {
          * @return Progress of the task
          */
         public float getProgress();
+
+        /**
+         * Returns a description of the current task.
+         *
+         * @return Description of the task
+         */
+        public String getTaskDescription();
 
         /**
          * Puts a LC-MS data set into the database.
@@ -91,13 +98,13 @@ public interface InDataBase {
          */
         public void WriteExcelFile(Dataset dataset, String path, SimpleParameterSet parameters);
 
-       /**
-        * Writes the data set into a CSV file.
-        *
-        * @param dataset Data set
-        * @param path Path where the new file will be created
-        * @param parameters Parameters for saving the file (columns saved in the new file)
-        */
+        /**
+         * Writes the data set into a CSV file.
+         *
+         * @param dataset Data set
+         * @param path Path where the new file will be created
+         * @param parameters Parameters for saving the file (columns saved in the new file)
+         */
         public void WriteCommaSeparatedFile(Dataset dataset, String path, SimpleParameterSet parameters);
 
         /**

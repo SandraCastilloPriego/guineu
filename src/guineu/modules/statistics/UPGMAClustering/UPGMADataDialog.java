@@ -6,7 +6,7 @@
 
 package guineu.modules.statistics.UPGMAClustering;
 
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 import java.util.logging.Logger;

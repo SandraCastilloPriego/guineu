@@ -20,7 +20,7 @@
 package guineu.modules.identification.normalizationNOMIS;
 
 import flanagan.math.Matrix;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import java.util.Vector;
 
 

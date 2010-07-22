@@ -17,11 +17,12 @@
  */
 package guineu.modules.filter.report.qualityReport;
 
+import guineu.data.impl.datasets.SimpleQualityControlDataset;
 import com.csvreader.CsvReader;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.SimpleParameterSet;
-import guineu.data.impl.SimplePeakListRowOther;
+import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;

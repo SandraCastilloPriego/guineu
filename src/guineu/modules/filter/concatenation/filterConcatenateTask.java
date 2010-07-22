@@ -17,11 +17,11 @@
  */
 package guineu.modules.filter.concatenation;
 
-import guineu.data.impl.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimplePeakListRowOther;
+import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;

@@ -4,7 +4,7 @@
  */
 package guineu.modules.mylly.filter.calculateDeviations;
 
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;

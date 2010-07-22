@@ -18,7 +18,7 @@
 package guineu.modules.mylly.filter.classIdentification;
 
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import java.io.File;
 import java.util.logging.Level;

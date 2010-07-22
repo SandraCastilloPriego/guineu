@@ -17,8 +17,8 @@
  */
 package guineu.data.datamodels;
 
-import guineu.data.impl.SimpleBasicDataset;
-import guineu.data.impl.SimplePeakListRowOther;
+import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;

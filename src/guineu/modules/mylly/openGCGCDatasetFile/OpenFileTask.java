@@ -18,7 +18,7 @@
 package guineu.modules.mylly.openGCGCDatasetFile;
 
 import guineu.data.parser.impl.GCGCParserXLS;
-import guineu.data.impl.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.GCGCParserCSV;
 import guineu.taskcontrol.Task;

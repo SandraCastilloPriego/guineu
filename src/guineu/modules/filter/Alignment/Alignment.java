@@ -2,7 +2,7 @@ package guineu.modules.filter.Alignment;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.modules.filter.Alignment.data.AlignmentStruct;
 import guineu.modules.filter.Alignment.data.AlignStructMol;
 
