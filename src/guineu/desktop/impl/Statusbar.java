@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl;
 
 import guineu.util.components.LabeledProgressBar;
@@ -32,136 +31,129 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-
-
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ * 
+ */
 public class Statusbar extends JPanel implements Runnable, MouseListener {
 
-    // frequency in milliseconds how often to update free memory label
-    public static final int MEMORY_LABEL_UPDATE_FREQUENCY = 1000;
-    public static final int STATUS_BAR_HEIGHT = 20;
-    public static final Font statusBarFont = new Font("SansSerif", Font.PLAIN, 12);
-    
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+        // frequency in milliseconds how often to update free memory label
+        public static final int MEMORY_LABEL_UPDATE_FREQUENCY = 1000;
+        public static final int STATUS_BAR_HEIGHT = 20;
+        public static final Font statusBarFont = new Font("SansSerif", Font.PLAIN, 12);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private JPanel statusTextPanel, memoryPanel;
+        private JLabel statusTextLabel;
+        private LabeledProgressBar memoryLabel;
 
-    private JPanel statusTextPanel, memoryPanel;
-    private JLabel statusTextLabel;
-    private LabeledProgressBar memoryLabel;
+        Statusbar() {
 
+                setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+                setBorder(new EtchedBorder());
 
-    Statusbar() {
+                statusTextPanel = new JPanel();
+                statusTextPanel.setLayout(new BoxLayout(statusTextPanel,
+                        BoxLayout.X_AXIS));
+                statusTextPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setBorder(new EtchedBorder());
+                statusTextLabel = new JLabel();
+                statusTextLabel.setFont(statusBarFont);
+                statusTextLabel.setMinimumSize(new Dimension(100, STATUS_BAR_HEIGHT));
+                statusTextLabel.setPreferredSize(new Dimension(3200, STATUS_BAR_HEIGHT));
 
-        statusTextPanel = new JPanel();
-        statusTextPanel.setLayout(new BoxLayout(statusTextPanel,
-                BoxLayout.X_AXIS));
-        statusTextPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        
-        statusTextLabel = new JLabel();
-        statusTextLabel.setFont(statusBarFont);
-        statusTextLabel.setMinimumSize(new Dimension(100, STATUS_BAR_HEIGHT));
-        statusTextLabel.setPreferredSize(new Dimension(3200, STATUS_BAR_HEIGHT));
+                statusTextPanel.add(Box.createRigidArea(new Dimension(5,
+                        STATUS_BAR_HEIGHT)));
+                statusTextPanel.add(statusTextLabel);
 
-        statusTextPanel.add(Box.createRigidArea(new Dimension(5,
-                STATUS_BAR_HEIGHT)));
-        statusTextPanel.add(statusTextLabel);
+                add(statusTextPanel);
 
-        add(statusTextPanel);
+                memoryLabel = new LabeledProgressBar();
+                memoryPanel = new JPanel();
+                memoryPanel.setLayout(new BoxLayout(memoryPanel, BoxLayout.X_AXIS));
+                memoryPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+                memoryPanel.add(Box.createRigidArea(new Dimension(10, STATUS_BAR_HEIGHT)));
+                memoryPanel.add(memoryLabel);
+                memoryPanel.add(Box.createRigidArea(new Dimension(10, STATUS_BAR_HEIGHT)));
 
-        memoryLabel = new LabeledProgressBar();
-        memoryPanel = new JPanel();
-        memoryPanel.setLayout(new BoxLayout(memoryPanel, BoxLayout.X_AXIS));
-        memoryPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-        memoryPanel.add(Box.createRigidArea(new Dimension(10, STATUS_BAR_HEIGHT)));
-        memoryPanel.add(memoryLabel);
-        memoryPanel.add(Box.createRigidArea(new Dimension(10, STATUS_BAR_HEIGHT)));
+                memoryLabel.addMouseListener(this);
 
-        memoryLabel.addMouseListener(this);
-        
-        add(memoryPanel);
-        
-
-        Thread memoryLabelUpdaterThread = new Thread(this,
-                "Memory label updater thread");
-        memoryLabelUpdaterThread.start();
-
-    }
-
-    /**
-     * Set the text displayed in status bar
-     * 
-     * @param statusText Text for status bar
-     * @param textColor Text color
-     */
-    void setStatusText(String statusText, Color textColor) {
-        statusTextLabel.setText(statusText);
-        statusTextLabel.setForeground(textColor);
-    }
+                add(memoryPanel);
 
 
-    /**
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent event) {
-        // do nothing
-
-    }
-
-    /**
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent event) {
-        // do nothing
-
-    }
-
-    /**
-     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-     */
-    public void mouseEntered(MouseEvent event) {
-        // do nothing
-
-    }
-
-    /**
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent event) {
-        // do nothing
-
-    }
-
-    /**
-     * @see java.lang.Runnable#run()
-     */
-    public synchronized void run() {
-
-        while (true) {
-
-            // get free memory in megabytes
-            long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
-            long totalMem = Runtime.getRuntime().totalMemory() / (1024 * 1024);
-            float fullMem = ((float) (totalMem - freeMem)) / totalMem;
-            
-            memoryLabel.setValue(fullMem, freeMem + "MB free");
-            memoryLabel.setToolTipText("JVM memory: " + freeMem + "MB, "
-                    + totalMem + "MB total");
-
-            try {
-                wait(MEMORY_LABEL_UPDATE_FREQUENCY);
-            } catch (InterruptedException e) {
-                // ignore
-            }
+                Thread memoryLabelUpdaterThread = new Thread(this,
+                        "Memory label updater thread");
+                memoryLabelUpdaterThread.start();
 
         }
 
-    }
+        /**
+         * Set the text displayed in status bar
+         *
+         * @param statusText Text for status bar
+         * @param textColor Text color
+         */
+        void setStatusText(String statusText, Color textColor) {
+                statusTextLabel.setText(statusText);
+                statusTextLabel.setForeground(textColor);
+        }
 
-    public void mouseClicked(MouseEvent arg0) {
-        logger.info("Running garbage collector");
-        System.gc();
-        
-    }
+        /**
+         * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+         */
+        public void mousePressed(MouseEvent event) {
+                // do nothing
+        }
 
+        /**
+         * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+         */
+        public void mouseReleased(MouseEvent event) {
+                // do nothing
+        }
+
+        /**
+         * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+         */
+        public void mouseEntered(MouseEvent event) {
+                // do nothing
+        }
+
+        /**
+         * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+         */
+        public void mouseExited(MouseEvent event) {
+                // do nothing
+        }
+
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public synchronized void run() {
+
+                while (true) {
+
+                        // get free memory in megabytes
+                        long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+                        long totalMem = Runtime.getRuntime().totalMemory() / (1024 * 1024);
+                        float fullMem = ((float) (totalMem - freeMem)) / totalMem;
+
+                        memoryLabel.setValue(fullMem, freeMem + "MB free");
+                        memoryLabel.setToolTipText("JVM memory: " + freeMem + "MB, " + totalMem + "MB total");
+
+                        try {
+                                wait(MEMORY_LABEL_UPDATE_FREQUENCY);
+                        } catch (InterruptedException e) {
+                                // ignore
+                        }
+
+                }
+
+        }
+
+        public void mouseClicked(MouseEvent arg0) {
+                logger.info("Running garbage collector");
+                System.gc();
+
+        }
 }

@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl;
 
 import guineu.data.Parameter;
@@ -29,12 +28,11 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class NameChangeParameter extends SimpleParameterSet {
 
-     public static final Parameter name = new SimpleParameter(
-            ParameterType.STRING, "New Dataset Name",
-            "New Dataset Name", (Object) "");
+        public static final Parameter name = new SimpleParameter(
+                ParameterType.STRING, "New Dataset Name",
+                "New Dataset Name", (Object) "");
 
-    public NameChangeParameter() {
-        super(new Parameter[]{name});
-    }
-
+        public NameChangeParameter() {
+                super(new Parameter[]{name});
+        }
 }

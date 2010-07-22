@@ -43,6 +43,9 @@ import org.dom4j.io.XMLWriter;
 
 /**
  * This interface represents Guineu core modules - I/O, task controller and GUI.
+ *
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public abstract class GuineuCore {
 

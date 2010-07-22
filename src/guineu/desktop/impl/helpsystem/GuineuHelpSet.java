@@ -15,20 +15,22 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl.helpsystem;
-
 
 import javax.help.HelpSet;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class GuineuHelpSet extends HelpSet {
 
-	public GuineuHelpSet() {
-		super();
-	}
-	
-	public void addTOCView( GuineuTOCView TOCView){
-		this.addView(TOCView);
-	}
+        public GuineuHelpSet() {
+                super();
+        }
 
+        public void addTOCView(GuineuTOCView TOCView) {
+                this.addView(TOCView);
+        }
 }

@@ -21,7 +21,8 @@ import java.rmi.Remote;
 
 
 /**
- *
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public class GuineuClusterNode extends GuineuCore implements Remote {
 

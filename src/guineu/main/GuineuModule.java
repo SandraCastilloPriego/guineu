@@ -23,6 +23,9 @@ import guineu.data.ParameterSet;
 
 /**
  * This interface represents Guineu module.
+ *
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public interface GuineuModule {
 

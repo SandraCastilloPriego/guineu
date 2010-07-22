@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.impl;
 
 import java.awt.Component;
@@ -25,26 +24,27 @@ import java.awt.Dimension;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-
 class ItemSelectorListRenderer extends DefaultListCellRenderer {
 
-    /**
-     * Main rendering method
-     */
-    public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean hasFocus) {
+        /**
+         * @author Taken from MZmine2
+         * http://mzmine.sourceforge.net/
+         *
+         * Main rendering method
+         */
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean hasFocus) {
 
-        // First get original rendered component
-        final Component component = super.getListCellRendererComponent(list,
-                value, index, isSelected, hasFocus);
+                // First get original rendered component
+                final Component component = super.getListCellRendererComponent(list,
+                        value, index, isSelected, hasFocus);
 
-        // This is necessary, although it doesn't make much sense.
-        // If we don't set the preferred size here, the JList occasionally
-        // becomes blank when the ListModel is updated
-        component.setPreferredSize(new Dimension(100, 15));
-       
-        
-        return component;
-    }
+                // This is necessary, although it doesn't make much sense.
+                // If we don't set the preferred size here, the JList occasionally
+                // becomes blank when the ListModel is updated
+                component.setPreferredSize(new Dimension(100, 15));
 
+
+                return component;
+        }
 }

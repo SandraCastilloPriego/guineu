@@ -15,24 +15,25 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.desktop.impl.helpsystem;
 
 import java.util.Comparator;
 
 import javax.help.TOCItem;
 
-public class TOCItemSorterByName implements Comparator<TOCItem>{
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ */
+public class TOCItemSorterByName implements Comparator<TOCItem> {
 
-	public int compare(TOCItem dp1, TOCItem dp2) {
-        String mz1 = dp1.getName();
-        String mz2 = dp2.getName();
-        int result = mz1.compareTo(mz2);
-        if (result == 0) {
-        	return dp1.getID().toString().compareTo(dp2.getID().toString());
-		}
-        return result;
-	}
-
+        public int compare(TOCItem dp1, TOCItem dp2) {
+                String mz1 = dp1.getName();
+                String mz2 = dp2.getName();
+                int result = mz1.compareTo(mz2);
+                if (result == 0) {
+                        return dp1.getID().toString().compareTo(dp2.getID().toString());
+                }
+                return result;
+        }
 }

@@ -43,7 +43,8 @@ import java.util.Set;
 import org.dom4j.Element;
 
 /**
- * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public class DesktopParameters implements StorableParameterSet,
         ComponentListener {

@@ -30,120 +30,122 @@ import javax.swing.JMenuItem;
 /**
  * This interface represents the application GUI
  * 
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public interface Desktop extends GuineuModule {
 
-    /**
-     * Returns a reference to main application window
-     * 
-     * @return Main window frame
-     */
-    public JFrame getMainFrame();
+        /**
+         * Returns a reference to main application window
+         *
+         * @return Main window frame
+         */
+        public JFrame getMainFrame();
 
-    /**
-     * Creates a new menu item in the main application menu.
-     *
-     * @param parentMenu GuineuMenu where to create the new item
-     * @param text Item text
-     * @param toolTip Item's tooltip
-     * @param mnemonic Item's keyboard shortcut
-     * @param listener ActionListener to receive the new menu item's events
-     * @param actionCommand Action command for action listener or null
-     * @return Newly created JMenuItem
-     */
-    public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-            String toolTip, int mnemonic,
-            ActionListener listener, String actionCommand, String icon);
+        /**
+         * Creates a new menu item in the main application menu.
+         *
+         * @param parentMenu GuineuMenu where to create the new item
+         * @param text Item text
+         * @param toolTip Item's tooltip
+         * @param mnemonic Item's keyboard shortcut
+         * @param listener ActionListener to receive the new menu item's events
+         * @param actionCommand Action command for action listener or null
+         * @return Newly created JMenuItem
+         */
+        public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
+                String toolTip, int mnemonic,
+                ActionListener listener, String actionCommand, String icon);
 
-    /**
-     * Adds a separator to a given Guineu menu
-     * 
-     * @param parentMenu Menu where to add a separator
-     */
-    public void addMenuSeparator(GuineuMenu parentMenu);
+        /**
+         * Adds a separator to a given Guineu menu
+         *
+         * @param parentMenu Menu where to add a separator
+         */
+        public void addMenuSeparator(GuineuMenu parentMenu);
 
-    /**
-     * Adds a new internal frame (JInternalFrame) to the desktop pane
-     * 
-     * @param frame Internal frame to add
-     */
-    public void addInternalFrame(JInternalFrame frame);
+        /**
+         * Adds a new internal frame (JInternalFrame) to the desktop pane
+         *
+         * @param frame Internal frame to add
+         */
+        public void addInternalFrame(JInternalFrame frame);
 
-    /**
-     * Returns all internal frames in the desktop pane
-     * 
-     * @return Array of all internal frames
-     */
-    public JInternalFrame[] getInternalFrames();
+        /**
+         * Returns all internal frames in the desktop pane
+         *
+         * @return Array of all internal frames
+         */
+        public JInternalFrame[] getInternalFrames();
 
-    /**
-     * Returns the currently selected frame or null if no frame is selected
-     * 
-     * @return Selected frame
-     */
-    public JInternalFrame getSelectedFrame();
+        /**
+         * Returns the currently selected frame or null if no frame is selected
+         *
+         * @return Selected frame
+         */
+        public JInternalFrame getSelectedFrame();
 
-    /**
-     * Displays a given text on the application status bar in black color
-     * 
-     * @param text Text to show
-     */
-    public void setStatusBarText(String text);
+        /**
+         * Displays a given text on the application status bar in black color
+         *
+         * @param text Text to show
+         */
+        public void setStatusBarText(String text);
 
-    /**
-     * Displays a given text on the application status bar in a given color
-     * 
-     * @param text Text to show
-     * @param textColor Text color
-     */
-    public void setStatusBarText(String text, Color textColor);
+        /**
+         * Displays a given text on the application status bar in a given color
+         *
+         * @param text Text to show
+         * @param textColor Text color
+         */
+        public void setStatusBarText(String text, Color textColor);
 
-    /**
-     * Displays a message box with a given text
-     *
-     * @param msg Text to show
-     */
-    public void displayMessage(String msg);
+        /**
+         * Displays a message box with a given text
+         *
+         * @param msg Text to show
+         */
+        public void displayMessage(String msg);
 
-    /**
-     * Displays a message box with a given text
-     *
-     * @param title Message box title
-     * @param msg Text to show
-     */
-    public void displayMessage(String title, String msg);
+        /**
+         * Displays a message box with a given text
+         *
+         * @param title Message box title
+         * @param msg Text to show
+         */
+        public void displayMessage(String title, String msg);
 
-    /**
-     * Displays an error message box with a given text
-     *
-     * @param msg Text to show
-     */
-    public void displayErrorMessage(String msg);
+        /**
+         * Displays an error message box with a given text
+         *
+         * @param msg Text to show
+         */
+        public void displayErrorMessage(String msg);
 
-    /**
-     * Displays an error message box with a given text
-     *
-     * @param title Message box title
-     * @param msg Text to show
-     */
-    public void displayErrorMessage(String title, String msg);
+        /**
+         * Displays an error message box with a given text
+         *
+         * @param title Message box title
+         * @param msg Text to show
+         */
+        public void displayErrorMessage(String title, String msg);
 
-    /**
-     * Displays an error message
-     *
-     */
-    public void displayException(Exception e);
+        /**
+         * Displays an error message
+         *
+         */
+        public void displayException(Exception e);
 
-    /**
-     * Returns array of currently selected raw data files in GUI
-     * 
-     * @return Array of selected raw data files
-     */
-    public Dataset[] getSelectedDataFiles();
+        /**
+         * Returns array of currently selected raw data files in GUI
+         *
+         * @return Array of selected raw data files
+         */
+        public Dataset[] getSelectedDataFiles();
 
-    public void AddNewFile(Dataset dataset);
+        public void AddNewFile(Dataset dataset);
 
-    public void removeData(Dataset file);
+        public void removeData(Dataset file);
 
-    public JDesktopPane getDesktopPane();
+        public JDesktopPane getDesktopPane();
 }

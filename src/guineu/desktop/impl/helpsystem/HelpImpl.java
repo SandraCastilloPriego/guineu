@@ -23,6 +23,10 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/ *
+ */
 public class HelpImpl {
 
     private GuineuHelpSet hs;

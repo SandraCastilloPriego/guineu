@@ -36,6 +36,10 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Main client class
+ *
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
  */
 public class GuineuClient extends GuineuCore implements Runnable {
 
