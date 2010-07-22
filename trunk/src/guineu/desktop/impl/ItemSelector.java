@@ -51,7 +51,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- * This class implements a selector of raw data files and alignment results
+ * This class implements a selector of data sets
+ *
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public class ItemSelector extends JPanel implements ActionListener,
         MouseListener, ListSelectionListener {

@@ -38,128 +38,133 @@ import javax.help.TreeItem;
 import javax.help.Map.ID;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ *
+ */
 public class GuineuTOCView extends TOCView {
 
-    private GuineuHelpMap hm;
-    private HelpSet hs;
-    private File file;
+        private GuineuHelpMap hm;
+        private HelpSet hs;
+        private File file;
 
-    public GuineuTOCView(HelpSet hs, String name, String label, GuineuHelpMap hm, File file) {
-        super(hs, name, label, null);
-        this.hm = hm;
-        this.hs = hs;
-        this.file = file;
-    }
+        public GuineuTOCView(HelpSet hs, String name, String label, GuineuHelpMap hm, File file) {
+                super(hs, name, label, null);
+                this.hm = hm;
+                this.hs = hs;
+                this.file = file;
+        }
 
-    /**
-     * Public method that gets a DefaultMutableTreeNode representing the
-     * information in this view instance.
-     */
-    @Override
-    public DefaultMutableTreeNode getDataAsTree() {
+        /**
+         * Public method that gets a DefaultMutableTreeNode representing the
+         * information in this view instance.
+         */
+        @Override
+        public DefaultMutableTreeNode getDataAsTree() {
 
-        try {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+                try {
+                        DefaultMutableTreeNode node = new DefaultMutableTreeNode();
 
-            TreeSet<TOCItem> sortedItems = new TreeSet<TOCItem>(new TOCItemSorterByName());
+                        TreeSet<TOCItem> sortedItems = new TreeSet<TOCItem>(new TOCItemSorterByName());
 
-            List<String> list = Collections.list(hm.getAllIDs());
-            Collections.sort(list);
-            Iterator<String> e = list.iterator();
+                        List<String> list = Collections.list(hm.getAllIDs());
+                        Collections.sort(list);
+                        Iterator<String> e = list.iterator();
 
-            while (e.hasNext()) {
-                String target = (String) e.next();
-                if (target.contains(".png")) {
-                    continue;
+                        while (e.hasNext()) {
+                                String target = (String) e.next();
+                                if (target.contains(".png")) {
+                                        continue;
+                                }
+                                sortedItems.add((TOCItem) createMyItem(target));
+                                System.out.print(target + "\n");
+                        }
+
+                        Iterator<TOCItem> i = sortedItems.iterator();
+
+                        while (i.hasNext()) {
+                                TOCItem item = i.next();
+                                DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(item);
+                                node.add(newChild);
+                        }
+
+                        return node;
+
+                } catch (Exception ex) {
+                        throw new Error("Trouble creating TOC data progamatically; " + ex);
                 }
-                sortedItems.add((TOCItem) createMyItem(target));
-                System.out.print(target + "\n");
-            }
 
-            Iterator<TOCItem> i = sortedItems.iterator();
-
-            while (i.hasNext()) {
-                TOCItem item = i.next();
-                DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(item);
-                node.add(newChild);
-            }
-
-            return node;
-
-        } catch (Exception ex) {
-            throw new Error("Trouble creating TOC data progamatically; " + ex);
         }
 
-    }
+        /**
+         * Create an TOCItem with the given data.
+         *
+         * @param tagName
+         *            The TOC type to create. Valid types are "tocitem". Null or
+         *            invalid types will throw an IllegalArgumentException
+         * @param atts
+         *            Attributes of the Item. Valid attributes are "target",
+         *            "image", and "text". A null atts is valid and means no
+         *            attributes
+         * @param hs
+         *            HelpSet this item was created under.
+         * @param locale
+         *            Locale of this item. A null locale is valid.
+         * @returns A fully constructed TreeItem.
+         * @throws IllegalArgumentExcetpion
+         *             if tagname is null or invalid.
+         */
+        public TreeItem createMyItem(String target) {
 
-    /**
-     * Create an TOCItem with the given data.
-     *
-     * @param tagName
-     *            The TOC type to create. Valid types are "tocitem". Null or
-     *            invalid types will throw an IllegalArgumentException
-     * @param atts
-     *            Attributes of the Item. Valid attributes are "target",
-     *            "image", and "text". A null atts is valid and means no
-     *            attributes
-     * @param hs
-     *            HelpSet this item was created under.
-     * @param locale
-     *            Locale of this item. A null locale is valid.
-     * @returns A fully constructed TreeItem.
-     * @throws IllegalArgumentExcetpion
-     *             if tagname is null or invalid.
-     */
-    public TreeItem createMyItem(String target) {
+                String line, title = "Test";
+                try {
+                        JarFile jarFile = new JarFile(file);
+                        InputStream test = jarFile.getInputStream(jarFile.getEntry(target));
+                        BufferedReader in = new BufferedReader(new InputStreamReader(test));
 
-        String line, title = "Test";
-        try {
-            JarFile jarFile = new JarFile(file);
-            InputStream test = jarFile.getInputStream(jarFile.getEntry(target));
-            BufferedReader in = new BufferedReader(new InputStreamReader(test));
+                        if (!in.ready()) {
+                                throw new IOException();
+                        }
 
-            if (!in.ready()) {
-                throw new IOException();
-            }
+                        while ((line = in.readLine()) != null) {
+                                if (line.toLowerCase().contains("title")) {
+                                        int beginIndex = line.toLowerCase().indexOf("title") + 6;
+                                        int endIndex = line.toLowerCase().indexOf("</title>");
+                                        title = line.substring(beginIndex, endIndex);
+                                        break;
+                                }
+                        }
 
-            while ((line = in.readLine()) != null) {
-                if (line.toLowerCase().contains("title")) {
-                    int beginIndex = line.toLowerCase().indexOf("title") + 6;
-                    int endIndex = line.toLowerCase().indexOf("</title>");
-                    title = line.substring(beginIndex, endIndex);
-                    break;
+                        in.close();
+                } catch (IOException e) {
                 }
-            }
 
-            in.close();
-        } catch (IOException e) {
+                Map.ID mapID = null;
+                try {
+                        mapID = ID.create(target, hs);
+                } catch (BadIDException bex1) {
+                }
+
+                Map.ID imageMapID = null;
+                String imageID = "topic.png";
+                try {
+                        imageMapID = ID.create(imageID, hs);
+                } catch (BadIDException bex2) {
+                }
+
+                TOCItem item = new TOCItem(mapID, imageMapID, hs, Locale.getDefault());
+                item.setName(title);
+                item.setMergeType("javax.help.AppendMerge");
+                item.setExpansionType(TreeItem.COLLAPSE);
+
+                return item;
         }
 
-        Map.ID mapID = null;
-        try {
-            mapID = ID.create(target, hs);
-        } catch (BadIDException bex1) {
+        /**
+         * Creates a default TOCItem.
+         */
+        public TreeItem createItem() {
+                return new TOCItem();
         }
-
-        Map.ID imageMapID = null;
-        String imageID = "topic.png";
-        try {
-            imageMapID = ID.create(imageID, hs);
-        } catch (BadIDException bex2) {
-        }
-
-        TOCItem item = new TOCItem(mapID, imageMapID, hs, Locale.getDefault());
-        item.setName(title);
-        item.setMergeType("javax.help.AppendMerge");
-        item.setExpansionType(TreeItem.COLLAPSE);
-
-        return item;
-    }
-
-    /**
-     * Creates a default TOCItem.
-     */
-    public TreeItem createItem() {
-        return new TOCItem();
-    }
 }

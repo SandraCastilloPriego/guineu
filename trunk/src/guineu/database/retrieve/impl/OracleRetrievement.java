@@ -97,8 +97,6 @@ public class OracleRetrievement implements DataBase {
         public String[][] getDatasetInfo() {
                 Statement st = null;
                 try {
-                        Connection conn = this.connect();
-
                         st = conn.createStatement();
                         ResultSet r = st.executeQuery("SELECT * FROM DATASET ORDER BY DATASETID asc");
 
@@ -157,9 +155,7 @@ public class OracleRetrievement implements DataBase {
 
         public Vector<String> getSampleNames(int datasetID) {
                 Statement st = null;
-                try {
-                        Connection conn = this.connect();
-
+                try {                       
                         st = conn.createStatement();
                         ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + datasetID + "'ORDER BY EXPERIMENT_ID asc");
 
@@ -260,11 +256,11 @@ public class OracleRetrievement implements DataBase {
                 }
         }
 
-        public synchronized String[] getParameters(String name) {
+        public synchronized String[] getParameters(String sampleName) {
 
                 Statement st = null;
 
-                String[] tempStr = name.split("_");
+                String[] tempStr = sampleName.split("_");
                 String barcode = null;
                 try {
                         barcode = (tempStr[0] + "_" + tempStr[1]).toUpperCase();

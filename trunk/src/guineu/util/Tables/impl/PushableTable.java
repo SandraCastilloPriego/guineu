@@ -65,19 +65,11 @@ public class PushableTable implements DataTable, ActionListener {
         private StringSelection stsel;
         private Vector<register> registers;
         int indexRegister = 0;
-
-        /**
-         * Constructor.
-         *
-         */
+       
         public PushableTable() {
                 registers = new Vector<register>();
         }
-
-        /**
-         * Alternative constructor.
-         *
-         */
+       
         public PushableTable(DataTableModel model) {
                 this.model = model;
                 table = this.tableRowsColor(model);
