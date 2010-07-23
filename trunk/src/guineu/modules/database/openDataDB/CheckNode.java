@@ -69,10 +69,4 @@ class CheckNode extends DefaultMutableTreeNode {
         public boolean isSelected() {
                 return isSelected;
         }
-        // If you want to change "isSelected" by CellEditor,
-  /*
-        public void setUserObject(Object obj) { if (obj instanceof Boolean) {
-         * setSelected(((Boolean)obj).booleanValue()); } else {
-         * super.setUserObject(obj); } }
-         */
 }
