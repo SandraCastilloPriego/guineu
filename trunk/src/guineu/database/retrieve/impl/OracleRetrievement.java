@@ -71,7 +71,7 @@ public class OracleRetrievement implements DataBase {
                 List<String> projectNames = new ArrayList<String>();
 
                 try {
-                        Connection conn = this.connect();
+                        conn = this.connect();
                         st = conn.createStatement();
                         ResultSet r = st.executeQuery("SELECT NAME FROM PROJECTS");
 
