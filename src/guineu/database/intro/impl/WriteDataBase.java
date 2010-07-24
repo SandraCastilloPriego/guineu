@@ -89,12 +89,14 @@ public class WriteDataBase {
                                         sampleNameExp = sampleName;
                                 }
                                 if (sampleName != null) {
-                                        r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleNameExp + "'");
+                                        String str ="MERGE INTO EXPERIMENT ( NAME, EXPERIMENT_ID, DATASET_ID) VALUES ('" + sampleName + "', '" + r.getInt(1) + "', '" + datasetId + "')";
+                                        statement.executeQuery(str);
+                                        /*  r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleNameExp + "'");
                                         if (r.next()) {
                                                 statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME, EXPERIMENT_ID ,DATASET_ID) VALUES ('" + sampleName + "', '" + r.getInt(1) + "', '" + datasetId + "')");
                                         } else {
                                                 statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME,DATASET_ID) VALUES ('" + sampleName + "', '" + datasetId + "')");
-                                        }
+                                        }*/
                                 }
                                 progressDone++;
                                 progress = progressDone / dataset.getNumberCols();
@@ -155,6 +157,9 @@ public class WriteDataBase {
                                 } catch (SQLException sqlexception) {
                                         sqlexception.printStackTrace();
                                 }
+                                
+                                // search for the last id using the name of the sequence.
+                                
                                 ResultSet r = statement.executeQuery("SELECT * FROM DATASET WHERE EXCEL_NAME = '" + excelName + "' ORDER BY DATASETID desc");
                                 if (r.next()) {
                                         exp_id = r.getInt(8);
@@ -349,15 +354,12 @@ public class WriteDataBase {
                                 String allNames = metabolite.getAllNames().replaceAll("'", "ç");
                                 try {
                                         st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES " + "('" + (float) metabolite.getRT1() + "', '" + (float) metabolite.getRT2() + "', '" + (float) metabolite.getRTI() + "', '" + (int) metabolite.getNumFound() + "', '" + (int) metabolite.getMaxSimilarity() + "', '" + (float) metabolite.getMeanSimilarity() + "', '" + (float) metabolite.getSimilaritySTDDev() + "', '" + name + "', '" + metabolite.getPubChemID() + "', '" + allNames + "', '" + (int) datasetID + "', '" + (float) mass + "', '" + (float) metabolite.getDifference() + "', '" + metabolite.getSpectrumString() + "', '" + metabolite.getCAS() + "', '" + metabolite.getMolClass() + "') ");
-                                        //System.out.println(metabolite.getName());
                                         ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");
                                         r.next();
                                         mol_ID[i] = r.getInt("ID");
                                         r.close();
                                 } catch (SQLException se) {
-                                        System.out.print("RT1 " + (float) metabolite.getRT1() + " RT2 " + (float) metabolite.getRT2() + " RTI " + (float) metabolite.getRTI() + " N_ found " + (int) metabolite.getNumFound() + " max similarity " + (int) metabolite.getMaxSimilarity() + " mean Similarity " + (float) metabolite.getMeanSimilarity() + " similarity std dev " + (float) metabolite.getSimilaritySTDDev() + " name " + name + " pubchem " + metabolite.getPubChemID() + " all names " + allNames + " datasetId " + (int) datasetID + " mass " + (float) metabolite.getMass() + " difference " + (float) metabolite.getDifference() + " spectrum " + metabolite.getSpectrumString() + " cas " + metabolite.getCAS() + " class " + metabolite.getMolClass());
-
-                                        System.out.println("Hola We got an exception while preparing a statement:" + "Probably bad SQL.");
+                                        System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
                                         se.printStackTrace();
                                 }
                                 progressDone++;
