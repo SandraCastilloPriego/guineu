@@ -37,7 +37,7 @@ public class RansacAlignerParameters extends SimpleParameterSet {
 			new Double(0.0), null, GuineuCore.getMZFormat());
 	public static final Parameter RTTolerance = new SimpleParameter(
 			ParameterType.DOUBLE, "RT tolerance",
-			"Maximum allowed absolute RT difference", null, new Double(15.0),
+			"Maximum allowed absolute RT difference", null, new Double(35.0),
 			new Double(0.0), null, GuineuCore.getRTFormat());
 	public static final Parameter Iterations = new SimpleParameter(
 			ParameterType.INTEGER, "RANSAC Iterations",

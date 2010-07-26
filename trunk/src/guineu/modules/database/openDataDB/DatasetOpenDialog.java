@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -199,7 +198,11 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
             exitCode = ExitCode.OK;
             dispose();
-    }                                        
+    }
+
+    public boolean combineDataset(){
+        return this.combineDatasetsCB.isSelected();
+    }
 
         /**
          * Creates the datasets from selected nodes. Each selected node can be the name of one sample, or
