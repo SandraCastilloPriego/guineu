@@ -88,15 +88,13 @@ public class WriteDataBase {
                                 } catch (Exception e) {
                                         sampleNameExp = sampleName;
                                 }
-                                if (sampleName != null) {
-                                        String str ="MERGE INTO EXPERIMENT ( NAME, EXPERIMENT_ID, DATASET_ID) VALUES ('" + sampleName + "', '" + r.getInt(1) + "', '" + datasetId + "')";
-                                        statement.executeQuery(str);
-                                        /*  r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleNameExp + "'");
+                                if (sampleName != null) {                                       
+                                        r = statement.executeQuery("SELECT * FROM EXPERIMENT " + "WHERE NAME = '" + sampleNameExp + "'");
                                         if (r.next()) {
                                                 statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME, EXPERIMENT_ID ,DATASET_ID) VALUES ('" + sampleName + "', '" + r.getInt(1) + "', '" + datasetId + "')");
                                         } else {
                                                 statement.executeUpdate("INSERT INTO DATASET_COLUMNS (NAME,DATASET_ID) VALUES ('" + sampleName + "', '" + datasetId + "')");
-                                        }*/
+                                        }
                                 }
                                 progressDone++;
                                 progress = progressDone / dataset.getNumberCols();
@@ -157,9 +155,7 @@ public class WriteDataBase {
                                 } catch (SQLException sqlexception) {
                                         sqlexception.printStackTrace();
                                 }
-                                
-                                // search for the last id using the name of the sequence.
-                                
+                               
                                 ResultSet r = statement.executeQuery("SELECT * FROM DATASET WHERE EXCEL_NAME = '" + excelName + "' ORDER BY DATASETID desc");
                                 if (r.next()) {
                                         exp_id = r.getInt(8);
