@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-class RansacAlignerTask implements Task {
+public class RansacAlignerTask implements Task {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Dataset peakLists[],  alignedPeakList;

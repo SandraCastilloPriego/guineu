@@ -23,6 +23,8 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.modules.filter.Alignment.RANSAC.RansacAlignerParameters;
+import guineu.modules.filter.Alignment.RANSAC.RansacAlignerTask;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -41,6 +43,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         DatasetOpenDialog dialog;
+        boolean combine = false;
         Dataset[] datasets;
 
         public void initModule() {
@@ -69,17 +72,20 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 
         public void actionPerformed(ActionEvent e) {
                 ExitCode exitCode = setupParameters();
-                if (exitCode != ExitCode.OK) {                       
+                if (exitCode != ExitCode.OK) {
                         return;
                 }
-               
+
                 runModule();
+
+
         }
 
         public ExitCode setupParameters() {
                 dialog = new DatasetOpenDialog();
                 dialog.setVisible(true);
                 datasets = dialog.getDatasets().toArray(new Dataset[0]);
+                combine = dialog.combineDataset();
                 return dialog.getExitCode();
         }
 
@@ -95,15 +101,20 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
                 return "Open Database";
         }
 
-        public Task[] runModule() {               
-                // prepare a new group of tasks
-                Task tasks[] = new OpenFileDBTask[datasets.length];
-                for (int i = 0; i < datasets.length; i++) {
-                        tasks[i] = new OpenFileDBTask(datasets[i]);
+        public Task[] runModule() {
+                Task tasks[] = null;
+                if (combine) {
+                        // prepare a new group of tasks
+                        tasks = new OpenCombineDBTask[1];
+                        tasks[0] = new OpenCombineDBTask(datasets);
+                } else {
+                        // prepare a new group of tasks
+                        tasks = new OpenFileDBTask[datasets.length];
+                        for (int i = 0; i < datasets.length; i++) {
+                                tasks[i] = new OpenFileDBTask(datasets[i]);
+                        }
                 }
-
                 GuineuCore.getTaskController().addTasks(tasks);
-
                 return tasks;
 
         }
