@@ -20,7 +20,9 @@ package guineu.data.impl.datasets;
 import guineu.data.impl.*;
 import guineu.data.DatasetType;
 import guineu.data.Dataset;
+import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
+import guineu.util.Range;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -200,5 +202,43 @@ public class SimpleLCMSDataset implements Dataset {
         @Override
         public String toString() {
                 return this.getDatasetName();
+        }
+
+        /**
+         * Returns the rows inside the RT and m/z range given as a parameter.
+         *
+         * @param rtRange Retention time range
+         * @param mzRange m/z range
+         * @return Array with the rows inside this RT and m/z range
+         */
+        public PeakListRow[] getRowsInsideRTAndMZRange(Range rtRange, Range mzRange) {
+                List<PeakListRow> rows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : this.peakList) {
+                        if (rtRange.contains((Double) row.getVar(LCMSColumnName.RT.getGetFunctionName())) &&
+                                mzRange.contains((Double) row.getVar(LCMSColumnName.MZ.getGetFunctionName()))) {
+                                rows.add(row);
+                        }
+                }
+                return rows.toArray(new PeakListRow[0]);
+        }
+
+        /**
+         * Returns the retention time range of all the rows.
+         *
+         * @return Retention time range
+         */
+        public Range getRowsRTRange() {
+                double min = Double.MAX_VALUE;
+                double max = 0;
+                for (PeakListRow row : this.peakList) {
+                        double RTvalue = (Double) row.getVar(LCMSColumnName.RT.getGetFunctionName());
+                        if (RTvalue < min) {
+                                min = RTvalue;
+                        }
+                        if (RTvalue > max) {
+                                max = RTvalue;
+                        }
+                }
+                return new Range(min, max);
         }
 }
