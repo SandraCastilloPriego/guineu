@@ -49,7 +49,7 @@ public class OpenCombineDBTask implements Task {
         }
 
         public double getFinishedPercentage() {
-                if (taskDescription.contains("Opening")) {
+                if (taskDescription.contains("Opening") && parser != null) {
                         return parser.getProgress();
                 } else if (taskDescription.contains("Combining")) {
                         return combineDatasets.getFinishedPercentage();
