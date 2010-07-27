@@ -15,41 +15,31 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 package guineu.modules.filter.Alignment.RANSAC;
 
-import guineu.data.PeakListRow;
-import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import java.util.Comparator;
 
+public class RTs implements Comparator<RTs> {
 
+	public double RT;
+	public double RT2;
+	int map;
 
-public class AlignStructMol implements Comparator<AlignStructMol> {
+	public RTs() {
+	}
 
-    public PeakListRow row1,  row2;
-    public double RT,  RT2;
-    public boolean Aligned = false;
-    public boolean ransacMaybeInLiers;
-    public boolean ransacAlsoInLiers;
+	public RTs(double RT, double RT2) {
+		this.RT = RT + 0.001 / Math.random();
+		this.RT2 = RT2 + 0.001 / Math.random();
+	}
 
-    public AlignStructMol(SimplePeakListRowLCMS row1, SimplePeakListRowLCMS row2) {
-        this.row1 = row1;
-        this.row2 = row2;
-        RT = row1.getRT();
-        RT2 = row2.getRT();
-    }
+	public int compare(RTs arg0, RTs arg1) {
+		if (arg0.RT < arg1.RT) {
+			return -1;
+		} else {
+			return 1;
+		}
 
-    AlignStructMol() {
-
-    }
-
-    public int compare(AlignStructMol arg0, AlignStructMol arg1) {
-        if (arg0.RT < arg1.RT) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
+	}
 }
-
-
-
