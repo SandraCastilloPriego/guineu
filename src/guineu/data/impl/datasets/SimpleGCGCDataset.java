@@ -467,23 +467,42 @@ public class SimpleGCGCDataset implements Dataset {
                 return rows.toArray(new PeakListRow[0]);
         }
 
-        public Range getRowsRTRange() {
+        public PeakListRow[] getRowsInsideRTRange(Range RTRange, int RT) {
+                List<PeakListRow> rows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : this.peakList) {
+                        if (RT == 1) {
+                                if (RTRange.contains((Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName()))) {
+                                        rows.add(row);
+                                }
+                        } else {
+                                if (RTRange.contains((Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName()))) {
+                                        rows.add(row);
+                                }
+                        }
+                }
+                return rows.toArray(new PeakListRow[0]);
+        }
+
+        public Range getRowsRTRange(int RT) {
                 double min = Double.MAX_VALUE;
                 double max = 0;
                 for (PeakListRow row : this.peakList) {
-                        double RTvalue = (Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName());
-                        if (RTvalue < min) {
-                                min = RTvalue;
-                        }
-                        if (RTvalue > max) {
-                                max = RTvalue;
-                        }
-                        RTvalue = (Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName());
-                        if (RTvalue < min) {
-                                min = RTvalue;
-                        }
-                        if (RTvalue > max) {
-                                max = RTvalue;
+                        if (RT == 1) {
+                                double RTvalue = (Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName());
+                                if (RTvalue < min) {
+                                        min = RTvalue;
+                                }
+                                if (RTvalue > max) {
+                                        max = RTvalue;
+                                }
+                        } else {
+                                double RTvalue = (Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName());
+                                if (RTvalue < min) {
+                                        min = RTvalue;
+                                }
+                                if (RTvalue > max) {
+                                        max = RTvalue;
+                                }
                         }
                 }
                 return new Range(min, max);

@@ -38,9 +38,9 @@ public class RowVsRowScore implements Comparable<RowVsRowScore> {
 
                 // Calculate differences between m/z and RT values
                 double RT1Diff = Math.abs(correctedRT1 - this.alignedRow.getRT1());
-                double rtDiff = Math.abs(correctedRT2 - this.alignedRow.getRT2());
+                double RT2Diff = Math.abs(correctedRT2 - this.alignedRow.getRT2());
 
-                score = ((1 - RT1Diff / RT1MaxDiff) + (1 - rtDiff / RT2MaxDiff));
+                score = ((1 - RT1Diff / RT1MaxDiff) + (1 - RT2Diff / RT2MaxDiff));
         }
 
         /**

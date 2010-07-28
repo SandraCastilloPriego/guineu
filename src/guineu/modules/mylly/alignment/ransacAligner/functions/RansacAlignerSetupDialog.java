@@ -193,7 +193,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 
 			// Calculate limits for a row with which the row can be aligned
 			double mzTolerance = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.RT1Tolerance);
-			double rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.RTTolerance);
+			double rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.RT2Tolerance);
 			double mzMin = ((Double) row.getVar("getMZ")) - mzTolerance;
 			double mzMax = ((Double) row.getVar("getMZ")) + mzTolerance;
 			double rtMin, rtMax;
@@ -206,7 +206,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 					new Range(rtMin, rtMax), new Range(mzMin, mzMax));
 
 			for (PeakListRow candidateRow : candidateRows) {
-				alignMol.addElement(new AlignStructMol((SimplePeakListRowGCGC)row, (SimplePeakListRowGCGC)candidateRow));
+				alignMol.addElement(new AlignStructMol((SimplePeakListRowGCGC)row, (SimplePeakListRowGCGC)candidateRow, 1));
 			}
 		}
 		return alignMol;

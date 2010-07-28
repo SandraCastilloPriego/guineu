@@ -37,20 +37,13 @@ public class RansacAlignerGCGCParameters extends SimpleParameterSet {
 
 	public static final Parameter RT1Tolerance = new SimpleParameter(
 			ParameterType.DOUBLE, "RT1 tolerance",
-			"Maximum allowed RT1 difference", null, new Double(0.02),
-			new Double(0.0), null, GuineuCore.getRTFormat());
-
-	public static final Parameter RTToleranceValueAbs = new SimpleParameter(
-			ParameterType.DOUBLE,
-			"RT tolerance after correction",
-			"Maximum allowed absolute RT difference after the algorithm correction for the retention time",
-			null, new Double(15.0), new Double(0.0), null, GuineuCore
-					.getRTFormat());
-
-	public static final Parameter RTTolerance = new SimpleParameter(
+			"Maximum allowed RT1 difference", null, new Double(10.0),
+			new Double(0.0), null, GuineuCore.getMZFormat());
+	
+	public static final Parameter RT2Tolerance = new SimpleParameter(
 			ParameterType.DOUBLE, "RT2 tolerance",
-			"Maximum allowed absolute RT2 difference", null, new Double(15.0),
-			new Double(0.0), null, GuineuCore.getRTFormat());
+			"Maximum allowed absolute RT2 difference", null, new Double(0.01),
+			new Double(0.0), null, GuineuCore.getMZFormat());
 
 	public static final Parameter Iterations = new SimpleParameter(
 			ParameterType.INTEGER, "RANSAC Iterations",
@@ -65,15 +58,15 @@ public class RansacAlignerGCGCParameters extends SimpleParameterSet {
 	public static final Parameter Margin = new SimpleParameter(
 			ParameterType.DOUBLE, "Threshold value",
 			"Threshold value for determining when a data point fits a model",
-			"seconds", new Double(3.0), null, GuineuCore.getRTFormat());
+			"seconds", new Double(3.0), null, GuineuCore.getMZFormat());
 
 	public static final Parameter Linear = new SimpleParameter(
 			ParameterType.BOOLEAN, "Linear model",
 			"Switch between polynomial model or lineal model", new Boolean(
-					false));
+					true));
 
 	public RansacAlignerGCGCParameters() {
-		super(new Parameter[] { peakListName, RT1Tolerance, RTTolerance, RTToleranceValueAbs,
+		super(new Parameter[] { peakListName, RT1Tolerance, RT2Tolerance,
 				Iterations, NMinPoints, Margin, Linear});
 	}
 }

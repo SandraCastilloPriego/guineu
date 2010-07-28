@@ -24,18 +24,21 @@ import java.util.Comparator;
 public class AlignStructMol implements Comparator<AlignStructMol> {
 
         public PeakListRow row1, row2;
-        public double RT1, RT12, RT2, RT22;
+        public double RT1, RT2;
         public boolean Aligned = false;
         public boolean ransacMaybeInLiers;
         public boolean ransacAlsoInLiers;
 
-        public AlignStructMol(SimplePeakListRowGCGC row1, SimplePeakListRowGCGC row2) {
+        public AlignStructMol(SimplePeakListRowGCGC row1, SimplePeakListRowGCGC row2, int RT) {
                 this.row1 = row1;
                 this.row2 = row2;
-                RT1 = row1.getRT1();
-                RT12 = row2.getRT1();
-                RT2 = row1.getRT2();
-                RT22 = row2.getRT2();
+                if (RT == 1) {
+                        RT1 = row1.getRT1();
+                        RT2 = row2.getRT1();
+                } else {
+                        RT1 = row1.getRT2();
+                        RT2 = row2.getRT2();
+                }
         }
 
         AlignStructMol() {
