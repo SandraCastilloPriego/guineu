@@ -18,8 +18,6 @@
 package guineu.modules.mylly.alignment.ransacAligner.functions;
 
 import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCParameters;
-import guineu.util.Range;
-import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -200,29 +198,21 @@ public class RANSAC {
                 for (int i = 0; i < data.size(); i++) {
                         AlignStructMol point = data.elementAt(i);
                         if (point.ransacMaybeInLiers) {
-                                regression.addData(point.RT1, point.RT12);
-                                regression.addData(point.RT2, point.RT22);
+                                regression.addData(point.RT1, point.RT2);
                         }
                 }
 
                 // Add all the points which fit the model (the difference between the point
                 // and the regression line is less than "t"
                 for (AlignStructMol point : data) {
-                        double y = point.RT12;
+                        double y = point.RT2;
                         double bestY = regression.predict(point.RT1);
                         if (Math.abs(y - bestY) < t) {
                                 point.ransacAlsoInLiers = true;
                                 AlsoNumber++;
                         } else {
                                 point.ransacAlsoInLiers = false;
-                        }
-
-                        y = point.RT22;
-                        bestY = regression.predict(point.RT2);
-                        if (Math.abs(y - bestY) < t) {
-                                point.ransacAlsoInLiers = true;
-                                AlsoNumber++;
-                        }
+                        }                       
                 }
 
         }
@@ -235,27 +225,20 @@ public class RANSAC {
                         AlignStructMol point = data.elementAt(i);
                         if (point.ransacMaybeInLiers) {
                                 points.add(point);
-                                fitter.addObservedPoint(1, point.RT1, point.RT12);
-                                fitter.addObservedPoint(1, point.RT2, point.RT22);
+                                fitter.addObservedPoint(1, point.RT1, point.RT2);
                         }
                 }
                 try {
                         PolynomialFunction function = fitter.fit();
                         for (AlignStructMol point : data) {
-                                double y = point.RT12;
+                                double y = point.RT2;
                                 double bestY = function.value(point.RT1);
                                 if (Math.abs(y - bestY) < t) {
                                         point.ransacAlsoInLiers = true;
                                         AlsoNumber++;
                                 } else {
                                         point.ransacAlsoInLiers = false;
-                                }
-                                y = point.RT22;
-                                bestY = function.value(point.RT2);
-                                if (Math.abs(y - bestY) < t) {
-                                        point.ransacAlsoInLiers = true;
-                                        AlsoNumber++;
-                                }
+                                }                               
                         }
                 } catch (Exception ex) {
                 }
