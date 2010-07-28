@@ -65,8 +65,8 @@ public class ScoreAlignmentTask implements Task {
 
         public void run() {
                 status = TaskStatus.PROCESSING;
-                try {
-                        SimpleGCGCDataset alignment = aligner.align();
+                try {                       
+                        SimpleGCGCDataset alignment = aligner.align();                        
                         alignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(alignment, true);
                         status = TaskStatus.FINISHED;

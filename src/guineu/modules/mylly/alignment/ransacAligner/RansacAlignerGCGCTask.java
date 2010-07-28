@@ -15,13 +15,14 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.RANSAC;
+package guineu.modules.mylly.alignment.ransacAligner;
 
+import guineu.modules.mylly.alignment.ransacAligner.functions.*;
 import guineu.data.Dataset;
-import guineu.data.LCMSColumnName;
+import guineu.data.GCGCColumnName;
 import guineu.data.PeakListRow;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
-import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -39,7 +40,7 @@ import org.apache.commons.math.optimization.fitting.PolynomialFitter;
 import org.apache.commons.math.optimization.general.GaussNewtonOptimizer;
 import org.apache.commons.math.stat.regression.SimpleRegression;
 
-public class RansacAlignerTask implements Task {
+public class RansacAlignerGCGCTask implements Task {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Dataset peakLists[], alignedPeakList;
@@ -49,26 +50,26 @@ public class RansacAlignerTask implements Task {
         private int processedRows, totalRows;
         // Parameters
         private String peakListName;
-        private double mzTolerance;
-        private double rtTolerance;
+        private double RT1Tolerance;
+        private double RT2Tolerance;
         private double rtToleranceValueAbs;
-        private RansacAlignerParameters parameters;
+        private RansacAlignerGCGCParameters parameters;
         private double progress;
         private RANSAC ransac;
 
-        public RansacAlignerTask(Dataset[] peakLists, RansacAlignerParameters parameters) {
+        public RansacAlignerGCGCTask(Dataset[] peakLists, RansacAlignerGCGCParameters parameters) {
 
                 this.peakLists = peakLists;
                 this.parameters = parameters;
 
                 // Get parameter values for easier use
-                peakListName = (String) parameters.getParameterValue(RansacAlignerParameters.peakListName);
+                peakListName = (String) parameters.getParameterValue(RansacAlignerGCGCParameters.peakListName);
 
-                mzTolerance = (Double) parameters.getParameterValue(RansacAlignerParameters.MZTolerance);
+                RT1Tolerance = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.RT1Tolerance);
 
-                rtTolerance = (Double) parameters.getParameterValue(RansacAlignerParameters.RTTolerance);
+                RT2Tolerance = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.RTTolerance);
 
-                rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerParameters.RTToleranceValueAbs);
+                rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.RTToleranceValueAbs);
         }
 
         /**
@@ -147,6 +148,7 @@ public class RansacAlignerTask implements Task {
                 // Iterate source peak lists
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
+
                                 Hashtable<PeakListRow, PeakListRow> alignmentMapping = this.getAlignmentMap(peakList);
 
                                 // Align all rows using mapping
@@ -157,7 +159,7 @@ public class RansacAlignerTask implements Task {
                                         if (targetRow == null) {
                                                 alignedPeakList.addRow(row.clone());
                                         } else {
-                                                setColumns(row, targetRow);
+                                                //    setColumns(row, targetRow);
 
                                                 // Add all peaks from the original row to the aligned row
                                                 for (String file : peakList.getAllColumnNames()) {
@@ -166,17 +168,10 @@ public class RansacAlignerTask implements Task {
                                         }
                                         progress = (double) processedRows++ / (double) totalRows;
                                 }
+
                         }
 
                 }
-
-                for (PeakListRow row : alignedPeakList.getRows()) {
-                        int alignmentNumber = (Integer) row.getVar(LCMSColumnName.ALIGNMENT.getGetFunctionName());
-                        if (alignmentNumber == -1) {
-                                row.setVar(LCMSColumnName.ALIGNMENT.getSetFunctionName(), 1);
-                        }
-                }
-
 
                 // Add new aligned peak list to the project
                 GuineuCore.getDesktop().AddNewFile(alignedPeakList);
@@ -188,38 +183,7 @@ public class RansacAlignerTask implements Task {
 
 
         }
-
-        /**
-         * Updates the value of some columns with the values of every data set combined.
-         *
-         * @param row Source row
-         * @param targetRow Combined row
-         */
-        private void setColumns(PeakListRow row, PeakListRow targetRow) {
-                // Aligment column
-                int alignmentNumber = (Integer) targetRow.getVar(LCMSColumnName.ALIGNMENT.getGetFunctionName());
-                if (alignmentNumber == -1) {
-                        alignmentNumber = 1;
-                }
-                targetRow.setVar(LCMSColumnName.ALIGNMENT.getSetFunctionName(), ++alignmentNumber);
-                // Num Found column
-                double numberFound = (Double) targetRow.getVar(LCMSColumnName.NFOUND.getGetFunctionName());
-                double numberFound2 = (Double) row.getVar(LCMSColumnName.NFOUND.getGetFunctionName());
-
-                targetRow.setVar(LCMSColumnName.NFOUND.getSetFunctionName(), numberFound + numberFound2);
-
-                // All Names column
-                String name = (String) targetRow.getVar(LCMSColumnName.ALLNAMES.getGetFunctionName());
-                String name2 = (String) row.getVar(LCMSColumnName.NAME.getGetFunctionName());
-                String allNames = "";
-                if (name.isEmpty()) {
-                        allNames = name2;
-                } else {
-                        allNames = name + " // " + name2;
-                }
-                targetRow.setVar(LCMSColumnName.ALLNAMES.getSetFunctionName(), allNames);
-        }
-
+        
         /**
          *
          * @param peakList
@@ -240,36 +204,45 @@ public class RansacAlignerTask implements Task {
 
                 // RANSAC algorithm
                 Vector<AlignStructMol> list = ransacPeakLists(alignedPeakList, peakList);
-                PolynomialFunction function = this.getPolynomialFunction(list, ((SimpleLCMSDataset) alignedPeakList).getRowsRTRange());
+                PolynomialFunction function = this.getPolynomialFunction(list, ((SimpleGCGCDataset) alignedPeakList).getRowsRTRange());
 
                 PeakListRow allRows[] = peakList.getRows().toArray(new PeakListRow[0]);
 
                 for (PeakListRow row : allRows) {
                         // Calculate limits for a row with which the row can be aligned
-                        double mzMin = ((SimplePeakListRowLCMS) row).getMZ() - mzTolerance;
-                        double mzMax = ((SimplePeakListRowLCMS) row).getMZ() + mzTolerance;
-                        double rtMin, rtMax;
+                        double RT1Min, RT1Max;
+                        double RT2Min, RT2Max;
 
-                        double rt = function.value(((SimplePeakListRowLCMS) row).getRT());
+                        double RT2Fitted = function.value(((SimplePeakListRowGCGC) row).getRT2());
 
-                        if (Double.isNaN(rt) || rt == -1) {
-                                rt = ((SimplePeakListRowLCMS) row).getRT();
+                        if (Double.isNaN(RT2Fitted) || RT2Fitted == -1) {
+                                RT2Fitted = ((SimplePeakListRowGCGC) row).getRT2();
                         }
 
                         double rtToleranceValue = 0.0f;
                         rtToleranceValue = rtToleranceValueAbs;
-                        rtMin = rt - rtToleranceValue;
-                        rtMax = rt + rtToleranceValue;
+                        RT2Min = RT2Fitted - rtToleranceValue;
+                        RT2Max = RT2Fitted + rtToleranceValue;
+
+                        double RT1Fitted = function.value(((SimplePeakListRowGCGC) row).getRT1());
+
+                        if (Double.isNaN(RT1Fitted) || RT1Fitted == -1) {
+                                RT1Fitted = ((SimplePeakListRowGCGC) row).getRT1();
+                        }
+
+                        RT1Min = RT1Fitted - rtToleranceValue;
+                        RT1Max = RT1Fitted + rtToleranceValue;
+
 
                         // Get all rows of the aligned peaklist within parameter limits
-                        PeakListRow candidateRows[] = ((SimpleLCMSDataset) alignedPeakList).getRowsInsideRTAndMZRange(new Range(rtMin, rtMax),
-                                new Range(mzMin, mzMax));
+                        PeakListRow candidateRows[] = ((SimpleGCGCDataset) alignedPeakList).getRowsInsideRT1AndRT2Range(new Range(RT1Min, RT1Max),
+                                new Range(RT2Min, RT2Max));
 
                         for (PeakListRow candidate : candidateRows) {
                                 RowVsRowScore score;
                                 try {
-                                        score = new RowVsRowScore(row, candidate, mzTolerance,
-                                                rtToleranceValue, rt);
+                                        score = new RowVsRowScore(row, candidate, RT1Tolerance,
+                                                RT2Tolerance, RT1Fitted, RT2Fitted);
 
                                         scoreSet.add(score);
                                         errorMessage = score.getErrorMessage();
@@ -333,12 +306,13 @@ public class RansacAlignerTask implements Task {
                 List<RTs> data = new ArrayList<RTs>();
                 for (AlignStructMol m : list) {
                         if (m.Aligned) {
-                                data.add(new RTs(m.RT2, m.RT));
+                                data.add(new RTs(m.RT12, m.RT1));
+                                data.add(new RTs(m.RT22, m.RT2));
                         }
                 }
 
                 data = this.smooth(data, RTrange);
-                Collections.sort(data, new RTs());               
+                Collections.sort(data, new RTs());
 
                 try {
                         PolynomialFitter fitter = new PolynomialFitter(3, new GaussNewtonOptimizer(true));
@@ -419,20 +393,20 @@ public class RansacAlignerTask implements Task {
                                 return null;
                         }
                         // Calculate limits for a row with which the row can be aligned
-                        double mzMin = ((SimplePeakListRowLCMS) row).getMZ() - mzTolerance;
-                        double mzMax = ((SimplePeakListRowLCMS) row).getMZ() + mzTolerance;
-                        double rtMin, rtMax;
-                        double rtToleranceValue = rtTolerance;
-                        rtMin = ((SimplePeakListRowLCMS) row).getRT() - rtToleranceValue;
-                        rtMax = ((SimplePeakListRowLCMS) row).getRT() + rtToleranceValue;
-                        Range mzRange = new Range(mzMin, mzMax);
-                        Range rtRange = new Range(rtMin, rtMax);
+                        double RT1min = ((SimplePeakListRowGCGC) row).getRT1() - RT1Tolerance;
+                        double RT1max = ((SimplePeakListRowGCGC) row).getRT1() + RT1Tolerance;
+                        double RT2min, RT2max;
+                        double rtToleranceValue = RT2Tolerance;
+                        RT2min = ((SimplePeakListRowGCGC) row).getRT2() - rtToleranceValue;
+                        RT2max = ((SimplePeakListRowGCGC) row).getRT2() + rtToleranceValue;
+                        Range RT1Range = new Range(RT1min, RT1max);
+                        Range RT2Range = new Range(RT2min, RT2max);
 
                         // Get all rows of the aligned peaklist within parameter limits
-                        PeakListRow candidateRows[] = ((SimpleLCMSDataset) peakListY).getRowsInsideRTAndMZRange(rtRange, mzRange);
+                        PeakListRow candidateRows[] = ((SimpleGCGCDataset) peakListY).getRowsInsideRT1AndRT2Range(RT1Range, RT2Range);
 
                         for (PeakListRow candidateRow : candidateRows) {
-                                alignMol.addElement(new AlignStructMol((SimplePeakListRowLCMS) row, (SimplePeakListRowLCMS) candidateRow));
+                                alignMol.addElement(new AlignStructMol((SimplePeakListRowGCGC) row, (SimplePeakListRowGCGC) candidateRow));
                         }
                 }
 
