@@ -78,7 +78,7 @@ public class SimpleLCMSDataset implements Dataset {
                 if (!this.parameterNames.contains(parameterName)) {
                         parameterNames.addElement(parameterName);
                 }
-        }
+        }       
 
         public void deleteParameter(String parameterName) {
                 for (String experimentName : sampleNames) {
@@ -112,7 +112,7 @@ public class SimpleLCMSDataset implements Dataset {
 
         public Vector<String> getParametersName() {
                 return parameterNames;
-        }
+        }     
 
         public String getDatasetName() {
                 return this.datasetName;
@@ -191,11 +191,18 @@ public class SimpleLCMSDataset implements Dataset {
                 SimpleLCMSDataset newDataset = new SimpleLCMSDataset(this.datasetName);
                 for (String experimentName : this.sampleNames) {
                         newDataset.addColumnName(experimentName);
+                        for(String parameterName: this.parameterNames){
+                                newDataset.addParameterValue(experimentName, parameterName, this.getParametersValue(experimentName, parameterName));
+                        }
+
                 }
                 for (PeakListRow peakListRow : this.peakList) {
                         newDataset.addRow(peakListRow.clone());
                 }
                 newDataset.setType(this.type);
+
+                newDataset.infoDataset = infoDataset;
+                
                 return newDataset;
         }
 

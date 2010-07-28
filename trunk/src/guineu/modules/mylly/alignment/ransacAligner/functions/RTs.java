@@ -16,25 +16,30 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.modules.filter.Alignment;
+package guineu.modules.mylly.alignment.ransacAligner.functions;
 
-/**
- *
- * @author SCSANDRA
- */
-public class RegressionStruct {
-    String type;
-    int ID1;
-    int ID2;
-    public double slope;
-    public double intercept;
-    boolean control = true;
-    
-    public boolean isAligned(double RT1, double RT2){
-        double y = RT2 * slope + intercept;
-        double y2 = RT1 * slope + intercept;
-        //if(y > RT1 - 0.5 && y < RT1 + 0.5){return true;}
-       /* else*/ if(y2 > RT2 - 2.0 && y2 < RT2 + 2.0){return true;}
-        else return false;
-    }
+import java.util.Comparator;
+
+public class RTs implements Comparator<RTs> {
+
+	public double RT;
+	public double RT2;
+	int map;
+
+	public RTs() {
+	}
+
+	public RTs(double RT, double RT2) {
+		this.RT = RT + 0.001 / Math.random();
+		this.RT2 = RT2 + 0.001 / Math.random();
+	}
+
+	public int compare(RTs arg0, RTs arg1) {
+		if (arg0.RT < arg1.RT) {
+			return -1;
+		} else {
+			return 1;
+		}
+
+	}
 }

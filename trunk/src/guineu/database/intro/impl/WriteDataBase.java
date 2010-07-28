@@ -348,6 +348,7 @@ public class WriteDataBase {
                                 }
                                 String name = metabolite.getName().replaceAll("'", "ç");
                                 String allNames = metabolite.getAllNames().replaceAll("'", "ç");
+                                
                                 try {
                                         st.executeUpdate("INSERT INTO MOL_GCGCTOF (RT1, RT2, RTI, N_FOUND, MAX_SIMILARITY, MEAN_SIMILARITY, SIMILARITY_STD_DEV, METABOLITE_NAME, PUBCHEM_ID, METABOLITE_ALLNAMES, EPID, MASS, DIFFERENCE, SPECTRUM, CAS, CLASS) VALUES " + "('" + (float) metabolite.getRT1() + "', '" + (float) metabolite.getRT2() + "', '" + (float) metabolite.getRTI() + "', '" + (int) metabolite.getNumFound() + "', '" + (int) metabolite.getMaxSimilarity() + "', '" + (float) metabolite.getMeanSimilarity() + "', '" + (float) metabolite.getSimilaritySTDDev() + "', '" + name + "', '" + metabolite.getPubChemID() + "', '" + allNames + "', '" + (int) datasetID + "', '" + (float) mass + "', '" + (float) metabolite.getDifference() + "', '" + metabolite.getSpectrumString() + "', '" + metabolite.getCAS() + "', '" + metabolite.getMolClass() + "') ");
                                         ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF ORDER BY ID desc");

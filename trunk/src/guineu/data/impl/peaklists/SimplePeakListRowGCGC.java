@@ -55,7 +55,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         private int ID;
         private double RT1 = 0.0, RT2 = 0.0, RTI = 0.0, maxSimilarity = 0, meanSimilarity = 0, similaritySTDDev = 0, mass = 0;
         private String name, allNames, spectra, pubChemID, molClass;
-        private boolean control, selection = false;
+        private boolean selection = false;
         private String CAS;
         private Spectrum spectrum;
         private List<GCGCDatum> row;
@@ -82,7 +82,6 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 this.allNames = allNames;
                 this.spectra = spectra;
                 this.pubChemID = pubChemID;
-                this.control = true;
                 this.CAS = CAS;
         }
 
@@ -165,7 +164,6 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
         public SimplePeakListRowGCGC() {
                 this.ID = -1;
-                this.control = true;
                 this.row = new ArrayList<GCGCDatum>();
                 this._distValue = new DistValue(0);
         }
@@ -307,7 +305,6 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 this.RTI = RTI;
         }
 
-
         public double getMaxSimilarity() {
                 return this.maxSimilarity;
         }
@@ -405,7 +402,6 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         public String[] getNames() {
                 return names;
         }
-
 
         /**
          * Sets the peaks of the row from a

@@ -29,7 +29,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Collections;
 import guineu.data.Dataset;
+import guineu.data.GCGCColumnName;
 import guineu.data.PeakListRow;
+import guineu.util.Range;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -93,7 +95,7 @@ public class SimpleGCGCDataset implements Dataset {
                 peakList = new ArrayList<PeakListRow>();
                 lastSortMode = SORT_MODE.none;
                 this.datasetName = datasetName;
-                
+                this.type = DatasetType.GCGCTOF;
                 // SampleDescription to describe the samples from guineu.modules.configuration.parameters
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
@@ -425,6 +427,9 @@ public class SimpleGCGCDataset implements Dataset {
                 SimpleGCGCDataset newDataset = new SimpleGCGCDataset(datasetName);
                 for (String experimentName : this.nameExperiments) {
                         newDataset.addColumnName(experimentName);
+                        for (String parameterName : this.parameterNames) {
+                                newDataset.addParameterValue(experimentName, parameterName, this.getParametersValue(experimentName, parameterName));
+                        }
                 }
                 newDataset.setAligner(aligner);
                 newDataset.setParameters(params);
@@ -432,6 +437,9 @@ public class SimpleGCGCDataset implements Dataset {
                         newDataset.addRow(peakListRow.clone());
                 }
                 newDataset.setType(this.type);
+
+                newDataset.infoDataset = infoDataset;
+
                 return newDataset;
 
         }
@@ -446,5 +454,38 @@ public class SimpleGCGCDataset implements Dataset {
 
         public void setInfo(String info) {
                 this.infoDataset = info;
+        }
+
+        public PeakListRow[] getRowsInsideRT1AndRT2Range(Range RT1Range, Range RT2Range) {
+                List<PeakListRow> rows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : this.peakList) {
+                        if (RT1Range.contains((Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName())) &&
+                                RT2Range.contains((Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName()))) {
+                                rows.add(row);
+                        }
+                }
+                return rows.toArray(new PeakListRow[0]);
+        }
+
+        public Range getRowsRTRange() {
+                double min = Double.MAX_VALUE;
+                double max = 0;
+                for (PeakListRow row : this.peakList) {
+                        double RTvalue = (Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName());
+                        if (RTvalue < min) {
+                                min = RTvalue;
+                        }
+                        if (RTvalue > max) {
+                                max = RTvalue;
+                        }
+                        RTvalue = (Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName());
+                        if (RTvalue < min) {
+                                min = RTvalue;
+                        }
+                        if (RTvalue > max) {
+                                max = RTvalue;
+                        }
+                }
+                return new Range(min, max);
         }
 }

@@ -15,8 +15,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.RANSAC;
+package guineu.modules.mylly.alignment.ransacAligner.functions;
 
+import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCParameters;
 import guineu.util.Range;
 import java.util.Collections;
 import java.util.Vector;
@@ -50,15 +51,15 @@ public class RANSAC {
         private boolean Linear;
         private int iterationsDone = 0;
 
-        public RANSAC(RansacAlignerParameters parameters) {
+        public RANSAC(RansacAlignerGCGCParameters parameters) {
 
-                this.numRatePoints = (Double) parameters.getParameterValue(RansacAlignerParameters.NMinPoints);
+                this.numRatePoints = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.NMinPoints);
 
-                this.t = (Double) parameters.getParameterValue(RansacAlignerParameters.Margin);
+                this.t = (Double) parameters.getParameterValue(RansacAlignerGCGCParameters.Margin);
 
-                this.k = (Integer) parameters.getParameterValue(RansacAlignerParameters.Iterations);
+                this.k = (Integer) parameters.getParameterValue(RansacAlignerGCGCParameters.Iterations);
 
-                this.Linear = (Boolean) parameters.getParameterValue(RansacAlignerParameters.Linear);
+                this.Linear = (Boolean) parameters.getParameterValue(RansacAlignerGCGCParameters.Linear);
 
         }
 
@@ -176,34 +177,15 @@ public class RANSAC {
          * @return false if there is any problem.
          */
         private boolean getInitN(Vector<AlignStructMol> data) {
-                Collections.sort(data, new AlignStructMol());
-                double min = data.get(0).RT;
-                double max = (data.get(data.size() - 1).RT);
-
-                Range rtRange = new Range(min, max / 2);
-                if (data.size() > n) {
-                        int cont = 0;
-                        while (cont < n / 2) {
-                                int index = (int) (data.size() * Math.random());
-                                if (!data.elementAt(index).ransacMaybeInLiers && rtRange.contains(data.elementAt(index).RT)) {
-                                        data.elementAt(index).ransacMaybeInLiers = true;
-                                        cont++;
-                                }
-                        }
-                        cont = 0;
-                        rtRange = new Range(max / 2, max);
-                        while (cont < n / 2) {
-                                int index = (int) (data.size() * Math.random());
-                                if (!data.elementAt(index).ransacMaybeInLiers && rtRange.contains(data.elementAt(index).RT)) {
-                                        data.elementAt(index).ransacMaybeInLiers = true;
-                                        cont++;
-                                }
-                        }
-
-                        return true;
-                } else {
-                        return false;
+                for(int i = 0; i < 4; i++){
+                         int index = (int) (data.size() * Math.random());
+                         if (!data.elementAt(index).ransacMaybeInLiers) {
+                                 data.elementAt(index).ransacMaybeInLiers = true;
+                         }else{
+                                i--;
+                         }
                 }
+                return true;
         }
 
         /**
@@ -218,20 +200,28 @@ public class RANSAC {
                 for (int i = 0; i < data.size(); i++) {
                         AlignStructMol point = data.elementAt(i);
                         if (point.ransacMaybeInLiers) {
-                                regression.addData(point.RT, point.RT2);
+                                regression.addData(point.RT1, point.RT12);
+                                regression.addData(point.RT2, point.RT22);
                         }
                 }
 
                 // Add all the points which fit the model (the difference between the point
                 // and the regression line is less than "t"
                 for (AlignStructMol point : data) {
-                        double y = point.RT2;
-                        double bestY = regression.predict(point.RT);
+                        double y = point.RT12;
+                        double bestY = regression.predict(point.RT1);
                         if (Math.abs(y - bestY) < t) {
                                 point.ransacAlsoInLiers = true;
                                 AlsoNumber++;
                         } else {
                                 point.ransacAlsoInLiers = false;
+                        }
+
+                        y = point.RT22;
+                        bestY = regression.predict(point.RT2);
+                        if (Math.abs(y - bestY) < t) {
+                                point.ransacAlsoInLiers = true;
+                                AlsoNumber++;
                         }
                 }
 
@@ -245,19 +235,26 @@ public class RANSAC {
                         AlignStructMol point = data.elementAt(i);
                         if (point.ransacMaybeInLiers) {
                                 points.add(point);
-                                fitter.addObservedPoint(1, point.RT, point.RT2);
+                                fitter.addObservedPoint(1, point.RT1, point.RT12);
+                                fitter.addObservedPoint(1, point.RT2, point.RT22);
                         }
                 }
                 try {
                         PolynomialFunction function = fitter.fit();
                         for (AlignStructMol point : data) {
-                                double y = point.RT2;
-                                double bestY = function.value(point.RT);
+                                double y = point.RT12;
+                                double bestY = function.value(point.RT1);
                                 if (Math.abs(y - bestY) < t) {
                                         point.ransacAlsoInLiers = true;
                                         AlsoNumber++;
                                 } else {
                                         point.ransacAlsoInLiers = false;
+                                }
+                                y = point.RT22;
+                                bestY = function.value(point.RT2);
+                                if (Math.abs(y - bestY) < t) {
+                                        point.ransacAlsoInLiers = true;
+                                        AlsoNumber++;
                                 }
                         }
                 } catch (Exception ex) {

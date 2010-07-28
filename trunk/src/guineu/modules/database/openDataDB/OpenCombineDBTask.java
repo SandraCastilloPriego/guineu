@@ -24,6 +24,8 @@ import guineu.data.parser.impl.database.LCMSParserDataBase;
 import guineu.data.parser.impl.database.GCGCParserDataBase;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerParameters;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerTask;
+import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCParameters;
+import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCTask;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -38,7 +40,8 @@ public class OpenCombineDBTask implements Task {
         private Parser parser;
         private Dataset[] datasets;
         private String taskDescription = "";
-        private RansacAlignerTask combineDatasets;
+        private RansacAlignerTask combineLCMSDatasets;
+        private RansacAlignerGCGCTask combineGCGCDatasets;
 
         public OpenCombineDBTask(Dataset[] datasets) {
                 this.datasets = datasets;
@@ -51,8 +54,10 @@ public class OpenCombineDBTask implements Task {
         public double getFinishedPercentage() {
                 if (taskDescription.contains("Opening") && parser != null) {
                         return parser.getProgress();
-                } else if (taskDescription.contains("Combining")) {
-                        return combineDatasets.getFinishedPercentage();
+                } else if (taskDescription.contains("Combining") && combineLCMSDatasets != null) {
+                        return combineLCMSDatasets.getFinishedPercentage();
+                } else if (taskDescription.contains("Combining") && combineGCGCDatasets != null) {
+                        return combineGCGCDatasets.getFinishedPercentage();
                 }
                 return 0.0f;
         }
@@ -72,14 +77,34 @@ public class OpenCombineDBTask implements Task {
         public void run() {
                 try {
                         status = TaskStatus.PROCESSING;
+                        DatasetType type = null;
                         for (Dataset dataset : datasets) {
                                 taskDescription = "Opening " + dataset.getDatasetName();
                                 dataset = this.openFile(dataset);
+                                DatasetType datasetType = dataset.getType();
+                                if (type == null) {
+                                        type = datasetType;
+                                } else if (type != datasetType) {
+                                        type = DatasetType.BASIC;
+                                }
                         }
                         taskDescription = "Combining data sets..";
-                        RansacAlignerParameters ransacParameters = new RansacAlignerParameters();
-                        combineDatasets = new RansacAlignerTask(datasets, ransacParameters);
-                        combineDatasets.run();
+                        switch (type) {
+                                case LCMS:
+
+                                        RansacAlignerParameters ransacParameters = new RansacAlignerParameters();
+                                        combineLCMSDatasets = new RansacAlignerTask(datasets, ransacParameters);
+                                        combineLCMSDatasets.run();
+                                        break;
+
+                                case GCGCTOF:
+                                        RansacAlignerGCGCParameters ransacGCGCParameters = new RansacAlignerGCGCParameters();
+                                        combineGCGCDatasets = new RansacAlignerGCGCTask(datasets, ransacGCGCParameters);
+                                        combineGCGCDatasets.run();
+                                        break;
+
+                        }
+
 
                         status = TaskStatus.FINISHED;
                 } catch (Exception e) {
