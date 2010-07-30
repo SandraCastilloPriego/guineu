@@ -37,7 +37,7 @@ public class RansacAlignerGCGCParameters extends SimpleParameterSet {
 
 	public static final Parameter RT1Tolerance = new SimpleParameter(
 			ParameterType.DOUBLE, "RT1 tolerance",
-			"Maximum allowed RT1 difference", null, new Double(10.0),
+			"Maximum allowed RT1 difference", null, new Double(5.0),
 			new Double(0.0), null, GuineuCore.getMZFormat());
 	
 	public static final Parameter RT2Tolerance = new SimpleParameter(
