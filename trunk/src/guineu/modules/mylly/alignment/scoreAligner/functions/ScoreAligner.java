@@ -21,6 +21,7 @@ import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.QuantMassScoreCalc;
+import guineu.modules.mylly.alignment.scoreAligner.scorer.RTScore;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.SpectrumDotProd;
 import guineu.modules.mylly.datastruct.GCGCData;
@@ -68,8 +69,8 @@ public class ScoreAligner implements Aligner {
         public ScoreAligner(List<GCGCData> dataToAlign, ScoreAlignmentParameters params) {
 
                 this.params = params;
-                setScoreCalculator(new SpectrumDotProd());
-
+                // setScoreCalculator(new SpectrumDotProd());
+                setScoreCalculator(new RTScore());
                 List<GCGCData> tempList = new ArrayList<GCGCData>();
                 if (dataToAlign != null) {
                         tempList.addAll(dataToAlign);

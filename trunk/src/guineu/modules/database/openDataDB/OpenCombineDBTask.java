@@ -24,7 +24,8 @@ import guineu.data.parser.impl.database.LCMSParserDataBase;
 import guineu.data.parser.impl.database.GCGCParserDataBase;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerParameters;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerTask;
-import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCParameters;
+import guineu.modules.mylly.alignment.basicAligner.BasicAlignerGCGCParameters;
+import guineu.modules.mylly.alignment.basicAligner.BasicAlignerGCGCTask;
 import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCTask;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -41,7 +42,8 @@ public class OpenCombineDBTask implements Task {
         private Dataset[] datasets;
         private String taskDescription = "";
         private RansacAlignerTask combineLCMSDatasets;
-        private RansacAlignerGCGCTask combineGCGCDatasets;
+       // private RansacAlignerGCGCTask combineGCGCDatasets;
+        private BasicAlignerGCGCTask combineGCGCDatasets2;
 
         public OpenCombineDBTask(Dataset[] datasets) {
                 this.datasets = datasets;
@@ -56,8 +58,8 @@ public class OpenCombineDBTask implements Task {
                         return parser.getProgress();
                 } else if (taskDescription.contains("Combining") && combineLCMSDatasets != null) {
                         return combineLCMSDatasets.getFinishedPercentage();
-                } else if (taskDescription.contains("Combining") && combineGCGCDatasets != null) {
-                        return combineGCGCDatasets.getFinishedPercentage();
+                } else if (taskDescription.contains("Combining") && combineGCGCDatasets2 != null) {
+                        return combineGCGCDatasets2.getFinishedPercentage();
                 }
                 return 0.0f;
         }
@@ -98,9 +100,13 @@ public class OpenCombineDBTask implements Task {
                                         break;
 
                                 case GCGCTOF:
-                                        RansacAlignerGCGCParameters ransacGCGCParameters = new RansacAlignerGCGCParameters();
+                                        /* RansacAlignerGCGCParameters ransacGCGCParameters = new RansacAlignerGCGCParameters();
                                         combineGCGCDatasets = new RansacAlignerGCGCTask(datasets, ransacGCGCParameters);
-                                        combineGCGCDatasets.run();
+                                        combineGCGCDatasets.run();*/                                        
+
+                                        BasicAlignerGCGCParameters parameters = new BasicAlignerGCGCParameters();
+                                        this.combineGCGCDatasets2 = new BasicAlignerGCGCTask(datasets, parameters);
+                                        this.combineGCGCDatasets2.run();
                                         break;
 
                         }

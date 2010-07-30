@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.alignment.ransacAligner.functions;
+package guineu.modules.mylly.alignment.basicAligner;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
@@ -43,7 +43,7 @@ public class RowVsRowScore implements Comparable<RowVsRowScore> {
                 double RT2Diff = Math.abs(correctedRT2 - this.alignedRow.getRT2());
 
                 score = ((1 - RT1Diff / RT1MaxDiff) + (1 - RT2Diff / RT2MaxDiff)
-                        + (1/this.compareSpectraVal(this.alignedRow.getSpectrum(), this.peakListRow.getSpectrum())));
+                        + (this.compareSpectraVal(this.alignedRow.getSpectrum(), this.peakListRow.getSpectrum())));
 
         }
 
