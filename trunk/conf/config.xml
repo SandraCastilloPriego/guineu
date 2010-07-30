@@ -3,8 +3,16 @@
 <configuration> 
   <nodes local="2"/>  
   <modules> 
-    <!-- DATABASE SAVE FILE: <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/>  -->  
-    <!-- DATABASE OPEN FILE: <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
+    <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"> 
+      <parameters> 
+        <parameter name="Dataset name: " type="STRING">Name</parameter>  
+        <parameter name="Author: " type="STRING">Author</parameter>  
+        <parameter name="Studies: " type="STRING"/>  
+        <parameter name="Dataset units: " type="STRING">Micromols/litre</parameter>  
+        <parameter name="Dataset parameters: " type="FILE_NAME">Parameters</parameter> 
+      </parameters> 
+    </module>  
+    <module class="guineu.modules.database.openDataDB.OpenFileDB"> 
       <parameters> 
         <parameter name="Project" type="STRING"/>  
         <parameter name="Study" type="STRING"/>  
@@ -12,7 +20,7 @@
         <parameter name="Open" type="MULTIPLE_SELECTION">Sample Information,Project Information,Study Information,Dataset Information</parameter> 
       </parameters> 
     </module>  
-    DATABASE DELETE FILE: <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  -->  
+    <module class="guineu.modules.database.deleteDatasetDB.DeleteFileDB"/>  
     <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
     <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"> 
       <parameters>
@@ -22,14 +30,14 @@
     </module>  
     <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
     <!-- OPEN EXPERIMENT DATA: <module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->  
-    <module class="guineu.modules.file.openOtherFiles.OpenOtherFile"/>  
+    <module class="guineu.modules.file.openBasicFiles.OpenBasicFile"/>  
     <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
     <!-- OPEN MASS LYNX FILES: <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
     <module class="guineu.modules.file.exit.ExitProgram"/>  
     <!-- DATABASE SAVE FILE: <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"> 
       <parameters>
-        <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,All names,Identification type,PubChem ID,VTT ID,All VTT IDs,Lipid class,Num found,Standard,FA Composition,Alignment</parameter>
+        <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView"> 
@@ -48,11 +56,12 @@
       <parameters>
         <parameter name="Peak list name" type="STRING">Aligned peak list</parameter>
         <parameter name="m/z tolerance" type="DOUBLE">0.02</parameter>
+        <parameter name="RT tolerance after correction" type="DOUBLE">15.0</parameter>
         <parameter name="RT tolerance" type="DOUBLE">15.0</parameter>
         <parameter name="RANSAC Iterations" type="INTEGER">0</parameter>
         <parameter name="Minimun Number of Points" type="DOUBLE">0.2</parameter>
         <parameter name="Threshold value" type="DOUBLE">3.0</parameter>
-        <parameter name="Curve model" type="BOOLEAN">true</parameter>
+        <parameter name="Linear model" type="BOOLEAN">false</parameter>
       </parameters> 
     </module>  
     <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering"/>  
@@ -115,10 +124,10 @@
     <!-- DATABASE IDENTIFICATION: <module class="guineu.modules.identification.identification.Identification"/>  -->  
     <module class="guineu.modules.identification.AdductSearch.AdductSearch"> 
       <parameters>
-        <parameter name="Time tolerance" type="DOUBLE">10.0</parameter>
-        <parameter name="Adducts" type="MULTIPLE_SELECTION">All related peaks 0.000 m/z,[M+NH4] 17.027 m/z,[M+Na] 21.982 m/z,[[M+NH4] - [M+Na]] 4.955 m/z,[M-CH3] 14.016 m/z,[M+HCOO] 46.006 m/z,[[M-CH3] - [M+C2H3OO]] 74.038 m/z,[M+Na-H] 21.982 m/z,[M+K-H] 37.956 m/z,[M+Mg-2H] 21.969 m/z,[M+NH3] 17.026 m/z,[M+H3PO4] 97.977 m/z,[M+H2SO4] 97.967 m/z,[M+H2CO3] 62.000 m/z,[(Deuterium)]glycerol 5.000 m/z,Custom 0.000 m/z</parameter>
-        <parameter name="Custom adduct value" type="DOUBLE">0.0</parameter>
-        <parameter name="m/z tolerance" type="DOUBLE">0.1</parameter>
+        <parameter name="Time tolerance" type="DOUBLE">5.0</parameter>
+        <parameter name="Adducts" type="MULTIPLE_SELECTION">[M+NH4] 17.027 m/z,Custom 0.000 m/z</parameter>
+        <parameter name="Custom adduct value" type="DOUBLE">4.955</parameter>
+        <parameter name="m/z tolerance" type="DOUBLE">0.04</parameter>
         <parameter name="Max adduct peak height" type="DOUBLE">0.2</parameter>
       </parameters> 
     </module>  
@@ -134,22 +143,33 @@
     <module class="guineu.modules.statistics.foldChanges.Foldtest"/>  
     <module class="guineu.modules.statistics.Ttest.Ttest"/>  
     <module class="guineu.modules.statistics.PCA.ProjectionPlot"> 
-      <parameters> 
-        <parameter name="Coloring type" type="STRING">Color by file</parameter>  
-        <parameter name="X-axis component" type="INTEGER">1</parameter>  
-        <parameter name="Y-axis component" type="INTEGER">2</parameter> 
+      <parameters>
+        <parameter name="Coloring type" type="STRING">Color by parameter value</parameter>
+        <parameter name="X-axis component" type="INTEGER">1</parameter>
+        <parameter name="Y-axis component" type="INTEGER">2</parameter>
       </parameters> 
     </module>  
     <!-- UPGMA MODULE: <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
     <module class="guineu.modules.statistics.anova.AnovaTest"> 
       <parameters> 
-        <parameter name="Select the parameter" type="STRING">group</parameter> 
+        <parameter name="Select the parameter" type="STRING">Subtype</parameter> 
       </parameters> 
     </module>  
     <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->  
     <!-- STANDARD VARIATION MODULE: <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
     <!-- OPEN MSMS FILE:<module class="guineu.modules.msms.open.OpenFile"/> -->  
+    <!--<module class="guineu.modules.mylly.alignment.ransacAligner.ScoreAlignment"> 
+      <parameters>
+        <parameter name="Peak list name" type="STRING">Aligned peak list</parameter>
+        <parameter name="RT1 tolerance" type="DOUBLE">10.0</parameter>
+        <parameter name="RT2 tolerance" type="DOUBLE">0.005</parameter>
+        <parameter name="RANSAC Iterations" type="INTEGER">1000</parameter>
+        <parameter name="Minimun Number of Points" type="DOUBLE">0.2</parameter>
+        <parameter name="Threshold value" type="DOUBLE">0.005</parameter>
+        <parameter name="Linear model" type="BOOLEAN">true</parameter>
+      </parameters> 
+    </module>  -->  
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"> 
       <parameters>
         <parameter name="RT Lax:" type="DOUBLE">15.0</parameter>
@@ -235,29 +255,25 @@
       <pattern>0.00E0</pattern>
     </format>
     <mainwindow>
-      <x>0</x>
-      <y>25</y>
+      <x>1276</x>
+      <y>0</y>
       <width>-1</width>
       <height>-1</height>
     </mainwindow>
     <lastdirectory></lastdirectory>
-    <lastProjectDirectory>/home/scsandra/Desktop/example folder/206MB_Heart.csv</lastProjectDirectory>
+    <lastProjectDirectory>/home/scsandra/Desktop/DatasetsProcessed/077-095/New Malaga process with Ransac alignment/095-077Fat.csv</lastProjectDirectory>
     <lastSaveDirectory>/</lastSaveDirectory>
     <lastMyllyDirectory>/</lastMyllyDirectory>
+    <normalizationDirectory></normalizationDirectory>
     <parameter name="LCMS Columns" type="MULTIPLE_SELECTION">Selection,Id,Average m/z,Average Retention time,Name,Num found,Standard</parameter>
     <parameter name="GCGC Columns" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
-    <parameter name="LCMS Filename" type="FILE_NAME">/</parameter>
+    <parameter name="LCMS Filename" type="FILE_NAME">/home/scsandra/Desktop/test.csv</parameter>
     <parameter name="LCMS type" type="STRING">csv</parameter>
-    <parameter name="Export LCMS elements" type="MULTIPLE_SELECTION">Average m/z,Average Retention time,Name,Num found,Standard</parameter>
+    <parameter name="Export LCMS elements" type="MULTIPLE_SELECTION">Id,Average m/z,Average Retention time,Name,All names,Identification type,Num found,Standard</parameter>
     <parameter name="GCGC Filename" type="FILE_NAME"/>
     <parameter name="GCGC type" type="STRING"/>
     <parameter name="Export GCGC elements" type="MULTIPLE_SELECTION">Selection,ID,RT1,RT2,RTI,N Found,Cas Number,Max similarity,Mean similarity,Similarity std dev,Metabolite name,Metabolite all names,Class,Pubchem ID,Mass,Difference,Spectrum</parameter>
     <parameter name="Filename" type="FILE_NAME"/>
     <parameter name="type" type="STRING"/>
-    <standard_ranges standard_name="LysoPC(17:0)">0.0 - 300.0</standard_ranges>
-    <standard_ranges standard_name="TG(51:0)">410.0 - 10000.0</standard_ranges>
-    <standard_ranges standard_name="PC(34:0)">300.0 - 410.0</standard_ranges>
-    <standard_ranges standard_name="Cer(d18:1/17:0)">0.0 - 0.0</standard_ranges>
-    <standard_ranges standard_name="PE(34:0)">0.0 - 0.0</standard_ranges>
   </desktop> 
 </configuration>
