@@ -41,67 +41,67 @@ import java.util.logging.Logger;
  */
 public class ProxyConfiguration implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private SimpleParameterSet parameters;
-    final String helpID = GUIUtils.generateHelpID(this);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private SimpleParameterSet parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
-    public void initModule() {
+        public void initModule() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Proxy Configuration..",
-                "Proxy configuration", KeyEvent.VK_G, this, null, null);
-        parameters = new ProxyConfigurationParameters();
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Proxy configuration");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Proxy configuration ");
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Proxy Configuration..",
+                        "Proxy configuration", KeyEvent.VK_G, this, null, null);
+                parameters = new ProxyConfigurationParameters();
+                ((DesktopParameters) desktop.getParameterSet()).setProxyParameters((ProxyConfigurationParameters) parameters);
+   
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Proxy configuration  .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
+        public void taskStarted(Task task) {
+                logger.info("Proxy configuration");
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Proxy configuration ");
+                }
 
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Proxy configuration  .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-        ((DesktopParameters) desktop.getParameterSet()).setProxyParameters((ProxyConfigurationParameters) parameters);
-    }
 
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Proxy configuration parameters", parameters, helpID);
-            dialog.setVisible(true);
-
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = setupParameters();
+                if (exitCode != ExitCode.OK) {
+                        ((DesktopParameters) desktop.getParameterSet()).setProxyParameters((ProxyConfigurationParameters) parameters);
+                        return;
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }
+        public ExitCode setupParameters() {
+                try {
+                        ParameterSetupDialog dialog = new ParameterSetupDialog("Proxy configuration parameters", parameters, helpID);
+                        dialog.setVisible(true);
 
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (ProxyConfigurationParameters) parameterValues;
-    }
+                        return dialog.getExitCode();
+                } catch (Exception exception) {
+                        return ExitCode.CANCEL;
+                }
+        }
 
-    public String toString() {
-        return "Proxy configuration";
-    }
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        public void setParameters(ParameterSet parameterValues) {
+                parameters = (ProxyConfigurationParameters) parameterValues;
+        }
+
+        public String toString() {
+                return "Proxy configuration";
+        }
 }

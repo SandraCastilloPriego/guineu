@@ -24,7 +24,7 @@ public enum LCMSColumnName {
          * Column name, isShown, getVar function, setVar function, regular Expresion to parse files and type of data. *
          */
         SELECTION("Selection", true, "isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
-        ID("Id", true, "getID", "setID", "^ID.*|^Id", ParameterType.INTEGER),
+        ID("Id", true, "getID", "setID", "^ID.*|^Id|.*row ID.*", ParameterType.INTEGER),
         MZ("Average m/z", true, "getMZ", "setMZ", ".*Average M/Z.*|.*Average m/z.*|.*row m/z.*", ParameterType.DOUBLE),
         RT("Average Retention time", true, "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*|.*Average Retention time.*", ParameterType.DOUBLE),
         NAME("Name", true, "getName", "setName", ".*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|", ParameterType.STRING),
