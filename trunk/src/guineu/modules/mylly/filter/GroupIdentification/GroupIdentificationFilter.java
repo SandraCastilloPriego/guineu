@@ -92,8 +92,8 @@ public class GroupIdentificationFilter implements GuineuModule, TaskListener, Ac
 
 		// prepare a new group of tasks
 		Task tasks[] = new GroupIdentificationFilterTask[DataFiles.length];
-		for (int cont = 0; cont < DataFiles.length; cont++) {
-			tasks[cont] = new GroupIdentificationFilterTask((SimpleGCGCDataset)DataFiles[cont]);
+		for (int cont = 0; cont < DataFiles.length; cont++) {                        
+                        tasks[cont] = new GroupIdentificationFilterTask((SimpleGCGCDataset)DataFiles[cont]);
 		}
 		GuineuCore.getTaskController().addTasks(tasks);
 
