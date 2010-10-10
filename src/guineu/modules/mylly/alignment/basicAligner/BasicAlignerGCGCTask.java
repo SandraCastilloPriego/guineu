@@ -26,19 +26,11 @@ import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TreeSet;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.math.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math.optimization.fitting.PolynomialFitter;
-import org.apache.commons.math.optimization.general.GaussNewtonOptimizer;
-import org.apache.commons.math.stat.regression.SimpleRegression;
 
 public class BasicAlignerGCGCTask implements Task {
 
@@ -69,16 +61,12 @@ public class BasicAlignerGCGCTask implements Task {
                 RT2Tolerance = (Double) parameters.getParameterValue(BasicAlignerGCGCParameters.RT2Tolerance);
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
-         */
+        
         public String getTaskDescription() {
                 return "Basic aligner, " + peakListName + " (" + peakLists.length + " peak lists)";
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
-         */
+        
         public double getFinishedPercentage() {
                 if (totalRows == 0) {
                         return 0f;
@@ -89,30 +77,22 @@ public class BasicAlignerGCGCTask implements Task {
                 return progress; //
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getStatus()
-         */
+       
         public TaskStatus getStatus() {
                 return status;
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
-         */
+        
         public String getErrorMessage() {
                 return errorMessage;
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#cancel()
-         */
+        
         public void cancel() {
                 status = TaskStatus.CANCELED;
         }
 
-        /**
-         * @see Runnable#run()
-         */
+       
         public void run() {
 
                 status = TaskStatus.PROCESSING;

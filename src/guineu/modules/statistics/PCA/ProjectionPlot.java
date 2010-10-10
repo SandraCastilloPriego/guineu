@@ -44,9 +44,7 @@ public class ProjectionPlot implements GuineuModule, ActionListener {
 
     private ProjectionPlotParameters parameters;
 
-    /**
-     * @see net.sf.mzmine.main.MZmineModule#initModule(net.sf.mzmine.main.MZmineCore)
-     */
+    
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
