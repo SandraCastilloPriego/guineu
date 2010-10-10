@@ -66,23 +66,17 @@ public class AdductSearchTask implements Task {
 
     }
 
-    /**
-     * @see net.sf.mzmine.taskcontrol.Task#cancel()
-     */
+   
     public void cancel() {
         status = TaskStatus.CANCELED;
     }
 
-    /**
-     * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
-     */
+   
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    /**
-     * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
-     */
+    
     public double getFinishedPercentage() {
         if (totalRows == 0) {
             return 0;
@@ -90,16 +84,12 @@ public class AdductSearchTask implements Task {
         return ((double) finishedRows) / totalRows;
     }
 
-    /**
-     * @see net.sf.mzmine.taskcontrol.Task#getStatus()
-     */
+   
     public TaskStatus getStatus() {
         return status;
     }
 
-    /**
-     * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
-     */
+   
     public String getTaskDescription() {
         return "Identification of adducts in " + peakList;
     }

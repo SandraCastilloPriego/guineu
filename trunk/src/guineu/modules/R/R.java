@@ -17,6 +17,7 @@
  */
 package guineu.modules.R;
 
+import guineu.data.Dataset;
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
@@ -24,7 +25,6 @@ import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
-import guineu.taskcontrol.TaskStatus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -52,17 +52,6 @@ public class R implements ActionListener, GuineuModule, TaskListener {
     }
 
     public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished R" + ((RTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while R on .. " + ((RTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
-        }
     }
 
     public ParameterSet getParameterSet() {
@@ -77,29 +66,11 @@ public class R implements ActionListener, GuineuModule, TaskListener {
         return "R";
     }
 
-    public Task[] runModule() {
-        // prepare a new group of tasks
-        Task tasks[] = new RTask[1];
-        tasks[0] = new RTask();
-        GuineuCore.getTaskController().addTasks(tasks);
-
-        return tasks;
-
-    }
-
-    public void actionPerformed(ActionEvent arg0) {
-        // runModule();
-
-        String[] args = new String[1];
-        args[0] = "--save";
-        try {
-            Runnable R = new test2();
-            Thread thread = new Thread(R);
-
-            // Start the thread
-            thread.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void actionPerformed(ActionEvent arg0) {        
+        Dataset dataset = GuineuCore.getDesktop().getSelectedDataFiles()[0];
+        if (dataset != null) {
+            RConsole console = new RConsole(GuineuCore.getDesktop().getMainFrame(), false, dataset);
+            console.setVisible(true);
         }
     }
 }

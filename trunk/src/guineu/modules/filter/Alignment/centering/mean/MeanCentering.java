@@ -1,19 +1,18 @@
 /*
- * Copyright 2006-2009 The MZmine 2 Development Team
- * 
- * This file is part of MZmine 2.
- * 
- * MZmine 2 is free software; you can redistribute it and/or modify it under the
+ * Copyright 2007-2010 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
- * MZmine 2 is distributed in the hope that it will be useful, but WITHOUT ANY
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
- * MZmine 2; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 package guineu.modules.filter.Alignment.centering.mean;
@@ -52,9 +51,7 @@ public class MeanCentering implements GuineuModule, TaskListener, ActionListener
 		return "Mean centering";
 	}
 
-	/**
-	 * @see net.sf.mzmine.main.MZmineModule#getParameterSet()
-	 */
+	
 	public ParameterSet getParameterSet() {
 		return null;
 	}
@@ -64,9 +61,7 @@ public class MeanCentering implements GuineuModule, TaskListener, ActionListener
 
 	
 
-	/**
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
+	
 	public void actionPerformed(ActionEvent e) {
 
 		Dataset[] peakLists = desktop.getSelectedDataFiles();
@@ -80,11 +75,7 @@ public class MeanCentering implements GuineuModule, TaskListener, ActionListener
 
 	}
 
-	/**
-	 * @see net.sf.mzmine.modules.BatchStep#runModule(net.sf.mzmine.data.RawDataFile[],
-	 *      net.sf.mzmine.data.PeakList[], net.sf.mzmine.data.ParameterSet,
-	 *      net.sf.mzmine.taskcontrol.Task[]Listener)
-	 */
+	
 	public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
 			ParameterSet parameters) {
 

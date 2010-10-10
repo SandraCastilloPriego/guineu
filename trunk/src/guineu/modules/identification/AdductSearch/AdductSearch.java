@@ -40,16 +40,12 @@ public class AdductSearch implements GuineuModule, ActionListener {
     private Desktop desktop;
     private AdductSearchParameters parameters;
 
-    /**
-     * @see net.sf.mzmine.main.MZmineModule#getParameterSet()
-     */
+    
     public ParameterSet getParameterSet() {
         return parameters;
     }
 
-    /**
-     * @see net.sf.mzmine.main.MZmineModule#initModule(net.sf.mzmine.main.MZmineCore)
-     */
+   
     public void initModule() {
 
         this.desktop = GuineuCore.getDesktop();
@@ -59,17 +55,13 @@ public class AdductSearch implements GuineuModule, ActionListener {
                 "Identification of adduct peaks by mass difference and same retention time", KeyEvent.VK_A, this, null, null);
     }
 
-    /**
-     * @see net.sf.mzmine.main.MZmineModule#setParameters(net.sf.mzmine.data.ParameterSet)
-     */
+    
     public void setParameters(ParameterSet parameterValues) {
         this.parameters = (AdductSearchParameters) parameterValues;
     }
 
 
-    /**
-     * @see net.sf.mzmine.modules.batchmode.BatchStep#setupParameters(net.sf.mzmine.data.ParameterSet)
-     */
+   
     public ExitCode setupParameters(ParameterSet parameters) {
         ParameterSetupDialog dialog = new ParameterSetupDialog(
                 "Please set parameter values for " + toString(),
@@ -78,9 +70,7 @@ public class AdductSearch implements GuineuModule, ActionListener {
         return dialog.getExitCode();
     }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
+    
     public void actionPerformed(ActionEvent e) {
 
         Dataset[] peakLists = desktop.getSelectedDataFiles();
@@ -99,11 +89,7 @@ public class AdductSearch implements GuineuModule, ActionListener {
 
     }
 
-    /**
-     * @see net.sf.mzmine.modules.batchmode.BatchStep#runModule(net.sf.mzmine.data.RawDataFile[],
-     *      net.sf.mzmine.data.PeakList[], net.sf.mzmine.data.ParameterSet,
-     *      net.sf.mzmine.taskcontrol.Task[]Listener)
-     */
+    
     public Task[] runModule(Dataset[] peakLists,
             ParameterSet parameters) {
         if (peakLists == null) {

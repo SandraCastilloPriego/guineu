@@ -71,9 +71,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 		addComponents();
 	}
 
-	/**
-	 * @see net.sf.mzmine.util.dialogs.ParameterSetupDialog#actionPerformed(java.awt.event.ActionEvent)
-	 */
+	
 	public void actionPerformed(ActionEvent event) {
 
 		super.actionPerformed(event);

@@ -71,16 +71,12 @@ public class RansacAlignerTask implements Task {
                 rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerParameters.RTToleranceValueAbs);
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getTaskDescription()
-         */
+       
         public String getTaskDescription() {
                 return "Ransac aligner, " + peakListName + " (" + peakLists.length + " peak lists)";
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getFinishedPercentage()
-         */
+        
         public double getFinishedPercentage() {
                 if (totalRows == 0) {
                         return 0f;
@@ -91,23 +87,17 @@ public class RansacAlignerTask implements Task {
                 return progress; //
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getStatus()
-         */
+        
         public TaskStatus getStatus() {
                 return status;
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#getErrorMessage()
-         */
+       
         public String getErrorMessage() {
                 return errorMessage;
         }
 
-        /**
-         * @see net.sf.mzmine.taskcontrol.Task#cancel()
-         */
+        
         public void cancel() {
                 status = TaskStatus.CANCELED;
         }
