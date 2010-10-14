@@ -433,6 +433,9 @@ public class OracleRetrievement implements DataBase {
 
                         r.close();
                         st.close();
+
+                        Collections.sort(studies);
+
                         String[] studiesString = {""};
                         if (!studies.isEmpty()) {
                                 studiesString = studies.toArray(new String[0]);
