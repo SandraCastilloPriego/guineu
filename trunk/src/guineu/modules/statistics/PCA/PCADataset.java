@@ -25,8 +25,8 @@ import guineu.taskcontrol.TaskStatus;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+import javastat.multivariate.PCA;
 
-import jmprojection.PCA;
 import jmprojection.Preprocess;
 import jmprojection.ProjectionStatus;
 
@@ -208,13 +208,10 @@ public class PCADataset extends AbstractXYDataset implements
             numComponents = yAxisPC;
         }
 
-        // Scale data and do PCA
-        Preprocess.scaleToUnityVariance(rawData);
-        PCA pcaProj = new PCA(rawData, numComponents);
-        projectionStatus = pcaProj.getProjectionStatus();
+        PCA pca = new PCA(0.95, "covariance", rawData);
 
-        double[][] result = pcaProj.getState();
-
+        double[][] result =  (double[][]) pca.principalComponents;
+       
         if (status == TaskStatus.CANCELED) {
             return;
         }

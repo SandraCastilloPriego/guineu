@@ -45,84 +45,85 @@ import javax.swing.table.TableModel;
  */
 public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private SimpleParameterSet parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private SimpleParameterSet parameters;
 
-	public void initModule() {
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.CONFIGURATION, "GCGC Table View..",
-				"TODO write description", KeyEvent.VK_G, this, null, "icons/conf2.png");
-		parameters = new GCGCColumnsViewParameters();
+    public void initModule() {
+        this.desktop = GuineuCore.getDesktop();
+        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "GCGC Table View..",
+                "TODO write description", KeyEvent.VK_G, this, null, "icons/conf2.png");
+        parameters = new GCGCColumnsViewParameters();
 
-	}
+    }
 
-	public void taskStarted(Task task) {
-		logger.info("Running GCGC Table View");
-	}
+    public void taskStarted(Task task) {
+        logger.info("Running GCGC Table View");
+    }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished GCGC Table View ");
-		}
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished GCGC Table View ");
+        }
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while GCGC Table View  .. ";
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+            String msg = "Error while GCGC Table View  .. ";
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
-		}
-	}
+        }
+    }
 
-	public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
 
-		ExitCode exitCode = setupParameters();
-		if (exitCode != ExitCode.OK) {
-			return;
-		}
-		((DesktopParameters) desktop.getParameterSet()).setViewGCGCParameters((GCGCColumnsViewParameters) parameters);
-		runModule();
-	}
+        ExitCode exitCode = setupParameters();
+        if (exitCode != ExitCode.OK) {
+            return;
+        }
+        ((DesktopParameters) desktop.getParameterSet()).setViewGCGCParameters((GCGCColumnsViewParameters) parameters);
+        runModule();
+    }
 
-	public ExitCode setupParameters() {
-		try {
-			ParameterSetupDialog dialog = new ParameterSetupDialog("GCGC Table View parameters", parameters);
-			dialog.setVisible(true);
+    public ExitCode setupParameters() {
+        try {
+            ParameterSetupDialog dialog = new ParameterSetupDialog("GCGC Table View parameters", parameters);
+            dialog.setVisible(true);
 
-			return dialog.getExitCode();
-		} catch (Exception exception) {
-			return ExitCode.CANCEL;
-		}
-	}
+            return dialog.getExitCode();
+        } catch (Exception exception) {
+            return ExitCode.CANCEL;
+        }
+    }
 
-	public ParameterSet getParameterSet() {
-		return parameters;
-	}
+    public ParameterSet getParameterSet() {
+        return parameters;
+    }
 
-	public void setParameters(ParameterSet parameterValues) {
-		parameters = (GCGCColumnsViewParameters) parameterValues;
-	}
+    public void setParameters(ParameterSet parameterValues) {
+        parameters = (GCGCColumnsViewParameters) parameterValues;
+    }
 
-	public String toString() {
-		return "LCMS Table View";
-	}
+    @Override
+    public String toString() {
+        return "LCMS Table View";
+    }
 
-	public Task[] runModule() {
-		JInternalFrame[] frames = desktop.getInternalFrames();
-		for (int i = 0; i < frames.length; i++) {
-			try {
-				JTable table = ((DataInternalFrame) frames[i]).getTable();
-				TableModel model = table.getModel();
-				if (model.getClass().toString().contains("DatasetGCGCDataModel")) {
-					((DatasetGCGCDataModel) model).setParameters();
-				}
-				table.setModel(model);
-				table.createDefaultColumnsFromModel();
-				table.revalidate();
-			} catch (Exception e) {
-			}
-		}
-		return null;
-	}
+    public Task[] runModule() {
+        JInternalFrame[] frames = desktop.getInternalFrames();
+        for (int i = 0; i < frames.length; i++) {
+            try {
+                JTable table = ((DataInternalFrame) frames[i]).getTable();
+                TableModel model = table.getModel();
+                if (model.getClass().toString().contains("DatasetGCGCDataModel")) {
+                    ((DatasetGCGCDataModel) model).setParameters();
+                }
+                table.setModel(model);
+                table.createDefaultColumnsFromModel();
+                table.revalidate();
+            } catch (Exception e) {
+            }
+        }
+        return null;
+    }
 }
