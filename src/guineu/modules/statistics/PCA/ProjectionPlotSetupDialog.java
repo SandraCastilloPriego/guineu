@@ -85,7 +85,7 @@ public class ProjectionPlotSetupDialog extends JDialog implements
         this.alignedPeakList = peakList;
         this.parameterSet = parameterSet;
 
-        Vector<String> selectedDataFiles = parameterSet.getSelectedDataFiles();
+        Vector<String> selectedDataFiles = parameterSet.getSelectedSamples();
         List<PeakListRow> selectedRows = parameterSet.getSelectedRows();
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -342,7 +342,7 @@ public class ProjectionPlotSetupDialog extends JDialog implements
                 return;
             }
             parameterSet.setSourcePeakList(alignedPeakList);
-            parameterSet.setSelectedDataFiles(selectedFiles);
+            parameterSet.setSelectedSamples(selectedFiles);
             parameterSet.setSelectedRows(selectedPeaks);
 
             if (comboColoringMethod.getSelectedItem() == ProjectionPlotParameters.ColoringTypeSingleColor) {

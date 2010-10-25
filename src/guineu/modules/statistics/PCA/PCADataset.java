@@ -15,7 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.statistics.PCA;
 
 import guineu.data.PeakListRow;
@@ -25,8 +24,8 @@ import guineu.taskcontrol.TaskStatus;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
-import javastat.multivariate.PCA;
 
+import javastat.multivariate.PCA;
 import jmprojection.Preprocess;
 import jmprojection.ProjectionStatus;
 
@@ -44,7 +43,7 @@ public class PCADataset extends AbstractXYDataset implements
     private double[] component1Coords;
     private double[] component2Coords;
     private ProjectionPlotParameters parameters;
-    private Vector<String> selectedRawDataFiles;
+    private Vector<String> selectedSamples;
     private List<PeakListRow> selectedRows;
     private int[] groupsForSelectedRawDataFiles;
     private Object[] parameterValuesForGroups;
@@ -63,17 +62,17 @@ public class PCADataset extends AbstractXYDataset implements
         this.xAxisPC = (Integer) parameters.getParameterValue(ProjectionPlotParameters.xAxisComponent);
         this.yAxisPC = (Integer) parameters.getParameterValue(ProjectionPlotParameters.yAxisComponent);
 
-        selectedRawDataFiles = parameters.getSelectedDataFiles();
+        selectedSamples = parameters.getSelectedSamples();
         selectedRows = parameters.getSelectedRows();
 
         datasetTitle = "Principal component analysis";
 
         // Determine groups for selected raw data files
-        groupsForSelectedRawDataFiles = new int[selectedRawDataFiles.size()];
+        groupsForSelectedRawDataFiles = new int[selectedSamples.size()];
 
         if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeSingleColor) {
             // All files to a single group
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
+            for (int ind = 0; ind < selectedSamples.size(); ind++) {
                 groupsForSelectedRawDataFiles[ind] = 0;
             }
 
@@ -82,25 +81,25 @@ public class PCADataset extends AbstractXYDataset implements
 
         if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByFile) {
             // Each file to own group
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
+            for (int ind = 0; ind < selectedSamples.size(); ind++) {
                 groupsForSelectedRawDataFiles[ind] = ind;
             }
 
-            numberOfGroups = selectedRawDataFiles.size();
+            numberOfGroups = selectedSamples.size();
         }
 
         if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
             // Group files with same parameter value to same group
             Vector<Object> availableParameterValues = new Vector<Object>();
-            for (String rawDataFile : selectedRawDataFiles) {
+            for (String rawDataFile : selectedSamples) {
                 String paramValue = parameters.getParamValue(rawDataFile);
                 if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
                 }
             }
 
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                String paramValue =  parameters.getParamValue(selectedRawDataFiles.elementAt(ind));
+            for (int ind = 0; ind < selectedSamples.size(); ind++) {
+                String paramValue = parameters.getParamValue(selectedSamples.elementAt(ind));
                 groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
             }
             parameterValuesForGroups = availableParameterValues.toArray();
@@ -162,7 +161,7 @@ public class PCADataset extends AbstractXYDataset implements
     }
 
     public String getRawDataFile(int item) {
-        return selectedRawDataFiles.elementAt(item);
+        return selectedSamples.elementAt(item);
     }
 
     public int getGroupNumber(int item) {
@@ -189,15 +188,16 @@ public class PCADataset extends AbstractXYDataset implements
 
         logger.info("Computing projection plot");
 
-        double[][] rawData = new double[selectedRawDataFiles.size()][selectedRows.size()];
+        double[][] rawData = new double[selectedSamples.size()][selectedRows.size()];
         for (int rowIndex = 0; rowIndex < selectedRows.size(); rowIndex++) {
             PeakListRow peakListRow = selectedRows.get(rowIndex);
-            for (int fileIndex = 0; fileIndex < selectedRawDataFiles.size(); fileIndex++) {
-                String rawDataFile = selectedRawDataFiles.elementAt(fileIndex);
+            for (int fileIndex = 0; fileIndex < selectedSamples.size(); fileIndex++) {
+                String rawDataFile = selectedSamples.elementAt(fileIndex);
                 Object p = peakListRow.getPeak(rawDataFile);
                 try {
                     rawData[fileIndex][rowIndex] = (Double) p;
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -208,23 +208,24 @@ public class PCADataset extends AbstractXYDataset implements
             numComponents = yAxisPC;
         }
 
-        PCA pca = new PCA(0.95, "covariance", rawData);
+        PCA pca = new PCA(0.95, "regression", rawData);
 
-        double[][] result =  (double[][]) pca.principalComponents;
-       
+        double[][] result = (double[][]) pca.principalComponents;
+
         if (status == TaskStatus.CANCELED) {
             return;
         }
 
-        component1Coords = result[xAxisPC - 1];
-        component2Coords = result[yAxisPC - 1];
+        if (result.length > yAxisPC - 1) {
+            component1Coords = result[xAxisPC - 1];
+            component2Coords = result[yAxisPC - 1];
 
 
-        Desktop desktop = GuineuCore.getDesktop();
-        ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
-                parameters);
-        desktop.addInternalFrame(newFrame);
-
+            Desktop desktop = GuineuCore.getDesktop();
+            ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
+                    parameters);
+            desktop.addInternalFrame(newFrame);
+        }
         status = TaskStatus.FINISHED;
         logger.info("Finished computing projection plot.");
 

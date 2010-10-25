@@ -62,7 +62,7 @@ public class SammonDataset extends AbstractXYDataset implements
         this.xAxisDimension = (Integer) parameters.getParameterValue(ProjectionPlotParameters.xAxisComponent);
         this.yAxisDimension = (Integer) parameters.getParameterValue(ProjectionPlotParameters.yAxisComponent);
 
-        selectedRawDataFiles = parameters.getSelectedDataFiles();
+        selectedRawDataFiles = parameters.getSelectedSamples();
         selectedRows = parameters.getSelectedRows();
 
         datasetTitle = "Sammon's projection";
