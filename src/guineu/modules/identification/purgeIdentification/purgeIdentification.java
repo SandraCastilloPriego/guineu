@@ -45,7 +45,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 	public void initModule() {
 
 		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.IDENTIFICATIONFILTERS, "Clean Identification.. ",
+		desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Clean Identification.. ",
 				"TODO write description", KeyEvent.VK_C, this, null, null);
 	}
 
