@@ -39,14 +39,17 @@ public class RConsole extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        InDataBase writer = new InOracle();
+    //   String rResponse = RInterface.evaluateRCommand(this.jTextArea1.getText());
+     //   this.jTextArea1.setText(rResponse);
+
+       InDataBase writer = new InOracle();
         SaveTempParameters parameters = new SaveTempParameters();
         parameters.setParameterValue(SaveTempParameters.LCMSfilename, dataset.getDatasetName());
         parameters.setParameterValue(SaveTempParameters.type, "csv");
 
-        writer.WriteCommaSeparatedFile(dataset, "temp.csv", parameters);
+        writer.WriteCommaSeparatedFile(dataset, "/home/scsandra/Desktop/temp.csv", parameters);
 
-        String rResponse = RInterface.evaluateRCommand("test <- read.csv(\"temp.csv\", header=T)\n print(test)");
+        String rResponse = RInterface.evaluateRCommand("test <- read.csv(\"/home/scsandra/Desktop/temp.csv\", header=T)\n print(test)");
         this.jTextArea1.setText(rResponse);
 
         File file = new File("temp.csv");
