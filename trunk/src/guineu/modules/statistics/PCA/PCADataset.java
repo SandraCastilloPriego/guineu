@@ -208,9 +208,9 @@ public class PCADataset extends AbstractXYDataset implements
             numComponents = yAxisPC;
         }
 
-        PCA pca = new PCA(0.95, "regression", rawData);
+       PCA pca = new PCA(0.95, "regression", rawData);     
 
-        double[][] result = (double[][]) pca.principalComponents;
+       double[][] result = (double[][]) pca.principalComponents;
 
         if (status == TaskStatus.CANCELED) {
             return;
