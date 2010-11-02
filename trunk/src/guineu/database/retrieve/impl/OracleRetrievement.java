@@ -483,7 +483,7 @@ public class OracleRetrievement implements DataBase {
 
             }
 
-            System.out.println(arg);
+         //   System.out.println(arg);
 
             turn++;
 

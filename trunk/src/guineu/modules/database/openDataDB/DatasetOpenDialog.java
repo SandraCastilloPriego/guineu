@@ -40,6 +40,7 @@ import java.util.Vector;
 import javax.swing.JDialog;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -310,7 +311,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 CheckNode node = (CheckNode) path.getLastPathComponent();
                 addChildren(node);
             }
-
         }
 
         for (int i = 2; i < tree.getRowCount(); i++) {
@@ -331,7 +331,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             CheckNode parentNode = (CheckNode) path.getPathComponent(0);
             setRecursiveSelection(parentNode);
         }
-
 
     }
 
@@ -543,7 +542,30 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
         this.SPResults.setViewportView((Component) tree);
 
+        // Removes the empty nodes
+        this.removeEmptyNodes(tree);
+
         return tree;
+    }
+
+    private void removeEmptyNodes(JTree tree) {
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            TreePath path = tree.getPathForRow(i);           
+            if (path != null) {               
+                DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+                CheckNode node = (CheckNode) path.getLastPathComponent();
+                int count = model.getChildCount(node);
+                if (count == 0) {
+                    try {
+                         model.removeNodeFromParent(node);
+                         i--;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
     }
 
     class NodeSelectionListener extends MouseAdapter {
