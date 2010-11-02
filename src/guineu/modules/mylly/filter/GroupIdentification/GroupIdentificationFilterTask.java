@@ -155,8 +155,7 @@ public class GroupIdentificationFilterTask implements Task {
         xmlW.writeCloseTag("soap:Envelope");
 
         xmlW.close();
-
-        System.out.println(w.toString());
+        
         return w.toString();
     }
 
