@@ -40,7 +40,6 @@ import java.util.Vector;
 import javax.swing.JDialog;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -299,16 +298,17 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * Applies every rule to select or deselect nodes. First open the children of all the datasets
+     * Applies every rule to select or deselect nodes. First open the tree and add the sample nodes to all the datasets
      * from the database. It could take some time and can be more sofisticated in the future.
      */
     private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-        for (int i = 0; i < tree.getRowCount(); i++) {
+        
+        for (int i = 1; i < tree.getRowCount(); i++) {
             TreePath path = tree.getPathForRow(i);
             tree.expandPath(path);
             if (path != null) {
                 CheckNode node = (CheckNode) path.getLastPathComponent();
+                // Adds the samples of each dataset into the tree
                 addChildren(node);
             }
         }
@@ -445,35 +445,36 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                     switch (ruleType) {
 
                         case Platform:
-                            if (info.platform != null && info.platform.equals(rule.getValue())) {
+                            if (info.platform != null && info.platform.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
                                 status = false;
                             }
                             break;
-                        case Tissue:
-                            if (info.tissue != null && info.tissue.equals(rule.getValue())) {
+                        case Tissue:                            
+                            if (info.tissue != null && info.tissue.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
                                 status = false;
                             }
                             break;
                         case Organism:
-                            if (info.organism != null && info.organism.equals(rule.getValue())) {
+                            System.out.println(info.organism);
+                            if (info.organism != null && info.organism.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
                                 status = false;
                             }
                             break;
                         case Subtype:
-                            if (info.phenotype != null && info.phenotype.equals(rule.getValue())) {
+                            if (info.phenotype != null && info.phenotype.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
                                 status = false;
                             }
                             break;
                         case Contain:
-                            if (info.toString() != null && node.toString().equals(rule.getValue())) {
+                            if (info.toString() != null && node.toString().toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
                                 status = false;
@@ -542,23 +543,27 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
         this.SPResults.setViewportView((Component) tree);
 
-        // Removes the empty nodes
+        // Removes the empty studies nodes
         this.removeEmptyNodes(tree);
 
         return tree;
     }
 
+    /**
+     * Remove all the studies nodes that don't contain datasets.
+     * @param tree
+     */
     private void removeEmptyNodes(JTree tree) {
         for (int i = 0; i < tree.getRowCount(); i++) {
-            TreePath path = tree.getPathForRow(i);           
-            if (path != null) {               
+            TreePath path = tree.getPathForRow(i);
+            if (path != null) {
                 DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
                 CheckNode node = (CheckNode) path.getLastPathComponent();
                 int count = model.getChildCount(node);
                 if (count == 0) {
                     try {
-                         model.removeNodeFromParent(node);
-                         i--;
+                        model.removeNodeFromParent(node);
+                        i--;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
