@@ -98,4 +98,10 @@ public interface DataBase {
          * @return description of the sample
          */
         public String[] getParameters(String sampleName);
+
+        /**
+         * Deletes the dataset from database matching the dataset's name.
+         * @param datasetName name of the dataset to be removed
+         */
+        public void deleteDataset(String datasetName);
 }

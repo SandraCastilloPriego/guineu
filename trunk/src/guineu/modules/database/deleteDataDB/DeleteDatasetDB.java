@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.deleteDatasetDB;
+package guineu.modules.database.deleteDataDB;
 
 import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
@@ -29,39 +29,39 @@ import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener {
+public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private int[] Datasets;
-    DatasetDeleteDBDialog dialog;
+    DatasetDeleteDialog dialog;
+    boolean combine = false;
+    List<String> datasets;
 
     public void initModule() {
-
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.DATABASE, "Delete database..",
-                "TODO write description", KeyEvent.VK_D, this, null, null);
-
+        desktop.addMenuItem(GuineuMenu.DATABASE, "Delete Dataset..",
+                "TODO write description", KeyEvent.VK_O, this, null, null);
     }
 
     public void taskStarted(Task task) {
-        logger.info("Running Delete Database");
+        logger.info("Running delete dataset");
     }
 
     public void taskFinished(Task task) {
         if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished delete database on " + ((DeleteFileDBTask) task).getTaskDescription());
+            logger.info("Finished delete dataset on " + ((DeleteDatasetDBTask) task).getTaskDescription());
         }
 
         if (task.getStatus() == TaskStatus.ERROR) {
 
-            String msg = "Error while delete database on .. " + ((DeleteFileDBTask) task).getErrorMessage();
+            String msg = "Error while delete dataset on .. " + ((DeleteDatasetDBTask) task).getErrorMessage();
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
@@ -73,14 +73,14 @@ public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener 
         if (exitCode != ExitCode.OK) {
             return;
         }
-
-        Datasets = dialog.getSelectedDataset();
         runModule();
     }
 
     public ExitCode setupParameters() {
-        dialog = new DatasetDeleteDBDialog();
+        dialog = new DatasetDeleteDialog();
         dialog.setVisible(true);
+        datasets = dialog.getDatasets();
+        combine = dialog.combineDataset();
         return dialog.getExitCode();
     }
 
@@ -89,26 +89,21 @@ public class DeleteFileDB implements GuineuModule, TaskListener, ActionListener 
     }
 
     public void setParameters(ParameterSet parameterValues) {
-
     }
 
     @Override
     public String toString() {
-        return "Open Database";
+        return "Delete dataset from database";
     }
 
     public Task[] runModule() {
-
+        Task tasks[] = null;
         // prepare a new group of tasks
-        Task tasks[] = new DeleteFileDBTask[Datasets.length];
-        for (int i = 0; i < Datasets.length; i++) {
-            tasks[i] = new DeleteFileDBTask(Datasets[i], desktop);
-        }
+        tasks = new DeleteDatasetDBTask[1];
+        tasks[0] = new DeleteDatasetDBTask(datasets);
 
         GuineuCore.getTaskController().addTasks(tasks);
-
         return tasks;
-
 
     }
 }

@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.openDataDB;
+package guineu.modules.database.tools;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -30,7 +30,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.tree.TreeCellRenderer;
 
-class CheckRenderer extends JPanel implements TreeCellRenderer {
+public class CheckRenderer extends JPanel implements TreeCellRenderer {
 
     protected JCheckBox check;
     protected TreeLabel label;
