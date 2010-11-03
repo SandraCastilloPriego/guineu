@@ -22,10 +22,6 @@ import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.Peak;
 import guineu.modules.mylly.datastruct.Spectrum;
 
-/**
- *
- * @author scsandra
- */
 public class RTScore implements ScoreCalculator {
 
         /**

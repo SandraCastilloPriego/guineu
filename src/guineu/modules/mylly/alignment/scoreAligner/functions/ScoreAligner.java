@@ -69,8 +69,8 @@ public class ScoreAligner implements Aligner {
         public ScoreAligner(List<GCGCData> dataToAlign, ScoreAlignmentParameters params) {
 
                 this.params = params;
-                // setScoreCalculator(new SpectrumDotProd());
-                setScoreCalculator(new RTScore());
+                setScoreCalculator(new SpectrumDotProd());
+                //setScoreCalculator(new RTScore());
                 List<GCGCData> tempList = new ArrayList<GCGCData>();
                 if (dataToAlign != null) {
                         tempList.addAll(dataToAlign);

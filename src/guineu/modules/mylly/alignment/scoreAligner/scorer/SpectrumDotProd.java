@@ -51,7 +51,7 @@ public class SpectrumDotProd implements ScoreCalculator {
 		if (rt2Diff > (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Lax)) {
 			return WORST_SCORE;
 		}
-		double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
+		double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());     
 		if (rt1Diff > (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Lax)) {
 			return WORST_SCORE;
 		}
