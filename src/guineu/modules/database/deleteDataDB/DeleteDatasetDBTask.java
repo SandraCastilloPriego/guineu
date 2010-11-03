@@ -15,30 +15,28 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.deleteDatasetDB;
+package guineu.modules.database.deleteDataDB;
 
-import guineu.database.intro.InDataBase;
-import guineu.database.intro.impl.InOracle;
-import guineu.desktop.Desktop;
+import guineu.database.retrieve.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
+import java.util.List;
 
 /**
  *
  * @author scsandra
  */
-public class DeleteFileDBTask implements Task {
+public class DeleteDatasetDBTask implements Task {
 
-    private int datasetID;
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
-    private Desktop desktop;
-    private InDataBase db;
+    List<String> datasets;
+    DataBase db;
 
-    public DeleteFileDBTask(int datasetID, Desktop desktop) {
-        this.datasetID = datasetID;
-        this.desktop = desktop;
-        db = new InOracle();
+    public DeleteDatasetDBTask(List<String> datasets) {
+        this.datasets = datasets;
+        db = new OracleRetrievement();
     }
 
     public String getTaskDescription() {
@@ -46,7 +44,7 @@ public class DeleteFileDBTask implements Task {
     }
 
     public double getFinishedPercentage() {
-        return db.getProgress();
+        return 0;
     }
 
     public TaskStatus getStatus() {
@@ -63,7 +61,7 @@ public class DeleteFileDBTask implements Task {
 
     public void run() {
         try {
-            this.openFile();
+            this.deleteFile();
         } catch (Exception e) {
             status = TaskStatus.ERROR;
             errorMessage = e.toString();
@@ -71,10 +69,15 @@ public class DeleteFileDBTask implements Task {
         }
     }
 
-    public void openFile() {
+    public void deleteFile() {
         try {
             status = TaskStatus.PROCESSING;
-            db.deleteDataset(db.connect(), datasetID);
+
+            for(String dataset : datasets){
+                System.out.println(dataset);
+                db.deleteDataset(dataset);
+            }
+
             status = TaskStatus.FINISHED;
         } catch (Exception e) {
             status = TaskStatus.ERROR;

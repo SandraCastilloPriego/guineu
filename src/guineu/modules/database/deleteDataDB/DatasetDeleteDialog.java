@@ -15,10 +15,8 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.openDataDB;
+package guineu.modules.database.deleteDataDB;
 
-import guineu.modules.database.tools.CheckNode;
-import guineu.modules.database.tools.CheckRenderer;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
@@ -26,6 +24,8 @@ import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
 import guineu.main.GuineuCore;
+import guineu.modules.database.tools.CheckNode;
+import guineu.modules.database.tools.CheckRenderer;
 import guineu.util.dialogs.ExitCode;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -49,26 +49,27 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author scsandra
  */
-public class DatasetOpenDialog extends JDialog implements ActionListener {
+public class DatasetDeleteDialog extends JDialog implements ActionListener {
 
     private ExitCode exitCode = ExitCode.UNKNOWN;
     private int size = 50;
     private List<newParameterDialog> parameters;
-    private List<Dataset> datasets;
+    private List<String> datasets;
     private JTree tree;
     private Hashtable<CheckNode, String[]> nodeTable;
     private Hashtable<CheckNode, NodeInfo> nodeInfoTable;
 
     /** Creates new form DatasetOpenDialog */
-    public DatasetOpenDialog() {
-        super(GuineuCore.getDesktop().getMainFrame(), "Opening Database...", true);
-        initComponents();
+    public DatasetDeleteDialog() {
+        super(GuineuCore.getDesktop().getMainFrame(), "Deleting Dataset from Database...", true);
+
         nodeTable = new Hashtable<CheckNode, String[]>();
         nodeInfoTable = new Hashtable<CheckNode, NodeInfo>();
         parameters = new ArrayList<newParameterDialog>();
-        datasets = new ArrayList<Dataset>();
+        datasets = new ArrayList<String>();
+        initComponents();
+        this.buttonsPanel.remove(this.combineDatasetsCB);
         tree = createTree();
-
     }
 
     ExitCode getExitCode() {
@@ -185,7 +186,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
      *
      * @return A list of data sets
      */
-    public List<Dataset> getDatasets() {
+    public List<String> getDatasets() {
         return datasets;
     }
 
@@ -194,9 +195,13 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             for (int index = 0; index < tree.getRowCount(); index++) {
                 TreePath path = tree.getPathForRow(index);
                 if (path != null) {
+                    tree.expandPath(path);
                     CheckNode node = (CheckNode) path.getLastPathComponent();
-                    if (node != null) {
-                        createDataset(node);
+                    if (node != null && node.isSelected) {
+                        String[] data = nodeTable.get(node);
+                        if (data != null) {
+                            datasets.add(nodeTable.get(node)[1]);
+                        }
                     }
                 }
             }
@@ -208,77 +213,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
 
     public boolean combineDataset() {
         return this.combineDatasetsCB.isSelected();
-    }
-
-    /**
-     * Creates the datasets from selected nodes. Each selected node can be the name of one sample, or
-     * the name of a complete data set.
-     *
-     * @param node Node from the tree
-     */
-    private void createDataset(CheckNode node) {
-        Dataset dataset = null;
-
-        String[] data = nodeTable.get(node);
-        try {
-            if (data != null) {
-
-                // Creates a new data set
-                if (data[2].contains("LC-MS")) {
-                    dataset = new SimpleLCMSDataset(data[1]);
-                    dataset.setType(DatasetType.LCMS);
-                } else if (data[2].contains("GCxGC-MS")) {
-                    dataset = new SimpleGCGCDataset(data[1]);
-                    dataset.setType(DatasetType.GCGCTOF);
-                }
-
-                // Sets the data set ID
-                dataset.setID(Integer.parseInt(data[0]));
-
-                // Sets the number of rows
-                dataset.setNumberRows(Integer.parseInt(data[5]));
-
-                // Sets column names
-                if (node.getChildCount() > 0) {
-                    for (int i = 0; i < node.getChildCount(); i++) {
-                        CheckNode child = (CheckNode) node.getChildAt(i);
-                        if (child.isSelected()) {
-                            dataset.addColumnName(child.toString());
-                        }
-                    }
-                }
-
-                // If the complete dataset is selected
-                if (node.isSelected && dataset.getNumberCols() == 0) {
-                    try {
-                        DataBase db = new OracleRetrievement();
-                        Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
-                        for (String sampleName : sampleNames) {
-                            dataset.addColumnName(sampleName);
-                        }
-
-                    } catch (Exception exception) {
-                    }
-                }
-
-                if (dataset.getNumberCols() > 0) {
-                    datasets.add(dataset);
-                    return;
-                }
-
-            }
-
-            // If the complete study is selected
-            if (node.isSelected && node.getLevel() == 1) {
-                for (int i = 0; i < node.getChildCount(); i++) {
-                    createDataset((CheckNode) node.getChildAt(i));
-                }
-            }
-
-
-        } catch (Exception e) {
-        }
-
     }
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,7 +238,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
      * from the database. It could take some time and can be more sofisticated in the future.
      */
     private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
+
         for (int i = 1; i < tree.getRowCount(); i++) {
             TreePath path = tree.getPathForRow(i);
             tree.expandPath(path);
@@ -453,7 +387,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 status = false;
                             }
                             break;
-                        case Tissue:                            
+                        case Tissue:
                             if (info.tissue != null && info.tissue.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
@@ -461,6 +395,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                             }
                             break;
                         case Organism:
+                            System.out.println(info.organism);
                             if (info.organism != null && info.organism.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {

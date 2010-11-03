@@ -23,8 +23,6 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.modules.filter.Alignment.RANSAC.RansacAlignerParameters;
-import guineu.modules.filter.Alignment.RANSAC.RansacAlignerTask;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;

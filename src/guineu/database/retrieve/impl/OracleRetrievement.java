@@ -558,6 +558,17 @@ public class OracleRetrievement implements DataBase {
             e.printStackTrace();
         }
     }
+
+    public void deleteDataset(String datasetName) {
+        Statement st = null;
+        try {
+            st = conn.createStatement();
+            st.executeQuery("DELETE FROM DATASET WHERE EXCEL_NAME = '" + datasetName + "' ");
+            st.close();
+        } catch (Exception e) {
+
+        }
+    }
 }
 
 

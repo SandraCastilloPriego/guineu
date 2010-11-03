@@ -15,17 +15,17 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.openDataDB;
+package guineu.modules.database.tools;
 
 import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-class CheckNode extends DefaultMutableTreeNode {
+public class CheckNode extends DefaultMutableTreeNode {
 
         public final static int SINGLE_SELECTION = 0;
         public final static int DIG_IN_SELECTION = 4;
-        protected int selectionMode;
-        protected boolean isSelected;
+        public int selectionMode;
+        public boolean isSelected;
 
         public CheckNode() {
                 this(null);

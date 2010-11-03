@@ -26,7 +26,6 @@ import guineu.modules.filter.Alignment.RANSAC.RansacAlignerParameters;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerTask;
 import guineu.modules.mylly.alignment.basicAligner.BasicAlignerGCGCParameters;
 import guineu.modules.mylly.alignment.basicAligner.BasicAlignerGCGCTask;
-import guineu.modules.mylly.alignment.ransacAligner.RansacAlignerGCGCTask;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
