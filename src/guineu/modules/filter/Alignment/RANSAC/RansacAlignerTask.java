@@ -202,7 +202,7 @@ public class RansacAlignerTask implements Task {
                 String name = (String) targetRow.getVar(LCMSColumnName.ALLNAMES.getGetFunctionName());
                 String name2 = (String) row.getVar(LCMSColumnName.NAME.getGetFunctionName());
                 String allNames = "";
-                if (name.isEmpty()) {
+                if (name != null && name.isEmpty()) {
                         allNames = name2;
                 } else {
                         allNames = name + " // " + name2;
