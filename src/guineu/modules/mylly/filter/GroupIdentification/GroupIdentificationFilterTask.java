@@ -132,14 +132,14 @@ public class GroupIdentificationFilterTask implements Task {
         xmlW.writeText("</Ri>");
         xmlW.endBlock();
 
-        xmlW.writeTag("spectrum", false);
+        xmlW.writeTag("Spectrum", false);
         String spectrum = newRow.getSpectrumString();
         spectrum = spectrum.replace(":", " ");
         spectrum = spectrum.replace(", ", "");
         spectrum = spectrum.replace("[", "");
         spectrum = spectrum.replace("]", "");
         xmlW.writeText(spectrum);
-        xmlW.writeText("</spectrum>");
+        xmlW.writeText("</Spectrum>");
         xmlW.endBlock();
 
         xmlW.writeTag("ColumnType", false);
