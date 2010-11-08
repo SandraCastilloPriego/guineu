@@ -33,9 +33,11 @@ public class DeleteDatasetDBTask implements Task {
     private String errorMessage;
     List<String> datasets;
     DataBase db;
+    String DBPassword;
 
-    public DeleteDatasetDBTask(List<String> datasets) {
+    public DeleteDatasetDBTask(List<String> datasets, String DBPassword) {
         this.datasets = datasets;
+        this.DBPassword = DBPassword;
         db = new OracleRetrievement();
     }
 
@@ -74,8 +76,8 @@ public class DeleteDatasetDBTask implements Task {
             status = TaskStatus.PROCESSING;
 
             for(String dataset : datasets){
-                System.out.println(dataset);
-                db.deleteDataset(dataset);
+                //System.out.println(dataset);
+                db.deleteDataset(dataset, DBPassword);
             }
 
             status = TaskStatus.FINISHED;

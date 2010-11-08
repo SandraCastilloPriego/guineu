@@ -103,5 +103,5 @@ public interface DataBase {
          * Deletes the dataset from database matching the dataset's name.
          * @param datasetName name of the dataset to be removed
          */
-        public void deleteDataset(String datasetName);
+        public void deleteDataset(String datasetName, String password);
 }

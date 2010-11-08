@@ -25,11 +25,15 @@ import guineu.database.retrieve.*;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.main.GuineuCore;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import oracle.jdbc.pool.OracleDataSource;
 
 /**
@@ -42,6 +46,7 @@ public class OracleRetrievement implements DataBase {
     private int completedRows;
     private Connection conn;
     private static int passes = 0;
+    private String password = "sandra";
 
     public OracleRetrievement() {
         conn = this.connect();
@@ -52,7 +57,7 @@ public class OracleRetrievement implements DataBase {
             OracleDataSource oracleDataSource;
             String ORACLE_DATABASE_URL = "jdbc:oracle:thin:@sboracle1.ad.vtt.fi:1521:BfxDB";
             String ORACLE_QUERY_USER = "sandra";
-            String ORACLE_QUERY_PASSWORD = "sandra";
+            String ORACLE_QUERY_PASSWORD = password;
             oracleDataSource = new OracleDataSource();
             oracleDataSource.setURL(ORACLE_DATABASE_URL);
             oracleDataSource.setUser(ORACLE_QUERY_USER);
@@ -387,22 +392,22 @@ public class OracleRetrievement implements DataBase {
         try {
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES ORDER BY ID asc");
-            Hashtable<String, String[]> studies = new Hashtable<String,String[]>();
+            Hashtable<String, String[]> studies = new Hashtable<String, String[]>();
 
-            String[]studiesNames = getStudies();
+            String[] studiesNames = getStudies();
 
             while (r.next()) {
                 try {
                     String[] studyInfo = new String[2];
                     studyInfo[0] = r.getString("NAMES");
                     studyInfo[1] = r.getString("PROJECT");
-                    studies.put(studyInfo[0],studyInfo);
+                    studies.put(studyInfo[0], studyInfo);
                 } catch (Exception ee) {
                 }
             }
 
             List<String[]> studiesInfo = new ArrayList<String[]>();
-            for(String names : studiesNames){
+            for (String names : studiesNames) {
                 studiesInfo.add(studies.get(names));
             }
 
@@ -441,7 +446,7 @@ public class OracleRetrievement implements DataBase {
 
             r.close();
             st.close();
-           
+
             try {
                 OracleRetrievement.<String>sortArrayList(studies, true);
             } catch (Throwable t) {
@@ -478,12 +483,12 @@ public class OracleRetrievement implements DataBase {
                 arg.set(i, temp);
 
                 arg.set(i + 1, temp2);
-               
+
                 //Thread.sleep(250); // for debug purposes
 
             }
 
-         //   System.out.println(arg);
+            //   System.out.println(arg);
 
             turn++;
 
@@ -492,7 +497,6 @@ public class OracleRetrievement implements DataBase {
         passes = turn;
 
     }
-
 
     private static <T extends Comparable<T>> boolean isSorted(ArrayList<T> arg) {
 
@@ -504,8 +508,6 @@ public class OracleRetrievement implements DataBase {
         return count == (arg.size() - 1);
 
     }
-
-
 
     public synchronized void getGCGCRows(SimpleGCGCDataset dataset) {
         this.totalRows = dataset.getNumberRowsdb();
@@ -559,14 +561,18 @@ public class OracleRetrievement implements DataBase {
         }
     }
 
-    public void deleteDataset(String datasetName) {
-        Statement st = null;
-        try {
-            st = conn.createStatement();
-            st.executeQuery("DELETE FROM DATASET WHERE EXCEL_NAME = '" + datasetName + "' ");
-            st.close();
-        } catch (Exception e) {
-
+    public void deleteDataset(String datasetName, String password) {
+        if (password.equals(this.password)) {
+            Statement st = null;
+            try {
+                st = conn.createStatement();
+                st.executeQuery("DELETE FROM DATASET WHERE EXCEL_NAME = '" + datasetName + "' ");
+                st.close();
+            } catch (Exception e) {
+            }
+        } else {
+            JOptionPane.showMessageDialog(GuineuCore.getDesktop().getMainFrame(), "Password not valid",
+                    "Password not valid", JOptionPane.DEFAULT_OPTION);
         }
     }
 }
