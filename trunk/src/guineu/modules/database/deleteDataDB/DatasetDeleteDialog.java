@@ -17,10 +17,6 @@
  */
 package guineu.modules.database.deleteDataDB;
 
-import guineu.data.Dataset;
-import guineu.data.DatasetType;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
 import guineu.main.GuineuCore;
@@ -58,6 +54,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
     private JTree tree;
     private Hashtable<CheckNode, String[]> nodeTable;
     private Hashtable<CheckNode, NodeInfo> nodeInfoTable;
+    private String password;
 
     /** Creates new form DatasetOpenDialog */
     public DatasetDeleteDialog() {
@@ -67,8 +64,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
         nodeInfoTable = new Hashtable<CheckNode, NodeInfo>();
         parameters = new ArrayList<newParameterDialog>();
         datasets = new ArrayList<String>();
-        initComponents();
-        this.buttonsPanel.remove(this.combineDatasetsCB);
+        initComponents();        
         tree = createTree();
     }
 
@@ -94,8 +90,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
         parameterContiner = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         SPResults = new javax.swing.JScrollPane();
-        buttonsPanel = new javax.swing.JPanel();
-        combineDatasetsCB = new javax.swing.JCheckBox();
+        buttonsPanel = new javax.swing.JPanel();       
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -153,9 +148,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
         buttonsPanel.setOpaque(false);
         buttonsPanel.setPreferredSize(new java.awt.Dimension(647, 48));
 
-        combineDatasetsCB.setText("Combine datasets");
-        buttonsPanel.add(combineDatasetsCB);
-
+        
         okButton.setText("OK");
         okButton.setPreferredSize(new java.awt.Dimension(70, 26));
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -190,30 +183,36 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
         return datasets;
     }
 
+    public String getDBPassword(){
+        return this.password;
+    }
+
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tree != null) {
-            for (int index = 0; index < tree.getRowCount(); index++) {
-                TreePath path = tree.getPathForRow(index);
-                if (path != null) {
-                    tree.expandPath(path);
-                    CheckNode node = (CheckNode) path.getLastPathComponent();
-                    if (node != null && node.isSelected) {
-                        String[] data = nodeTable.get(node);
-                        if (data != null) {
-                            datasets.add(nodeTable.get(node)[1]);
+        PasswordDialog toBeSureDialog = new PasswordDialog(GuineuCore.getDesktop().getMainFrame(), true);
+        toBeSureDialog.setVisible(true);
+        ExitCode exit = toBeSureDialog.getExitCode();
+        if (exit == ExitCode.OK) {
+            this.password = toBeSureDialog.getPassword();
+            if (tree != null) {
+                for (int index = 0; index < tree.getRowCount(); index++) {
+                    TreePath path = tree.getPathForRow(index);
+                    if (path != null) {
+                        tree.expandPath(path);
+                        CheckNode node = (CheckNode) path.getLastPathComponent();
+                        if (node != null && node.isSelected) {
+                            String[] data = nodeTable.get(node);
+                            if (data != null) {
+                                datasets.add(nodeTable.get(node)[1]);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        exitCode = ExitCode.OK;
-        dispose();
-    }
-
-    public boolean combineDataset() {
-        return this.combineDatasetsCB.isSelected();
-    }
+            exitCode = ExitCode.OK;
+            dispose();
+        }        
+    }    
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
         exitCode = ExitCode.CANCEL;
@@ -601,8 +600,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
     private javax.swing.JButton addParameterButton;
     private javax.swing.JButton applyRulesButton;
     private javax.swing.JPanel buttonsPanel;
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JCheckBox combineDatasetsCB;
+    private javax.swing.JButton cancelButton;   
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

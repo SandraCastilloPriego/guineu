@@ -41,7 +41,7 @@ public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListen
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     DatasetDeleteDialog dialog;
-    boolean combine = false;
+    private String DBPassword;
     List<String> datasets;
 
     public void initModule() {
@@ -80,7 +80,7 @@ public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListen
         dialog = new DatasetDeleteDialog();
         dialog.setVisible(true);
         datasets = dialog.getDatasets();
-        combine = dialog.combineDataset();
+        DBPassword = dialog.getDBPassword();
         return dialog.getExitCode();
     }
 
@@ -100,7 +100,7 @@ public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListen
         Task tasks[] = null;
         // prepare a new group of tasks
         tasks = new DeleteDatasetDBTask[1];
-        tasks[0] = new DeleteDatasetDBTask(datasets);
+        tasks[0] = new DeleteDatasetDBTask(datasets, DBPassword);
 
         GuineuCore.getTaskController().addTasks(tasks);
         return tasks;
