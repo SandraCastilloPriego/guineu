@@ -39,7 +39,7 @@ public class ConcentrationsFromMassFilterTask implements Task {
     private SimpleGCGCDataset dataset;
     private double progress = 0.0;
 
-    public ConcentrationsFromMassFilterTask(SimpleGCGCDataset dataset) {
+    public ConcentrationsFromMassFilterTask(SimpleGCGCDataset dataset, ConcentrationsFromMassParameters parameters) {
         this.dataset = dataset;
     }
 

@@ -189,13 +189,18 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         return datasets;
     }
 
+    /**
+     * Creates selected datasets
+     * @param evt
+     */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
         if (tree != null) {
             for (int index = 0; index < tree.getRowCount(); index++) {
                 TreePath path = tree.getPathForRow(index);
                 if (path != null) {
                     CheckNode node = (CheckNode) path.getLastPathComponent();
-                    if (node != null) {
+                    tree.expandPath(path);
+                    if (node.getLevel() > 1 && node != null) {
                         createDataset(node);
                     }
                 }
@@ -304,7 +309,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
      * from the database. It could take some time and can be more sofisticated in the future.
      */
     private void applyRulesButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
+
         for (int i = 1; i < tree.getRowCount(); i++) {
             TreePath path = tree.getPathForRow(i);
             tree.expandPath(path);
@@ -453,7 +458,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                                 status = false;
                             }
                             break;
-                        case Tissue:                            
+                        case Tissue:
                             if (info.tissue != null && info.tissue.toLowerCase().contains(rule.getValue().toLowerCase())) {
                                 status = true;
                             } else {
