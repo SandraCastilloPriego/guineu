@@ -118,15 +118,15 @@ public class SimplePeakListRowOther implements PeakListRow {
             return m.invoke(this);
 
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SimplePeakListRowOther.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SimplePeakListRowOther.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SimplePeakListRowOther.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SimplePeakListRowOther.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SimplePeakListRowOther.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
