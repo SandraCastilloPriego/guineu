@@ -31,6 +31,12 @@ public class ConcentrationsFromMassParameters extends SimpleParameterSet {
     public static final Parameter fileNames = new SimpleParameter(
             ParameterType.FILE_NAME, "File Name: ",
             "Name of the File", null, "Name of the File", null);
+    public static final Parameter direction = new SimpleParameter(
+            ParameterType.BOOLEAN, "Oposite direction: ",
+            "Oposite direction", null, "Oposite direction", null);
+    public static final Parameter spectrumPeak = new SimpleParameter(
+            ParameterType.DOUBLE, "Peak from Spectrum: ",
+            "Peak from Spectrum", null, "Peak from Spectrum", null);
 
     public ConcentrationsFromMassParameters() {
         super(new Parameter[]{fileNames});

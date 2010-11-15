@@ -21,6 +21,7 @@ import com.csvreader.CsvReader;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.modules.mylly.datastruct.Spectrum;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
@@ -44,10 +45,14 @@ public class ConcentrationsFromMassFilterTask implements Task {
     private double progress = 0.0;
     private String fileName;
     private Hashtable<String, List<Data>> table;
+    private boolean direction;
+    private double spectrumPeak;
 
     public ConcentrationsFromMassFilterTask(SimpleGCGCDataset dataset, ConcentrationsFromMassParameters parameters) {
         this.dataset = dataset;
         this.fileName = (String) parameters.getParameterValue(ConcentrationsFromMassParameters.fileNames);
+        this.direction = (Boolean) parameters.getParameterValue(ConcentrationsFromMassParameters.direction);
+        this.spectrumPeak = (Double) parameters.getParameterValue(ConcentrationsFromMassParameters.spectrumPeak);
         this.table = new Hashtable<String, List<Data>>();
     }
 
@@ -73,9 +78,24 @@ public class ConcentrationsFromMassFilterTask implements Task {
 
     public void run() {
         status = TaskStatus.PROCESSING;
+        SimpleGCGCDataset newDataset = null;
+        if (!direction) {
+            newDataset = this.concentrationFromMass();
+
+        } else {
+            newDataset = this.massFromContectrations();
+        }
+
+        if (newDataset != null) {
+            GUIUtils.showNewTable(newDataset, true);
+        }
+        status = TaskStatus.FINISHED;
+    }
+
+    private SimpleGCGCDataset concentrationFromMass() {
         try {
             // Reads the file with 4 columns: Name, Mass, Intensity and SumIntensities.
-            // Fills the Hashtable "table" with the content of the file. 
+            // Fills the Hashtable "table" with the content of the file.
             this.readFile();
 
             SimpleGCGCDataset newDataset = (SimpleGCGCDataset) dataset.clone();
@@ -151,13 +171,107 @@ public class ConcentrationsFromMassFilterTask implements Task {
                 }
             }
 
-            GUIUtils.showNewTable(newDataset, true);
-
-            status = TaskStatus.FINISHED;
+            return newDataset;
         } catch (Exception ex) {
             Logger.getLogger(ConcentrationsFromMassFilterTask.class.getName()).log(Level.SEVERE, null, ex);
             status = TaskStatus.ERROR;
+            return null;
         }
+
+    }
+
+    private SimpleGCGCDataset massFromContectrations() {
+        SimpleGCGCDataset newDataset = (SimpleGCGCDataset) dataset.clone();
+        newDataset.setDatasetName(newDataset.getDatasetName() + "- Filtered");
+        for (PeakListRow row : newDataset.getAlignment()) {
+            if (((SimplePeakListRowGCGC) row).getMass() >= 0 && row.isSelected()) {
+                int intensity = 0;
+                Spectrum spectrum = ((SimplePeakListRowGCGC) row).getSpectrum();
+                int[] masses = spectrum.getMasses();
+                for (int index = 0; index < masses.length; index++) {
+                    if (masses[index] == this.spectrumPeak) {
+                        intensity = spectrum.getIntensities()[index];
+                    }
+                }
+
+                String compoundName = (String) row.getVar("getName");
+
+                // If there is no file and the Hashtable is empty or it doesn't contain the compound
+                // the module uses the enum (StandardCompoundsEnum).
+                if (!table.containsKey(compoundName)) {
+                    List<StandardCompoundsEnum> values = new ArrayList<StandardCompoundsEnum>();
+                    for (StandardCompoundsEnum s : StandardCompoundsEnum.values()) {
+                        if (compoundName.compareTo(s.getName()) == 0) {
+                            values.add(s);
+                        }
+                    }
+                    StandardCompoundsEnum val = null;
+                    if (values.size() > 0) {
+                        val = values.get(0);
+                        if (values.size() > 1) {
+                            double mass = (Double) row.getVar("getMass");
+                            for (StandardCompoundsEnum s : values) {
+                                if (mass == s.getMass()) {
+                                    val = s;
+                                }
+                            }
+                        }
+                    }
+
+                    if (intensity == 0) {
+                        intensity = val.getIntensity();
+                    }
+
+                    if (val != null) {
+                        for (String name : newDataset.getAllColumnNames()) {
+                            double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
+                            double newConcentration = intensity * (concentration / val.getSumIntensity());
+                            if (newConcentration != Double.POSITIVE_INFINITY) {
+                                ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
+                            } else {
+                                ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                            }
+                        }
+                    } else {
+                        ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                    }
+                } else {
+
+                    List<Data> data = this.table.get(compoundName);
+                    Data val = null;
+                    if (data.size() > 0) {
+                        val = data.get(0);
+                        if (data.size() > 1) {
+                            double mass = (Double) row.getVar("getMass");
+                            for (Data s : data) {
+                                if (mass == s.mass) {
+                                    val = s;
+                                }
+                            }
+                        }
+                    }
+                    if (intensity == 0) {
+                        intensity = val.intensity;
+                    }
+                    if (val != null) {
+                        for (String name : newDataset.getAllColumnNames()) {
+                            double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
+                            double newConcentration = intensity * (concentration / val.sumIntensities);
+                            if (newConcentration != Double.POSITIVE_INFINITY) {
+                                ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
+                            } else {
+                                ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                            }
+                        }
+                    } else {
+                        ((SimplePeakListRowGCGC) row).setMolClass("Excluded");
+                    }
+                }
+            }
+        }
+
+        return newDataset;
+
     }
 
     public String getName() {
@@ -184,23 +298,24 @@ public class ConcentrationsFromMassFilterTask implements Task {
                     this.table.put(row[0], dataSet);
                 }
             }
-            reader.close();           
-        } catch (IOException ex) {            
+            reader.close();
+        } catch (IOException ex) {
         }
     }
 
     private class Data {
+
         String name;
-        double mass;
-        double intensity;
-        double sumIntensities;
+        int mass;
+        int intensity;
+        int sumIntensities;
 
         public Data(String[] row) {
             name = row[0];
             try {
-                mass = Double.parseDouble(row[1]);
-                intensity = Double.parseDouble(row[2]);
-                sumIntensities = Double.parseDouble(row[3]);
+                mass = Integer.parseInt(row[1]);
+                intensity = Integer.parseInt(row[2]);
+                sumIntensities = Integer.parseInt(row[3]);
             } catch (Exception exception) {
             }
         }
