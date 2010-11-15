@@ -79,7 +79,7 @@ public class LCMSParserCSV implements Parser {
             }
 
             setExperimentsName(header);
-
+            reader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
