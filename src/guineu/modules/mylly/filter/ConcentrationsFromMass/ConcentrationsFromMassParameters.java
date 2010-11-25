@@ -32,7 +32,7 @@ public class ConcentrationsFromMassParameters extends SimpleParameterSet {
             ParameterType.FILE_NAME, "File Name: ",
             "Name of the File", null, "Name of the File", null);
     public static final Parameter direction = new SimpleParameter(
-            ParameterType.BOOLEAN, "Oposite direction",
+            ParameterType.BOOLEAN, "TIC to EIC",
             "Oposite direction", new Boolean(false));
     public static final Parameter spectrumPeak = new SimpleParameter(
             ParameterType.DOUBLE, "Peak from Spectrum",
