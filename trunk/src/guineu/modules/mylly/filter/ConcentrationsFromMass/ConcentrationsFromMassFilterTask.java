@@ -184,16 +184,19 @@ public class ConcentrationsFromMassFilterTask implements Task {
         SimpleGCGCDataset newDataset = (SimpleGCGCDataset) dataset.clone();
         newDataset.setDatasetName(newDataset.getDatasetName() + "- Filtered");
         for (PeakListRow row : newDataset.getAlignment()) {
-            if (((SimplePeakListRowGCGC) row).getMass() >= 0 && row.isSelected()) {
-                int intensity = 0;
-                Spectrum spectrum = ((SimplePeakListRowGCGC) row).getSpectrum();
-                int[] masses = spectrum.getMasses();
-                for (int index = 0; index < masses.length; index++) {
-                    if (masses[index] == this.spectrumPeak) {
-                        intensity = spectrum.getIntensities()[index];
+            if (row.isSelected()) {
+                int intensity = 0, sumIntensities = 0;
+
+                if (this.spectrumPeak != 0) {
+                    Spectrum spectrum = ((SimplePeakListRowGCGC) row).getSpectrum();
+                    int[] masses = spectrum.getMasses();
+                    for (int index = 0; index < masses.length; index++) {
+                        if (masses[index] == this.spectrumPeak) {
+                            intensity = spectrum.getIntensities()[index];
+                        }
+                        sumIntensities += spectrum.getIntensities()[index];
                     }
                 }
-
                 String compoundName = (String) row.getVar("getName");
 
                 // If there is no file and the Hashtable is empty or it doesn't contain the compound
@@ -218,14 +221,18 @@ public class ConcentrationsFromMassFilterTask implements Task {
                         }
                     }
 
-                    if (intensity == 0) {
+                    if (intensity == 0 || this.spectrumPeak == 0) {
                         intensity = val.getIntensity();
+                    }
+
+                    if (sumIntensities == 0 || this.spectrumPeak == 0) {
+                        sumIntensities = val.getSumIntensity();
                     }
 
                     if (val != null) {
                         for (String name : newDataset.getAllColumnNames()) {
                             double concentration = ((SimplePeakListRowGCGC) row).getPeak(name);
-                            double newConcentration = intensity * (concentration / val.getSumIntensity());
+                            double newConcentration = intensity * (concentration / sumIntensities);
                             if (newConcentration != Double.POSITIVE_INFINITY) {
                                 ((SimplePeakListRowGCGC) row).setPeak(name, newConcentration);
                             } else {

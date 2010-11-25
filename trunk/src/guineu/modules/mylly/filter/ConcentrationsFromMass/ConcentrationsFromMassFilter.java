@@ -46,6 +46,7 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
     private ConcentrationsFromMassParameters parameters;
 
     public void initModule() {
+        this.parameters = new ConcentrationsFromMassParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.MYLLY, "Recalculate intensities..",
                 "Recalculation of the intensities of peaks with mass information.", KeyEvent.VK_E, this, null, null);
@@ -70,8 +71,7 @@ public class ConcentrationsFromMassFilter implements GuineuModule, TaskListener,
     }
 
     public void actionPerformed(ActionEvent e) {
-        try {
-            this.parameters = new ConcentrationsFromMassParameters();
+        try {            
             setupParameters(parameters);
         } catch (Exception exception) {
         }
