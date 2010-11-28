@@ -1,34 +1,34 @@
 /*
  * Copyright 2007-2010 VTT Biotechnology
- * This file is part of Guineu.
+ * This file is part of GopiBugs.
  *
- * Guineu is free software; you can redistribute it and/or modify it under the
+ * GopiBugs is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * GopiBugs is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * GopiBugs; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.data.datamodels;
+package GopiBugs.data.datamodels;
 
-import guineu.data.GCGCColumnName;
-import guineu.data.PeakListRow;
-import guineu.data.DatasetType;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.util.Tables.DataTableModel;
+import GopiBugs.data.GCGCColumnName;
+import GopiBugs.data.PeakListRow;
+import GopiBugs.data.DatasetType;
+import GopiBugs.data.impl.datasets.SimpleGCGCDataset;
+import GopiBugs.data.impl.peaklists.SimplePeakListRowGCGC;
+import GopiBugs.util.Tables.DataTableModel;
 import javax.swing.table.AbstractTableModel;
-import guineu.data.Dataset;
-import guineu.desktop.impl.DesktopParameters;
-import guineu.main.GuineuCore;
-import guineu.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
-import guineu.util.CollectionUtils;
+import GopiBugs.data.Dataset;
+import GopiBugs.desktop.impl.DesktopParameters;
+import GopiBugs.main.GopiBugsCore;
+import GopiBugs.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
+import GopiBugs.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,14 +52,14 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
         }
 
         /**
-         * @see guineu.data.GCGCColumnName
+         * @see GopiBugs.data.GCGCColumnName
          * The function isColumnShown() in the enum class says whether each column has to be shown in the table or not.
          *
          */
         public void setParameters() {
                 this.columns = new ArrayList<GCGCColumnName>();
                 fixNumberColumns = 0;
-                this.GCGCViewParameters = (GCGCColumnsViewParameters) ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getViewGCGCParameters();
+                this.GCGCViewParameters = (GCGCColumnsViewParameters) ((DesktopParameters) GopiBugsCore.getDesktop().getParameterSet()).getViewGCGCParameters();
                 Object elementsObjects[] = (Object[]) GCGCViewParameters.getParameterValue(GCGCColumnsViewParameters.columnSelection);
                 elements = CollectionUtils.changeArrayType(elementsObjects,
                         GCGCColumnName.class);
@@ -86,7 +86,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
         }
 
         /**
-         * @see guineu.util.Tables.DataTableModel
+         * @see GopiBugs.util.Tables.DataTableModel
          */
         public void removeRows() {
                 for (int i = 0; i < this.dataset.getNumberRows(); i++) {
@@ -159,21 +159,21 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
         }
 
         /**
-         * @see guineu.util.Tables.DataTableModel
+         * @see GopiBugs.util.Tables.DataTableModel
          */
         public DatasetType getType() {
                 return this.dataset.getType();
         }
 
         /**
-         * @see guineu.util.Tables.DataTableModel
+         * @see GopiBugs.util.Tables.DataTableModel
          */
         public int getFixColumns() {
                 return this.fixNumberColumns;
         }
 
         /**
-         * @see guineu.util.Tables.DataTableModel
+         * @see GopiBugs.util.Tables.DataTableModel
          */
         public void addColumn(String columnName) {
                 this.dataset.addColumnName(columnName);
