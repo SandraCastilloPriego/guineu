@@ -70,39 +70,39 @@ public class TransposeFilterTask implements Task {
             SimpleBasicDataset newDataset = new SimpleBasicDataset(dataset.getDatasetName() + "- transposed");
             newDataset.addColumnName("Name");
             status = TaskStatus.PROCESSING;
-            
+
             List<String> newNames = new ArrayList<String>();
             for (PeakListRow row : dataset.getRows()) {
-            String newName = " ";
-            int l = ((String) row.getVar("getName")).length();
-            try {
-            switch (dataset.getType()) {
-            case LCMS:
-            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getMZ")).toString() + " - " + ((Double) row.getVar("getRT")).toString() + " - " + ((Double) row.getVar("getNumFound")).toString();
-            case GCGCTOF:
-            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getRT1")).toString() + " - " + ((Double) row.getVar("getRT2")).toString() + " - " + ((Double) row.getVar("getRTI")).toString();
-            case BASIC:
-            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
-            }
-            } catch (Exception e) {
-            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
-            }
-            newDataset.addColumnName(newName);
-            
-            newNames.add(newName);
+                String newName = " ";
+                int l = ((String) row.getVar("getName")).length();
+                try {
+                    switch (dataset.getType()) {
+                        case LCMS:
+                            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getMZ")).toString() + " - " + ((Double) row.getVar("getRT")).toString() + " - " + ((Double) row.getVar("getNumFound")).toString();
+                        case GCGCTOF:
+                            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getRT1")).toString() + " - " + ((Double) row.getVar("getRT2")).toString() + " - " + ((Double) row.getVar("getRTI")).toString();
+                        case BASIC:
+                            newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
+                    }
+                } catch (Exception e) {
+                    newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
+                }
+                newDataset.addColumnName(newName);
+
+                newNames.add(newName);
             }
             for (String samples : dataset.getAllColumnNames()) {
-            SimplePeakListRowOther row = new SimplePeakListRowOther();
-            row.setPeak("Name", samples);
-            newDataset.addRow(row);
+                SimplePeakListRowOther row = new SimplePeakListRowOther();
+                row.setPeak("Name", samples);
+                newDataset.addRow(row);
             }
             int cont = 0;
             for (PeakListRow row2 : dataset.getRows()) {
-            
-            for (PeakListRow row : newDataset.getRows()) {
-            row.setPeak(newNames.get(cont), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
-            }
-            cont++;
+
+                for (PeakListRow row : newDataset.getRows()) {
+                    row.setPeak(newNames.get(cont), String.valueOf(row2.getPeak((String) row.getPeak("Name"))));
+                }
+                cont++;
             }
             newDataset.setType(DatasetType.BASIC);
             desktop.AddNewFile(newDataset);

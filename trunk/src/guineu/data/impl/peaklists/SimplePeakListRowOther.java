@@ -52,6 +52,7 @@ public class SimplePeakListRowOther implements PeakListRow {
             str = itr.next();
             peakListRow.setPeak(str, peaks.get(str));
         }
+        ((SimplePeakListRowOther)peakListRow).setSelectionMode(selection);
         return peakListRow;
     }
 

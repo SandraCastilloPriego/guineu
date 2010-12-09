@@ -543,6 +543,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 }
                 ((SimplePeakListRowGCGC) newPeakListRow).row = clonedRow;
                 ((SimplePeakListRowGCGC) newPeakListRow).setDistValue(_distValue);
+                ((SimplePeakListRowGCGC) newPeakListRow).setSelectionMode(selection);
                 return newPeakListRow;
 
         }
