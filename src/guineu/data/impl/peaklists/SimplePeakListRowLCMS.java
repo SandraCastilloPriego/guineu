@@ -84,6 +84,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
             str = itr.next();
             peakListRow.setPeak(str, peaks.get(str));
         }
+        ((SimplePeakListRowLCMS)peakListRow).setSelectionMode(this.isSelected());
         return peakListRow;
     }
 
