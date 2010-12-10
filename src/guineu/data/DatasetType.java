@@ -39,7 +39,11 @@ public enum DatasetType {
         /**
          * Quality control data
          */
-        QUALITYCONTROL;
+        QUALITYCONTROL,
+         /**
+         * Expression data
+         */
+        EXPRESSION;
 };
 
     
