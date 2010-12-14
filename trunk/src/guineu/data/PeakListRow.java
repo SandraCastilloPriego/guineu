@@ -124,4 +124,10 @@ public interface PeakListRow {
          * @param value
          */
         public void setVar(String varName, Object value);
+
+        /**
+         *
+         * @return the name of the variable
+         */
+        public String getVarName();
 }
