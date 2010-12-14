@@ -707,4 +707,8 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 }
 
         }
+
+    public String getVarName() {
+        return this.name;
+    }
 }

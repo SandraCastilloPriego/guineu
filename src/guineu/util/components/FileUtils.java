@@ -23,9 +23,12 @@ import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.data.datamodels.OtherDataModel;
 import guineu.data.DatasetType;
+import guineu.data.datamodels.DatasetExpressionDataModel;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleExpressionDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowExpression;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
@@ -37,50 +40,58 @@ import guineu.util.Tables.DataTableModel;
  */
 public class FileUtils {
 
-        public static PeakListRow getPeakListRow(DatasetType type) {
-                switch (type) {
-                        case LCMS:
-                                return new SimplePeakListRowLCMS();
-                        case GCGCTOF:
-                                return new SimplePeakListRowGCGC();
-                        case BASIC:
-                                return new SimplePeakListRowOther();
-                }
-                return null;
+    public static PeakListRow getPeakListRow(DatasetType type) {
+        switch (type) {
+            case LCMS:
+                return new SimplePeakListRowLCMS();
+            case GCGCTOF:
+                return new SimplePeakListRowGCGC();
+            case BASIC:
+                return new SimplePeakListRowOther();
+            case EXPRESSION:
+                return new SimplePeakListRowExpression();
         }
+        return null;
+    }
 
-        public static Dataset getDataset(Dataset dataset, String Name) {
-                Dataset newDataset = null;
-                switch (dataset.getType()) {
-                        case LCMS:
-                                newDataset = new SimpleLCMSDataset(Name + dataset.getDatasetName());
-                                break;
-                        case GCGCTOF:
-                                newDataset = new SimpleGCGCDataset(Name + dataset.getDatasetName());
-                                ((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
-                                ((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
-                                break;
-                        case BASIC:
-                                newDataset = new SimpleBasicDataset(Name + dataset.getDatasetName());
-                                break;
-                }
-                newDataset.setType(dataset.getType());
-                return newDataset;
+    public static Dataset getDataset(Dataset dataset, String Name) {
+        Dataset newDataset = null;
+        switch (dataset.getType()) {
+            case LCMS:
+                newDataset = new SimpleLCMSDataset(Name + dataset.getDatasetName());
+                break;
+            case GCGCTOF:
+                newDataset = new SimpleGCGCDataset(Name + dataset.getDatasetName());
+                ((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
+                ((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
+                break;
+            case BASIC:
+                newDataset = new SimpleBasicDataset(Name + dataset.getDatasetName());
+                break;
+            case EXPRESSION:
+                newDataset = new SimpleExpressionDataset(Name + dataset.getDatasetName());
+                break;
         }
+        newDataset.setType(dataset.getType());
+        return newDataset;
+    }
 
-        public static DataTableModel getTableModel(Dataset dataset) {
-                DataTableModel model = null;
-                switch (dataset.getType()) {
-                        case LCMS:
-                                model = new DatasetLCMSDataModel(dataset);
-                                break;
-                        case GCGCTOF:
-                                model = new DatasetGCGCDataModel(dataset);
-                                break;
-                        case BASIC:
-                                model = new OtherDataModel(dataset);
-                                break;                        
-                }
-                return model;
+    public static DataTableModel getTableModel(Dataset dataset) {
+        DataTableModel model = null;
+        switch (dataset.getType()) {
+            case LCMS:
+                model = new DatasetLCMSDataModel(dataset);
+                break;
+            case GCGCTOF:
+                model = new DatasetGCGCDataModel(dataset);
+                break;
+            case BASIC:
+                model = new OtherDataModel(dataset);
+                break;
+            case EXPRESSION:
+                model = new DatasetExpressionDataModel(dataset);
+                break;
         }
+        return model;
+    }
 }

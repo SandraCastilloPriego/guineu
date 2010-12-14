@@ -21,6 +21,7 @@ package guineu.data.impl.peaklists;
 import guineu.data.PeakListRow;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -77,6 +78,7 @@ public class SimplePeakListRowExpression implements PeakListRow {
 
         return peakListRow;
     }
+
 
     public Hashtable<String, Object> getMetaData() {
         return this.metaData;
@@ -221,6 +223,11 @@ public class SimplePeakListRowExpression implements PeakListRow {
             Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public String getVarName() {
+        Enumeration e = this.metaData.elements();
+        return (String) e.nextElement();
     }
    
 }

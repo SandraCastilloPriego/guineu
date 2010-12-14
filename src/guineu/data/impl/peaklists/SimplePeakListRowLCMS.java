@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -346,6 +345,10 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
     @Override
     public String toString() {
+        return this.Name;
+    }
+
+    public String getVarName() {
         return this.Name;
     }
 }

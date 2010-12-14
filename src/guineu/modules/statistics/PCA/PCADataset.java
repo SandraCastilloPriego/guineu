@@ -17,19 +17,27 @@
  */
 package guineu.modules.statistics.PCA;
 
+import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskStatus;
+import guineu.util.WekaUtils;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javastat.multivariate.PCA;
+//import javastat.multivariate.PCA;
+import jmprojection.PCA;
 import jmprojection.Preprocess;
 import jmprojection.ProjectionStatus;
 
 import org.jfree.data.xy.AbstractXYDataset;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.PrincipalComponents;
 
 /**
  * @author Taken from MZmine2
@@ -54,6 +62,7 @@ public class PCADataset extends AbstractXYDataset implements
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private ProjectionStatus projectionStatus;
+    private Dataset dataset;
 
     public PCADataset(ProjectionPlotParameters parameters) {
 
@@ -64,6 +73,7 @@ public class PCADataset extends AbstractXYDataset implements
 
         selectedSamples = parameters.getSelectedSamples();
         selectedRows = parameters.getSelectedRows();
+        dataset = parameters.getSourcePeakList();
 
         datasetTitle = "Principal component analysis";
 
@@ -161,11 +171,13 @@ public class PCADataset extends AbstractXYDataset implements
     }
 
     public String getRawDataFile(int item) {
-        return selectedSamples.elementAt(item);
+        //return "hola";
+           return selectedSamples.elementAt(item);
     }
 
     public int getGroupNumber(int item) {
-        return groupsForSelectedRawDataFiles[item];
+       // return 0;
+            return groupsForSelectedRawDataFiles[item];
     }
 
     public Object getGroupParameterValue(int groupNumber) {
@@ -208,17 +220,70 @@ public class PCADataset extends AbstractXYDataset implements
             numComponents = yAxisPC;
         }
 
-       PCA pca = new PCA(0.95, "regression", rawData);     
+        /* System.out.println(dataset.getDatasetName());
+        Instances data = WekaUtils.getWekaDataset(dataset);
 
-       double[][] result = (double[][]) pca.principalComponents;
+        PrincipalComponents PCA = new PrincipalComponents();
+        try {
+        PCA.setInputFormat(data);
+        PCA.setVarianceCovered(0.95);
+        PCA.setCenterData(true);
+        } catch (Exception ex) {
+        Logger.getLogger(PCADataset.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+        Instances transformedData = Filter.useFilter(data, PCA);
+
+
+        double[][] result = new double[transformedData.numInstances()][transformedData.numAttributes()];
+        for (int rowIndex = 0; rowIndex < transformedData.numInstances(); rowIndex++) {
+        Instance instance = data.instance(rowIndex);
+        //PCA.input(instance);
+        for (int fileIndex = 0; fileIndex < selectedSamples.size(); fileIndex++) {
+        double[] row = instance.toDoubleArray();
+        result[rowIndex] = row;
+        }
+        }
+
+        if (status == TaskStatus.CANCELED) {
+        return;
+        }
+
+        if (result.length > yAxisPC - 1) {
+        component1Coords = result[yAxisPC - 1];
+        component2Coords = result[xAxisPC - 1];
+
+
+        Desktop desktop = GuineuCore.getDesktop();
+        ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
+        parameters);
+        desktop.addInternalFrame(newFrame);
+        }
+
+        } catch (Exception ex) {
+        Logger.getLogger(PCADataset.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         */
+
+
+        //scaleToUnityVariance(rawData);
+        //PCA pca = new PCA(0.95, "regression", rawData);
+
+        //  double[][] result = (double[][]) pca.principalComponents;
+
+        scaleToUnityVariance(rawData);
+        PCA pcaProj = new PCA(rawData, numComponents);
+        projectionStatus = pcaProj.getProjectionStatus();
+
+        double[][] result = pcaProj.getState();
 
         if (status == TaskStatus.CANCELED) {
             return;
         }
 
         if (result.length > yAxisPC - 1) {
-            component1Coords = result[xAxisPC - 1];
-            component2Coords = result[yAxisPC - 1];
+            component1Coords = result[yAxisPC - 1];
+            component2Coords = result[xAxisPC - 1];
 
 
             Desktop desktop = GuineuCore.getDesktop();
@@ -226,9 +291,46 @@ public class PCADataset extends AbstractXYDataset implements
                     parameters);
             desktop.addInternalFrame(newFrame);
         }
+
         status = TaskStatus.FINISHED;
         logger.info("Finished computing projection plot.");
 
+    }
+
+    public void scaleToUnityVariance(double[][] data) {
+        try {
+            int cols;
+            int rows;
+
+            double mean;
+            double s;
+            double delta;
+            double temp;
+
+            rows = data.length;
+            cols = data[0].length;
+
+            for (int i = 0; i < cols; i++) {
+                mean = 0.0;
+                s = 0.0;
+                delta = 0.0;
+
+                for (int j = 0; j < rows; j++) {
+                    temp = data[j][i];
+                    delta = temp - mean;
+                    mean += delta / (j + 1);
+                    s += delta * (temp - mean);
+                }
+                s = Math.sqrt(s / (rows - 1));
+                for (int j = 0; j < rows; j++) {
+
+                    data[j][i] -= mean;
+                    data[j][i] /= s;
+                }                
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void cancel() {

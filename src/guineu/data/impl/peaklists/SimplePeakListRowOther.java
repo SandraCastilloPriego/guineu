@@ -164,4 +164,8 @@ public class SimplePeakListRowOther implements PeakListRow {
         }
 
     }
+
+    public String getVarName() {
+        return String.valueOf(this.ID);
+    }
 }
