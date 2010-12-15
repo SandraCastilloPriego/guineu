@@ -71,9 +71,11 @@ public class SaveLCMSFileTask implements Task {
 			if (dataset.getType() == DatasetType.LCMS) {
 				if (parameters.getParameterValue(SaveLCMSParameters.type).toString().matches(".*Excel.*")) {
 					db.WriteExcelFile(dataset, path, parameters);
-				} else {
+				} else if(parameters.getParameterValue(SaveLCMSParameters.type).toString().matches(".*csv.*")){
 					db.WriteCommaSeparatedFile(dataset, path, parameters);
-				}
+				}else{
+                    db.WriteExpressionData(dataset,path, parameters);
+                }
 			}
 			status = TaskStatus.FINISHED;
 		} catch (Exception e) {

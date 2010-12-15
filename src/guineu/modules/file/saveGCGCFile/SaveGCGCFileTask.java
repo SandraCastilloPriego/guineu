@@ -31,53 +31,55 @@ import guineu.taskcontrol.TaskStatus;
  */
 public class SaveGCGCFileTask implements Task {
 
-	private Dataset dataset;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private String path;
-	private InDataBase db;
-	private SimpleParameterSet parameters;
+    private Dataset dataset;
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    private String path;
+    private InDataBase db;
+    private SimpleParameterSet parameters;
 
-	public SaveGCGCFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
-		this.dataset = dataset;
-		this.path = path;
-		this.parameters = parameters;
-		db = new InOracle();
-	}
+    public SaveGCGCFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
+        this.dataset = dataset;
+        this.path = path;
+        this.parameters = parameters;
+        db = new InOracle();
+    }
 
-	public String getTaskDescription() {
-		return "Saving Dataset... ";
-	}
+    public String getTaskDescription() {
+        return "Saving Dataset... ";
+    }
 
-	public double getFinishedPercentage() {
-		return db.getProgress();
-	}
+    public double getFinishedPercentage() {
+        return db.getProgress();
+    }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
 
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			if (dataset.getType() == DatasetType.GCGCTOF) {
-				if (parameters.getParameterValue(SaveGCGCParameters.type).toString().matches(".*Excel.*")) {
-					db.WriteExcelFile(dataset, path, parameters);
-				} else {
-					db.WriteCommaSeparatedFile(dataset, path, parameters);
-				}
-			}
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-		}
-	}
+    public void run() {
+        try {
+            status = TaskStatus.PROCESSING;
+            if (dataset.getType() == DatasetType.GCGCTOF) {
+                if (parameters.getParameterValue(SaveGCGCParameters.type).toString().matches(".*Excel.*")) {
+                    db.WriteExcelFile(dataset, path, parameters);
+                } else if (parameters.getParameterValue(SaveGCGCParameters.type).toString().matches(".*csv.*")) {
+                    db.WriteCommaSeparatedFile(dataset, path, parameters);
+                } else {
+                    db.WriteExpressionData(dataset, path, parameters);
+                }
+            }
+            status = TaskStatus.FINISHED;
+        } catch (Exception e) {
+            status = TaskStatus.ERROR;
+        }
+    }
 }
