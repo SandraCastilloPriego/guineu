@@ -78,6 +78,7 @@ public class GCGCParserCSV implements Parser {
                                 rowsReaded++;
                         }
 
+                        reader.close();
                 } catch (Exception e) {
                         // e.printStackTrace();
                 }
@@ -161,6 +162,7 @@ public class GCGCParserCSV implements Parser {
                         while (reader.readRecord()) {
                                 this.rowsNumber++;
                         }
+                        reader.close();
                 } catch (Exception e) {
                         e.printStackTrace();
                 }

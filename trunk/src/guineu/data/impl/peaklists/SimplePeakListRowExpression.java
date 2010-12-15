@@ -225,6 +225,10 @@ public class SimplePeakListRowExpression implements PeakListRow {
 
     }
 
+    public String getName(){
+        return this.getVarName();
+    }
+
     public String getVarName() {
         Enumeration e = this.metaData.elements();
         return (String) e.nextElement();
