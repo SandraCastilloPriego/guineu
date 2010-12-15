@@ -183,8 +183,8 @@ public class InOracle implements InDataBase {
         return task;
     }
 
-    public void WriteExpressionData(Dataset dataset, String path) {
+    public void WriteExpressionData(Dataset dataset, String path, SimpleParameterSet parameters) {
         WriteFile fileWriter = new WriteFile();
-        fileWriter.writeExpressionData(dataset, path);
+        fileWriter.writeExpressionData(dataset, path, parameters);
     }
 }

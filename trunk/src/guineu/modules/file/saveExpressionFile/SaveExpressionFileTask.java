@@ -75,7 +75,7 @@ public class SaveExpressionFileTask implements Task {
 				} else if(type.matches(".*csv.*")){
 					db.WriteCommaSeparatedFile(dataset, path, parameters);
 				}else{
-                    db.WriteExpressionData(dataset,path);
+                    db.WriteExpressionData(dataset,path, null);
                 }
 			}
 			status = TaskStatus.FINISHED;

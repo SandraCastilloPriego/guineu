@@ -488,7 +488,7 @@ public class WriteFile {
         }
     }
 
-    void writeExpressionData(Dataset dataset, String path) {
+    void writeExpressionData(Dataset dataset, String path, SimpleParameterSet parameters) {
         try {
             path = path.replaceAll(".tsv", "");
             String pathAssay = path + "_Assay.tsv";
@@ -556,6 +556,71 @@ public class WriteFile {
                     }
                     w.writeRecord(rowString);
                 }
+            } else if (dataset.getType() == DatasetType.LCMS) {
+                Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveLCMSParameters.exportLCMS);
+                parameters.setParameterValue(SaveLCMSParameters.exportLCMS, elementsObjects);
+
+                LCMSColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
+                        LCMSColumnName.class);
+
+                rowString = new String[elements.length + 1];
+
+                // Write Feature file header
+                rowString[0] = "feature.id";
+                cont = 1;
+                for (LCMSColumnName data : elements) {
+                    if (data.isColumnShown()) {
+                        rowString[cont++] = data.getColumnName();
+                    }
+                }
+                w.writeRecord(rowString);
+
+                // Write Feature file body
+                int contId = 0;
+                for (PeakListRow row : dataset.getRows()) {
+                    rowString = new String[elements.length + 1];
+                    rowString[0] = ids.get(contId++);
+                    cont = 1;
+                    for (LCMSColumnName data : elements) {
+                        if (data.isColumnShown()) {
+                            rowString[cont++] = String.valueOf(row.getVar(data.getGetFunctionName()));
+                        }
+                    }
+                    w.writeRecord(rowString);
+                }
+
+            } else if (dataset.getType() == DatasetType.GCGCTOF) {
+                Object elementsObjects[] = (Object[]) parameters.getParameterValue(SaveGCGCParameters.exportGCGC);
+                parameters.setParameterValue(SaveGCGCParameters.exportGCGC, elementsObjects);
+
+                GCGCColumnName[] elements = CollectionUtils.changeArrayType(elementsObjects,
+                        GCGCColumnName.class);
+                rowString = new String[elements.length + 1];
+
+                // Write Feature file header
+                rowString[0] = "feature.id";
+                cont = 1;
+                for (GCGCColumnName data : elements) {
+                    if (data.isColumnShown()) {
+                        rowString[cont++] = data.getColumnName();
+                    }
+                }
+                w.writeRecord(rowString);
+
+                // Write Feature file body
+                int contId = 0;
+                for (PeakListRow row : dataset.getRows()) {
+                    rowString = new String[elements.length + 1];
+                    rowString[0] = ids.get(contId++);
+                    cont = 1;
+                    for (GCGCColumnName data : elements) {
+                        if (data.isColumnShown()) {
+                            rowString[cont++] = String.valueOf(row.getVar(data.getGetFunctionName()));
+                        }
+                    }
+                    w.writeRecord(rowString);
+                }
+
             }
             w.close();
 

@@ -120,5 +120,5 @@ public interface InDataBase {
      * @param dataset Data set
      * @param path Path where the new file will be created
      */
-    public void WriteExpressionData(Dataset dataset, String path);
+    public void WriteExpressionData(Dataset dataset, String path, SimpleParameterSet parameters);
 }

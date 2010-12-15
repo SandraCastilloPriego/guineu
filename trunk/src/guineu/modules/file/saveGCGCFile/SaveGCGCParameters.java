@@ -25,7 +25,7 @@ import guineu.data.impl.SimpleParameterSet;
 
 public class SaveGCGCParameters extends SimpleParameterSet {
 
-	static Object[] objects = {"Excel", "csv"};
+	static Object[] objects = {"Excel", "csv", "ExpressionData"};
     public static final Parameter GCGCfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
             "GCGC Filename",

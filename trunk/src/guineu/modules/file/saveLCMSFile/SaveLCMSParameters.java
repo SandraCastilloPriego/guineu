@@ -25,7 +25,7 @@ import guineu.data.impl.SimpleParameterSet;
 
 public class SaveLCMSParameters extends SimpleParameterSet {
 
-	static Object[] objects = {"Excel", "csv"};
+	static Object[] objects = {"Excel", "csv", "ExpressionData"};
     public static final Parameter LCMSfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
             "LCMS Filename",
