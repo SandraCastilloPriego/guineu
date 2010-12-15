@@ -32,86 +32,93 @@ import java.sql.Connection;
  */
 public interface InDataBase {
 
-        /**
-         * Connects to the database
-         *
-         * @return Connection
-         */
-        public Connection connect();
+    /**
+     * Connects to the database
+     *
+     * @return Connection
+     */
+    public Connection connect();
 
-        /**
-         * Returns a number from 0 to 1 which represents the progress of the task.
-         *
-         * @return Progress of the task
-         */
-        public float getProgress();
+    /**
+     * Returns a number from 0 to 1 which represents the progress of the task.
+     *
+     * @return Progress of the task
+     */
+    public float getProgress();
 
-        /**
-         * Returns a description of the current task.
-         *
-         * @return Description of the task
-         */
-        public String getTaskDescription();
+    /**
+     * Returns a description of the current task.
+     *
+     * @return Description of the task
+     */
+    public String getTaskDescription();
 
-        /**
-         * Puts a LC-MS data set into the database.
-         *
-         * @param conn Database connection
-         * @param dataset LC-MS Data set
-         * @param type Type of the data set (in this case LC-MS)
-         * @param author Name of the person who perfomed the process
-         * @param datasetName Data set name
-         * @param parameters Path of MZmine parameters
-         * @param study Study of the dataset
-         * @throws IOException
-         */
-        public void lcms(Connection conn, SimpleLCMSDataset dataset, String type, String author, String datasetName, String parameters, String study) throws IOException;
+    /**
+     * Puts a LC-MS data set into the database.
+     *
+     * @param conn Database connection
+     * @param dataset LC-MS Data set
+     * @param type Type of the data set (in this case LC-MS)
+     * @param author Name of the person who perfomed the process
+     * @param datasetName Data set name
+     * @param parameters Path of MZmine parameters
+     * @param study Study of the dataset
+     * @throws IOException
+     */
+    public void lcms(Connection conn, SimpleLCMSDataset dataset, String type, String author, String datasetName, String parameters, String study) throws IOException;
 
-        /**
-         * Puts a GCxGC-MS data set into the database.
-         *
-         * @param conn Database connection
-         * @param dataset GCxGC-MS Data set
-         * @param type Type of the data set (in this case GCxGC-MS)
-         * @param author Name of the person who perfomed the process
-         * @param datasetName Data set name
-         * @param study Study of the dataset
-         * @throws IOException
-         */
-        public void gcgctof(Connection conn, SimpleGCGCDataset dataset, String type, String author, String datasetName, String study) throws IOException;
+    /**
+     * Puts a GCxGC-MS data set into the database.
+     *
+     * @param conn Database connection
+     * @param dataset GCxGC-MS Data set
+     * @param type Type of the data set (in this case GCxGC-MS)
+     * @param author Name of the person who perfomed the process
+     * @param datasetName Data set name
+     * @param study Study of the dataset
+     * @throws IOException
+     */
+    public void gcgctof(Connection conn, SimpleGCGCDataset dataset, String type, String author, String datasetName, String study) throws IOException;
 
-        /**
-         * Puts the quality control files into the database.
-         *
-         * @param conn Database connection
-         * @param qualityDataset Data set
-         * @throws IOException
-         */
-        public void qualityControlFiles(Connection conn, SimpleBasicDataset qualityDataset) throws IOException;
+    /**
+     * Puts the quality control files into the database.
+     *
+     * @param conn Database connection
+     * @param qualityDataset Data set
+     * @throws IOException
+     */
+    public void qualityControlFiles(Connection conn, SimpleBasicDataset qualityDataset) throws IOException;
 
-        /**
-         * Writes the data set into an excel file.
-         *
-         * @param dataset Data set
-         * @param path Path where the new file will be created
-         * @param parameters Parameters for saving the file (columns saved in the new file)
-         */
-        public void WriteExcelFile(Dataset dataset, String path, SimpleParameterSet parameters);
+    /**
+     * Writes the data set into an excel file.
+     *
+     * @param dataset Data set
+     * @param path Path where the new file will be created
+     * @param parameters Parameters for saving the file (columns saved in the new file)
+     */
+    public void WriteExcelFile(Dataset dataset, String path, SimpleParameterSet parameters);
 
-        /**
-         * Writes the data set into a CSV file.
-         *
-         * @param dataset Data set
-         * @param path Path where the new file will be created
-         * @param parameters Parameters for saving the file (columns saved in the new file)
-         */
-        public void WriteCommaSeparatedFile(Dataset dataset, String path, SimpleParameterSet parameters);
+    /**
+     * Writes the data set into a CSV file.
+     *
+     * @param dataset Data set
+     * @param path Path where the new file will be created
+     * @param parameters Parameters for saving the file (columns saved in the new file)
+     */
+    public void WriteCommaSeparatedFile(Dataset dataset, String path, SimpleParameterSet parameters);
 
-        /**
-         * Deletes the dataset from the database.
-         *
-         * @param conn Database connection
-         * @param datasetID ID of the data set into de database
-         */
-        public void deleteDataset(Connection conn, int datasetID);
+    /**
+     * Deletes the dataset from the database.
+     *
+     * @param conn Database connection
+     * @param datasetID ID of the data set into de database
+     */
+    public void deleteDataset(Connection conn, int datasetID);
+
+    /**
+     * Writes three files for the expression data: assaydata, feature and pheno.
+     * @param dataset Data set
+     * @param path Path where the new file will be created
+     */
+    public void WriteExpressionData(Dataset dataset, String path);
 }

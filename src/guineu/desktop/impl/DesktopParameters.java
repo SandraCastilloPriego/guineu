@@ -23,6 +23,7 @@ import guineu.main.GuineuCore;
 import guineu.modules.configuration.proxy.ProxyConfigurationParameters;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsViewParameters;
+import guineu.modules.file.saveExpressionFile.SaveExpressionParameters;
 import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
 import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.modules.file.saveOtherFile.SaveOtherParameters;
@@ -75,7 +76,7 @@ public class DesktopParameters implements StorableParameterSet,
     private String lastMyllyPath = " ";
     private String normalizationPath = " ";
     private SimpleParameterSet LCMSViewParameters, GCGCViewParameters;
-    private SimpleParameterSet SaveLCMSParameters, SaveGCGCParameters, SaveOtherParameters;
+    private SimpleParameterSet SaveLCMSParameters, SaveGCGCParameters, SaveOtherParameters, SaveExpressionParameters;
     private SimpleParameterSet proxy;
     public final Hashtable<String, Range> standards;
 
@@ -94,6 +95,7 @@ public class DesktopParameters implements StorableParameterSet,
         LCMSViewParameters = new LCMSColumnsViewParameters();
         GCGCViewParameters = new GCGCColumnsViewParameters();
         SaveLCMSParameters = new SaveLCMSParameters();
+        SaveExpressionParameters = new SaveExpressionParameters();
         SaveGCGCParameters = new SaveGCGCParameters();
         SaveOtherParameters = new SaveOtherParameters();
 
@@ -141,6 +143,14 @@ public class DesktopParameters implements StorableParameterSet,
 
     public void setSaveLCMSParameters(SimpleParameterSet SaveDatasetParameters) {
         this.SaveLCMSParameters = SaveDatasetParameters;
+    }
+
+    public void setSaveExpressionParameters(SimpleParameterSet SaveDatasetParameters) {
+        this.SaveExpressionParameters = SaveDatasetParameters;
+    }
+
+    public SimpleParameterSet getSaveExpressionParameters() {
+        return SaveExpressionParameters;
     }
 
     public SimpleParameterSet getSaveGCGCParameters() {
@@ -291,7 +301,7 @@ public class DesktopParameters implements StorableParameterSet,
         this.lastMyllyPath = lastMyllyPath;
     }
 
-     /**
+    /**
      * @return Returns the lastMyllyPath (GCGC-tof part).
      */
     public String getLastNormalizationPath() {
@@ -352,6 +362,7 @@ public class DesktopParameters implements StorableParameterSet,
         LCMSViewParameters.exportValuesToXML(element);
         GCGCViewParameters.exportValuesToXML(element);
         SaveLCMSParameters.exportValuesToXML(element);
+        SaveExpressionParameters.exportValuesToXML(element);
         SaveGCGCParameters.exportValuesToXML(element);
         SaveOtherParameters.exportValuesToXML(element);
 
@@ -418,6 +429,7 @@ public class DesktopParameters implements StorableParameterSet,
         LCMSViewParameters.importValuesFromXML(element);
         GCGCViewParameters.importValuesFromXML(element);
         SaveLCMSParameters.importValuesFromXML(element);
+        SaveExpressionParameters.importValuesFromXML(element);
         SaveGCGCParameters.importValuesFromXML(element);
         SaveOtherParameters.importValuesFromXML(element);
 

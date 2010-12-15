@@ -174,6 +174,7 @@ public class LCMSParserCSV implements Parser {
             while (reader.readRecord()) {
                 this.rowsNumber++;
             }
+            reader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

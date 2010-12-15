@@ -24,15 +24,12 @@ import guineu.data.ParameterType;
 import guineu.data.impl.datasets.SimpleExpressionDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowExpression;
 import guineu.data.parser.Parser;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -68,13 +65,14 @@ public class ExpressionParserTSV implements Parser {
 
     public void fillData() {
         try {
+            this.countNumberRows();
+            
             CsvReader reader = new CsvReader(new FileReader(assayPath));
             reader.setDelimiter('\t');
 
             reader.readHeaders();
             String[] header = reader.getHeaders();
             setExperimentsName(header);
-
             Hashtable<String, List<String>> features = readFeature();
 
             while (reader.readRecord()) {
@@ -86,6 +84,18 @@ public class ExpressionParserTSV implements Parser {
                 fillPhenoData();
             }
 
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void countNumberRows() {
+        try {
+            CsvReader reader = new CsvReader(new FileReader(assayPath));
+            while (reader.readRecord()) {
+                this.rowsNumber++;
+            }
             reader.close();
         } catch (Exception e) {
             e.printStackTrace();
