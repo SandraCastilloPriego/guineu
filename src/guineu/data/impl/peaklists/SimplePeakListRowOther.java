@@ -52,7 +52,7 @@ public class SimplePeakListRowOther implements PeakListRow {
             str = itr.next();
             peakListRow.setPeak(str, peaks.get(str));
         }
-        ((SimplePeakListRowOther)peakListRow).setSelectionMode(selection);
+        ((SimplePeakListRowOther) peakListRow).setSelectionMode(selection);
         return peakListRow;
     }
 
@@ -96,7 +96,6 @@ public class SimplePeakListRowOther implements PeakListRow {
     public void setPeak(String name, Double value) {
     }
 
-   
     public boolean isSelected() {
         return this.selection;
     }
@@ -165,7 +164,7 @@ public class SimplePeakListRowOther implements PeakListRow {
 
     }
 
-    public String getVarName() {
+    public String getName() {
         return String.valueOf(this.ID);
     }
 }

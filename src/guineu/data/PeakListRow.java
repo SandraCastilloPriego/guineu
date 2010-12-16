@@ -129,5 +129,5 @@ public interface PeakListRow {
          *
          * @return the name of the variable
          */
-        public String getVarName();
+        public String getName();
 }

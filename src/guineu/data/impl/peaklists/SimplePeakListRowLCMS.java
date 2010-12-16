@@ -346,9 +346,5 @@ public class SimplePeakListRowLCMS implements PeakListRow {
     @Override
     public String toString() {
         return this.Name;
-    }
-
-    public String getVarName() {
-        return this.Name;
-    }
+    }   
 }
