@@ -34,7 +34,7 @@ public class WekaUtils {
                 int cont = 1;
                 for (PeakListRow row : dataset.getRows()) {
                     String rowName = "";
-                    rowName = row.getVarName();
+                    rowName = row.getName();
 
                     if (rowName == null || rowName.isEmpty()) {
                         rowName = "Var";

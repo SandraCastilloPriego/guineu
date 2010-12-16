@@ -17,7 +17,6 @@
  */
 package guineu.data.impl.peaklists;
 
-
 import guineu.data.PeakListRow;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -73,29 +72,27 @@ public class SimplePeakListRowExpression implements PeakListRow {
         itr = set.iterator();
         while (itr.hasNext()) {
             str = itr.next();
-            ((SimplePeakListRowExpression)peakListRow).setMetaData(str, metaData.get(str));
+            ((SimplePeakListRowExpression) peakListRow).setMetaData(str, metaData.get(str));
         }
 
         return peakListRow;
     }
 
-
     public Hashtable<String, Object> getMetaData() {
         return this.metaData;
     }
 
-    public Object getMetaData(String columnName){
-        if(this.metaData.containsKey(columnName)){
+    public Object getMetaData(String columnName) {
+        if (this.metaData.containsKey(columnName)) {
             return this.metaData.get(columnName);
-        }else{
+        } else {
             return null;
         }
     }
 
-    public void setMetaData(String columnName, Object value){
+    public void setMetaData(String columnName, Object value) {
         this.metaData.put(columnName, value);
     }
-
 
     public Object getPeak(String ExperimentName) {
         if (this.peaks.containsKey(ExperimentName)) {
@@ -225,13 +222,8 @@ public class SimplePeakListRowExpression implements PeakListRow {
 
     }
 
-    public String getName(){
-        return this.getVarName();
-    }
-
-    public String getVarName() {
+    public String getName() {
         Enumeration e = this.metaData.elements();
         return (String) e.nextElement();
     }
-   
 }
