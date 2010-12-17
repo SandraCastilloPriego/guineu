@@ -65,11 +65,6 @@ public class PasswordDialog extends javax.swing.JDialog {
         jPanel3.add(jLabel1);
 
         jPasswordField1.setPreferredSize(new java.awt.Dimension(60, 25));
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
-            }
-        });
         jPanel3.add(jPasswordField1);
 
         jPanel1.add(jPanel3);
@@ -122,9 +117,6 @@ public class PasswordDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel jLabel1;

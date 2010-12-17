@@ -48,7 +48,7 @@ public class Identification implements GuineuModule, TaskListener, ActionListene
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Identification Positive Ion Mode.. ",
-                "TODO write description", KeyEvent.VK_P, this, null, null);
+                "Identification of ESI positive mode using an internal database", KeyEvent.VK_P, this, null, null);
     }
 
     public void taskStarted(Task task) {

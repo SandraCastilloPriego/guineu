@@ -51,7 +51,7 @@ public class UPGMA implements GuineuModule, TaskListener, ActionListener {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.STATISTICS, "UPGMA Clustering..",
-                "TODO write description", KeyEvent.VK_U, this, null, "icons/help.png");
+                "UPGMA hierarchical clustering algorithm", KeyEvent.VK_U, this, null, "icons/help.png");
 
     }
 

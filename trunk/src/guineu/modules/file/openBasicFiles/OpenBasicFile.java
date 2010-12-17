@@ -47,7 +47,7 @@ public class OpenBasicFile implements GuineuModule, TaskListener, ActionListener
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILE, "Open other Files..",
-                "TODO write description", KeyEvent.VK_O, this, null, "icons/others.png");
+                "Opens files with any structure considering all the columns as a sample column", KeyEvent.VK_O, this, null, "icons/others.png");
 
     }
 

@@ -43,7 +43,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.FILE, "Open LCMS Local File..",
-                        "TODO write description", KeyEvent.VK_L, this, null, "icons/spectrumicon.png");
+                        "Open LCMS Local File", KeyEvent.VK_L, this, null, "icons/spectrumicon.png");
 
         }
 

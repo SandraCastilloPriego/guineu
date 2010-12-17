@@ -47,7 +47,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
         public void initModule() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
-                        "TODO write description", KeyEvent.VK_O, this, null, null);
+                        "Visualize the content of the internal database", KeyEvent.VK_O, this, null, null);
         }
 
         public void taskStarted(Task task) {

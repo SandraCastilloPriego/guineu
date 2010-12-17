@@ -50,7 +50,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
                 parameters = new RansacAlignerGCGCParameters();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.MYLLY, "Ransac Alignment..",
-                        "TODO write description", KeyEvent.VK_S, this, null, "icons/alignment.png");
+                        "Ransac Alignment", KeyEvent.VK_S, this, null, "icons/alignment.png");
 
         }
 

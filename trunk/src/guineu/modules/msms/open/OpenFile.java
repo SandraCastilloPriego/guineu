@@ -20,7 +20,6 @@ import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.logging.Logger;
 
 public class OpenFile implements GuineuModule, TaskListener, ActionListener {
@@ -33,7 +32,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.MSMS, "Open LCMSMS Local File..",
-				"TODO write description", KeyEvent.VK_L, this, null, null);
+				"Open LCMSMS Local File", KeyEvent.VK_L, this, null, null);
 
 	}
 

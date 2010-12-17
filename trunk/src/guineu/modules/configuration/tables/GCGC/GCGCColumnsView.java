@@ -52,7 +52,7 @@ public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListen
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.CONFIGURATION, "GCGC Table View..",
-                "TODO write description", KeyEvent.VK_G, this, null, "icons/conf2.png");
+                "Configuration of view of the GCxGC-MS table columns", KeyEvent.VK_G, this, null, "icons/conf2.png");
         parameters = new GCGCColumnsViewParameters();
 
     }

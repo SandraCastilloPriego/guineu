@@ -44,7 +44,7 @@ public class STDNormalization implements GuineuModule, TaskListener, ActionListe
 		this.desktop = GuineuCore.getDesktop();
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Std Deviation scaling..",
-				"TODO write description", KeyEvent.VK_N, this, null, null);
+				"Std Deviation scaling", KeyEvent.VK_N, this, null, null);
 	}
 
 	public String toString() {

@@ -44,7 +44,7 @@ public class MeanCentering implements GuineuModule, TaskListener, ActionListener
 		this.desktop = GuineuCore.getDesktop();
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Mean centering..",
-				"TODO write description", KeyEvent.VK_M, this, null, null);
+				"Mean centering", KeyEvent.VK_M, this, null, null);
 	}
 
 	public String toString() {

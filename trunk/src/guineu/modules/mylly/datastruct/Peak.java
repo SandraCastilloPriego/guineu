@@ -23,27 +23,71 @@ import java.util.List;
  * @author jmjarkko
  */
 public interface Peak {
-	//TODO WRITE THE DESCRIPTIONS!
 
-	public double getRT1();
+    /**
+     * Return the retention time of the first column in the chromatogram.
+     * @return Retention time 1
+     */
+    public double getRT1();
 
-	public double getRT2();
+    /**
+     * Return the retention time of the second column in the chromatogram.
+     * @return Retention time 2
+     */
+    public double getRT2();
 
-	public double getRTI();
+    /**
+     * Return retention time index.
+     * @return Retention time index
+     */
+    public double getRTI();
 
-	public double getArea();
+    /**
+     * Return the area of the peak.
+     * @return Peak area.
+     */
+    public double getArea();
 
-	public String getCAS();
+    /**
+     * Return CAS identifier.
+     * @return CAS Id
+     */
+    public String getCAS();
 
-	public double getConcentration();
+    /**
+     * Return the concentration of the metabolite.
+     * @return Metabolite concentration
+     */
+    public double getConcentration();
 
-	public Spectrum getSpectrum();
+    /**
+     * Return the spectrum of the metabolite.
+     * @return class "Spectrum"
+     */
+    public Spectrum getSpectrum();
 
-	public boolean matchesWithName(Peak p);
+    /**
+     * Return true if the peak "p" has the same name, and false if their names are different.
+     * @param p Other peak
+     * @return true when their names match
+     */
+    public boolean matchesWithName(Peak p);
 
-	public List<String> names();
+    /**
+     * Return a list with all possible identification of the peak.
+     * @return
+     */
+    public List<String> names();
 
-	public boolean hasQuantMass();
+    /**
+     * Return true if the peak has the quant mass information.
+     * @return true if the peak has the quant mass information
+     */
+    public boolean hasQuantMass();
 
-	public double getQuantMass();
+    /**
+     * Return the quant mass of the peak
+     * @return Peak's quant mass
+     */
+    public double getQuantMass();
 }

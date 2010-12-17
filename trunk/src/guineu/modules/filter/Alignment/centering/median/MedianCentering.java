@@ -44,7 +44,7 @@ public class MedianCentering implements GuineuModule, TaskListener, ActionListen
 		this.desktop = GuineuCore.getDesktop();
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Median centering..",
-				"TODO write description", KeyEvent.VK_E, this, null, null);
+				"Median centering", KeyEvent.VK_E, this, null, null);
 	}
 
 	public String toString() {

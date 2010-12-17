@@ -48,7 +48,7 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
                 this.parameters = new ReportParameters();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.REPORT, "Summary Report..",
-                        "TODO write description", KeyEvent.VK_I, this, null, null);
+                        "Summary Report", KeyEvent.VK_I, this, null, null);
 
         }
 

@@ -46,7 +46,7 @@ public class mediaFilter implements GuineuModule, TaskListener, ActionListener {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.STATISTICS, "Median..",
-                "TODO write description", KeyEvent.VK_M, this, null, "icons/median.png");
+                "Add a new column with the median of the peaks in each row", KeyEvent.VK_M, this, null, "icons/median.png");
 
     }
 

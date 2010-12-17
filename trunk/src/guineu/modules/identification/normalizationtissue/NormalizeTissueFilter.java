@@ -56,7 +56,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
                 this.weights = new Hashtable<String, Double>();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Tissue Normalization Filter..",
-                        "TODO write description", KeyEvent.VK_S, this, null, null);
+                        "Normalization of tissue samples based on internal standards", KeyEvent.VK_S, this, null, null);
 
         }
 

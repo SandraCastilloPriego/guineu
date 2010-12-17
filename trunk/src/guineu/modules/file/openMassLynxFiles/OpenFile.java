@@ -47,7 +47,7 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.FILE, "Open Mass Lynx Files..",
-                        "TODO write description", KeyEvent.VK_O, this, null, "icons/masslynx.png");
+                        "Open Mass Lynx Files", KeyEvent.VK_O, this, null, "icons/masslynx.png");
 
         }
 
