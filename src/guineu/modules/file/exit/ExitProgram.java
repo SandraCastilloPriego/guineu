@@ -41,7 +41,7 @@ public class ExitProgram implements GuineuModule, ActionListener {
         this.desktop = GuineuCore.getDesktop(); 
         desktop.addMenuSeparator(GuineuMenu.FILE);
         desktop.addMenuItem(GuineuMenu.FILE, "Exit..",
-                "TODO write description", KeyEvent.VK_E, this, null, null);
+                "Exit MZmine", KeyEvent.VK_E, this, null, null);
     }
 
     public ParameterSet getParameterSet() {

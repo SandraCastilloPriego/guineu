@@ -49,7 +49,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
 
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.FILTER, "Split dataset..",
-                        "TODO write description", KeyEvent.VK_S, this, null, null);
+                        "Creates two datasets with part of the samples of the original dataset", KeyEvent.VK_S, this, null, null);
                 desktop.addMenuSeparator(GuineuMenu.FILTER);
         }
 

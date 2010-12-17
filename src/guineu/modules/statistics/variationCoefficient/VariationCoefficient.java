@@ -46,7 +46,7 @@ public class VariationCoefficient implements GuineuModule, TaskListener, ActionL
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.STATISTICS, "Coefficient of variation..",
-                "TODO write description", KeyEvent.VK_V, this, null, "icons/linesicon.png");
+                "Calculate the average of coefficient of variation for the complete dataset ", KeyEvent.VK_V, this, null, "icons/linesicon.png");
 
     }
 

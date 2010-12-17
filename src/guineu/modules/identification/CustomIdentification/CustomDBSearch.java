@@ -52,7 +52,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
         parameters = new CustomDBSearchParameters();
 
         desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Identification by searching in CSV file",
-                "TODO write description",
+                "Custom identification using CSV file",
                 KeyEvent.VK_C, this, null, null);
     }
 

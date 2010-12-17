@@ -47,7 +47,7 @@ public class SaveFileDB implements GuineuModule, TaskListener, ActionListener {
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.DATABASE, "Save Dataset..",
-                "TODO write description", KeyEvent.VK_I, this, null, null);
+                "Save Dataset into the internal database", KeyEvent.VK_I, this, null, null);
     }
 
     public void taskStarted(Task task) {

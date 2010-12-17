@@ -50,7 +50,7 @@ public class CommonMolecules implements ActionListener, GuineuModule, TaskListen
 
 
         desktop.addMenuItem(GuineuMenu.FILTER, "Search for common peaks between datasets",
-                "TODO write description",
+                "Search for common peaks between datasets",
                 KeyEvent.VK_C, this, null, null);
     }
 

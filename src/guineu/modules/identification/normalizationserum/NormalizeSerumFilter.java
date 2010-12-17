@@ -54,7 +54,7 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
                 this.standards = new Vector<StandardUmol>();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Serum Normalization Filter..",
-                        "TODO write description", KeyEvent.VK_S, this, null, null);
+                        "Normalization of serum samples based on internal standards", KeyEvent.VK_S, this, null, null);
 
         }
 

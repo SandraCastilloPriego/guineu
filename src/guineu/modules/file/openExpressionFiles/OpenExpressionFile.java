@@ -47,7 +47,7 @@ public class OpenExpressionFile implements GuineuModule, TaskListener, ActionLis
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILE, "Open Gene Expression Files..",
-                "Open LCMS File", KeyEvent.VK_L, this, null, null);
+                "Open Gene Expresion Files (Assaig, Feature and Pheno)", KeyEvent.VK_L, this, null, null);
         parameters = new OpenExpressionParameters();
     }
 

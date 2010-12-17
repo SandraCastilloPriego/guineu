@@ -47,7 +47,7 @@ public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListen
     public void initModule() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.DATABASE, "Delete Dataset..",
-                "TODO write description", KeyEvent.VK_O, this, null, null);
+                "Delete dataset from the internal database", KeyEvent.VK_O, this, null, null);
     }
 
     public void taskStarted(Task task) {

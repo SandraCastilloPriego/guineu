@@ -49,7 +49,7 @@ public class filterComparation implements GuineuModule, TaskListener, ActionList
         this.parameters = new filterComparationParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Compare File..",
-                "TODO write description", KeyEvent.VK_C, this, null, null);
+                "Compare two datasets", KeyEvent.VK_C, this, null, null);
 
     }
 

@@ -45,7 +45,7 @@ public class TransposeFilter implements GuineuModule, TaskListener, ActionListen
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Transpose Dataset..",
-                "TODO write description", KeyEvent.VK_R, this, null, null);
+                "Transpose dataset", KeyEvent.VK_R, this, null, null);
 
     }
 

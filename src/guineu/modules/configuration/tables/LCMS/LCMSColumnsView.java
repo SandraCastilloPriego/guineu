@@ -52,7 +52,7 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
 	public void initModule() {
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.CONFIGURATION, "LCMS Table View..",
-				"TODO write description", KeyEvent.VK_L, this, null, "icons/conf1.png");
+				"Configuration of view of the LC-MS table columns", KeyEvent.VK_L, this, null, "icons/conf1.png");
 		parameters = new LCMSColumnsViewParameters();
 
 	}

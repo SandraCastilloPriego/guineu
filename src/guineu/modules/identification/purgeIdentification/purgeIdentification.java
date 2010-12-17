@@ -46,7 +46,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Clean Identification.. ",
-				"TODO write description", KeyEvent.VK_C, this, null, null);
+				"Removes wrong lipid identification based on their RT and MZ", KeyEvent.VK_C, this, null, null);
 	}
 
 	public void taskStarted(Task task) {

@@ -49,7 +49,7 @@ public class filterConcatenate implements GuineuModule, TaskListener, ActionList
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "concatenate File..",
-                "TODO write description", KeyEvent.VK_L, this, null, null);
+                "concatenate File", KeyEvent.VK_L, this, null, null);
 
     }
 
