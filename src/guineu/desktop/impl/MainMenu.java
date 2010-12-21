@@ -93,7 +93,7 @@ class MainMenu extends JMenuBar implements ActionListener {
 
                 reportMenu = new JMenu("LC-MS Reports");
                 reportMenu.setMnemonic(KeyEvent.VK_R);
-                // this.add(reportMenu);
+                this.add(reportMenu);
 
                 /* msmsMenu = new JMenu("MS/MS Filters");
                 msmsMenu.setMnemonic(KeyEvent.VK_M);

@@ -40,77 +40,78 @@ import java.util.logging.Logger;
  */
 public class Report implements GuineuModule, TaskListener, ActionListener {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
-        private SimpleParameterSet parameters;
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Desktop desktop;
+    private SimpleParameterSet parameters;
 
-        public void initModule() {
-                this.parameters = new ReportParameters();
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.REPORT, "Summary Report..",
-                        "Summary Report", KeyEvent.VK_I, this, null, null);
+    public void initModule() {
+        this.parameters = new ReportParameters();
+        this.desktop = GuineuCore.getDesktop();
+        desktop.addMenuItem(GuineuMenu.REPORT, "Summary Report..",
+                "Summary Report", KeyEvent.VK_I, this, null, null);
+        desktop.addMenuSeparator(GuineuMenu.REPORT);
 
+    }
+
+    public void taskStarted(Task task) {
+        logger.info("Running Summary Report");
+    }
+
+    public void taskFinished(Task task) {
+        if (task.getStatus() == TaskStatus.FINISHED) {
+            logger.info("Finished Summary Report on " + ((ReportTask) task).getTaskDescription());
         }
 
-        public void taskStarted(Task task) {
-                logger.info("Running Summary Report");
-        }
+        if (task.getStatus() == TaskStatus.ERROR) {
 
-        public void taskFinished(Task task) {
-                if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished Summary Report on " + ((ReportTask) task).getTaskDescription());
-                }
-
-                if (task.getStatus() == TaskStatus.ERROR) {
-
-                        String msg = "Error while Summary Report on .. " + ((ReportTask) task).getErrorMessage();
-                        logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
-
-                }
-        }
-
-        public void actionPerformed(ActionEvent e) {
-                ExitCode exitCode = setupParameters();
-                if (exitCode != ExitCode.OK) {
-                        return;
-                }
-
-                runModule();
-        }
-
-        public ExitCode setupParameters() {
-                try {
-                        ParameterSetupDialog dialog = new ParameterSetupDialog("Summary Report parameters", parameters);
-                        dialog.setVisible(true);
-                        return dialog.getExitCode();
-                } catch (Exception exception) {
-                        return ExitCode.CANCEL;
-                }
-        }
-
-        public ParameterSet getParameterSet() {
-                return parameters;
-        }
-
-        public void setParameters(ParameterSet parameterValues) {
-                parameters = (ReportParameters) parameterValues;
-        }
-
-        public String toString() {
-                return "Summary Report";
-        }
-
-        public Task[] runModule() {
-
-                // prepare a new group of tasks
-                Task[] tasks = new ReportTask[1];
-
-                tasks[0] = new ReportTask(parameters);
-
-                GuineuCore.getTaskController().addTasks(tasks);
-
-                return tasks;
+            String msg = "Error while Summary Report on .. " + ((ReportTask) task).getErrorMessage();
+            logger.severe(msg);
+            desktop.displayErrorMessage(msg);
 
         }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        ExitCode exitCode = setupParameters();
+        if (exitCode != ExitCode.OK) {
+            return;
+        }
+
+        runModule();
+    }
+
+    public ExitCode setupParameters() {
+        try {
+            ParameterSetupDialog dialog = new ParameterSetupDialog("Summary Report parameters", parameters);
+            dialog.setVisible(true);
+            return dialog.getExitCode();
+        } catch (Exception exception) {
+            return ExitCode.CANCEL;
+        }
+    }
+
+    public ParameterSet getParameterSet() {
+        return parameters;
+    }
+
+    public void setParameters(ParameterSet parameterValues) {
+        parameters = (ReportParameters) parameterValues;
+    }
+
+    public String toString() {
+        return "Summary Report";
+    }
+
+    public Task[] runModule() {
+
+        // prepare a new group of tasks
+        Task[] tasks = new ReportTask[1];
+
+        tasks[0] = new ReportTask(parameters);
+
+        GuineuCore.getTaskController().addTasks(tasks);
+
+        return tasks;
+
+    }
 }
