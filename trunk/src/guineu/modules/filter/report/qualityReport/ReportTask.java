@@ -260,8 +260,7 @@ public class ReportTask implements Task {
                 dataset.addRow(getRow("", ""));
                 dataset.addRow(getRow("", ""));
 
-                dataset.addRow(getRow("Basic parameters for seronorm control samples & batch standard:", ""));
-
+               
                 dataset.addRow(this.getTitle());
 
                 Stats = new DescriptiveStatistics[9];

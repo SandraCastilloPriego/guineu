@@ -15,20 +15,18 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.report.qualityReport;
+package guineu.modules.database.openQualityControlFileDB;
 
+import guineu.data.Dataset;
 import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,31 +36,33 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class Report implements GuineuModule, TaskListener, ActionListener {
+public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private SimpleParameterSet parameters;
+    DatasetOpenDialog dialog;
+    boolean combine = false;
+    Dataset[] datasets;
 
     public void initModule() {
-        this.parameters = new ReportParameters();
         this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.REPORT, "Summary Report..",
-                "Summary Report", KeyEvent.VK_I, this, null, null);
+        desktop.addMenuItem(GuineuMenu.REPORT, "Open database..",
+                "Visualize the content of the internal database", KeyEvent.VK_O, this, null, null);
+        desktop.addMenuSeparator(GuineuMenu.REPORT);
     }
 
     public void taskStarted(Task task) {
-        logger.info("Running Summary Report");
+        logger.info("Running Open Database");
     }
 
     public void taskFinished(Task task) {
         if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Summary Report on " + ((ReportTask) task).getTaskDescription());
+            logger.info("Finished open database on " + ((OpenFileDBTask) task).getTaskDescription());
         }
 
         if (task.getStatus() == TaskStatus.ERROR) {
 
-            String msg = "Error while Summary Report on .. " + ((ReportTask) task).getErrorMessage();
+            String msg = "Error while open database on .. " + ((OpenFileDBTask) task).getErrorMessage();
             logger.severe(msg);
             desktop.displayErrorMessage(msg);
 
@@ -76,39 +76,39 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
         }
 
         runModule();
+
+
     }
 
     public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Summary Report parameters", parameters);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
+        dialog = new DatasetOpenDialog();
+        dialog.setVisible(true);
+        datasets = dialog.getDatasets().toArray(new Dataset[0]);
+        return dialog.getExitCode();
     }
 
     public ParameterSet getParameterSet() {
-        return parameters;
+        return null;
     }
 
     public void setParameters(ParameterSet parameterValues) {
-        parameters = (ReportParameters) parameterValues;
     }
 
+    @Override
     public String toString() {
-        return "Summary Report";
+        return "Open Database";
     }
 
     public Task[] runModule() {
+        Task tasks[] = null;
 
         // prepare a new group of tasks
-        Task[] tasks = new ReportTask[1];
-
-        tasks[0] = new ReportTask(parameters);
+        tasks = new OpenFileDBTask[datasets.length];
+        for (int i = 0; i < datasets.length; i++) {
+            tasks[i] = new OpenFileDBTask(datasets[i]);
+        }
 
         GuineuCore.getTaskController().addTasks(tasks);
-
         return tasks;
 
     }
