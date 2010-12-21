@@ -46,6 +46,7 @@ public class FileUtils {
                 return new SimplePeakListRowLCMS();
             case GCGCTOF:
                 return new SimplePeakListRowGCGC();
+            case QUALITYCONTROL:
             case BASIC:
                 return new SimplePeakListRowOther();
             case EXPRESSION:
@@ -65,6 +66,7 @@ public class FileUtils {
                 ((SimpleGCGCDataset) newDataset).setParameters(((SimpleGCGCDataset) dataset).getParameters());
                 ((SimpleGCGCDataset) newDataset).setAligner(((SimpleGCGCDataset) dataset).getAligner());
                 break;
+            case QUALITYCONTROL:
             case BASIC:
                 newDataset = new SimpleBasicDataset(Name + dataset.getDatasetName());
                 break;
@@ -85,6 +87,7 @@ public class FileUtils {
             case GCGCTOF:
                 model = new DatasetGCGCDataModel(dataset);
                 break;
+            case QUALITYCONTROL:
             case BASIC:
                 model = new OtherDataModel(dataset);
                 break;

@@ -19,6 +19,7 @@ package guineu.modules.filter.report.qualityReport;
 
 import guineu.data.impl.datasets.SimpleQualityControlDataset;
 import com.csvreader.CsvReader;
+import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.SimpleParameterSet;
@@ -239,6 +240,7 @@ public class ReportTask implements Task {
                 DecimalFormat formatter = new DecimalFormat("####.##");
 
                 SimpleBasicDataset dataset = new SimpleQualityControlDataset("Summary Report");
+                dataset.setType(DatasetType.QUALITYCONTROL);
                 ((SimpleQualityControlDataset) dataset).setParameters(date, sampleSet, ionMode, injection, sampleType, comments);
 
                 for (int i = 1; i <= 12; i++) {
