@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -42,7 +43,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer {
         check.setBackground(UIManager.getColor("Tree.textBackground"));
         label.setForeground(UIManager.getColor("Tree.textForeground"));
     }
-
+   
     public Component getTreeCellRendererComponent(JTree tree, Object value,
             boolean isSelected, boolean expanded, boolean leaf, int row,
             boolean hasFocus) {
@@ -55,7 +56,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer {
         label.setSelected(isSelected);
         label.setFocus(hasFocus);
         if (leaf) {
-            label.setIcon(UIManager.getIcon("Tree.leafIcon"));
+            label.setIcon(UIManager.getIcon("Tree.leafIcon"));            
         } else if (expanded) {
             label.setIcon(UIManager.getIcon("Tree.openIcon"));
         } else {

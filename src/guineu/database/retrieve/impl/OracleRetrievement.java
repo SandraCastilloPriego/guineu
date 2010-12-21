@@ -26,13 +26,12 @@ import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.main.GuineuCore;
+import guineu.modules.database.openQualityControlFileDB.SampleInfo;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import oracle.jdbc.pool.OracleDataSource;
 
@@ -573,6 +572,111 @@ public class OracleRetrievement implements DataBase {
         } else {
             JOptionPane.showMessageDialog(GuineuCore.getDesktop().getMainFrame(), "Password not valid",
                     "Password not valid", JOptionPane.DEFAULT_OPTION);
+        }
+    }
+
+    public List<SampleInfo> getQualityControlRows(int QC_ID) {
+        try {
+            Statement st = conn.createStatement();
+            ResultSet r = st.executeQuery("SELECT * FROM QCSAMPLE WHERE DATASETID = '" + QC_ID + "' ORDER BY DATAID asc");
+            ArrayList<SampleInfo> rows = new ArrayList<SampleInfo>();
+            while (r.next()) {
+                try {
+                    SampleInfo info = new SampleInfo();
+                    String name = r.getString("SAMPLE_NAME");
+                    String date = r.getString("DATESET");
+                    info.setSampleName(name, date);
+                    String[] lyso = new String[6];
+                    lyso[0] = r.getString("SAMPLE_NAME");
+                    lyso[1] = String.valueOf(r.getFloat("LYSOPC_RT"));
+                    lyso[2] = String.valueOf(r.getFloat("LYSOPC_HEIGHT"));
+                    lyso[3] = String.valueOf(r.getFloat("LYSOPC_HEIGHT_RATIO"));
+                    lyso[4] = String.valueOf(r.getFloat("LYSOPC_HEIGHT_AREA"));
+                    lyso[5] = r.getString("TIMESET");
+                    info.setLysoPC(lyso);
+
+                    String[] pc = new String[6];
+                    pc[0] = r.getString("SAMPLE_NAME");
+                    pc[1] = String.valueOf(r.getFloat("PC_RT"));
+                    pc[2] = String.valueOf(r.getFloat("PC_HEIGHT"));
+                    pc[3] = String.valueOf(r.getFloat("PC_HEIGHT_RATIO"));
+                    pc[4] = String.valueOf(r.getFloat("PC_HEIGHT_AREA"));
+                    pc[5] = r.getString("TIMESET");
+                    info.setPC(pc);
+
+                    String[] tg = new String[6];
+                    tg[0] = r.getString("SAMPLE_NAME");
+                    tg[1] = String.valueOf(r.getFloat("TG_RT"));
+                    tg[2] = String.valueOf(r.getFloat("TG_HEIGHT"));
+                    tg[3] = String.valueOf(r.getFloat("TG_HEIGHT_RATIO"));
+                    tg[4] = String.valueOf(r.getFloat("TG_HEIGHT_AREA"));
+                    tg[5] = r.getString("TIMESET");
+                    info.setTG(tg);
+
+                    lyso = new String[6];
+                    lyso[0] = r.getString("SAMPLE_NAME");
+                    lyso[1] = String.valueOf(r.getFloat("S_LYSOPC_RT"));
+                    lyso[2] = String.valueOf(r.getFloat("S_LYSOPC_HEIGHT"));
+                    lyso[3] = "0";
+                    lyso[4] = "0";
+                    lyso[5] = r.getString("TIMESET");
+                    info.setLPC(lyso);
+
+                    pc = new String[6];
+                    pc[0] = r.getString("SAMPLE_NAME");
+                    pc[1] = String.valueOf(r.getFloat("S_PC_RT"));
+                    pc[2] = String.valueOf(r.getFloat("S_PC_HEIGHT"));
+                    pc[3] = "0";
+                    pc[4] = "0";
+                    pc[5] = r.getString("TIMESET");
+                    info.setPCD(pc);
+
+                    tg = new String[6];
+                    tg[0] = r.getString("SAMPLE_NAME");
+                    tg[1] = String.valueOf(r.getFloat("S_TG_RT"));
+                    tg[2] = String.valueOf(r.getFloat("S_TG_HEIGHT"));
+                    tg[3] = "0";
+                    tg[4] = "0";
+                    tg[5] = r.getString("TIMESET");
+                    info.setTGC(tg);
+
+                    rows.add(info);
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                }
+            }
+            r.close();
+            return rows;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public ArrayList<String[]> getQualityControlDatasets() {
+        try {
+            Statement st = conn.createStatement();
+            ResultSet r = st.executeQuery("SELECT * FROM QUALITYC ORDER BY QC_ID asc");
+            ArrayList<String[]> datasets = new ArrayList<String[]>();
+            while (r.next()) {
+                try {
+                    String[] dataset = new String[7];
+                    dataset[0] = r.getString("SAMPLESET");
+                    dataset[1] = r.getString("DATESET");
+                    dataset[2] = r.getString("ION_MODE");
+                    dataset[3] = r.getString("INJECTION_VOLUME");
+                    dataset[4] = r.getString("SAMPLE_TYPE");
+                    dataset[5] = r.getString("COMMENTS");
+                    dataset[6] = String.valueOf(r.getInt("QC_ID"));
+                    datasets.add(dataset);
+                } catch (Exception ee) {
+                }
+            }
+            r.close();
+            return datasets;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 }
