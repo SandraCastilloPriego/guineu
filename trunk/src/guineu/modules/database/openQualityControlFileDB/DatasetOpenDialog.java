@@ -47,7 +47,7 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  *
  * @author scsandra
  */
-public class DatasetOpenDialog extends JDialog implements ActionListener {
+public class DatasetOpenDialog extends JDialog {
 
     private ExitCode exitCode = ExitCode.UNKNOWN;
     private List<Dataset> datasets;
@@ -77,7 +77,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
      */
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+
         jPanel2 = new javax.swing.JPanel();
         SPResults = new javax.swing.JScrollPane();
         buttonsPanel = new javax.swing.JPanel();
@@ -87,9 +87,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(201, 700));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
-
-
-        getContentPane().add(jPanel1);
 
 
         jPanel2.setPreferredSize(new java.awt.Dimension(647, 500));
@@ -120,8 +117,19 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 cancelButtonActionPerformed(evt);
             }
         });
+
         buttonsPanel.add(cancelButton);
 
+        deleteButton = new javax.swing.JButton("Delete File");
+        cancelButton.setPreferredSize(new java.awt.Dimension(90, 26));
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
+        buttonsPanel.add(deleteButton);
         getContentPane().add(buttonsPanel);
 
         pack();
@@ -136,6 +144,30 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         return datasets;
     }
 
+    private void deleteButtonActionPerformed(ActionEvent evt) {
+        List<Integer> tobeRemoved = new ArrayList<Integer>();
+        if (tree != null) {
+            for (int index = 0; index < tree.getRowCount(); index++) {
+                TreePath path = tree.getPathForRow(index);
+                if (path != null) {
+                    CheckNode node = (CheckNode) path.getLastPathComponent();
+                    if (node.isSelected) {
+                        deleteDataset(node);
+                        tobeRemoved.add(index);
+                    }
+                }
+            }
+        }
+        this.exitCode = ExitCode.CANCEL;
+        dispose();
+    }
+
+    private void deleteDataset(CheckNode node) {
+        String[] data = nodeTable.get(node);
+        db.deleteQualityControlDataset(Integer.parseInt(data[6]));
+        this.nodeTable.remove(node);
+    }
+
     /**
      * Creates selected datasets
      * @param evt
@@ -145,7 +177,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
             for (int index = 0; index < tree.getRowCount(); index++) {
                 TreePath path = tree.getPathForRow(index);
                 if (path != null) {
-                    CheckNode node = (CheckNode) path.getLastPathComponent();                    
+                    CheckNode node = (CheckNode) path.getLastPathComponent();
                     if (node.isSelected) {
                         createDataset(node);
                     }
@@ -311,9 +343,6 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         dispose();
     }
 
-    public void actionPerformed(ActionEvent evt) {
-    }
-
     /**
      * Creates a tree with the studies and their correspondents data sets.
      * The information is taken from the database.
@@ -334,7 +363,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 info += d + " - ";
             }
             CheckNode stNode = new CheckNode(info);
-            this.nodeTable.put(stNode, dataset);           
+            this.nodeTable.put(stNode, dataset);
             rootNode.add(stNode);
         }
 
@@ -345,11 +374,10 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.putClientProperty("JTree.lineStyle", "Angled");
         tree.addMouseListener(new NodeSelectionListener(tree));
-        this.SPResults.setViewportView((Component) tree);        
+        this.SPResults.setViewportView((Component) tree);
 
         return tree;
     }
-   
 
     class NodeSelectionListener extends MouseAdapter {
 
@@ -377,8 +405,8 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
     private javax.swing.JScrollPane SPResults;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton deleteButton;
     // End of variables declaration
 }
