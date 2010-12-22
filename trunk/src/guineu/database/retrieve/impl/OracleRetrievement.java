@@ -679,6 +679,17 @@ public class OracleRetrievement implements DataBase {
             return null;
         }
     }
+
+    public void deleteQualityControlDataset(int QC_ID) {
+        try {
+            Statement st = conn.createStatement();
+            ResultSet r = st.executeQuery("DELETE FROM QUALITYC WHERE QC_ID = '" + QC_ID + "'");
+            r.close();
+            st.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
 
 
