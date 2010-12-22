@@ -118,4 +118,10 @@ public interface DataBase {
      * @return
      */
     public ArrayList<String[]> getQualityControlDatasets();
+
+    /**
+     * Deletes the file from the database
+     * @param QC_ID
+     */
+    public void deleteQualityControlDataset(int QC_ID);
 }
