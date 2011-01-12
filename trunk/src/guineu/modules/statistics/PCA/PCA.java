@@ -45,7 +45,6 @@ public class PCA {
         eigenstuff = covMatrix.eig();
         eigenvalues = eigenstuff.getRealEigenvalues();
         eigenvectors = eigenstuff.getV();
-       // eigenvectors.print(6, 3);
         double[][] vecs = eigenvectors.getArray();
         int numComponents = eigenvectors.getColumnDimension(); // same as num rows.
         principleComponents = new TreeSet<PrincipleComponent>();

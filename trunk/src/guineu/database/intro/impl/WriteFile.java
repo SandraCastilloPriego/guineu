@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -213,6 +214,50 @@ public class WriteFile {
                         data[c++] = "";
                     } else {
                         data[c++] = String.valueOf(lipid.getPeak(experimentName));
+                    }
+                }
+                w.writeRecord(data);
+            }
+            w.endRecord();
+            w.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /**
+     * Writes Comma Separated file for expression data set.
+     *
+     * @param dataset expression data set
+     * @param path Path where the new file will be created
+     */
+    public void WriteCommaSeparatedExpressionSetDataset(Dataset dataset, String path) {
+        try {
+            CsvWriter w = new CsvWriter(path);
+            Vector<String> metadata = ((SimpleExpressionDataset) dataset).getMetaDataNames();
+            String[] data = new String[dataset.getNumberCols() + metadata.size()];
+            int c = 0;
+            for (String experimentName : metadata) {
+                data[c++] = experimentName;
+            }
+            for (String experimentName : dataset.getAllColumnNames()) {
+                data[c++] = experimentName;
+            }
+            w.writeRecord(data);
+
+
+            for (int i = 0; i < dataset.getNumberRows(); i++) {
+                SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) dataset.getRow(i);
+                c = 0;
+                for (String experimentName : metadata) {
+                    data[c++] = (String) peakRow.getMetaData(experimentName);
+                }
+
+                for (String experimentName : dataset.getAllColumnNames()) {
+                    if (peakRow.getPeak(experimentName) == null) {
+                        data[c++] = "";
+                    } else {
+                        data[c++] = String.valueOf(peakRow.getPeak(experimentName));
                     }
                 }
                 w.writeRecord(data);
@@ -655,5 +700,9 @@ public class WriteFile {
             Logger.getLogger(WriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    void WriteExcelExpressionSetDataset(Dataset dataset, String path) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

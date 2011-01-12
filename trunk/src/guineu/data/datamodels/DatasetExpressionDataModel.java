@@ -42,11 +42,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
         this.writeData();
     }
 
-    /**
-     * @see elmar.data.LCMSColumnName
-     * The function isColumnShown() in the enum class says whether each column has to be shown in the table or not.
-     *
-     */
+    
     public void setParameters() {
         fixNumberColumns = 0;
         Vector<String> metadata = ((SimpleExpressionDataset) dataset).getMetaDataNames();
@@ -72,14 +68,13 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
     }
 
     /**
-     * @see elmar.util.Tables.DataTableModel
+     * @see guineu.util.Tables.DataTableModel
      */
     public void removeRows() {
         for (int i = 0; i < this.dataset.getNumberRows(); i++) {
             PeakListRow row = this.dataset.getRow(i);
             if (row.isSelected()) {
                 this.dataset.removeRow(row);
-                // fireTableStructureChanged();
                 this.fireTableDataChanged();
                 this.removeRows();
                 break;
