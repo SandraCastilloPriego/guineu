@@ -140,6 +140,8 @@ public class InOracle implements InDataBase {
             fileWriter.WriteExcelFileLCMS(dataset, path, parameters);
         } else if (dataset.getType() == DatasetType.GCGCTOF) {
             fileWriter.WriteExcelFileGCGC(dataset, path, parameters);
+        } else if (dataset.getType() == DatasetType.EXPRESSION) {
+            fileWriter.WriteExcelExpressionSetDataset(dataset, path);
         } else {
             fileWriter.WriteXLSFileBasicDataset(dataset, path);
         }
@@ -151,6 +153,8 @@ public class InOracle implements InDataBase {
             fileWriter.WriteCommaSeparatedFileLCMS(dataset, path, parameters);
         } else if (dataset.getType() == DatasetType.GCGCTOF) {
             fileWriter.WriteCommaSeparatedFileGCGC(dataset, path, parameters);
+        } else if (dataset.getType() == DatasetType.EXPRESSION) {
+            fileWriter.WriteCommaSeparatedExpressionSetDataset(dataset, path);
         } else {
             fileWriter.WriteCommaSeparatedBasicDataset(dataset, path);
         }

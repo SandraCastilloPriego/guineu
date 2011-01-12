@@ -210,7 +210,6 @@ public class PCADataset extends AbstractXYDataset implements
         PCA pca = new PCA(rawData);
         int numPCAComponents = pca.getNumComponents();
         List<PrincipleComponent> mainComponents = pca.getDominantComponents(numComponents);
-        Collections.sort(mainComponents);
 
         if (status == TaskStatus.CANCELED) {
             return;
