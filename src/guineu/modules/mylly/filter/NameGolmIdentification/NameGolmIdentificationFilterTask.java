@@ -133,13 +133,13 @@ public class NameGolmIdentificationFilterTask implements Task {
 
 
         xmlW.writeTag("riWindow", false);
-        RTI = "10.0";
+        RTI = "25.0";
         xmlW.writeText(RTI);
         xmlW.writeText("</riWindow>");
         xmlW.endBlock();
 
         xmlW.writeTag("AlkaneRetentionIndexGcColumnComposition", false);
-        xmlW.writeText("MDN35");
+        xmlW.writeText("VAR5");
         xmlW.writeText("</AlkaneRetentionIndexGcColumnComposition>");
         xmlW.endBlock();
 
