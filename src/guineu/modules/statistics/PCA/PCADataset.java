@@ -17,7 +17,9 @@
  */
 package guineu.modules.statistics.PCA;
 
-import guineu.data.Dataset;
+import Jama.Matrix;
+import dr.PCA;
+import dr.PrincipleComponent;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
@@ -105,6 +107,7 @@ public class PCADataset extends AbstractXYDataset implements
         }
     }
 
+    @Override
     public String toString() {
         return datasetTitle;
     }
@@ -185,14 +188,14 @@ public class PCADataset extends AbstractXYDataset implements
 
         logger.info("Computing projection plot");
 
-        double[][] rawData = new double[selectedRows.size()][selectedSamples.size()];
+        double[][] rawData = new double[selectedSamples.size()][selectedRows.size()];
         for (int rowIndex = 0; rowIndex < selectedRows.size(); rowIndex++) {
             PeakListRow peakListRow = selectedRows.get(rowIndex);
             for (int fileIndex = 0; fileIndex < selectedSamples.size(); fileIndex++) {
                 String rawDataFile = selectedSamples.elementAt(fileIndex);
                 Object p = peakListRow.getPeak(rawDataFile);
                 try {
-                    rawData[rowIndex][fileIndex] = (Double) p;
+                    rawData[fileIndex][rowIndex] = (Double) p;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -206,19 +209,22 @@ public class PCADataset extends AbstractXYDataset implements
             numComponents = yAxisPC;
         }
 
-
-        PCA pca = new PCA(rawData);
-        int numPCAComponents = pca.getNumComponents();
-        List<PrincipleComponent> mainComponents = pca.getDominantComponents(numComponents);
-
+        
+        PCA pca = new PCA(selectedSamples.size(),selectedRows.size());
+        Matrix X = new Matrix(rawData, selectedSamples.size(), selectedRows.size());
+        X = pca.center(X);
+        X = pca.scale(X);
+        pca.nipals(X);
+        List<PrincipleComponent> mainComponents = pca.getPCs();
+        Collections.sort(mainComponents);
         if (status == TaskStatus.CANCELED) {
             return;
         }
         this.progress = 0.75f;
 
-        if (numPCAComponents > yAxisPC - 1) {
-            component1Coords = mainComponents.get(yAxisPC - 1).eigenVector;
-            component2Coords = mainComponents.get(xAxisPC - 1).eigenVector;
+        if (mainComponents.size() > yAxisPC - 1) {
+            component1Coords = mainComponents.get(xAxisPC - 1).eigenVector;
+            component2Coords = mainComponents.get(yAxisPC - 1).eigenVector;
 
             Desktop desktop = GuineuCore.getDesktop();
             ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
