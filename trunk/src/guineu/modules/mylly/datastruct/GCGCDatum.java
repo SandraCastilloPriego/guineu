@@ -41,7 +41,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
     private int similarity;
     private int id;
     private boolean identified;
-    private String name,  CAS;
+    private String name,  CAS, keggID, chEBIID, synonyms;
     private Spectrum spectrum;
     private boolean useConc = false;
     private String columnName;
@@ -130,6 +130,9 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         d.useConc = useConc;
         d.columnName = columnName;
         d.identified = identified;
+        d.keggID = keggID;
+        d.chEBIID = chEBIID;
+        d.synonyms = synonyms;
         return d;
     }
 
@@ -227,6 +230,30 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 
     public void setCAS(String newCAS) {
         this.CAS = newCAS;
+    }
+
+    public String getKeggID() {
+        return this.keggID;
+    }
+
+    public void setKeggID(String KeggID) {
+        this.keggID = KeggID;
+    }
+
+    public String getChebiID() {
+        return this.chEBIID;
+    }
+
+    public void setChebiID(String ChEBIID) {
+        this.chEBIID = ChEBIID;
+    }
+
+    public String getSynonyms() {
+        return this.synonyms;
+    }
+
+    public void setSynonyms(String synonyms) {
+        this.synonyms = synonyms;
     }
 
     public Spectrum getSpectrum() {
