@@ -35,104 +35,104 @@ import guineu.taskcontrol.TaskStatus;
  */
 public class OpenCombineDBTask implements Task {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
-        private Parser parser;
-        private Dataset[] datasets;
-        private String taskDescription = "";
-        private RansacAlignerTask combineLCMSDatasets;
-       // private RansacAlignerGCGCTask combineGCGCDatasets;
-        private BasicAlignerGCGCTask combineGCGCDatasets2;
+    private TaskStatus status = TaskStatus.WAITING;
+    private String errorMessage;
+    private Parser parser;
+    private Dataset[] datasets;
+    private String taskDescription = "";
+    private RansacAlignerTask combineLCMSDatasets;
+    // private RansacAlignerGCGCTask combineGCGCDatasets;
+    private BasicAlignerGCGCTask combineGCGCDatasets2;
 
-        public OpenCombineDBTask(Dataset[] datasets) {
-                this.datasets = datasets;
+    public OpenCombineDBTask(Dataset[] datasets) {
+        this.datasets = datasets;
+    }
+
+    public String getTaskDescription() {
+        return taskDescription;
+    }
+
+    public double getFinishedPercentage() {
+        if (taskDescription.contains("Opening") && parser != null) {
+            return parser.getProgress();
+        } else if (taskDescription.contains("Combining") && combineLCMSDatasets != null) {
+            return combineLCMSDatasets.getFinishedPercentage();
+        } else if (taskDescription.contains("Combining") && combineGCGCDatasets2 != null) {
+            return combineGCGCDatasets2.getFinishedPercentage();
         }
+        return 0.0f;
+    }
 
-        public String getTaskDescription() {
-                return taskDescription;
-        }
+    public TaskStatus getStatus() {
+        return status;
+    }
 
-        public double getFinishedPercentage() {
-                if (taskDescription.contains("Opening") && parser != null) {
-                        return parser.getProgress();
-                } else if (taskDescription.contains("Combining") && combineLCMSDatasets != null) {
-                        return combineLCMSDatasets.getFinishedPercentage();
-                } else if (taskDescription.contains("Combining") && combineGCGCDatasets2 != null) {
-                        return combineGCGCDatasets2.getFinishedPercentage();
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void cancel() {
+        status = TaskStatus.CANCELED;
+    }
+
+    public void run() {
+        try {
+            status = TaskStatus.PROCESSING;
+            DatasetType type = null;
+            for (Dataset dataset : datasets) {
+                taskDescription = "Opening " + dataset.getDatasetName();
+                dataset = this.openFile(dataset);
+                DatasetType datasetType = dataset.getType();
+                if (type == null) {
+                    type = datasetType;
+                } else if (type != datasetType) {
+                    type = DatasetType.BASIC;
                 }
-                return 0.0f;
+            }
+            taskDescription = "Combining data sets..";
+            switch (type) {
+                case LCMS:
+
+                    RansacAlignerParameters ransacParameters = new RansacAlignerParameters();
+                    combineLCMSDatasets = new RansacAlignerTask(datasets, ransacParameters);
+                    combineLCMSDatasets.run();
+                    break;
+
+                case GCGCTOF:
+                    /* RansacAlignerGCGCParameters ransacGCGCParameters = new RansacAlignerGCGCParameters();
+                    combineGCGCDatasets = new RansacAlignerGCGCTask(datasets, ransacGCGCParameters);
+                    combineGCGCDatasets.run();*/
+
+                    BasicAlignerGCGCParameters parameters = new BasicAlignerGCGCParameters();
+                    this.combineGCGCDatasets2 = new BasicAlignerGCGCTask(datasets, parameters);
+                    this.combineGCGCDatasets2.run();
+                    break;
+
+            }
+
+
+            status = TaskStatus.FINISHED;
+        } catch (Exception e) {
+            status = TaskStatus.ERROR;
+            errorMessage = e.toString();
+            return;
         }
+    }
 
-        public TaskStatus getStatus() {
-                return status;
+    public Dataset openFile(Dataset dataset) {
+        try {
+            if (dataset.getType() == DatasetType.GCGCTOF) {
+                parser = new GCGCParserDataBase(dataset);
+            } else {
+                parser = new LCMSParserDataBase(dataset);
+            }
+            parser.fillData();
+
+            return parser.getDataset();
+
+        } catch (Exception e) {
+            status = TaskStatus.ERROR;
+            return null;
         }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
-        public void cancel() {
-                status = TaskStatus.CANCELED;
-        }
-
-        public void run() {
-                try {
-                        status = TaskStatus.PROCESSING;
-                        DatasetType type = null;
-                        for (Dataset dataset : datasets) {
-                                taskDescription = "Opening " + dataset.getDatasetName();
-                                dataset = this.openFile(dataset);
-                                DatasetType datasetType = dataset.getType();
-                                if (type == null) {
-                                        type = datasetType;
-                                } else if (type != datasetType) {
-                                        type = DatasetType.BASIC;
-                                }
-                        }
-                        taskDescription = "Combining data sets..";
-                        switch (type) {
-                                case LCMS:
-
-                                        RansacAlignerParameters ransacParameters = new RansacAlignerParameters();
-                                        combineLCMSDatasets = new RansacAlignerTask(datasets, ransacParameters);
-                                        combineLCMSDatasets.run();
-                                        break;
-
-                                case GCGCTOF:
-                                        /* RansacAlignerGCGCParameters ransacGCGCParameters = new RansacAlignerGCGCParameters();
-                                        combineGCGCDatasets = new RansacAlignerGCGCTask(datasets, ransacGCGCParameters);
-                                        combineGCGCDatasets.run();*/                                        
-
-                                        BasicAlignerGCGCParameters parameters = new BasicAlignerGCGCParameters();
-                                        this.combineGCGCDatasets2 = new BasicAlignerGCGCTask(datasets, parameters);
-                                        this.combineGCGCDatasets2.run();
-                                        break;
-
-                        }
-
-
-                        status = TaskStatus.FINISHED;
-                } catch (Exception e) {
-                        status = TaskStatus.ERROR;
-                        errorMessage = e.toString();
-                        return;
-                }
-        }
-
-        public Dataset openFile(Dataset dataset) {
-                try {
-                        if (dataset.getType() == DatasetType.GCGCTOF) {
-                                parser = new GCGCParserDataBase(dataset);
-                        } else {
-                                parser = new LCMSParserDataBase(dataset);
-                        }
-                        parser.fillData();
-
-                        return parser.getDataset();
-
-                } catch (Exception e) {
-                        status = TaskStatus.ERROR;
-                        return null;
-                }
-        }
+    }
 }
