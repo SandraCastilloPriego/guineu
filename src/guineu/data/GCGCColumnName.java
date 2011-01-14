@@ -37,6 +37,9 @@ public enum GCGCColumnName {
         ALLNAMES("Metabolite all names", true, "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*|.*Metabolite all names.*", ParameterType.STRING),
         CLASS("Class", true, "getMolClass", "setMolClass", ".*Class.*", ParameterType.STRING),
         PUBCHEM("Pubchem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*", ParameterType.STRING),
+        KEGG("KEGG ID", true, "getKeggID", "setKeggID", ".*Kegg.*", ParameterType.STRING),
+        ChEBI("ChEBI ID", true, "getChebiID", "setChebiID", ".*ChEBI.*", ParameterType.STRING),
+        SYNONYM("Synonyms", true, "getSynonyms", "setSynonyms", ".*Synonyms.*", ParameterType.STRING),
         MASS("Mass", true, "getMass", "setMass", ".*Mass.*", ParameterType.DOUBLE),
         DIFFERENCE("Difference", true, "getDifference", "setDifference", ".*Difference.*", ParameterType.DOUBLE),
         SPECTRUM("Spectrum", true, "getSpectrumString", "setSpectrumString", ".*Spectrum.*|.*Spectra.*", ParameterType.STRING);
