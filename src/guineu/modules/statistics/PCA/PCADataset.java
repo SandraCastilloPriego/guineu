@@ -24,6 +24,8 @@ import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskStatus;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -53,6 +55,8 @@ public class PCADataset extends AbstractXYDataset implements
     private TaskStatus status = TaskStatus.WAITING;
     private String errorMessage;
     private float progress = 0.0f;
+    private List<PrincipleComponent> mainComponents;
+    private double totalVariation = 0;
 
     public PCADataset(ProjectionPlotParameters parameters) {
 
@@ -113,29 +117,34 @@ public class PCADataset extends AbstractXYDataset implements
     }
 
     public String getXLabel() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+
+        String variation = formatter.format((this.mainComponents.get(xAxisPC - 1).eigenValue / this.totalVariation) * 100);
         if (xAxisPC == 1) {
-            return "1st PC";
+            return "1st PC (" + variation + "%)";
         }
         if (xAxisPC == 2) {
-            return "2nd PC";
+            return "2nd PC (" + variation + "%)";
         }
         if (xAxisPC == 3) {
-            return "3rd PC";
+            return "3rd PC (" + variation + "%)";
         }
-        return "" + xAxisPC + "th PC";
+        return "" + xAxisPC + "th PC (" + variation + "%)";
     }
 
     public String getYLabel() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        String variation = formatter.format((this.mainComponents.get(yAxisPC - 1).eigenValue / this.totalVariation) * 100);
         if (yAxisPC == 1) {
-            return "1st PC";
+            return "1st PC (" + variation + "%)";
         }
         if (yAxisPC == 2) {
-            return "2nd PC";
+            return "2nd PC (" + variation + "%)";
         }
         if (yAxisPC == 3) {
-            return "3rd PC";
+            return "3rd PC (" + variation + "%)";
         }
-        return "" + yAxisPC + "th PC";
+        return "" + yAxisPC + "th PC (" + variation + "%)";
     }
 
     @Override
@@ -209,18 +218,22 @@ public class PCADataset extends AbstractXYDataset implements
             numComponents = yAxisPC;
         }
 
-        
-        PCA pca = new PCA(selectedSamples.size(),selectedRows.size());
+
+        PCA pca = new PCA(selectedSamples.size(), selectedRows.size());
         Matrix X = new Matrix(rawData, selectedSamples.size(), selectedRows.size());
         X = pca.center(X);
         X = pca.scale(X);
         pca.nipals(X);
-        List<PrincipleComponent> mainComponents = pca.getPCs();
+        mainComponents = pca.getPCs();
         Collections.sort(mainComponents);
         if (status == TaskStatus.CANCELED) {
             return;
         }
         this.progress = 0.75f;
+
+        for (PrincipleComponent components : mainComponents) {
+            this.totalVariation += components.eigenValue;
+        }
 
         if (mainComponents.size() > yAxisPC - 1) {
             component1Coords = mainComponents.get(xAxisPC - 1).eigenVector;
