@@ -40,7 +40,7 @@ public class LinearNormalizer {
 	private final double[] ends;
 	private volatile double _done;
 	private double _total;
-	private SimpleGCGCDataset _input;
+	private SimpleGCGCDataset dataset;
 
 	public LinearNormalizer(Collection<SimplePeakListRowGCGC> standards, SimpleGCGCDataset input) {
 		if (standards.size() == 0) {
@@ -73,7 +73,7 @@ public class LinearNormalizer {
 			throw new IllegalArgumentException("Empty standard list");
 		}
 
-		_input = input;
+		dataset = input;
 		_total = input == null ? 0 : input.getNumberRows();
 	}
 
@@ -87,7 +87,7 @@ public class LinearNormalizer {
 	}
 
 	protected SimpleGCGCDataset actualMap(SimpleGCGCDataset input) {
-		_input = input;
+		dataset = input;
 		_total = input.getNumberRows();
 
 		try {
@@ -111,30 +111,26 @@ public class LinearNormalizer {
 	}
 
 	public SimpleGCGCDataset call() throws Exception {
-		SimpleGCGCDataset normalized = new SimpleGCGCDataset(_input.getColumnNames(),
-				_input.getParameters(),
-				_input.getAligner());
+		SimpleGCGCDataset normalized = new SimpleGCGCDataset(dataset.getColumnNames(),
+				dataset.getParameters(),
+				dataset.getAligner());
 		if (onlyStandard == null) //Multiple standards
-		{
-			GCGCDatum[][] stds = new GCGCDatum[_standards.size()][];
-			for (int i = 0; i < _standards.size(); i++) {
-				stds[i] = (GCGCDatum[]) _standards.get(i).getDatumArray().toArray(new GCGCDatum[0]);
-			}
-			double[][] coeffs = new double[stds.length][];
-			for (int i = 0; i < stds.length; i++) {
-				GCGCDatum[] curStd = stds[i];
-				double[] curCoeffs = new double[curStd.length];
+		{			
+			double[][] coeffs = new double[this._standards.size()][];
+			for (int i = 0; i < this._standards.size(); i++) {
+                                SimplePeakListRowGCGC curStd = this._standards.get(i);
+				double[] curCoeffs = new double[curStd.getNumberPeaks()];
 				for (int j = 0; j < curCoeffs.length; j++) {
-					curCoeffs[j] = baseLevel / curStd[j].getArea();
+					curCoeffs[j] = baseLevel / curStd.getPeaks()[j];
 				}
 				coeffs[i] = curCoeffs;
 			}
 			ArrayList<SimplePeakListRowGCGC> rows = new ArrayList<SimplePeakListRowGCGC>();
 
-			for (int i = 0; i < _input.getNumberRows(); i++) {
-				SimplePeakListRowGCGC scaled = (SimplePeakListRowGCGC) _input.getAlignment().get(i).clone();
+			for (int i = 0; i < dataset.getNumberRows(); i++) {
+				SimplePeakListRowGCGC scaled = (SimplePeakListRowGCGC) dataset.getAlignment().get(i).clone();
 				int ix = findProperIndex(scaled);
-				scaled.scaleArea(coeffs[ix]);
+				scaled.scaleArea(coeffs[ix], dataset.getColumnNames());
 				rows.add(scaled);
 
 			}
@@ -147,9 +143,9 @@ public class LinearNormalizer {
 				coeffs[i] = baseLevel / stds.get(i).getArea();
 			}
 			ArrayList<SimplePeakListRowGCGC> rows = new ArrayList<SimplePeakListRowGCGC>();
-			for (int i = 0; i < _input.getNumberRows(); i++) {
-				SimplePeakListRowGCGC scaled = (SimplePeakListRowGCGC) _input.getAlignment().get(i).clone();
-				scaled.scaleArea(coeffs);
+			for (int i = 0; i < dataset.getNumberRows(); i++) {
+				SimplePeakListRowGCGC scaled = (SimplePeakListRowGCGC) dataset.getAlignment().get(i).clone();
+				scaled.scaleArea(coeffs, dataset.getColumnNames());
 				rows.add(scaled);
 			}
 			normalized.addAll(rows);

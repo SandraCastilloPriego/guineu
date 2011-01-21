@@ -73,13 +73,7 @@ public class LinearNormalizerFilterTask implements Task {
                         SimpleGCGCDataset gcgcDataset = (SimpleGCGCDataset) gcgcDatasets[0];
                         for (PeakListRow row : gcgcDataset.getRows()) {
                                 if (row.isSelected()) {
-                                        int id = row.getID();
-                                        for (PeakListRow row2 : gcgcDataset.getRows()) {
-                                                if (row2.getID() == id) {
-                                                        standards.add((SimplePeakListRowGCGC) row2);
-                                                        break;
-                                                }
-                                        }
+                                        standards.add((SimplePeakListRowGCGC) row);
                                 }
                         }
                         LinearNormalizer filter = new LinearNormalizer(standards);

@@ -476,10 +476,10 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         return _distValue;
     }
 
-    public void scaleArea(double[] scalings) {
-        if (!this.useConcentrations() || this.mass == -1) {
-            for (int i = 0; i < row.size(); i++) {
-                this.row.get(i).setArea(row.get(i).getArea() * scalings[i]);
+    public void scaleArea(double[] scalings, String[] columnNames) {
+        if (!this.useConcentrations() || this.mass == -1) {               
+            for (int i = 0; i < columnNames.length; i++) {
+                this.setPeak(columnNames[i], this.getPeak(columnNames[i]) * scalings[i]);
             }
         }
     }
