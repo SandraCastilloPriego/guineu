@@ -56,7 +56,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
     private double RT1 = 0.0, RT2 = 0.0, RTI = 0.0, maxSimilarity = 0, meanSimilarity = 0, similaritySTDDev = 0, mass = 0;
     private String name, allNames, spectra, pubChemID="", molClass;
     private boolean selection = false;
-    private String CAS, keggID="", chEBIID = "", synonyms = "";
+    private String CAS, newCAS, keggID="", chEBIID = "", synonyms = "";
     private Spectrum spectrum;
     private List<GCGCDatum> row;
     private String[] names;
@@ -67,7 +67,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
     public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
             double maxSimilarity, double meanSimilarity, double similaritySTDDev,
             double numFound, double mass, DistValue _distValue, String name,
-            String allNames, String spectra, String pubChemID, String CAS, String keggID, String chEBIID, String synonyms) {
+            String allNames, String spectra, String pubChemID, String CAS, String newCAS, String keggID, String chEBIID, String synonyms) {
         this.ID = ID;
         this.RT1 = RT1;
         this.RT2 = RT2;
@@ -83,6 +83,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         this.spectra = spectra;
         this.pubChemID = pubChemID;
         this.CAS = CAS;
+        this.newCAS = newCAS;
         this.keggID = keggID;
         this.chEBIID = chEBIID;
         this.synonyms = synonyms;
@@ -373,6 +374,14 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         this.synonyms = synonyms;
     }
 
+    public String getNewCAS() {
+        return this.newCAS;
+    }
+
+    public void setNewCAS(String newCAS) {
+        this.newCAS = newCAS;
+    }
+
     public double getMass() {
         return this.mass;
     }
@@ -560,7 +569,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
     public PeakListRow clone() {
         PeakListRow newPeakListRow = new SimplePeakListRowGCGC(ID, RT1, RT2, RTI,
                 maxSimilarity, meanSimilarity, similaritySTDDev,
-                numFound, mass, _distValue, name, allNames, spectra, pubChemID, CAS, keggID, chEBIID, synonyms);
+                numFound, mass, _distValue, name, allNames, spectra, pubChemID, CAS, newCAS, keggID, chEBIID, synonyms);
 
         ((SimplePeakListRowGCGC) newPeakListRow).numFound = numFound;
         ((SimplePeakListRowGCGC) newPeakListRow).names = names == null ? null : names.clone();
