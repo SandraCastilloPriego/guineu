@@ -36,75 +36,75 @@ import java.util.logging.Logger;
  */
 public class AlkaneRTICorrectorFilterTask implements Task {
 
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private List<GCGCData> datasets;
-	private AlkaneRTICorrectorParameters parameters;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private List<GCGCData> datasets;
+        private AlkaneRTICorrectorParameters parameters;
 
-	public AlkaneRTICorrectorFilterTask(List<GCGCData> datasets, AlkaneRTICorrectorParameters parameters) {
-		this.datasets = datasets;
-		this.parameters = parameters;
-	}
+        public AlkaneRTICorrectorFilterTask(List<GCGCData> datasets, AlkaneRTICorrectorParameters parameters) {
+                this.datasets = datasets;
+                this.parameters = parameters;
+        }
 
-	public String getTaskDescription() {
-		return "Filtering files with Alkane RTI Corrector Filter... ";
-	}
+        public String getTaskDescription() {
+                return "Filtering files with Alkane RTI Corrector Filter... ";
+        }
 
-	public double getFinishedPercentage() {
-		return 1f;
-	}
+        public double getFinishedPercentage() {
+                return 1f;
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
 
-	public void run() {
-		status = TaskStatus.PROCESSING;
-		try {
+        public void run() {
+                status = TaskStatus.PROCESSING;
+                try {
 
-			String name = (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.fileNames);
-			AlkaneRTICorrector filter = AlkaneRTICorrector.createCorrector(new File(name));
-			List<GCGCData> newDatasets = filter.actualMap(datasets);
+                        String name = (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.fileNames);
+                        AlkaneRTICorrector filter = AlkaneRTICorrector.createCorrector(new File(name));
+                        List<GCGCData> newDatasets = filter.actualMap(datasets);
 
-			for (GCGCData dates : newDatasets) {
-				dates.setName(dates.getName() + (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.suffix));
-				SimpleGCGCDataset newTableOther = this.writeDataset(dates.toList(), dates.getName());
-				GuineuCore.getDesktop().AddNewFile(newTableOther);				
-			}
+                        for (GCGCData dates : newDatasets) {
+                                dates.setName(dates.getName() + (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.suffix));
+                                SimpleGCGCDataset newTableOther = this.writeDataset(dates.toList(), dates.getName());
+                                GuineuCore.getDesktop().AddNewFile(newTableOther);
+                        }
 
-			status = TaskStatus.FINISHED;
-		} catch (Exception ex) {
-			Logger.getLogger(AlkaneRTICorrectorFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-			status = TaskStatus.ERROR;
-		}
-	}
+                        status = TaskStatus.FINISHED;
+                } catch (Exception ex) {
+                        Logger.getLogger(AlkaneRTICorrectorFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        status = TaskStatus.ERROR;
+                }
+        }
 
-	private SimpleGCGCDataset writeDataset(List<GCGCDatum> data, String name) {
+        private SimpleGCGCDataset writeDataset(List<GCGCDatum> data, String name) {
 
-		SimpleGCGCDataset dataset = new SimpleGCGCDataset(name);
-		dataset.addColumnName(name);
-		dataset.setType(DatasetType.GCGCTOF);
+                SimpleGCGCDataset dataset = new SimpleGCGCDataset(name);
+                dataset.addColumnName(name);
+                dataset.setType(DatasetType.GCGCTOF);
 
-		for (GCGCDatum mol : data) {
-			SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
-					mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), null, mol.getName(),
-					null, mol.getSpectrum().toString(), null, mol.getCAS(),mol.getKeggID(), mol.getChebiID(), mol.getSynonyms());
+                for (GCGCDatum mol : data) {
+                        SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
+                                mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), null, mol.getName(),
+                                null, mol.getSpectrum().toString(), null, mol.getCAS(), mol.getNewCAS(), mol.getKeggID(), mol.getChebiID(), mol.getSynonyms());
 
-			mol.setColumnName(name);
-			GCGCDatum[] peaks = new GCGCDatum[1];
-			peaks[0] = mol;
-			row.setDatum(peaks);
-			dataset.addAlignmentRow(row);
-		}
+                        mol.setColumnName(name);
+                        GCGCDatum[] peaks = new GCGCDatum[1];
+                        peaks[0] = mol;
+                        row.setDatum(peaks);
+                        dataset.addAlignmentRow(row);
+                }
 
-		return dataset;
-	}
+                return dataset;
+        }
 }
