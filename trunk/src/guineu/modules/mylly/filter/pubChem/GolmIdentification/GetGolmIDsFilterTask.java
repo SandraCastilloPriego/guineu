@@ -37,7 +37,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -251,12 +250,19 @@ public class GetGolmIDsFilterTask implements Task {
                         try {
                                 // Using CAS number
                                 String name = (String) row.getVar(GCGCColumnName.CAS.getGetFunctionName());
-
+                                int score = 0;
                                 if (!name.contains("0-00-0") && name.length() > 0) {
-                                        addIDs(row, name);
+                                        score = addIDs(row, name);
                                 }
                                 // Using names
                                 String pubChemID = (String) row.getVar(GCGCColumnName.PUBCHEM.getGetFunctionName());
+                                if (score < 998) {
+                                        row.setVar(GCGCColumnName.PUBCHEM.getSetFunctionName(), "");
+                                        row.setVar(GCGCColumnName.ChEBI.getSetFunctionName(), "");
+                                        row.setVar(GCGCColumnName.CAS2.getSetFunctionName(), "");
+                                        row.setVar(GCGCColumnName.KEGG.getSetFunctionName(), "");
+                                        row.setVar(GCGCColumnName.SYNONYM.getSetFunctionName(), "");
+                                }
                                 if (pubChemID.length() == 0) {
                                         name = row.getName();
                                         name = name.replaceAll(" ", "+");
@@ -277,27 +283,48 @@ public class GetGolmIDsFilterTask implements Task {
 
         }
 
-        private void addIDs(PeakListRow row, String name) {
+        private int addIDs(PeakListRow row, String name) {
                 {
                         BufferedReader in = null;
                         try {
                                 String urlName = "http://gmd.mpimp-golm.mpg.de/search.aspx?query=" + name;
                                 URL url = new URL(urlName);
                                 in = new BufferedReader(new InputStreamReader(url.openStream()));
-                                String inputLine;
+                                String inputLine, score = "0";
                                 while ((inputLine = in.readLine()) != null) {
                                         String metaboliteID = "";
                                         if (inputLine.contains("href=\"Metabolites/")) {
+                                                String[] dataScore = inputLine.split("</td><td>");
+                                                score = dataScore[0].substring(dataScore[0].indexOf("<td>") + 4);
                                                 metaboliteID = inputLine.substring(inputLine.indexOf("href=\"Metabolites/") + 18, inputLine.indexOf("aspx\">") + 4);
                                                 urlName = "http://gmd.mpimp-golm.mpg.de/Metabolites/" + metaboliteID;
+                                                inputLine = in.readLine();
+                                                inputLine = in.readLine();
+                                                String[] data = inputLine.split("</td><td>");
+                                                //  String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
+                                                // row.setVar(GCGCColumnName.CLASS.getSetFunctionName(), molecularWeight);
                                                 break;
                                         } else if (inputLine.contains("href=\"Analytes/")) {
+                                                String[] dataScore = inputLine.split("</td><td>");
+                                                score = dataScore[0].substring(dataScore[0].indexOf("<td>") + 4);
                                                 metaboliteID = inputLine.substring(inputLine.indexOf("href=\"Analytes/") + 15, inputLine.indexOf("aspx\">") + 4);
                                                 urlName = "http://gmd.mpimp-golm.mpg.de/Analytes/" + metaboliteID;
+                                                inputLine = in.readLine();
+                                                inputLine = in.readLine();
+                                                String[] data = inputLine.split("</td><td>");
+                                                // String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
+                                                //   row.setVar(GCGCColumnName.CLASS.getSetFunctionName(), molecularWeight);
                                                 break;
                                         } else if (inputLine.contains("href=\"ReferenceSubstances/")) {
+                                                String[] dataScore = inputLine.split("</td><td>");
+                                                score = dataScore[0].substring(dataScore[0].indexOf("<td>") + 4);
                                                 metaboliteID = inputLine.substring(inputLine.indexOf("href=\"ReferenceSubstances/") + 26, inputLine.indexOf("aspx\">") + 4);
                                                 urlName = "http://gmd.mpimp-golm.mpg.de/ReferenceSubstances/" + metaboliteID;
+                                                inputLine = in.readLine();
+                                                inputLine = in.readLine();
+                                                String[] data = inputLine.split("</td><td>");
+                                                //   String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
+                                                //  row.setVar(GCGCColumnName.CLASS.getSetFunctionName(), molecularWeight);
                                                 break;
                                         }
                                 }
@@ -339,7 +366,7 @@ public class GetGolmIDsFilterTask implements Task {
                                                                         } else {
                                                                                 synonym += " // " + id;
                                                                         }
-                                                                        synonym = synonym.replaceAll("&amp;#39;","'");
+                                                                        synonym = synonym.replaceAll("&amp;#39;", "'");
                                                                         row.setVar(GCGCColumnName.SYNONYM.getSetFunctionName(), synonym);
                                                                 }
                                                         }
@@ -349,8 +376,11 @@ public class GetGolmIDsFilterTask implements Task {
                                         in.close();
 
                                 }
+
+                                return Integer.parseInt(score);
                         } catch (IOException ex) {
                                 Logger.getLogger(GetGolmIDsFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                                return 0;
                         }
                 }
         }
