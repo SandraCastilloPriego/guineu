@@ -37,7 +37,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
  *
  * @author scsandra
  */
-public class ParserXLS {
+public abstract class ParserXLS {
     public HSSFWorkbook openExcel(String file_name)
 	throws IOException
 	{

@@ -39,7 +39,7 @@ public enum GCGCColumnName {
         PUBCHEM("Pubchem ID", true, "getPubChemID", "setPubChemID", ".*Pubchem.*", ParameterType.STRING),
         KEGG("KEGG ID", true, "getKeggID", "setKeggID", ".*KEGG.*", ParameterType.STRING),
         ChEBI("ChEBI ID", true, "getChebiID", "setChebiID", ".*ChEBI.*", ParameterType.STRING),
-        CAS2("New Cas Number", true, "getNewCAS", "setNewCAS", ".*New Cas Number.*", ParameterType.STRING),
+        CAS2("New Cas Number", true, "getNewCAS", "setNewCAS", "^New Cas Number.*", ParameterType.STRING),
         SYNONYM("Synonyms", true, "getSynonyms", "setSynonyms", ".*Synonyms.*", ParameterType.STRING),
         MASS("Mass", true, "getMass", "setMass", ".*Mass.*", ParameterType.DOUBLE),
         DIFFERENCE("Difference", true, "getDifference", "setDifference", ".*Difference.*", ParameterType.DOUBLE),

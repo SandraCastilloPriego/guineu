@@ -31,7 +31,9 @@ public class LinearNormalizerParameters extends SimpleParameterSet {
         public static final String NormalizationTypeAverageIntensity = "Average intensity";
         public static final String NormalizationTypeAverageSquaredIntensity = "Average squared intensity";
         public static final String NormalizationTypeMaximumPeakHeight = "Maximum peak intensity";
+        public static final String NormalizationTypeStandards = "Selected standards";
         public static final Object[] normalizationTypePossibleValues = {
+                NormalizationTypeStandards,
                 NormalizationTypeAverageIntensity,
                 NormalizationTypeAverageSquaredIntensity,
                 NormalizationTypeMaximumPeakHeight};

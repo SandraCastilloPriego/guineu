@@ -18,11 +18,9 @@
 package guineu.modules.mylly.filter.linearNormalizer;
 
 import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.main.GuineuCore;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.PeakListRow;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
@@ -39,9 +37,9 @@ public class LinearNormalizerFilterTask implements Task {
 
         private TaskStatus status = TaskStatus.WAITING;
         private String errorMessage;
-        private SimpleGCGCDataset dataset;
+        private Dataset dataset;
 
-        public LinearNormalizerFilterTask(SimpleGCGCDataset dataset) {
+        public LinearNormalizerFilterTask(Dataset dataset) {
                 this.dataset = dataset;
         }
 
@@ -68,18 +66,18 @@ public class LinearNormalizerFilterTask implements Task {
         public void run() {
                 status = TaskStatus.PROCESSING;
                 try {
-                        List<SimplePeakListRowGCGC> standards = new ArrayList<SimplePeakListRowGCGC>();
-                        Dataset[] gcgcDatasets = GuineuCore.getDesktop().getSelectedDataFiles();
-                        SimpleGCGCDataset gcgcDataset = (SimpleGCGCDataset) gcgcDatasets[0];
-                        for (PeakListRow row : gcgcDataset.getRows()) {
-                                if (row.isSelected()) {
-                                        standards.add((SimplePeakListRowGCGC) row);
+
+                        List<PeakListRow> standards = new ArrayList<PeakListRow>();
+                        for (PeakListRow row : dataset.getRows()) {
+                                if (row.isSelected() || (dataset.getType() == DatasetType.LCMS &&
+                                        ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
+                                        standards.add(row);
                                 }
                         }
                         LinearNormalizer filter = new LinearNormalizer(standards);
-                        SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
+                        Dataset newAlignment = filter.actualMap(dataset);
                         newAlignment.setDatasetName(newAlignment.toString() + "-Normalized");
-                        newAlignment.setType(DatasetType.GCGCTOF);
+                        newAlignment.setType(dataset.getType());
 
                         GUIUtils.showNewTable(newAlignment, true);
 
