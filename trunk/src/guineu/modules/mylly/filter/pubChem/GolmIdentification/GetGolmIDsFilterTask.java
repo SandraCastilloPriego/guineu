@@ -301,8 +301,8 @@ public class GetGolmIDsFilterTask implements Task {
                                                 inputLine = in.readLine();
                                                 inputLine = in.readLine();
                                                 String[] data = inputLine.split("</td><td>");
-                                                //  String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
-                                                // row.setVar(GCGCColumnName.CLASS.getSetFunctionName(), molecularWeight);
+                                                String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
+                                                row.setVar(GCGCColumnName.MOLWEIGHT.getSetFunctionName(), molecularWeight);
                                                 break;
                                         } else if (inputLine.contains("href=\"Analytes/")) {
                                                 String[] dataScore = inputLine.split("</td><td>");
@@ -312,8 +312,8 @@ public class GetGolmIDsFilterTask implements Task {
                                                 inputLine = in.readLine();
                                                 inputLine = in.readLine();
                                                 String[] data = inputLine.split("</td><td>");
-                                                // String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
-                                                //   row.setVar(GCGCColumnName.CLASS.getSetFunctionName(), molecularWeight);
+                                                String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
+                                                row.setVar(GCGCColumnName.MOLWEIGHT.getSetFunctionName(), molecularWeight);
                                                 break;
                                         } else if (inputLine.contains("href=\"ReferenceSubstances/")) {
                                                 String[] dataScore = inputLine.split("</td><td>");
@@ -323,8 +323,8 @@ public class GetGolmIDsFilterTask implements Task {
                                                 inputLine = in.readLine();
                                                 inputLine = in.readLine();
                                                 String[] data = inputLine.split("</td><td>");
-                                                //   String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
-                                                //  row.setVar(GCGCColumnName.CLASS.getSetFunctionName(), molecularWeight);
+                                                String molecularWeight = data[data.length - 1].replaceAll("&nbsp;", "");
+                                                row.setVar(GCGCColumnName.MOLWEIGHT.getSetFunctionName(), molecularWeight);
                                                 break;
                                         }
                                 }

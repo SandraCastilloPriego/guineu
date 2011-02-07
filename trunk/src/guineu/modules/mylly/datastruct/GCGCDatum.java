@@ -45,6 +45,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         private Spectrum spectrum;
         private boolean useConc = false;
         private String columnName;
+        private double molWeight;
 
         public GCGCDatum() {
         }
@@ -134,6 +135,7 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
                 d.keggID = keggID;
                 d.chEBIID = chEBIID;
                 d.synonyms = synonyms;
+                d.molWeight = molWeight;
                 return d;
         }
 
@@ -259,6 +261,14 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
 
         public String getSynonyms() {
                 return this.synonyms;
+        }
+
+        public double getMolWeight() {
+                return this.molWeight;
+        }
+
+        public void setMolWeight(double molWeight) {
+                this.molWeight = molWeight;
         }
 
         public void setSynonyms(String synonyms) {
