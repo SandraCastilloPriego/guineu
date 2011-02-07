@@ -22,8 +22,10 @@ import guineu.data.DatasetType;
 import guineu.data.Dataset;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.util.Range;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -168,6 +170,17 @@ public class SimpleLCMSDataset implements Dataset {
 
         public void setType(DatasetType type) {
                 this.type = type;
+        }
+
+         /**
+         * Add new rows into the data set. The rows can be in any kind of Collection class.
+         *
+         * @param rows Rows to be added.
+         */
+        public void addAll(Collection<? extends SimplePeakListRowLCMS> rows) {
+                for (SimplePeakListRowLCMS r : rows) {
+                        peakList.add(r);
+                }
         }
 
         public void removeRow(PeakListRow row) {

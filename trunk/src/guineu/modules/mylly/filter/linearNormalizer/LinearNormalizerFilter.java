@@ -97,7 +97,7 @@ public class LinearNormalizerFilter implements GuineuModule, TaskListener, Actio
 		// prepare a new group of tasks
 		Task tasks[] = new LinearNormalizerFilterTask[DataFiles.length];
 		for (int cont = 0; cont < DataFiles.length; cont++) {
-			tasks[cont] = new LinearNormalizerFilterTask((SimpleGCGCDataset)DataFiles[cont]);
+			tasks[cont] = new LinearNormalizerFilterTask(DataFiles[cont]);
 		}
 		GuineuCore.getTaskController().addTasks(tasks);
 
