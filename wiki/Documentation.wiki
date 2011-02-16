@@ -1,7 +1,7 @@
 #summary Lateral menu
 = Index =
 
- * [GCGCFile GCxGC-MS Algorithms]
+ * GCxGC-MS Algorithms
   * [GCGCFile File]
     * [GCGCopenFile Open one sample file]
     * [GCGCopenMultipleFile Open multiple sample file]
@@ -22,14 +22,14 @@
    * [GCGCPubChemFilter PubChem Filter]
    * [GCGCSinglingFilter Singling Filter]
    * [GCGCRTIPreparationFile RTI Preparation File]
- * [LCMSFile LC-MS Algorithms]
+ * LC-MS Algorithms
   * [LCMSFile File]
    * [LCMSOpenFile Open LC-MS File]
    * [LCMSSaveFile Save LC-MS File]
   * [LCMSIdentification Identification]
    * [LCMSAdductSearch Adduct Search]
    * [LCMSCustomDatabaseSearch Custom Database Search]
- * [GeneralFile General Algorithms]
+ * General Algorithms
   * [GeneralFile File]
    * [GeneralOpenOtherFile Open Other Files]
    * [GeneralOpenMassLynxFile Open Mass Lynx Files]
@@ -52,5 +52,5 @@
    * [GCGCColumnsConfiguration Configuration of the GCxGC-MS files's columns]
    * [LCMSColumnsConfiguration Configuration of the LC-MS files's columns]
    * [ParametersConfiguration Parameters Configuration]
- * [NetbeansProjectSetup Development]
+ * Development
   * [NetbeansProjectSetup NetBeans Project Setup]
