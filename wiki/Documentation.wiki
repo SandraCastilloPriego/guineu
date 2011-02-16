@@ -23,14 +23,14 @@
    * [GCGCPubChemFilter PubChem Filter]
    * [GCGCSinglingFilter Singling Filter]
    * [GCGCRTIPreparationFile RTI Preparation File]
- * LC-MS Algorithms
+ * [ LC-MS Algorithms]
   * [LCMSFile File]
    * [LCMSOpenFile Open LC-MS File]
    * [LCMSSaveFile Save LC-MS File]
   * [LCMSIdentification Identification]
    * [LCMSAdductSearch Adduct Search]
    * [LCMSCustomDatabaseSearch Custom Database Search]
- * General Algorithms
+ * [ General Algorithms]
   * [GeneralFile File]
    * [GeneralOpenOtherFile Open Other Files]
    * [GeneralOpenMassLynxFile Open Mass Lynx Files]
@@ -53,5 +53,5 @@
    * [GCGCColumnsConfiguration Configuration of the GCxGC-MS files's columns]
    * [LCMSColumnsConfiguration Configuration of the LC-MS files's columns]
    * [ParametersConfiguration Parameters Configuration]
- * Development
+ * [ Development]
   * [NetbeansProjectSetup NetBeans Project Setup]
