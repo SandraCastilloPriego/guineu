@@ -387,6 +387,13 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 }
         }
 
+        public void setMolWeight(double molWeight) {
+                try {
+                        this.molWeight = molWeight;
+                } catch (Exception e) {
+                }
+        }
+
         public String getNewCAS() {
                 return this.newCAS;
         }

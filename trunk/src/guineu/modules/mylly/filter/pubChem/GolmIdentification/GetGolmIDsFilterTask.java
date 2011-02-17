@@ -262,6 +262,7 @@ public class GetGolmIDsFilterTask implements Task {
                                         row.setVar(GCGCColumnName.CAS2.getSetFunctionName(), "");
                                         row.setVar(GCGCColumnName.KEGG.getSetFunctionName(), "");
                                         row.setVar(GCGCColumnName.SYNONYM.getSetFunctionName(), "");
+                                        row.setVar(GCGCColumnName.MOLWEIGHT.getSetFunctionName(), "0.0");
                                 }
                                 if (pubChemID.length() == 0) {
                                         name = row.getName();
