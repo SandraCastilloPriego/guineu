@@ -40,14 +40,14 @@ import java.util.logging.Logger;
 public class DynamicAligner implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private RansacAlignerParameters parameters;
+	private DynamicAlignerParameters parameters;
 	private Desktop desktop;
 
 	public void initModule() {
 
 		this.desktop = GuineuCore.getDesktop();
 
-		parameters = new RansacAlignerParameters();
+		parameters = new DynamicAlignerParameters();
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Dynamic alignment..",
 				"Alignment of two or more data sets using dynamic programming.", KeyEvent.VK_A, this, null,  "icons/alignment.png");
@@ -64,7 +64,7 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 	}
 
 	public void setParameters(ParameterSet parameters) {
-		this.parameters = (RansacAlignerParameters) parameters;
+		this.parameters = (DynamicAlignerParameters) parameters;
 	}
 
 	
@@ -109,8 +109,8 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 		}
 
 		// prepare a new group with just one task
-		Task task = new RansacAlignerTask(peakLists,
-				(RansacAlignerParameters) parameters);
+		Task task = new DynamicAlignerTask(peakLists,
+				(DynamicAlignerParameters) parameters);
 
 		GuineuCore.getTaskController().addTask(task);
 

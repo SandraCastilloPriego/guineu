@@ -50,7 +50,7 @@ public class RansacAligner implements GuineuModule, TaskListener, ActionListener
 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Combine datasets..",
 				"Combine LC-MS datasets", KeyEvent.VK_A, this, null,  "icons/alignment.png");
-		desktop.addMenuSeparator(GuineuMenu.ALIGNMENT);
+		
 	}
 
 	public String toString() {
