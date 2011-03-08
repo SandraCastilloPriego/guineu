@@ -165,6 +165,11 @@ public class DynamicAlignerTask implements Task {
 
                                         progress = (double) processedRows++ / (double) totalRows;
                                 }
+				matrix.computeAlignmentMatrix();
+				matrix.getAlignment();
+				/* matrix.masterIndex and matrix.rowIndex give the indices
+				 * of the alignment now!
+				 */
                         }
                 }
 
@@ -288,7 +293,10 @@ public class DynamicAlignerTask implements Task {
         class Matrix {
 
                 double[][] values;
+		double[][] alignmentMatrix;
                 List<PeakListRow> masterRows, rows;
+		List<Integer> masterIndex, rowIndex;
+		double gapPenalty;
 
                 public Matrix(Dataset masterList, Dataset peakList){
                         masterRows = masterList.getRows();
@@ -299,7 +307,63 @@ public class DynamicAlignerTask implements Task {
                 public void setScore(PeakListRow masterRow, PeakListRow row, double score){
                       int index1 = masterRows.indexOf(masterRow);
                       int index2 = rows.indexOf(row);
-                      values[index1][index2] = score;
+                      values[index1][index2] = 1.0/score;
                 }
-        }
+
+		public void computeAlignmentMatrix() {
+			alignmentMatrix = new double[masterRows.size()+1][rows.size()+1];
+
+			gapPenalty = 5; /* TODO: make it sample dependent e.g. max RT shift */
+
+			for(int i=0; i <= masterRows.size(); i++) {
+				alignmentMatrix[i][0] = gapPenalty*i;
+			}
+			for(int j=0; j <= rows.size(); j++) {
+				alignmentMatrix[0][j] = gapPenalty*j;
+			}
+
+			for(int i = 1; i <= masterRows.size(); i++) {
+				for(int j = 1; j <= rows.size(); j++) {
+					double match = alignmentMatrix[i-1][j-1] + values[i-1][j-1];
+					double delete = alignmentMatrix[i-1][j] + gapPenalty;
+					double insert = alignmentMatrix[i][j-1] + gapPenalty;
+					alignmentMatrix[i][j] = Math.max(match, Math.max(delete, insert));
+				}
+			}
+		}
+
+		public void getAlignment() {
+			int i = masterRows.size();
+			int j = rows.size();
+
+			while((i > 0) && (j > 0)) {
+
+				if(alignmentMatrix[i][j] == alignmentMatrix[i-1][j-1] + values[i-1][j-1]) {
+					masterIndex.add(i-1);
+					rowIndex.add(j-1);
+					i--; j--;
+				} else if(alignmentMatrix[i][j] == alignmentMatrix[i-1][j] + gapPenalty) {
+					masterIndex.add(i-1);
+					rowIndex.add(-1); /* -1 represents a gap */
+					i--;
+				} else if(alignmentMatrix[i][j] == alignmentMatrix[i][j-1] + gapPenalty) {
+					masterIndex.add(-1);
+					rowIndex.add(j-1);
+					j--;
+				}
+			}
+
+			while(i > 0) {
+				masterIndex.add(i-1);
+				rowIndex.add(-1);
+				i--;
+			}
+
+			while(j > 0) {
+				masterIndex.add(-1);
+				rowIndex.add(j-1);
+				j--;
+			}
+		}
+	}
 }
