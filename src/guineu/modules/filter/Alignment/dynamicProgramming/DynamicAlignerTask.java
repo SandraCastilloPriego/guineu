@@ -130,10 +130,11 @@ public class DynamicAlignerTask implements Task {
 
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
+                                Matrix matrix = new Matrix(alignedPeakList, peakList);
                                 //for each row in the main file which contains all the samples align until that moment.. get the graph of peaks..
                                 for (PeakListRow row : alignedPeakList.getRows()) {
                                         Graph rowGraph = this.getGraph(peakList, row);
-                                        double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
+                                      /*  double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
                                         if (minRT < 0) {
                                                 minRT = 0;
                                         }
@@ -146,20 +147,21 @@ public class DynamicAlignerTask implements Task {
                                         PeakListRow candidateRows[] = ((SimpleLCMSDataset) peakList).getRowsInsideRTAndMZRange(rtRange, mzRange);
 
                                         PeakListRow bestCandidate = null;
-                                        double bestScore = 1000000;
-                                        for (PeakListRow candidate : candidateRows) {
+                                        double bestScore = 1000000;*/
+                                        for (PeakListRow candidate : peakList.getRows()) {
                                                 double score = this.getScore(rowGraph, alignmentMapping.get(candidate));
-                                                if (score < bestScore) {
+                                                matrix.setScore(row, candidate, score);
+                                               /* if (score < bestScore) {
                                                         bestCandidate = candidate;
                                                         bestScore = score;
-                                                }
+                                                }*/
                                         }
-                                        if (bestCandidate != null) {
+                                       /* if (bestCandidate != null) {
                                                 for (String sampleNames : peakList.getAllColumnNames()) {
                                                         setColumns(bestCandidate, row);
                                                         row.setPeak(sampleNames, (Double) bestCandidate.getPeak(sampleNames));
                                                 }
-                                        }
+                                        }*/
 
                                         progress = (double) processedRows++ / (double) totalRows;
                                 }
@@ -280,6 +282,24 @@ public class DynamicAlignerTask implements Task {
 
                 public List<Double[]> getCoords() {
                         return this.coordinates;
+                }
+        }
+
+        class Matrix {
+
+                double[][] values;
+                List<PeakListRow> masterRows, rows;
+
+                public Matrix(Dataset masterList, Dataset peakList){
+                        masterRows = masterList.getRows();
+                        rows = peakList.getRows();
+                        values = new double[masterList.getNumberRows()][peakList.getNumberRows()];
+                }
+
+                public void setScore(PeakListRow masterRow, PeakListRow row, double score){
+                      int index1 = masterRows.indexOf(masterRow);
+                      int index2 = rows.indexOf(row);
+                      values[index1][index2] = score;
                 }
         }
 }
