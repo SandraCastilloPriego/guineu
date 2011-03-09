@@ -165,18 +165,31 @@ public class DynamicAlignerTask implements Task {
 
                                         progress = (double) processedRows++ / (double) totalRows;
                                 }
+
                                 matrix.computeAlignmentMatrix();
                                 matrix.getAlignment();
 
                                 List<Integer> masterIndexes = matrix.getMasterIndexes();
                                 List<Integer> peakListIndexes = matrix.getPeakListIndexes();
 
-                                for (Integer i : masterIndexes) {
-                                        System.out.println(i);
+                                for (int i = 0; i < masterIndexes.size(); i++) {
+                                        int indexMasterList = masterIndexes.get(i);
+                                        int indexPeakList = peakListIndexes.get(i);
+
+                                        if (indexMasterList == -1 && indexPeakList > -1) {
+                                                PeakListRow row = peakList.getRow(indexPeakList).clone();
+                                                alignedPeakList.addRow(row);
+                                        } else if (indexMasterList > -1 && indexPeakList > -1) {
+                                                PeakListRow masterRow = alignedPeakList.getRow(indexMasterList);
+                                                PeakListRow row = peakList.getRow(indexPeakList);
+
+                                                setColumns(row, masterRow);
+                                                for (String name : peakList.getAllColumnNames()) {
+                                                        masterRow.setPeak(name, (Double) row.getPeak(name));
+                                                }
+                                        }
                                 }
-                                /* matrix.masterIndex and matrix.rowIndex give the indices
-                                 * of the alignment now!
-                                 */
+
                         }
                 }
 
@@ -317,7 +330,10 @@ public class DynamicAlignerTask implements Task {
                         masterRows = masterList.getRows();
                         rows = peakList.getRows();
                         values = new double[masterList.getNumberRows()][peakList.getNumberRows()];
-                        gapPenalty = new double[peakList.getNumberRows()];
+                        masterIndex = new ArrayList<Integer>();
+                        rowIndex = new ArrayList<Integer>();
+                        gapPenalty = new double[peakList.getNumberRows() + 1];
+                        gapPenalty[0] = 50;
                 }
 
                 public void setScore(PeakListRow masterRow, PeakListRow row, double score) {
@@ -328,7 +344,7 @@ public class DynamicAlignerTask implements Task {
 
                 public void setPenalty(PeakListRow row, double score) {
                         int index = rows.indexOf(row);
-                        gapPenalty[index] = score;
+                        gapPenalty[index + 1] = score;
                 }
 
                 public void computeAlignmentMatrix() {
@@ -338,7 +354,7 @@ public class DynamicAlignerTask implements Task {
                                 alignmentMatrix[i][0] = gapPenalty[0] * i;
                         }
                         for (int j = 0; j <= rows.size(); j++) {
-                                alignmentMatrix[0][j] = gapPenalty[j] * j;
+                                alignmentMatrix[0][j] = gapPenalty[0] * j;
                         }
 
                         for (int i = 1; i <= masterRows.size(); i++) {
