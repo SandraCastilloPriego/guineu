@@ -27,6 +27,8 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,13 +45,11 @@ public class DynamicAlignerTask implements Task {
         private String peakListName;
         private double mzTolerance;
         private double rtTolerance;
-        private DynamicAlignerParameters parameters;
         private double progress;
 
         public DynamicAlignerTask(Dataset[] peakLists, DynamicAlignerParameters parameters) {
 
                 this.peakLists = peakLists;
-                this.parameters = parameters;
 
                 // Get parameter values for easier use
                 peakListName = (String) parameters.getParameterValue(DynamicAlignerParameters.peakListName);
@@ -86,7 +86,21 @@ public class DynamicAlignerTask implements Task {
         /**
          * @see Runnable#run()
          */
+        @Override
         public void run() {
+
+                Comparator<PeakListRow> c = new Comparator<PeakListRow>() {
+
+                        @Override
+                        public int compare(PeakListRow o1, PeakListRow o2) {
+                                if (((SimplePeakListRowLCMS) o1).getRT() < ((SimplePeakListRowLCMS) o2).getRT()) {
+                                        return 1;
+                                } else {
+                                        return -1;
+                                }
+                        }
+                };
+
                 status = TaskStatus.PROCESSING;
                 logger.info("Running RANSAC aligner");
 
@@ -129,7 +143,12 @@ public class DynamicAlignerTask implements Task {
 
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
-                                Matrix matrix = new Matrix(peakList, alignedPeakList);
+                                List<PeakListRow> masterRows = alignedPeakList.getRows();
+                                List<PeakListRow> rows = peakList.getRows();
+                                Collections.sort(masterRows, c);
+                                Collections.sort(rows, c);
+
+                                Matrix matrix = new Matrix(masterRows, rows);
                                 //for each row in the main file which contains all the samples align until that moment.. get the graph of peaks..
                                 double[] penalties = new double[alignedPeakList.getNumberRows()];
                                 for (int i = 0; i < penalties.length; i++) {
@@ -189,11 +208,11 @@ public class DynamicAlignerTask implements Task {
                                         int indexPeakList = peakListIndexes.get(i);
 
                                         if (indexMasterList == -1 && indexPeakList > -1) {
-                                                PeakListRow row = peakList.getRow(indexPeakList).clone();
+                                                PeakListRow row = rows.get(indexPeakList).clone();
                                                 alignedPeakList.addRow(row);
                                         } else if (indexMasterList > -1 && indexPeakList > -1) {
-                                                PeakListRow masterRow = alignedPeakList.getRow(indexMasterList);
-                                                PeakListRow row = peakList.getRow(indexPeakList);
+                                                PeakListRow masterRow = masterRows.get(indexMasterList);
+                                                PeakListRow row = rows.get(indexPeakList);
 
                                                 setColumns(row, masterRow);
                                                 for (String name : peakList.getAllColumnNames()) {
@@ -338,14 +357,14 @@ public class DynamicAlignerTask implements Task {
                 List<Integer> masterIndex, rowIndex;
                 double[] gapInsertPenalty, gapDeletePenalty;
 
-                public Matrix(Dataset peakList, Dataset masterList) {
-                        masterRows = masterList.getRows();
-                        rows = peakList.getRows();
-                        values = new double[masterList.getNumberRows()][peakList.getNumberRows()];
+                public Matrix(List<PeakListRow> masterRows, List<PeakListRow> rows) {
+                        this.masterRows = masterRows;
+                        this.rows = rows;
+                        values = new double[masterRows.size()][rows.size()];
                         masterIndex = new ArrayList<Integer>();
                         rowIndex = new ArrayList<Integer>();
-                        gapInsertPenalty = new double[masterList.getNumberRows()];
-                        gapDeletePenalty = new double[peakList.getNumberRows()];
+                        gapInsertPenalty = new double[masterRows.size()];
+                        gapDeletePenalty = new double[rows.size()];
                 }
 
                 public void setScore(PeakListRow masterRow, PeakListRow row, double score) {
@@ -378,8 +397,8 @@ public class DynamicAlignerTask implements Task {
                         for (int i = 1; i <= masterRows.size(); i++) {
                                 for (int j = 1; j <= rows.size(); j++) {
                                         double match = alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1];
-                                        double delete = alignmentMatrix[i - 1][j] + gapDeletePenalty[i - 1];
-                                        double insert = alignmentMatrix[i][j - 1] + gapInsertPenalty[j - 1];
+                                        double delete = alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1];
+                                        double insert = alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1];
                                         alignmentMatrix[i][j] = Math.min(match, Math.min(delete, insert));
                                 }
                         }
@@ -396,11 +415,11 @@ public class DynamicAlignerTask implements Task {
                                         rowIndex.add(j - 1);
                                         i--;
                                         j--;
-                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[i - 1]) {
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
                                         masterIndex.add(i - 1);
                                         rowIndex.add(-1); /* -1 represents a gap */
                                         i--;
-                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[j - 1]) {
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
                                         masterIndex.add(-1);
                                         rowIndex.add(j - 1);
                                         j--;
