@@ -17,7 +17,6 @@
  */
 package guineu.modules.filter.Alignment.dynamicProgramming;
 
-import guineu.modules.filter.Alignment.RANSAC.*;
 import guineu.data.Dataset;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
@@ -130,11 +129,12 @@ public class DynamicAlignerTask implements Task {
 
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
-                                Matrix matrix = new Matrix(alignedPeakList, peakList);
+                                Matrix matrix = new Matrix(peakList, alignedPeakList);
                                 //for each row in the main file which contains all the samples align until that moment.. get the graph of peaks..
-                                for (PeakListRow row : alignedPeakList.getRows()) {
-                                        Graph rowGraph = this.getGraph(peakList, row);
-                                      /*  double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
+                                double maxScore = 0;
+                                for (PeakListRow row : peakList.getRows()) {
+                                        Graph rowGraph = alignmentMapping.get(row);
+                                        double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
                                         if (minRT < 0) {
                                                 minRT = 0;
                                         }
@@ -144,32 +144,39 @@ public class DynamicAlignerTask implements Task {
                                                 minMZ = 0;
                                         }
                                         Range mzRange = new Range(minMZ, ((SimplePeakListRowLCMS) row).getMZ() + this.mzTolerance);
-                                        PeakListRow candidateRows[] = ((SimpleLCMSDataset) peakList).getRowsInsideRTAndMZRange(rtRange, mzRange);
+                                        PeakListRow candidateRows[] = ((SimpleLCMSDataset) alignedPeakList).getRowsInsideRTAndMZRange(rtRange, mzRange);
 
-                                        PeakListRow bestCandidate = null;
-                                        double bestScore = 1000000;*/
-                                        for (PeakListRow candidate : peakList.getRows()) {
-                                                double score = this.getScore(rowGraph, alignmentMapping.get(candidate));
-                                                matrix.setScore(row, candidate, score);
-                                               /* if (score < bestScore) {
-                                                        bestCandidate = candidate;
-                                                        bestScore = score;
-                                                }*/
-                                        }
-                                       /* if (bestCandidate != null) {
-                                                for (String sampleNames : peakList.getAllColumnNames()) {
-                                                        setColumns(bestCandidate, row);
-                                                        row.setPeak(sampleNames, (Double) bestCandidate.getPeak(sampleNames));
+
+                                        for (PeakListRow candidate : candidateRows) {
+                                                double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate));
+                                                matrix.setScore(candidate, row, score);
+                                                if (score > maxScore) {
+                                                        maxScore = score;
                                                 }
-                                        }*/
+                                        }
+
+                                        for (PeakListRow candidate : alignedPeakList.getRows()) {
+                                                if (!Contains(candidateRows, candidate)) {
+                                                        matrix.setScore(candidate, row, maxScore + 100);
+                                                }
+
+                                        }
+                                        matrix.setPenalty(row, maxScore + 50);
 
                                         progress = (double) processedRows++ / (double) totalRows;
                                 }
-				matrix.computeAlignmentMatrix();
-				matrix.getAlignment();
-				/* matrix.masterIndex and matrix.rowIndex give the indices
-				 * of the alignment now!
-				 */
+                                matrix.computeAlignmentMatrix();
+                                matrix.getAlignment();
+
+                                List<Integer> masterIndexes = matrix.getMasterIndexes();
+                                List<Integer> peakListIndexes = matrix.getPeakListIndexes();
+
+                                for (Integer i : masterIndexes) {
+                                        System.out.println(i);
+                                }
+                                /* matrix.masterIndex and matrix.rowIndex give the indices
+                                 * of the alignment now!
+                                 */
                         }
                 }
 
@@ -184,8 +191,16 @@ public class DynamicAlignerTask implements Task {
 
         }
 
+        public boolean Contains(PeakListRow[] candidateRows, PeakListRow candidate) {
+                for (PeakListRow row : candidateRows) {
+                        if (row == candidate) {
+                                return true;
+                        }
+                }
+                return false;
+        }
 
-         /**
+        /**
          * Updates the value of some columns with the values of every data set combined.
          *
          * @param row Source row
@@ -293,77 +308,91 @@ public class DynamicAlignerTask implements Task {
         class Matrix {
 
                 double[][] values;
-		double[][] alignmentMatrix;
+                double[][] alignmentMatrix;
                 List<PeakListRow> masterRows, rows;
-		List<Integer> masterIndex, rowIndex;
-		double gapPenalty;
+                List<Integer> masterIndex, rowIndex;
+                double[] gapPenalty;
 
-                public Matrix(Dataset masterList, Dataset peakList){
+                public Matrix(Dataset peakList, Dataset masterList) {
                         masterRows = masterList.getRows();
                         rows = peakList.getRows();
                         values = new double[masterList.getNumberRows()][peakList.getNumberRows()];
+                        gapPenalty = new double[peakList.getNumberRows()];
                 }
 
-                public void setScore(PeakListRow masterRow, PeakListRow row, double score){
-                      int index1 = masterRows.indexOf(masterRow);
-                      int index2 = rows.indexOf(row);
-                      values[index1][index2] = 1.0/score;
+                public void setScore(PeakListRow masterRow, PeakListRow row, double score) {
+                        int index1 = masterRows.indexOf(masterRow);
+                        int index2 = rows.indexOf(row);
+                        values[index1][index2] = score;
                 }
 
-		public void computeAlignmentMatrix() {
-			alignmentMatrix = new double[masterRows.size()+1][rows.size()+1];
+                public void setPenalty(PeakListRow row, double score) {
+                        int index = rows.indexOf(row);
+                        gapPenalty[index] = score;
+                }
 
-			gapPenalty = 5; /* TODO: make it sample dependent e.g. max RT shift */
+                public void computeAlignmentMatrix() {
+                        alignmentMatrix = new double[masterRows.size() + 1][rows.size() + 1];
 
-			for(int i=0; i <= masterRows.size(); i++) {
-				alignmentMatrix[i][0] = gapPenalty*i;
-			}
-			for(int j=0; j <= rows.size(); j++) {
-				alignmentMatrix[0][j] = gapPenalty*j;
-			}
+                        for (int i = 0; i <= masterRows.size(); i++) {
+                                alignmentMatrix[i][0] = gapPenalty[0] * i;
+                        }
+                        for (int j = 0; j <= rows.size(); j++) {
+                                alignmentMatrix[0][j] = gapPenalty[j] * j;
+                        }
 
-			for(int i = 1; i <= masterRows.size(); i++) {
-				for(int j = 1; j <= rows.size(); j++) {
-					double match = alignmentMatrix[i-1][j-1] + values[i-1][j-1];
-					double delete = alignmentMatrix[i-1][j] + gapPenalty;
-					double insert = alignmentMatrix[i][j-1] + gapPenalty;
-					alignmentMatrix[i][j] = Math.max(match, Math.max(delete, insert));
-				}
-			}
-		}
+                        for (int i = 1; i <= masterRows.size(); i++) {
+                                for (int j = 1; j <= rows.size(); j++) {
+                                        double match = alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1];
+                                        double delete = alignmentMatrix[i - 1][j] + gapPenalty[j];
+                                        double insert = alignmentMatrix[i][j - 1] + gapPenalty[j - 1];
+                                        alignmentMatrix[i][j] = Math.min(match, Math.min(delete, insert));
+                                }
+                        }
+                }
 
-		public void getAlignment() {
-			int i = masterRows.size();
-			int j = rows.size();
+                public void getAlignment() {
+                        int i = masterRows.size();
+                        int j = rows.size();
 
-			while((i > 0) && (j > 0)) {
+                        while ((i > 0) && (j > 0)) {
 
-				if(alignmentMatrix[i][j] == alignmentMatrix[i-1][j-1] + values[i-1][j-1]) {
-					masterIndex.add(i-1);
-					rowIndex.add(j-1);
-					i--; j--;
-				} else if(alignmentMatrix[i][j] == alignmentMatrix[i-1][j] + gapPenalty) {
-					masterIndex.add(i-1);
-					rowIndex.add(-1); /* -1 represents a gap */
-					i--;
-				} else if(alignmentMatrix[i][j] == alignmentMatrix[i][j-1] + gapPenalty) {
-					masterIndex.add(-1);
-					rowIndex.add(j-1);
-					j--;
-				}
-			}
+                                if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
+                                        masterIndex.add(i - 1);
+                                        rowIndex.add(j - 1);
+                                        i--;
+                                        j--;
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapPenalty[j]) {
+                                        masterIndex.add(i - 1);
+                                        rowIndex.add(-1); /* -1 represents a gap */
+                                        i--;
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapPenalty[j - 1]) {
+                                        masterIndex.add(-1);
+                                        rowIndex.add(j - 1);
+                                        j--;
+                                }
+                        }
 
-			while(i > 0) {
-				masterIndex.add(i-1);
-				rowIndex.add(-1);
-				i--;
-			}
+                        while (i > 0) {
+                                masterIndex.add(i - 1);
+                                rowIndex.add(-1);
+                                i--;
+                        }
 
-			while(j > 0) {
-				masterIndex.add(-1);
-				rowIndex.add(j-1);
-				j--;
-			}
-		}
-	}
+                        while (j > 0) {
+                                masterIndex.add(-1);
+                                rowIndex.add(j - 1);
+                                j--;
+                        }
+
+                }
+
+                public List<Integer> getMasterIndexes() {
+                        return this.masterIndex;
+                }
+
+                public List<Integer> getPeakListIndexes() {
+                        return this.rowIndex;
+                }
+        }
 }
