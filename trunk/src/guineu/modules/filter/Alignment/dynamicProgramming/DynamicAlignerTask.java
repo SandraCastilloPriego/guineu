@@ -171,7 +171,10 @@ public class DynamicAlignerTask implements Task {
 
                                         double maxScore = 0;
                                         for (PeakListRow candidate : candidateRows) {
-                                                double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate));
+                                                double diff = Math.abs(((SimplePeakListRowLCMS) row).getRT() - ((SimplePeakListRowLCMS) candidate).getRT());
+                                                double diffMZ = Math.abs(((SimplePeakListRowLCMS) row).getMZ() - ((SimplePeakListRowLCMS) candidate).getMZ())*10;
+
+                                                double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate)) + diff + diffMZ;
                                                 matrix.setScore(candidate, row, score);
                                                 if (score > maxScore) {
                                                         maxScore = score;
@@ -189,13 +192,13 @@ public class DynamicAlignerTask implements Task {
                                                 }
 
                                         }
-                                        matrix.setDeletePenalty(row, maxScore + 50);
+                                        matrix.setDeletePenalty(row, maxScore + 100);
                                         progress = (double) processedRows++ / (double) totalRows;
 
                                 }
 
                                 for (int i = 0; i < penalties.length; i++) {
-                                        matrix.setInsertPenalty(alignedPeakList.getRow(i), penalties[i] + 50);
+                                        matrix.setInsertPenalty(alignedPeakList.getRow(i), penalties[i] + 100);
                                 }
                                 matrix.computeAlignmentMatrix();
                                 matrix.getAlignment();
@@ -279,20 +282,24 @@ public class DynamicAlignerTask implements Task {
                 List<Double[]> coords1 = graphPeak.getCoords();
                 List<Double[]> coords2 = graphCandidate.getCoords();
 
+                System.out.println("sizes: " + coords1.size() + " - " + coords2.size());
+
                 if (coords1.size() > coords2.size()) {
                         coords1 = graphCandidate.getCoords();
                         coords2 = graphPeak.getCoords();
                 }
+
                 double score = 0;
 
-                Double[] bestCoord = null;
-                double difference = 1000;
                 for (Double[] coord1 : coords1) {
+                        System.out.println(coord1[0] + " - " + coord1[1]);
+                        Double[] bestCoord = null;
+                        double difference = 100000000.0;
                         for (Double[] coord2 : coords2) {
                                 double diff1 = Math.abs(coord1[0] - coord2[0]);
                                 double diff2 = Math.abs(coord1[1] - coord2[1]);
 
-                                if (diff1 + diff2 < difference) {
+                                if ((diff1 + diff2) < difference) {
                                         difference = diff1 + diff2;
                                         bestCoord = coord2;
                                 }
@@ -300,11 +307,14 @@ public class DynamicAlignerTask implements Task {
 
                         score += difference;
                         if (bestCoord != null) {
+                                System.out.println("Best: " + bestCoord[0] + " - " + bestCoord[1] + " diff: " + difference);
                                 coords2.remove(bestCoord);
                         }
                 }
 
 
+
+                System.out.println(score);
 
                 return score;
         }
@@ -337,10 +347,12 @@ public class DynamicAlignerTask implements Task {
 
                 public Graph(SimplePeakListRowLCMS peak, PeakListRow[] candidates) {
                         for (PeakListRow row : candidates) {
-                                Double[] coord = new Double[2];
-                                coord[0] = peak.getRT() - ((SimplePeakListRowLCMS) row).getRT();
-                                coord[1] = peak.getMZ() - ((SimplePeakListRowLCMS) row).getMZ();
-                                this.coordinates.add(coord);
+                                if (peak != row) {
+                                        Double[] coord = new Double[2];
+                                        coord[0] = peak.getRT() - ((SimplePeakListRowLCMS) row).getRT();
+                                        coord[1] = peak.getMZ() - ((SimplePeakListRowLCMS) row).getMZ();
+                                        this.coordinates.add(coord);
+                                }
                         }
                 }
 
@@ -370,17 +382,17 @@ public class DynamicAlignerTask implements Task {
                 public void setScore(PeakListRow masterRow, PeakListRow row, double score) {
                         int index1 = masterRows.indexOf(masterRow);
                         int index2 = rows.indexOf(row);
-                        values[index1][index2] = score;
+                        values[index1][index2] = 1 / score;
                 }
 
                 public void setInsertPenalty(PeakListRow masterRow, double score) {
                         int index = masterRows.indexOf(masterRow);
-                        gapInsertPenalty[index] = score;
+                        gapInsertPenalty[index] = 1 / score;
                 }
 
                 public void setDeletePenalty(PeakListRow row, double score) {
                         int index = rows.indexOf(row);
-                        gapDeletePenalty[index] = score;
+                        gapDeletePenalty[index] = 1 / score;
                 }
 
                 public void computeAlignmentMatrix() {
@@ -399,7 +411,7 @@ public class DynamicAlignerTask implements Task {
                                         double match = alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1];
                                         double delete = alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1];
                                         double insert = alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1];
-                                        alignmentMatrix[i][j] = Math.min(match, Math.min(delete, insert));
+                                        alignmentMatrix[i][j] = Math.max(match, Math.max(delete, insert));
                                 }
                         }
                 }
