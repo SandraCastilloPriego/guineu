@@ -366,15 +366,15 @@ public class DynamicAlignerTask implements Task {
                 double[][] values;
                 double[][] alignmentMatrix;
                 List<PeakListRow> masterRows, rows;
-                List<Integer> masterIndex, rowIndex;
+                List<Integer> alignedMasterIndices, alignedRowIndices;
                 double[] gapInsertPenalty, gapDeletePenalty;
 
                 public Matrix(List<PeakListRow> masterRows, List<PeakListRow> rows) {
                         this.masterRows = masterRows;
                         this.rows = rows;
                         values = new double[masterRows.size()][rows.size()];
-                        masterIndex = new ArrayList<Integer>();
-                        rowIndex = new ArrayList<Integer>();
+                        alignedMasterIndices = new ArrayList<Integer>();
+                        alignedRowIndices = new ArrayList<Integer>();
                         gapInsertPenalty = new double[masterRows.size()];
                         gapDeletePenalty = new double[rows.size()];
                 }
@@ -491,46 +491,46 @@ public class DynamicAlignerTask implements Task {
                         }
  *
  */
-			int i = 0;
-			int j = 0;
+			List<Integer> unalignedMasterIndices = new ArrayList<Integer>();
+			List<Integer> unalignedRowIndices = new ArrayList<Integer>();
 
-			while(i < masterRows.size() && j < rows.size()) {
-				double match = values[i][j];
-				double delete = gapDeletePenalty[j];
-				double insert = gapInsertPenalty[i];
-				if(match < Math.min(delete, insert)) {
-					masterIndex.add(i);
-					rowIndex.add(j);
-					i++;
-					j++;
-				} else if(delete < Math.min(match, insert)) {
-					masterIndex.add(-1);
-					rowIndex.add(j);
-					j++;
-				} else if(insert < Math.min(match, delete)) {
-					masterIndex.add(i);
-					rowIndex.add(-1);
-					i++;
+			for(int i = 0; i < masterRows.size(); i++) {
+				unalignedMasterIndices.add(i);
+			}
+			for(int i = 0; i < rows.size(); i++) {
+				unalignedRowIndices.add(i);
+			}
+
+			for(int j = 0; j < rows.size(); j++) {
+				for(int i = 0; i < masterRows.size(); i++) {
+					if(values[i][j] < gapDeletePenalty[j]) {
+						alignedMasterIndices.add(i);
+						alignedRowIndices.add(j);
+						break;
+					}
 				}
 			}
-			while(i < masterRows.size()) {
-				masterIndex.add(i);
-				rowIndex.add(-1);
-				i++;
+
+			unalignedMasterIndices.removeAll(alignedMasterIndices);
+			unalignedRowIndices.removeAll(alignedRowIndices);
+
+			for(int index : unalignedMasterIndices) {
+				alignedMasterIndices.add(index);
+				alignedRowIndices.add(-1);
 			}
-			while(j < rows.size()) {
-				masterIndex.add(-1);
-				rowIndex.add(j);
-				j++;
+
+			for(int index : unalignedRowIndices) {
+				alignedMasterIndices.add(-1);
+				alignedRowIndices.add(index);
 			}
                 }
 
                 public List<Integer> getMasterIndexes() {
-                        return this.masterIndex;
+                        return this.alignedMasterIndices;
                 }
 
                 public List<Integer> getPeakListIndexes() {
-                        return this.rowIndex;
+                        return this.alignedRowIndices;
                 }
         }
 }
