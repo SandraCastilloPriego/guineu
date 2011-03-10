@@ -491,22 +491,37 @@ public class DynamicAlignerTask implements Task {
                         }
  *
  */
-			for (int i = 0; i < masterRows.size(); i++) {
-				for (int j = 0; j < rows.size(); j++) {
-					double match = values[i][j];
-					double delete = gapDeletePenalty[j];
-					double insert = gapInsertPenalty[i];
-					if(match < Math.min(delete, insert)) {
-						masterIndex.add(i);
-						rowIndex.add(j);
-					} else if(delete < Math.min(match, insert)) {
-						masterIndex.add(-1);
-						rowIndex.add(j);
-					} else if(insert < Math.min(match, delete)) {
-						masterIndex.add(i);
-						rowIndex.add(-1);
-					}
+			int i = 0;
+			int j = 0;
+
+			while(i < masterRows.size() && j < rows.size()) {
+				double match = values[i][j];
+				double delete = gapDeletePenalty[j];
+				double insert = gapInsertPenalty[i];
+				if(match < Math.min(delete, insert)) {
+					masterIndex.add(i);
+					rowIndex.add(j);
+					i++;
+					j++;
+				} else if(delete < Math.min(match, insert)) {
+					masterIndex.add(-1);
+					rowIndex.add(j);
+					j++;
+				} else if(insert < Math.min(match, delete)) {
+					masterIndex.add(i);
+					rowIndex.add(-1);
+					i++;
 				}
+			}
+			while(i < masterRows.size()) {
+				masterIndex.add(i);
+				rowIndex.add(-1);
+				i++;
+			}
+			while(j < rows.size()) {
+				masterIndex.add(-1);
+				rowIndex.add(j);
+				j++;
 			}
                 }
 
