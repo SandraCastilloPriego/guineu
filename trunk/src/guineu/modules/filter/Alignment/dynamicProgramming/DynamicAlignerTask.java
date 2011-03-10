@@ -192,15 +192,15 @@ public class DynamicAlignerTask implements Task {
                                                 }
 
                                         }
-                                        matrix.setDeletePenalty(row, maxScore + 100);
+                                        matrix.setDeletePenalty(row, maxScore + 50);
                                         progress = (double) processedRows++ / (double) totalRows;
 
                                 }
 
                                 for (int i = 0; i < penalties.length; i++) {
-                                        matrix.setInsertPenalty(alignedPeakList.getRow(i), penalties[i] + 100);
+                                        matrix.setInsertPenalty(alignedPeakList.getRow(i), penalties[i] + 50);
                                 }
-                                matrix.computeAlignmentMatrix();
+                                //matrix.computeAlignmentMatrix();
                                 matrix.getAlignment();
 
                                 List<Integer> masterIndexes = matrix.getMasterIndexes();
@@ -382,17 +382,20 @@ public class DynamicAlignerTask implements Task {
                 public void setScore(PeakListRow masterRow, PeakListRow row, double score) {
                         int index1 = masterRows.indexOf(masterRow);
                         int index2 = rows.indexOf(row);
-                        values[index1][index2] = 1 / score;
+                        //values[index1][index2] = 1 / score;
+                        values[index1][index2] = score;
                 }
 
                 public void setInsertPenalty(PeakListRow masterRow, double score) {
                         int index = masterRows.indexOf(masterRow);
-                        gapInsertPenalty[index] = 1 / score;
+                        //gapInsertPenalty[index] = 1 / score;
+                        gapInsertPenalty[index] = score;
                 }
 
                 public void setDeletePenalty(PeakListRow row, double score) {
                         int index = rows.indexOf(row);
-                        gapDeletePenalty[index] = 1 / score;
+                        //gapDeletePenalty[index] = 1 / score;
+                        gapDeletePenalty[index] = score;
                 }
 
                 public void computeAlignmentMatrix() {
@@ -411,13 +414,15 @@ public class DynamicAlignerTask implements Task {
                                         double match = alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1];
                                         double delete = alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1];
                                         double insert = alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1];
-                                        alignmentMatrix[i][j] = Math.max(match, Math.max(delete, insert));
+                                        //alignmentMatrix[i][j] = Math.max(match, Math.max(delete, insert));
+                                        alignmentMatrix[i][j] = Math.min(match, Math.min(delete, insert));
                                 }
                         }
                 }
 
                 public void getAlignment() {
-                        int i = masterRows.size();
+                        /*
+			int i = masterRows.size();
                         int j = rows.size();
 
                         while ((i > 0) && (j > 0)) {
@@ -429,7 +434,7 @@ public class DynamicAlignerTask implements Task {
                                         j--;
                                 } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
                                         masterIndex.add(i - 1);
-                                        rowIndex.add(-1); /* -1 represents a gap */
+                                        rowIndex.add(-1);
                                         i--;
                                 } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
                                         masterIndex.add(-1);
@@ -449,7 +454,60 @@ public class DynamicAlignerTask implements Task {
                                 rowIndex.add(j - 1);
                                 j--;
                         }
+			*/
 
+/*
+                        int i = 1;//masterRows.size();
+                        int j = 1;//rows.size();
+
+                        while ((i <= masterRows.size()) && (j <= rows.size())) {
+
+                                if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
+                                        masterIndex.add(i - 1);
+                                        rowIndex.add(j - 1);
+                                        i++;
+                                        j++;
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
+                                        masterIndex.add(i - 1);
+                                        rowIndex.add(-1);
+                                        i++;
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
+                                        masterIndex.add(-1);
+                                        rowIndex.add(j - 1);
+                                        j++;
+                                }
+                        }
+
+                        while (i <= masterRows.size()) {
+                                masterIndex.add(i - 1);
+                                rowIndex.add(-1);
+                                i++;
+                        }
+
+                        while (j <= rows.size()) {
+                                masterIndex.add(-1);
+                                rowIndex.add(j - 1);
+                                j++;
+                        }
+ *
+ */
+			for (int i = 0; i < masterRows.size(); i++) {
+				for (int j = 0; j < rows.size(); j++) {
+					double match = values[i][j];
+					double delete = gapDeletePenalty[j];
+					double insert = gapInsertPenalty[i];
+					if(match < Math.min(delete, insert)) {
+						masterIndex.add(i);
+						rowIndex.add(j);
+					} else if(delete < Math.min(match, insert)) {
+						masterIndex.add(-1);
+						rowIndex.add(j);
+					} else if(insert < Math.min(match, delete)) {
+						masterIndex.add(i);
+						rowIndex.add(-1);
+					}
+				}
+			}
                 }
 
                 public List<Integer> getMasterIndexes() {
