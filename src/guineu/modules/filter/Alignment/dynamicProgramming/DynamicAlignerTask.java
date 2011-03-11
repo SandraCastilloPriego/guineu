@@ -278,7 +278,7 @@ public class DynamicAlignerTask implements Task {
                 List<Double[]> coords1 = graphPeak.getCoords();
                 List<Double[]> coords2 = graphCandidate.getCoords();
 
-                System.out.println("sizes: " + coords1.size() + " - " + coords2.size());
+                //System.out.println("sizes: " + coords1.size() + " - " + coords2.size());
 
                 if (coords1.size() > coords2.size()) {
                         coords1 = graphCandidate.getCoords();
@@ -288,7 +288,7 @@ public class DynamicAlignerTask implements Task {
                 double score = 0;
 
                 for (Double[] coord1 : coords1) {
-                        System.out.println(coord1[0] + " - " + coord1[1]);
+                        //System.out.println(coord1[0] + " - " + coord1[1]);
                         Double[] bestCoord = null;
                         double difference = 100000000.0;
                         for (Double[] coord2 : coords2) {
@@ -303,14 +303,14 @@ public class DynamicAlignerTask implements Task {
 
                         score += difference;
                         if (bestCoord != null) {
-                                System.out.println("Best: " + bestCoord[0] + " - " + bestCoord[1] + " diff: " + difference);
+                                //System.out.println("Best: " + bestCoord[0] + " - " + bestCoord[1] + " diff: " + difference);
                                 coords2.remove(bestCoord);
                         }
                 }
 
 
 
-                System.out.println(score);
+                //System.out.println(score);
 
                 return score;
         }
@@ -494,40 +494,85 @@ public class DynamicAlignerTask implements Task {
                         }
                          *
                          */
-                        List<Integer> unalignedMasterIndices = new ArrayList<Integer>();
-                        List<Integer> unalignedRowIndices = new ArrayList<Integer>();
+                        List<Boolean> isMasterRowAdded = new ArrayList<Boolean>();
+                        List<Boolean> isRowAdded = new ArrayList<Boolean>();
 
                         for (int i = 0; i < masterRows.size(); i++) {
-                                unalignedMasterIndices.add(i);
+                                isMasterRowAdded.add(Boolean.FALSE);
                         }
                         for (int i = 0; i < rows.size(); i++) {
-                                unalignedRowIndices.add(i);
+                                isRowAdded.add(Boolean.FALSE);
                         }
 
                         for (int j = 0; j < rows.size(); j++) {
                                 for (int i = 0; i < masterRows.size(); i++) {
                                         if (values[i][j] < gapDeletePenalty[j]) {
+											if(!isMasterRowAdded.get(i) && !isRowAdded.get(i)) {
                                                 alignedMasterIndices.add(i);
+												isMasterRowAdded.set(i, Boolean.TRUE);
                                                 alignedRowIndices.add(j);
+												isRowAdded.set(j, Boolean.TRUE);
+												System.out.println(i+" "+j);
                                                 break;
+											}
                                         }
                                 }
                         }
 
-                        unalignedMasterIndices.removeAll(alignedMasterIndices);
-                        unalignedRowIndices.removeAll(alignedRowIndices);
-
-                        for (int index : unalignedMasterIndices) {
-                                alignedMasterIndices.add(index);
+						for(int i = 0; i < masterRows.size(); i++) {
+							if(!isMasterRowAdded.get(i)) {
+                                alignedMasterIndices.add(i);
                                 alignedRowIndices.add(-1);
+								System.out.println(i+" -1");
+							}
                         }
 
-                        for (int index : unalignedRowIndices) {
+						for(int i = 0; i < rows.size(); i++) {
+							if(!isRowAdded.get(i)) {
                                 alignedMasterIndices.add(-1);
-                                alignedRowIndices.add(index);
+                                alignedRowIndices.add(i);
+								System.out.println("-1 "+i);
+							}
                         }
                 }
 
+				/*
+                public void getAlignment2() {
+                        int i = 1;
+                        int j = 1;
+
+                        while ((i <= masterRows.size()) && (j <= rows.size())) {
+
+                                if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
+                                        masterIndex.add(i - 1);
+                                        rowIndex.add(j - 1);
+                                        i++;
+                                        j++;
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
+                                        masterIndex.add(-1);
+                                        rowIndex.add(j-1);
+                                        j++;
+                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
+                                        masterIndex.add(i-1);
+                                        rowIndex.add(-1);
+                                        i++;
+                                }
+                        }
+
+                        while (i <= masterRows.size()) {
+                                masterIndex.add(i - 1);
+                                rowIndex.add(-1);
+                                i++;
+                        }
+
+                        while (j <= rows.size()) {
+                                masterIndex.add(-1);
+                                rowIndex.add(j - 1);
+                                j++;
+                        }
+
+                }
+				 */
                 public List<Integer> getMasterIndexes() {
                         return this.alignedMasterIndices;
                 }
