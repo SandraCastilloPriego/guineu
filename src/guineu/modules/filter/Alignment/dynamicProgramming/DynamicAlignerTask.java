@@ -29,7 +29,6 @@ import guineu.util.Range;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -46,6 +45,7 @@ public class DynamicAlignerTask implements Task {
         private double mzTolerance;
         private double rtTolerance;
         private double progress;
+        private double increaseWindows = 0;
 
         public DynamicAlignerTask(Dataset[] peakLists, DynamicAlignerParameters parameters) {
 
@@ -93,7 +93,7 @@ public class DynamicAlignerTask implements Task {
 
                         @Override
                         public int compare(PeakListRow o1, PeakListRow o2) {
-                                if (((SimplePeakListRowLCMS) o1).getRT() < ((SimplePeakListRowLCMS) o2).getRT()) {
+                                if (((SimplePeakListRowLCMS) o1).getRT() > ((SimplePeakListRowLCMS) o2).getRT()) {
                                         return 1;
                                 } else {
                                         return -1;
@@ -128,19 +128,7 @@ public class DynamicAlignerTask implements Task {
                         }
                 }
 
-                // Dynamic alignmnent
-                // Iterate source peak lists to create the representative "graph" for each peak
-                Hashtable<PeakListRow, Graph> alignmentMapping = new Hashtable<PeakListRow, Graph>();
-                for (Dataset peakList : peakLists) {
-                        if (peakList != peakLists[0]) {
-                                for (PeakListRow row : peakList.getRows()) {
-                                        Graph graph = this.getGraph(peakList, row);
-                                        alignmentMapping.put(row, graph);
-                                        //progress = (double) processedRows++ / (double) totalRows;
-                                }
-                        }
-                }
-
+                
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
                                 List<PeakListRow> masterRows = alignedPeakList.getRows();
@@ -156,7 +144,7 @@ public class DynamicAlignerTask implements Task {
                                 }
 
                                 for (PeakListRow row : peakList.getRows()) {
-                                        Graph rowGraph = alignmentMapping.get(row);
+                                        Graph rowGraph = null;
                                         double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
                                         if (minRT < 0) {
                                                 minRT = 0;
@@ -169,12 +157,16 @@ public class DynamicAlignerTask implements Task {
                                         Range mzRange = new Range(minMZ, ((SimplePeakListRowLCMS) row).getMZ() + this.mzTolerance);
                                         PeakListRow candidateRows[] = ((SimpleLCMSDataset) alignedPeakList).getRowsInsideRTAndMZRange(rtRange, mzRange);
 
+                                        if (candidateRows.length > 0) {
+                                                this.increaseWindows = 0;
+                                                rowGraph = this.getGraph(peakList, row, this.increaseWindows);
+                                        }
+
                                         double maxScore = 0;
                                         for (PeakListRow candidate : candidateRows) {
-                                                double diff = Math.abs(((SimplePeakListRowLCMS) row).getRT() - ((SimplePeakListRowLCMS) candidate).getRT());
-                                                double diffMZ = Math.abs(((SimplePeakListRowLCMS) row).getMZ() - ((SimplePeakListRowLCMS) candidate).getMZ())*10;
-
-                                                double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate)) + diff + diffMZ;
+                                                double diffMZ = 0;//Math.abs(((SimplePeakListRowLCMS) row).getMZ() - ((SimplePeakListRowLCMS) candidate).getMZ()) * 100;
+                                                this.increaseWindows = 0;
+                                                double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate, this.increaseWindows)) + diffMZ;
                                                 matrix.setScore(candidate, row, score);
                                                 if (score > maxScore) {
                                                         maxScore = score;
@@ -184,6 +176,10 @@ public class DynamicAlignerTask implements Task {
                                                 if (penalties[indexM] < score) {
                                                         penalties[indexM] = score;
                                                 }
+                                        }
+
+                                        if (candidateRows.length > 0) {
+                                                maxScore = 1000;
                                         }
 
                                         for (PeakListRow candidate : alignedPeakList.getRows()) {
@@ -319,20 +315,27 @@ public class DynamicAlignerTask implements Task {
                 return score;
         }
 
-        private Graph getGraph(Dataset peakListY, PeakListRow row) {
-                double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
+        private Graph getGraph(Dataset peakListY, PeakListRow row, double increaseWindow) {
+                double rt = this.rtTolerance + increaseWindow;
+                double mz = this.mzTolerance + (increaseWindow / 10);
+                double minRT = ((SimplePeakListRowLCMS) row).getRT() - rt;
                 if (minRT < 0) {
                         minRT = 0;
                 }
-                Range rtRange = new Range(minRT, ((SimplePeakListRowLCMS) row).getRT() + this.rtTolerance);
-                double minMZ = ((SimplePeakListRowLCMS) row).getMZ() - this.mzTolerance;
+                Range rtRange = new Range(minRT, ((SimplePeakListRowLCMS) row).getRT() + rt);
+                double minMZ = ((SimplePeakListRowLCMS) row).getMZ() - mz;
                 if (minMZ < 0) {
                         minMZ = 0;
                 }
-                Range mzRange = new Range(minMZ, ((SimplePeakListRowLCMS) row).getMZ() + this.mzTolerance);
+                Range mzRange = new Range(minMZ, ((SimplePeakListRowLCMS) row).getMZ() + mz);
 
                 // Get all rows of the aligned peaklist within parameter limits
                 PeakListRow candidateRows[] = ((SimpleLCMSDataset) peakListY).getRowsInsideRTAndMZRange(rtRange, mzRange);
+                if (candidateRows.length < 3) {
+                        this.increaseWindows += 5;
+                        return getGraph(peakListY, row, this.increaseWindows);
+                }
+
                 Graph graph = new Graph((SimplePeakListRowLCMS) row, candidateRows);
                 return graph;
         }
@@ -422,107 +425,107 @@ public class DynamicAlignerTask implements Task {
 
                 public void getAlignment() {
                         /*
-			int i = masterRows.size();
+                        int i = masterRows.size();
                         int j = rows.size();
 
                         while ((i > 0) && (j > 0)) {
 
-                                if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
-                                        masterIndex.add(i - 1);
-                                        rowIndex.add(j - 1);
-                                        i--;
-                                        j--;
-                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
-                                        masterIndex.add(i - 1);
-                                        rowIndex.add(-1);
-                                        i--;
-                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
-                                        masterIndex.add(-1);
-                                        rowIndex.add(j - 1);
-                                        j--;
-                                }
+                        if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
+                        masterIndex.add(i - 1);
+                        rowIndex.add(j - 1);
+                        i--;
+                        j--;
+                        } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
+                        masterIndex.add(i - 1);
+                        rowIndex.add(-1);
+                        i--;
+                        } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
+                        masterIndex.add(-1);
+                        rowIndex.add(j - 1);
+                        j--;
+                        }
                         }
 
                         while (i > 0) {
-                                masterIndex.add(i - 1);
-                                rowIndex.add(-1);
-                                i--;
+                        masterIndex.add(i - 1);
+                        rowIndex.add(-1);
+                        i--;
                         }
 
                         while (j > 0) {
-                                masterIndex.add(-1);
-                                rowIndex.add(j - 1);
-                                j--;
+                        masterIndex.add(-1);
+                        rowIndex.add(j - 1);
+                        j--;
                         }
-			*/
+                         */
 
-/*
+                        /*
                         int i = 1;//masterRows.size();
                         int j = 1;//rows.size();
 
                         while ((i <= masterRows.size()) && (j <= rows.size())) {
 
-                                if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
-                                        masterIndex.add(i - 1);
-                                        rowIndex.add(j - 1);
-                                        i++;
-                                        j++;
-                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
-                                        masterIndex.add(i - 1);
-                                        rowIndex.add(-1);
-                                        i++;
-                                } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
-                                        masterIndex.add(-1);
-                                        rowIndex.add(j - 1);
-                                        j++;
-                                }
+                        if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
+                        masterIndex.add(i - 1);
+                        rowIndex.add(j - 1);
+                        i++;
+                        j++;
+                        } else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
+                        masterIndex.add(i - 1);
+                        rowIndex.add(-1);
+                        i++;
+                        } else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
+                        masterIndex.add(-1);
+                        rowIndex.add(j - 1);
+                        j++;
+                        }
                         }
 
                         while (i <= masterRows.size()) {
-                                masterIndex.add(i - 1);
-                                rowIndex.add(-1);
-                                i++;
+                        masterIndex.add(i - 1);
+                        rowIndex.add(-1);
+                        i++;
                         }
 
                         while (j <= rows.size()) {
-                                masterIndex.add(-1);
-                                rowIndex.add(j - 1);
-                                j++;
+                        masterIndex.add(-1);
+                        rowIndex.add(j - 1);
+                        j++;
                         }
- *
- */
-			List<Integer> unalignedMasterIndices = new ArrayList<Integer>();
-			List<Integer> unalignedRowIndices = new ArrayList<Integer>();
+                         *
+                         */
+                        List<Integer> unalignedMasterIndices = new ArrayList<Integer>();
+                        List<Integer> unalignedRowIndices = new ArrayList<Integer>();
 
-			for(int i = 0; i < masterRows.size(); i++) {
-				unalignedMasterIndices.add(i);
-			}
-			for(int i = 0; i < rows.size(); i++) {
-				unalignedRowIndices.add(i);
-			}
+                        for (int i = 0; i < masterRows.size(); i++) {
+                                unalignedMasterIndices.add(i);
+                        }
+                        for (int i = 0; i < rows.size(); i++) {
+                                unalignedRowIndices.add(i);
+                        }
 
-			for(int j = 0; j < rows.size(); j++) {
-				for(int i = 0; i < masterRows.size(); i++) {
-					if(values[i][j] < gapDeletePenalty[j]) {
-						alignedMasterIndices.add(i);
-						alignedRowIndices.add(j);
-						break;
-					}
-				}
-			}
+                        for (int j = 0; j < rows.size(); j++) {
+                                for (int i = 0; i < masterRows.size(); i++) {
+                                        if (values[i][j] < gapDeletePenalty[j]) {
+                                                alignedMasterIndices.add(i);
+                                                alignedRowIndices.add(j);
+                                                break;
+                                        }
+                                }
+                        }
 
-			unalignedMasterIndices.removeAll(alignedMasterIndices);
-			unalignedRowIndices.removeAll(alignedRowIndices);
+                        unalignedMasterIndices.removeAll(alignedMasterIndices);
+                        unalignedRowIndices.removeAll(alignedRowIndices);
 
-			for(int index : unalignedMasterIndices) {
-				alignedMasterIndices.add(index);
-				alignedRowIndices.add(-1);
-			}
+                        for (int index : unalignedMasterIndices) {
+                                alignedMasterIndices.add(index);
+                                alignedRowIndices.add(-1);
+                        }
 
-			for(int index : unalignedRowIndices) {
-				alignedMasterIndices.add(-1);
-				alignedRowIndices.add(index);
-			}
+                        for (int index : unalignedRowIndices) {
+                                alignedMasterIndices.add(-1);
+                                alignedRowIndices.add(index);
+                        }
                 }
 
                 public List<Integer> getMasterIndexes() {
