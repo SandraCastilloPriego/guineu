@@ -525,7 +525,7 @@ public class DynamicAlignerTask implements Task {
 							isMasterRowAdded.set(i, Boolean.TRUE);
 							alignedRowIndices.add(j);
 							isRowAdded.set(j, Boolean.TRUE);
-							break;
+							//break;
 						}
 					}
 				}
