@@ -552,62 +552,62 @@ public class DynamicAlignerTask implements Task {
 			int i = masterRows.size();
 			int j = rows.size();
 
-			List<Boolean> isMasterRowAdded = new ArrayList<Boolean>();
-			List<Boolean> isRowAdded = new ArrayList<Boolean>();
-//TODO: ADD THE FEATURE OF REMOVING ALIGNMENT WHEN A PEAK IS FRESHLY ALIGNED
-			for (int k = 0; k < masterRows.size(); k++) {
-				isMasterRowAdded.add(Boolean.FALSE);
-			}
-			for (int k = 0; k < rows.size(); k++) {
-				isRowAdded.add(Boolean.FALSE);
-			}
+//			List<Boolean> isMasterRowAdded = new ArrayList<Boolean>();
+//			List<Boolean> isRowAdded = new ArrayList<Boolean>();
+////TODO: ADD THE FEATURE OF REMOVING ALIGNMENT WHEN A PEAK IS FRESHLY ALIGNED
+//			for (int k = 0; k < masterRows.size(); k++) {
+//				isMasterRowAdded.add(Boolean.FALSE);
+//			}
+//			for (int k = 0; k < rows.size(); k++) {
+//				isRowAdded.add(Boolean.FALSE);
+//			}
 
 			while ((i > 1) && (j > 1)) {
 
 				if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
-					if(!isMasterRowAdded.get(i-1) && !isRowAdded.get(j-1)) {
+					//if(!isMasterRowAdded.get(i-1) && !isRowAdded.get(j-1)) {
 						alignedMasterIndices.add(i - 1);
 						alignedRowIndices.add(j - 1);
-						isMasterRowAdded.set(i-1, Boolean.TRUE);
-						isRowAdded.set(j-1, Boolean.TRUE);
+					//	isMasterRowAdded.set(i-1, Boolean.TRUE);
+					//	isRowAdded.set(j-1, Boolean.TRUE);
 						System.out.println((i-1)+" "+(j-1));
-					}
+					//}
 					i--;
 					j--;
 				} else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
-					if(!isMasterRowAdded.get(i-1)) {
+					//if(!isMasterRowAdded.get(i-1)) {
 						alignedMasterIndices.add(i-1);
 						alignedRowIndices.add(-1);
-						isMasterRowAdded.set(i-1, Boolean.TRUE);
+					//	isMasterRowAdded.set(i-1, Boolean.TRUE);
 						System.out.println((i-1)+" -1");
-					}
+				//	}
 					i--;
 				} else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
-					if(!isRowAdded.get(j-1)) {
+				//	if(!isRowAdded.get(j-1)) {
 						alignedMasterIndices.add(-1);
 						alignedRowIndices.add(j-1);
-						isRowAdded.set(j-1, Boolean.TRUE);
+					//	isRowAdded.set(j-1, Boolean.TRUE);
 						System.out.println("-1 "+(j-1));
-					}
+				//	}
 					j--;
 				}
 			}
 
 			while (i > 1) {
-				if(!isMasterRowAdded.get(i-1)) {
+			//	if(!isMasterRowAdded.get(i-1)) {
 					alignedMasterIndices.add(i - 1);
 					alignedRowIndices.add(-1);
-					isMasterRowAdded.set(i-1, Boolean.TRUE);
-				}
+			//		isMasterRowAdded.set(i-1, Boolean.TRUE);
+			//	}
 				i--;
 			}
 
 			while (j > 1) {
-				if(!isRowAdded.get(j-1)) {
+			//	if(!isRowAdded.get(j-1)) {
 					alignedMasterIndices.add(-1);
 					alignedRowIndices.add(j - 1);
-					isRowAdded.set(j-1, Boolean.TRUE);
-				}
+			//		isRowAdded.set(j-1, Boolean.TRUE);
+			//	}
 				j--;
 			}
 
