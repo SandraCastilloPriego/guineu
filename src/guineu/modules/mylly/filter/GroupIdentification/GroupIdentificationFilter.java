@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.GroupIdentification;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -32,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.parameters.ParameterSet;
 
 /**
  *
@@ -42,7 +42,7 @@ public class GroupIdentificationFilter implements GuineuModule, TaskListener, Ac
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 
-	public void initModule() {		
+	public GroupIdentificationFilter() {
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Group Identification Filter..",
 				"Connection with the Golm database to get the substructure identification based on the spectra.", KeyEvent.VK_S, this, null, null);
@@ -76,11 +76,7 @@ public class GroupIdentificationFilter implements GuineuModule, TaskListener, Ac
 
 	public ParameterSet getParameterSet() {
 		return null;
-	}
-
-	public void setParameters(ParameterSet parameterValues) {
-		
-	}
+	}	
 
 	public String toString() {
 		return "Group Identification Filter";

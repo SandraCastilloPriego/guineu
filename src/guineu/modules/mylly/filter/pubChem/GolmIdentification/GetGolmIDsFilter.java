@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.pubChem.GolmIdentification;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -32,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.parameters.ParameterSet;
 
 /**
  *
@@ -42,7 +42,7 @@ public class GetGolmIDsFilter implements GuineuModule, TaskListener, ActionListe
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 
-	public void initModule() {		
+	public GetGolmIDsFilter() {
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "IDs Identification Filter..",
 				"Connection with the Golm database to get the possible PubChem IDs, Kegg IDs, etc...", KeyEvent.VK_S, this, null, null);
@@ -77,11 +77,7 @@ public class GetGolmIDsFilter implements GuineuModule, TaskListener, ActionListe
 	public ParameterSet getParameterSet() {
 		return null;
 	}
-
-	public void setParameters(ParameterSet parameterValues) {
-		
-	}
-
+	
 	public String toString() {
 		return "IDs Identification Filter";
 	}

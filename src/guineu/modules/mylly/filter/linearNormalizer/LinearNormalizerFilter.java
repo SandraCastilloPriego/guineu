@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,21 +17,19 @@
  */
 package guineu.modules.mylly.filter.linearNormalizer;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
- 
 import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.parameters.ParameterSet;
 
 /**
  *
@@ -39,70 +37,62 @@ import guineu.data.Dataset;
  */
 public class LinearNormalizerFilter implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
 
-	public void initModule() {		
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Linear Normalizer..",
-				"Linear Normalization", KeyEvent.VK_L, this, null, null);
+        public LinearNormalizerFilter() {
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.MYLLY, "Linear Normalizer..",
+                        "Linear Normalization", KeyEvent.VK_L, this, null, null);
 
-	}
+        }
 
-	public void taskStarted(Task task) {
-		logger.info("Linear Normalizer");
-	}
+        public void taskStarted(Task task) {
+                logger.info("Linear Normalizer");
+        }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Linear Normalizer ");
-		}
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Linear Normalizer ");
+                }
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Linear Normalizer .. ";
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+                        String msg = "Error while Linear Normalizer .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-		}
-	}
+                }
+        }
 
-	public void actionPerformed(ActionEvent e) {
-		try {
-			setupParameters(null);
-		} catch (Exception exception) {
-		}
-	}
+        public void actionPerformed(ActionEvent e) {
+                try {
+                        runModule();
+                } catch (Exception exception) {
+                }
+        }
 
-	public void setupParameters(ParameterSet currentParameters) {
-		runModule();		
-	}
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-	public ParameterSet getParameterSet() {
-		return null;
-	}
+        public String toString() {
+                return "Linear Normalizer";
+        }
 
-	public void setParameters(ParameterSet parameterValues) {
-		
-	}
+        public Task[] runModule() {
 
-	public String toString() {
-		return "Linear Normalizer";
-	}
+                Dataset[] DataFiles = desktop.getSelectedDataFiles();
 
-	public Task[] runModule() {
+                // prepare a new group of tasks
+                Task tasks[] = new LinearNormalizerFilterTask[DataFiles.length];
+                for (int cont = 0; cont < DataFiles.length; cont++) {
+                        tasks[cont] = new LinearNormalizerFilterTask(DataFiles[cont]);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
 
-		Dataset[] DataFiles = desktop.getSelectedDataFiles();
-
-		// prepare a new group of tasks
-		Task tasks[] = new LinearNormalizerFilterTask[DataFiles.length];
-		for (int cont = 0; cont < DataFiles.length; cont++) {
-			tasks[cont] = new LinearNormalizerFilterTask(DataFiles[cont]);
-		}
-		GuineuCore.getTaskController().addTasks(tasks);
-
-        return tasks;
+                return tasks;
 
 
-	}
+        }
 }

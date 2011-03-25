@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,41 +17,35 @@
  */
 package guineu.modules.mylly.alignment.basicAligner;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
-import guineu.main.GuineuCore;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.RTToleranceParameter;
+import guineu.parameters.parametersType.StringParameter;
 import java.text.NumberFormat;
 
 public class BasicAlignerGCGCParameters extends SimpleParameterSet {
 
         public static final NumberFormat percentFormat = NumberFormat.getPercentInstance();
-        public static final Parameter peakListName = new SimpleParameter(
-                ParameterType.STRING, "Peak list name", "Peak list name", null,
-                "Aligned peak list", null);
-        public static final Parameter RT1Tolerance = new SimpleParameter(
-                ParameterType.DOUBLE, "RT1 tolerance",
-                "Maximum allowed RT1 difference", null, new Double(5.0),
-                new Double(0.0), null, GuineuCore.getMZFormat());
-        public static final Parameter RT2Tolerance = new SimpleParameter(
-                ParameterType.DOUBLE, "RT2 tolerance",
-                "Maximum allowed absolute RT2 difference", null, new Double(0.01),
-                new Double(0.0), null, GuineuCore.getMZFormat());
-        public static final Parameter rt1Lax = new SimpleParameter(
-                ParameterType.DOUBLE, "RT Lax:",
-                "RT Lax", "", new Double(15.0),
-                new Double(0.0), null);
-        public static final Parameter rt2Lax = new SimpleParameter(
-                ParameterType.DOUBLE, "RT2 Lax:",
-                "RT2 Lax", "", new Double(0.3),
-                new Double(0.0), null);
-        public static final Parameter nameMatchBonus = new SimpleParameter(
-                ParameterType.DOUBLE, "Bonus for matching names:",
-                "Bonus for matching names", "", new Double(100.0),
-                new Double(0.0), null);
+        public static final StringParameter peakListName = new StringParameter(
+                "Peak list name", "Peak list name");
+        public static final RTToleranceParameter RT1Tolerance = new RTToleranceParameter(
+                "RT1 tolerance",
+                "Maximum allowed RT1 difference");
+        public static final RTToleranceParameter RT2Tolerance = new RTToleranceParameter(
+                "RT2 tolerance",
+                "Maximum allowed absolute RT2 difference");
+        public static final NumberParameter rt1Lax = new NumberParameter(
+                "RT Lax:",
+                "RT Lax");
+        public static final NumberParameter rt2Lax = new NumberParameter(
+                "RT2 Lax:",
+                "RT2 Lax");
+        public static final NumberParameter nameMatchBonus = new NumberParameter(
+                "Bonus for matching names:",
+                "Bonus for matching names");
 
         public BasicAlignerGCGCParameters() {
-                super(new Parameter[]{peakListName, RT1Tolerance, RT2Tolerance, rt1Lax,rt2Lax, nameMatchBonus});
+                super(new UserParameter[]{peakListName, RT1Tolerance, RT2Tolerance, rt1Lax, rt2Lax, nameMatchBonus});
         }
 }

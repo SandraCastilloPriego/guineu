@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,51 +17,37 @@
  */
 package guineu.modules.identification.AdductSearch;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
-import guineu.main.GuineuCore;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.MZToleranceParameter;
+import guineu.parameters.parametersType.MultiChoiceParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.RTToleranceParameter;
 import java.text.NumberFormat;
-
 
 public class AdductSearchParameters extends SimpleParameterSet {
 
-	public static final NumberFormat percentFormat = NumberFormat
-			.getPercentInstance();
+        public static final NumberFormat percentFormat = NumberFormat.getPercentInstance();
+        public static final RTToleranceParameter rtTolerance = new RTToleranceParameter(
+                "Time tolerance",
+                "Maximum allowed difference of time to set a relationship between peaks");
+        public static final MultiChoiceParameter<AdductType> adducts = new MultiChoiceParameter<AdductType>(
+                "Adducts",
+                "List of adducts, each one refers a specific distance in m/z axis between related peaks",
+                AdductType.values());
+        public static final NumberParameter customAdductValue = new NumberParameter(
+                "Custom adduct value",
+                "Mass value (m/z difference) for custom adduct");
+        public static final MZToleranceParameter mzTolerance = new MZToleranceParameter(
+                "m/z tolerance",
+                "Tolerance value of the m/z difference between peaks");
+        public static final NumberParameter maxAdductHeight = new NumberParameter(
+                "Max adduct peak height",
+                "Maximum height of the recognized adductpeak, relative to the main peak",
+                percentFormat, new Double(0.20));
 
-	public static final Parameter rtTolerance = new SimpleParameter(
-			ParameterType.DOUBLE,
-			"Time tolerance",
-			"Maximum allowed difference of time to set a relationship between peaks",
-			null, new Double(10.0), new Double(0.0), null, GuineuCore
-					.getRTFormat());
-
-	public static final Parameter adducts = new SimpleParameter(
-			ParameterType.MULTIPLE_SELECTION,
-			"Adducts",
-			"List of adducts, each one refers a specific distance in m/z axis between related peaks",
-			null, AdductType.values());
-
-	public static final Parameter customAdductValue = new SimpleParameter(
-			ParameterType.DOUBLE, "Custom adduct value",
-			"Mass value (m/z difference) for custom adduct", "m/z", new Double(
-					0.0), new Double(0.0), null, GuineuCore.getMZFormat());
-
-	public static final Parameter mzTolerance = new SimpleParameter(
-			ParameterType.DOUBLE, "m/z tolerance",
-			"Tolerance value of the m/z difference between peaks", "m/z",
-			new Double(0.1), new Double(0.0), null, GuineuCore.getMZFormat());
-
-	public static final Parameter maxAdductHeight = new SimpleParameter(
-			ParameterType.DOUBLE,
-			"Max adduct peak height",
-			"Maximum height of the recognized adductpeak, relative to the main peak",
-			"%", new Double(0.20), new Double(0.0), null, percentFormat);
-
-	public AdductSearchParameters() {
-		super(new Parameter[] { rtTolerance, adducts, customAdductValue,
-				mzTolerance, maxAdductHeight });
-	}
-
+        public AdductSearchParameters() {
+                super(new UserParameter[]{rtTolerance, adducts, customAdductValue,
+                                mzTolerance, maxAdductHeight});
+        }
 }

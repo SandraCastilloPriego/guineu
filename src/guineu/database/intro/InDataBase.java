@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;
 
@@ -61,7 +61,7 @@ public interface InDataBase {
      * @param type Type of the data set (in this case LC-MS)
      * @param author Name of the person who perfomed the process
      * @param datasetName Data set name
-     * @param parameters Path of MZmine parameters
+     * @param parameters Path of parameters
      * @param study Study of the dataset
      * @throws IOException
      */

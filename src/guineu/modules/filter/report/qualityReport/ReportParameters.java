@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,54 +17,47 @@
  */
 package guineu.modules.filter.report.qualityReport;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.StringParameter;
+import guineu.parameters.parametersType.TextAreaParameter;
 
 /**
  *
  * @author scsandra
  */
 public class ReportParameters extends SimpleParameterSet {
- 
 
-    final static String[] ionMode = {"ESI+", "ESI-"};
+        final static String[] ionMode = {"ESI+", "ESI-"};
+        final static String[] sampleType = {"Serum human", "Serum mouse", "Tissue", "Cells", "Batch"};
+        public static final FileNameParameter filename = new FileNameParameter(
+                "Input File",
+                "File name");
+        public static final FileNameParameter outputFilename = new FileNameParameter(
+                "HTML Output File",
+                "HTML Output File name");
+        public static final StringParameter date = new StringParameter(
+                "Date",
+                "Date");
+        public static final StringParameter sampleSet = new StringParameter(
+                "Sample set",
+                "Sample set");
+        public static final StringParameter injection = new StringParameter(
+                "Injection volume",
+                "Injection volume", "ul");
+        public static final ComboParameter<String> ionModeCombo = new ComboParameter<String>(
+                "Ion Mode",
+                "Ion Mode", ionMode);
+        public static final ComboParameter<String> typeCombo = new ComboParameter<String>(
+                "Sample type",
+                "Sample type", sampleType);
+        public static final TextAreaParameter area = new TextAreaParameter(
+                "Comments",
+                "Comments");
 
-    final static String[] sampleType = {"Serum human", "Serum mouse", "Tissue", "Cells", "Batch"};
-
-    public static final Parameter filename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "Input File",
-            "File name");
-     public static final Parameter outputFilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "HTML Output File",
-            "HTML Output File name");
-    public static final Parameter date = new SimpleParameter(
-            ParameterType.STRING, "Date",
-            "Date", null,null,null, null);
-    public static final Parameter sampleSet = new SimpleParameter(
-            ParameterType.STRING, "Sample set",
-            "Sample set", null,null,null, null);
-    public static final Parameter injection = new SimpleParameter(
-            ParameterType.STRING, "Injection volume",
-            "Injection volume", "ul",null,null,null);
-    public static final Parameter ionModeCombo = new SimpleParameter(
-            ParameterType.STRING, "Ion Mode",
-            "Ion Mode", null, null, ionMode, null);
-    public static final Parameter typeCombo = new SimpleParameter(
-            ParameterType.STRING, "Sample type",
-            "Sample type", null, null, sampleType, null);
-
-    public static final Parameter area = new SimpleParameter(
-            ParameterType.TEXTAREA, "Comments",
-            "Comments", null, null, null, null);
-
-
-    public ReportParameters() {
-        super(new Parameter[]{filename, outputFilename, date, sampleSet, ionModeCombo,injection, typeCombo, area});
-    }
-
-    
+        public ReportParameters() {
+                super(new UserParameter[]{filename, outputFilename, date, sampleSet, ionModeCombo, injection, typeCombo, area});
+        }
 }

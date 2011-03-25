@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,11 +17,10 @@
  */
 package guineu.modules.statistics.anova;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.main.GuineuCore;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
 
 /**
  *
@@ -29,14 +28,13 @@ import guineu.main.GuineuCore;
  */
 public class AnovaParameters extends SimpleParameterSet {
 
-    private static String[] parameters = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
-    public static final Parameter groups = new SimpleParameter(
-            ParameterType.STRING, "Select the parameter",
-            "The groups to perform anova test will be taken from the choosen parameter", null, parameters);
+        private static String[] parameters = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
+        public static final ComboParameter<String> groups = new ComboParameter<String>(
+                "Select the parameter",
+                "The groups to perform anova test will be taken from the choosen parameter", parameters);
 
-
-    public AnovaParameters(String[] parameters) {
-        super(new Parameter[]{groups});
-        groups.setPossibleValues(parameters);
-    }
+        public AnovaParameters(String[] parameters) {
+                super(new UserParameter[]{groups});
+                groups.setChoices(parameters);
+        }
 }

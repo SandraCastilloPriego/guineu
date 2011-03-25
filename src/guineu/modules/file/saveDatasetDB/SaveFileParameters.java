@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,44 +15,35 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.file.saveDatasetDB;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.database.retrieve.impl.OracleRetrievement;
+import guineu.parameters.Parameter;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.StringParameter;
 
+public class SaveFileParameters extends SimpleParameterSet {
 
-public class SaveFileParameters extends SimpleParameterSet{
- 	
-	private static Object[] studies = OracleRetrievement.getStudies();
+        private static Object[] studies = OracleRetrievement.getStudies();
+        public static final StringParameter author = new StringParameter(
+                "Author: ",
+                "Author of the processing of the dataset");
+        public static final StringParameter name = new StringParameter(
+                "Dataset name: ",
+                "Name of the dataset");
+        public static final ComboParameter studyId = new ComboParameter(
+                "Studies: ",
+                "Select study", studies);
+        public static final StringParameter units = new StringParameter(
+                "Dataset units: ",
+                "Units of the dataset");
+        public static final FileNameParameter parameters = new FileNameParameter(
+                "Dataset parameters: ",
+                "Parameter file of the dataset");
 
-    public static final Parameter author = new SimpleParameter(
-            ParameterType.STRING, "Author: ",
-            "Author of the processing of the dataset", null, "Author", null);
-
-	public static final Parameter name = new SimpleParameter(
-            ParameterType.STRING, "Dataset name: ",
-            "Name of the dataset", null, "Name", null);
-
-	public static final Parameter studyId = new SimpleParameter(
-            ParameterType.STRING , "Studies: ",
-            "Select study", "", studies);
-
-	public static final Parameter units = new SimpleParameter(
-            ParameterType.STRING, "Dataset units: ",
-            "Units of the dataset", null, "Micromols/litre", null);
-
-    public static final Parameter parameters = new SimpleParameter(
-            ParameterType.FILE_NAME, "Dataset parameters: ",
-            "Parameter file of the dataset", null, "Parameters", null);
-
-
-    
-    public SaveFileParameters() {
-        super(new Parameter[] { name, author, studyId, units, parameters });
-    }
-
+        public SaveFileParameters() {
+                super(new Parameter[]{name, author, studyId, units, parameters});
+        }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,31 +17,27 @@
  */
 package guineu.modules.file.openExpressionFiles;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.StringParameter;
 
 public class OpenExpressionParameters extends SimpleParameterSet {
 
-    public static final Parameter datasetName = new SimpleParameter(
-            ParameterType.STRING, "Dataset name",
-            "Write the name of the dataset",
-            (Object) "Dataset");
-    public static final Parameter assayfilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "Assaydata File",
-            "Path of the Assaydata file.");
-    public static final Parameter featurefilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "Feature File",
-            "Path of the Feature file.");
-    public static final Parameter phenofilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "Pheno File",
-            "Path of the Pheno file.");
+        public static final StringParameter datasetName = new StringParameter(
+                "Dataset name",
+                "Write the name of the dataset");
+        public static final FileNameParameter assayfilename = new FileNameParameter(
+                "Assaydata File",
+                "Path of the Assaydata file.");
+        public static final FileNameParameter featurefilename = new FileNameParameter(
+                "Feature File",
+                "Path of the Feature file.");
+        public static final FileNameParameter phenofilename = new FileNameParameter(
+                "Pheno File",
+                "Path of the Pheno file.");
 
-    public OpenExpressionParameters() {
-        super(new Parameter[]{datasetName, assayfilename, featurefilename, phenofilename});
-    }
+        public OpenExpressionParameters() {
+                super(new UserParameter[]{datasetName, assayfilename, featurefilename, phenofilename});
+        }
 }

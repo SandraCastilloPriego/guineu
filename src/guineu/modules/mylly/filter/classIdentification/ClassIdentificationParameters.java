@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,10 @@
  */
 package guineu.modules.mylly.filter.classIdentification;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.StringParameter;
 
 /**
  *
@@ -28,18 +28,14 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class ClassIdentificationParameters extends SimpleParameterSet {
 
+        public static final StringParameter suffix = new StringParameter(
+                "Suffix: ",
+                "Suffix");
+        public static final FileNameParameter fileNames = new FileNameParameter(
+                "Filter File: ",
+                "Class Identification File");
 
-	public static final Parameter suffix = new SimpleParameter(
-            ParameterType.STRING, "Suffix: ",
-            "Suffix", null, "-Class Identification Filter", null);
-
-
-    public static final Parameter fileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "Filter File: ",
-            "Class Identification File", null, "Class Identification File", null);
-	
-	
-	public ClassIdentificationParameters() {
-		super(new Parameter[]{suffix, fileNames});
-	}
+        public ClassIdentificationParameters() {
+                super(new UserParameter[]{suffix, fileNames});
+        }
 }

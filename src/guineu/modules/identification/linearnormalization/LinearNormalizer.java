@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,18 +18,16 @@
 package guineu.modules.identification.linearnormalization;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -48,7 +46,7 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
         private LinearNormalizerParameters parameters;
         private Desktop desktop;
 
-        public void initModule() {
+        public LinearNormalizer() {
 
                 this.desktop = GuineuCore.getDesktop();
 
@@ -67,19 +65,7 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
         public ParameterSet getParameterSet() {
                 return parameters;
         }
-
-        public void setParameters(ParameterSet parameters) {
-                this.parameters = (LinearNormalizerParameters) parameters;
-        }
-
-        public ExitCode setupParameters(ParameterSet currentParameters) {
-                ParameterSetupDialog dialog = new ParameterSetupDialog(
-                        "Please set parameter values for " + toString(),
-                        (SimpleParameterSet) currentParameters, helpID);
-                dialog.setVisible(true);
-                return dialog.getExitCode();
-        }
-
+       
         public void actionPerformed(ActionEvent e) {
 
                 Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
@@ -90,7 +76,7 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
                         return;
                 }
 
-                ExitCode exitCode = setupParameters(parameters);
+                ExitCode exitCode = parameters.showSetupDialog();
                 if (exitCode != ExitCode.OK) {
                         return;
                 }

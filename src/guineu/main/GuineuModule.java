@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,7 +18,9 @@
 
 package guineu.main;
 
-import guineu.data.ParameterSet;
+import guineu.parameters.ParameterSet;
+
+
 
 
 /**
@@ -29,12 +31,7 @@ import guineu.data.ParameterSet;
  */
 public interface GuineuModule {
 
-    /**
-     * Initialize this module.
-     * 
-     */
-    public void initModule();
-
+   
     /**
      * Returns module name 
      * 
@@ -46,13 +43,8 @@ public interface GuineuModule {
      * Returns module's current parameters and their values
      * @return Parameter values as ParameterSet or null if module has no parameters
      */
-    public ParameterSet getParameterSet();
+    public ParameterSet getParameterSet();    
     
-    
-    /**
-     * Sets current parameters and their values
-     * @param parameterValues New parameter values
-     */
-    public void setParameters(ParameterSet parameterValues);
+   
 
 }

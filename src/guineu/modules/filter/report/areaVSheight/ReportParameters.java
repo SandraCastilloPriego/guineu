@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,9 @@
  */
 package guineu.modules.filter.report.areaVSheight;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
 
 /**
  *
@@ -28,18 +27,14 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class ReportParameters extends SimpleParameterSet {
 
-    public static final Parameter filename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "Run list file name",
-            "Run list file name");
+        public static final FileNameParameter filename = new FileNameParameter(
+                "Run list file name",
+                "Run list file name");
+        public static final FileNameParameter reportFilename = new FileNameParameter(
+                "Save report",
+                "Folder where the report will be saved.");
 
-    public static final Parameter reportFilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "Save report",
-            "Folder where the report will be saved.");
-
-    	
-    public ReportParameters() {
-        super(new Parameter[]{filename, reportFilename});
-    }
+        public ReportParameters() {
+                super(new UserParameter[]{filename, reportFilename});
+        }
 }

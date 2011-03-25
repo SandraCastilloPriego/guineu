@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,78 +17,65 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.scorer;
 
-
-
-
-
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.Peak;
 
-
 /**
  * @author jmjarkko
  */
-public class RequireNameRTIScoreCalculator implements ScoreCalculator
-{
+public class RequireNameRTIScoreCalculator implements ScoreCalculator {
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#calculateScore(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
-	 */
-	public double calculateScore(Peak path, Peak peak,
-			ScoreAlignmentParameters params)
-	{
-		double score;
-		double rtiDiff = Math.abs(path.getRTI() - peak.getRTI());
-		if (rtiDiff > (Double)params.getParameterValue(ScoreAlignmentParameters.rtiLax)){return getWorstScore();}
-		double rt2Diff = Math.abs(path.getRT2() - peak.getRT2());
-		if (rt2Diff > (Double)params.getParameterValue(ScoreAlignmentParameters.rt2Lax)){return getWorstScore();}
-		double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
-		if (rt1Diff > (Double)params.getParameterValue(ScoreAlignmentParameters.rt1Lax)){return getWorstScore();}
-		if (path.matchesWithName(peak))
-		{
-			score = rtiDiff * (Double)params.getParameterValue(ScoreAlignmentParameters.rtiPenalty) +
-			rt1Diff * (Double)params.getParameterValue(ScoreAlignmentParameters.rt1Penalty) +
-			rt2Diff * (Double)params.getParameterValue(ScoreAlignmentParameters.rt2Penalty);
-			if (path.matchesWithName(peak))
-			{
-				score += (Double)params.getParameterValue(ScoreAlignmentParameters.nameMatchBonus);
-			}
-		}
-		else
-		{
-			score = getWorstScore();
-		}
-		return score;
-	}
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#calculateScore(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
+         */
+        public double calculateScore(Peak path, Peak peak,
+                ScoreAlignmentParameters params) {
+                double score;
+                double rtiDiff = Math.abs(path.getRTI() - peak.getRTI());
+                if (rtiDiff > params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble()) {
+                        return getWorstScore();
+                }
+                double rt2Diff = Math.abs(path.getRT2() - peak.getRT2());
+                if (rt2Diff > params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble()) {
+                        return getWorstScore();
+                }
+                double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
+                if (rt1Diff > params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble()) {
+                        return getWorstScore();
+                }
+                if (path.matchesWithName(peak)) {
+                        score = rtiDiff * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble() +
+                                rt1Diff * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() +
+                                rt2Diff * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble();
+                        if (path.matchesWithName(peak)) {
+                                score += params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getDouble();
+                        }
+                } else {
+                        score = getWorstScore();
+                }
+                return score;
+        }
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
-	 */
-	public boolean matches(Peak path, Peak peak, ScoreAlignmentParameters params)
-	{
-		return path.matchesWithName(peak);
-	}
-	
-	public double getWorstScore()
-	{
-		return Double.MAX_VALUE;
-	}
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
+         */
+        public boolean matches(Peak path, Peak peak, ScoreAlignmentParameters params) {
+                return path.matchesWithName(peak);
+        }
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#isValid(gcgcaligner.GCGCDatum)
-	 */
-	public boolean isValid(GCGCDatum peak)
-	{
-		return true;
-	}
-	
-	public String name()
-	{
-		return "Uses name and retention times";
-	}
+        public double getWorstScore() {
+                return Double.MAX_VALUE;
+        }
 
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#isValid(gcgcaligner.GCGCDatum)
+         */
+        public boolean isValid(GCGCDatum peak) {
+                return true;
+        }
 
-	
-
+        public String name() {
+                return "Uses name and retention times";
+        }
 }

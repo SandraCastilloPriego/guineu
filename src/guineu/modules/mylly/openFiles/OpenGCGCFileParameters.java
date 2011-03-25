@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,32 +15,62 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.mylly.openFiles;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.main.GuineuCore;
+import guineu.modules.file.openLCMSDatasetFile.FileNamesParameter;
+import guineu.parameters.Parameter;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.StringParameter;
+import guineu.util.dialogs.ExitCode;
+import java.io.File;
+import javax.swing.JFileChooser;
 
 /**
  *
  * @author scsandra
  */
-public class OpenGCGCFileParameters extends SimpleParameterSet{
-	public static final Parameter separator = new SimpleParameter(
-            ParameterType.STRING, "Separator: ",
-            "Separator", null, "\\t", null);
+public class OpenGCGCFileParameters extends SimpleParameterSet {
 
-	public static final Parameter filterClassified = new SimpleParameter(
-            ParameterType.BOOLEAN, "Filter out peaks with classification: ",
-            "Filter out peaks with classification", null, true, null);
+        public static final StringParameter separator = new StringParameter(
+                "Separator: ",
+                "Separator", "\\t");
+        public static final BooleanParameter filterClassified = new BooleanParameter(
+                "Filter out peaks with classification: ",
+                "Filter out peaks with classification", true);
+        public static final FileNamesParameter fileNames = new FileNamesParameter();
 
-    public static final Parameter fileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "GCGC files: ",
-            "File path", null, "GCGC Files", null);
+        public OpenGCGCFileParameters() {
+                super(new Parameter[]{separator, filterClassified, fileNames});
+        }
 
-	 public OpenGCGCFileParameters() {
-        super(new Parameter[] {separator, filterClassified, fileNames});
-    }
+        @Override
+        public ExitCode showSetupDialog() {
+
+                JFileChooser chooser = new JFileChooser();
+
+                File lastFiles[] = getParameter(fileNames).getValue();
+                if ((lastFiles != null) && (lastFiles.length > 0)) {
+                        File currentDir = lastFiles[0].getParentFile();
+                        if (currentDir.exists()) {
+                                chooser.setCurrentDirectory(currentDir);
+                        }
+                }
+
+                chooser.setMultiSelectionEnabled(true);
+
+                int returnVal = chooser.showOpenDialog(GuineuCore.getDesktop().getMainFrame());
+
+                if (returnVal != JFileChooser.APPROVE_OPTION) {
+                        return ExitCode.CANCEL;
+                }
+
+                File selectedFiles[] = chooser.getSelectedFiles();
+
+                getParameter(fileNames).setValue(selectedFiles);
+
+                return ExitCode.OK;
+
+        }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.filter.splitdatasets;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -45,7 +45,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
         private String[] group1, group2;
         private String parameter;
 
-        public void initModule() {
+        public Split() {
 
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.FILTER, "Split dataset..",
@@ -98,10 +98,7 @@ public class Split implements GuineuModule, TaskListener, ActionListener {
         public ParameterSet getParameterSet() {
                 return null;
         }
-
-        public void setParameters(ParameterSet parameterValues) {
-        }
-
+      
         public String toString() {
                 return "Split dataset";
         }

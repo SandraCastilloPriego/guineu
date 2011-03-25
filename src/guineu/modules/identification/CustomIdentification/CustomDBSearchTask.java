@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,16 +21,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
-
 import com.Ostermiller.util.CSVParser;
 import guineu.data.Dataset;
 import guineu.data.IdentificationType;
-import guineu.data.Parameter;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
-import guineu.data.impl.SimpleParameter;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
@@ -40,157 +35,157 @@ import guineu.taskcontrol.TaskStatus;
  */
 class CustomDBSearchTask implements Task {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private SimpleLCMSDataset peakList;
-    private TaskStatus status;
-    private String errorMessage;
-    private String[][] databaseValues;
-    private int finishedLines = 0;
-    private String dataBaseFile;
-    private String fieldSeparator;
-    private Object[] fieldOrder;
-    private boolean ignoreFirstLine;
-    private double mzTolerance;
-    private double rtTolerance;
-    private IdentificationType type;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private SimpleLCMSDataset peakList;
+        private TaskStatus status;
+        private String errorMessage;
+        private String[][] databaseValues;
+        private int finishedLines = 0;
+        private String dataBaseFile;
+        private String fieldSeparator;
+        private FieldItem[] fieldOrder;
+        private boolean ignoreFirstLine;
+        private double mzTolerance;
+        private double rtTolerance;
+        private IdentificationType type;
 
-    CustomDBSearchTask(Dataset peakList, CustomDBSearchParameters parameters) {
-        status = TaskStatus.WAITING;
-        this.peakList = (SimpleLCMSDataset) peakList;
+        CustomDBSearchTask(Dataset peakList, CustomDBSearchParameters parameters) {
+                status = TaskStatus.WAITING;
+                this.peakList = (SimpleLCMSDataset) peakList;
 
-        dataBaseFile = (String) parameters.getParameterValue(CustomDBSearchParameters.dataBaseFile);
-        fieldSeparator = (String) parameters.getParameterValue(CustomDBSearchParameters.fieldSeparator);
+                dataBaseFile = parameters.getParameter(CustomDBSearchParameters.dataBaseFile).getValue().getAbsolutePath();
+                fieldSeparator = parameters.getParameter(CustomDBSearchParameters.fieldSeparator).getValue();
 
-        Parameter p = parameters.getParameter("Field order");
-        fieldOrder = ((SimpleParameter) p).getPossibleValues();
 
-        ignoreFirstLine = (Boolean) parameters.getParameterValue(CustomDBSearchParameters.ignoreFirstLine);
-        mzTolerance = (Double) parameters.getParameterValue(CustomDBSearchParameters.mzTolerance);
-        rtTolerance = (Double) parameters.getParameterValue(CustomDBSearchParameters.rtTolerance);
-        if ((Boolean) parameters.getParameterValue(CustomDBSearchParameters.MS)) {
-            type = IdentificationType.MSMS;
-        } else {
-            type = IdentificationType.MS;
+                fieldOrder = parameters.getParameter(CustomDBSearchParameters.fieldOrder).getValue();
+
+                ignoreFirstLine = parameters.getParameter(CustomDBSearchParameters.ignoreFirstLine).getValue();
+                mzTolerance = parameters.getParameter(CustomDBSearchParameters.mzTolerance).getValue().getTolerance();
+                rtTolerance = parameters.getParameter(CustomDBSearchParameters.rtTolerance).getValue().getTolerance();
+                if (parameters.getParameter(CustomDBSearchParameters.MS).getValue()) {
+                        type = IdentificationType.MSMS;
+                } else {
+                        type = IdentificationType.MS;
+                }
         }
-    }
 
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public double getFinishedPercentage() {
-        if (databaseValues == null) {
-            return 0;
+        public void cancel() {
+                status = TaskStatus.CANCELED;
         }
-        return ((double) finishedLines) / databaseValues.length;
-    }
 
-    public TaskStatus getStatus() {
-        return status;
-    }
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-    public String getTaskDescription() {
-        return "Peak identification of " + peakList + " using database " + dataBaseFile;
-    }
+        public double getFinishedPercentage() {
+                if (databaseValues == null) {
+                        return 0;
+                }
+                return ((double) finishedLines) / databaseValues.length;
+        }
 
-    /**
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-        status = TaskStatus.PROCESSING;
-        File dbFile = new File(dataBaseFile);
+        public String getTaskDescription() {
+                return "Peak identification of " + peakList + " using database " + dataBaseFile;
+        }
 
-        try {
-            // read database contents in memory
-            FileReader dbFileReader = new FileReader(dbFile);
-            databaseValues = CSVParser.parse(dbFileReader, fieldSeparator.charAt(0));
-            if (ignoreFirstLine) {
-                finishedLines++;
-            }
-            for (; finishedLines < databaseValues.length; finishedLines++) {
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
+
+                status = TaskStatus.PROCESSING;
+                File dbFile = new File(dataBaseFile);
+
                 try {
-                    processOneLine(databaseValues[finishedLines]);
+                        // read database contents in memory
+                        FileReader dbFileReader = new FileReader(dbFile);
+                        databaseValues = CSVParser.parse(dbFileReader, fieldSeparator.charAt(0));
+                        if (ignoreFirstLine) {
+                                finishedLines++;
+                        }
+                        for (; finishedLines < databaseValues.length; finishedLines++) {
+                                try {
+                                        processOneLine(databaseValues[finishedLines]);
+                                } catch (Exception e) {
+                                        // ingore incorrect lines
+                                }
+                        }
+                        dbFileReader.close();
+
                 } catch (Exception e) {
-                    // ingore incorrect lines
+                        logger.log(Level.WARNING, "Could not read file " + dbFile, e);
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
                 }
-            }
-            dbFileReader.close();
 
-        } catch (Exception e) {
-            logger.log(Level.WARNING, "Could not read file " + dbFile, e);
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
+
+                status = TaskStatus.FINISHED;
+
         }
 
+        private void processOneLine(String values[]) {
 
-        status = TaskStatus.FINISHED;
+                int numOfColumns = Math.min(fieldOrder.length, values.length);
 
-    }
+                String lineID = null, lineName = null, lineFormula = null;
+                double lineMZ = 0, lineRT = 0;
 
-    private void processOneLine(String values[]) {
-
-        int numOfColumns = Math.min(fieldOrder.length, values.length);
-
-        String lineID = null, lineName = null, lineFormula = null;
-        double lineMZ = 0, lineRT = 0;
-
-        for (int i = 0; i < numOfColumns; i++) {
-            if (fieldOrder[i].toString().matches(FieldItem.FIELD_ID.getName())) {
-                lineID = values[i];
-            }
-            if (fieldOrder[i].toString().matches(FieldItem.FIELD_NAME.getName())) {
-                lineName = values[i];
-            }
-            if (fieldOrder[i].toString().matches(FieldItem.FIELD_FORMULA.getName())) {
-                lineFormula = values[i];
-            }
-            if (fieldOrder[i].toString().matches(FieldItem.FIELD_MZ.getName())) {
-                lineMZ = Double.parseDouble(values[i]);
-            }
-            if (fieldOrder[i].toString().matches(FieldItem.FIELD_RT.getName())) {
-                lineRT = Double.parseDouble(values[i]) * 60;
-            }
-        }
-
-        for (PeakListRow peakrow : peakList.getRows()) {
-            SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) peakrow;
-            if (peakRow.getIdentificationType().compareTo(IdentificationType.UNKNOWN.toString()) == 0 || peakRow.getIdentificationType().compareTo(IdentificationType.MS.toString()) == 0) {
-                boolean mzOK = (Math.abs(peakRow.getMZ() - lineMZ) < mzTolerance);
-                boolean rtOK = (Math.abs(peakRow.getRT() - lineRT) < rtTolerance);
-
-                if (mzOK && rtOK) {
-                    String name = peakRow.getName();
-                    if (name.matches(".*nknown.*") || this.type == IdentificationType.MSMS || this.type == IdentificationType.UNKNOWN) {
-                        peakRow.setName(lineName);
-                        peakRow.setVTTID(lineID);
-
-                    } else {
-                        String allNames = peakRow.getAllNames();
-                        String allVTTIDs = peakRow.getAllVTTID();
-                        if (allNames != null) {
-                            peakRow.setAllNames(allNames + " // " + lineName);
-                        } else {
-                            peakRow.setAllNames(lineName);
+                for (int i = 0; i < numOfColumns; i++) {
+                        if (fieldOrder[i].toString().matches(FieldItem.FIELD_ID.getName())) {
+                                lineID = values[i];
                         }
-                        if (!lineID.matches(".*N/A.*")) {
-                            if (allVTTIDs != null) {
-                                peakRow.setAllVTTD(allVTTIDs + " // " + lineID);
-                            } else {
-                                peakRow.setAllVTTD(lineID);
-                            }
+                        if (fieldOrder[i].toString().matches(FieldItem.FIELD_NAME.getName())) {
+                                lineName = values[i];
                         }
-                    }
-                    peakRow.setIdentificationType(type.toString());
-
+                        if (fieldOrder[i].toString().matches(FieldItem.FIELD_FORMULA.getName())) {
+                                lineFormula = values[i];
+                        }
+                        if (fieldOrder[i].toString().matches(FieldItem.FIELD_MZ.getName())) {
+                                lineMZ = Double.parseDouble(values[i]);
+                        }
+                        if (fieldOrder[i].toString().matches(FieldItem.FIELD_RT.getName())) {
+                                lineRT = Double.parseDouble(values[i]) * 60;
+                        }
                 }
-            }
-        }
 
-    }
+                for (PeakListRow peakrow : peakList.getRows()) {
+                        SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) peakrow;
+                        if (peakRow.getIdentificationType().compareTo(IdentificationType.UNKNOWN.toString()) == 0 || peakRow.getIdentificationType().compareTo(IdentificationType.MS.toString()) == 0) {
+                                boolean mzOK = (Math.abs(peakRow.getMZ() - lineMZ) < mzTolerance);
+                                boolean rtOK = (Math.abs(peakRow.getRT() - lineRT) < rtTolerance);
+
+                                if (mzOK && rtOK) {
+                                        String name = peakRow.getName();
+                                        if (name.matches(".*nknown.*") || this.type == IdentificationType.MSMS || this.type == IdentificationType.UNKNOWN) {
+                                                peakRow.setName(lineName);
+                                                peakRow.setVTTID(lineID);
+
+                                        } else {
+                                                String allNames = peakRow.getAllNames();
+                                                String allVTTIDs = peakRow.getAllVTTID();
+                                                if (allNames != null) {
+                                                        peakRow.setAllNames(allNames + " // " + lineName);
+                                                } else {
+                                                        peakRow.setAllNames(lineName);
+                                                }
+                                                if (!lineID.matches(".*N/A.*")) {
+                                                        if (allVTTIDs != null) {
+                                                                peakRow.setAllVTTD(allVTTIDs + " // " + lineID);
+                                                        } else {
+                                                                peakRow.setAllVTTD(lineID);
+                                                        }
+                                                }
+                                        }
+                                        peakRow.setIdentificationType(type.toString());
+
+                                }
+                        }
+                }
+
+        }
 }

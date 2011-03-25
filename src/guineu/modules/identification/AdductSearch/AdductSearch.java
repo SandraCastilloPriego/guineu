@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,15 +18,13 @@
 package guineu.modules.identification.AdductSearch;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -46,30 +44,15 @@ public class AdductSearch implements GuineuModule, ActionListener {
     }
 
    
-    public void initModule() {
+    public AdductSearch() {
 
         this.desktop = GuineuCore.getDesktop();
 
         parameters = new AdductSearchParameters();
         desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, MODULE_NAME,
                 "Identification of adduct peaks by mass difference and same retention time", KeyEvent.VK_A, this, null, null);
-    }
-
-    
-    public void setParameters(ParameterSet parameterValues) {
-        this.parameters = (AdductSearchParameters) parameterValues;
-    }
-
-
+    }    
    
-    public ExitCode setupParameters(ParameterSet parameters) {
-        ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (SimpleParameterSet) parameters);
-        dialog.setVisible(true);
-        return dialog.getExitCode();
-    }
-
     
     public void actionPerformed(ActionEvent e) {
 
@@ -80,7 +63,7 @@ public class AdductSearch implements GuineuModule, ActionListener {
             return;
         }
 
-        ExitCode exitCode = setupParameters(parameters);
+        ExitCode exitCode = parameters.showSetupDialog();
         if (exitCode != ExitCode.OK) {
             return;
         }

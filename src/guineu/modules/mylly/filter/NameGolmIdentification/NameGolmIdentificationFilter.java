@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,14 +17,12 @@
  */
 package guineu.modules.mylly.filter.NameGolmIdentification;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskStatus;
- 
+import guineu.taskcontrol.TaskStatus; 
 import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.parameters.ParameterSet;
 
 /**
  *
@@ -42,7 +41,7 @@ public class NameGolmIdentificationFilter implements GuineuModule, TaskListener,
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 
-	public void initModule() {		
+	public NameGolmIdentificationFilter() {
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Name Identification Filter..",
 				"Connection with the Golm database to get the possible names identification based on the spectra.", KeyEvent.VK_N, this, null, null);
@@ -76,11 +75,7 @@ public class NameGolmIdentificationFilter implements GuineuModule, TaskListener,
 
 	public ParameterSet getParameterSet() {
 		return null;
-	}
-
-	public void setParameters(ParameterSet parameterValues) {
-		
-	}
+	}	
 
 	public String toString() {
 		return "Name Identification Filter";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -42,8 +42,8 @@ public class OpenFileTask implements Task {
         private File file;
         private boolean filterClassified;
 
-        OpenFileTask(String fileName, String separator, boolean filterClassified) {
-                file = new File(fileName);
+        OpenFileTask(File fileName, String separator, boolean filterClassified) {
+                file = fileName;
                 this.separator = separator;
                 this.filterClassified = filterClassified;
         }

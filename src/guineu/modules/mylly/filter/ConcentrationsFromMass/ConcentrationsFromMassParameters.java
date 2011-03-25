@@ -1,5 +1,5 @@
  /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,11 @@
  */
 package guineu.modules.mylly.filter.ConcentrationsFromMass;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.NumberParameter;
 
 /**
  *
@@ -28,18 +29,17 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class ConcentrationsFromMassParameters extends SimpleParameterSet {
 
-    public static final Parameter fileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "File Name: ",
-            "Name of the File", null, "Name of the File", null);
-    public static final Parameter direction = new SimpleParameter(
-            ParameterType.BOOLEAN, "TIC to EIC",
-            "Oposite direction", new Boolean(false));
-    public static final Parameter spectrumPeak = new SimpleParameter(
-            ParameterType.DOUBLE, "Peak from Spectrum",
-            "Peak from Spectrum", null, new Double(0.00),
-             new Double(0.0), null, null);
+        public static final FileNameParameter fileNames = new FileNameParameter(
+                "File Name: ",
+                "Name of the File");
+        public static final BooleanParameter direction = new BooleanParameter(
+                "TIC to EIC",
+                "Oposite direction", new Boolean(false));
+        public static final NumberParameter spectrumPeak = new NumberParameter(
+                "Peak from Spectrum",
+                "Peak from Spectrum");
 
-    public ConcentrationsFromMassParameters() {
-        super(new Parameter[]{fileNames, direction, spectrumPeak});
-    }
+        public ConcentrationsFromMassParameters() {
+                super(new UserParameter[]{fileNames, direction, spectrumPeak});
+        }
 }

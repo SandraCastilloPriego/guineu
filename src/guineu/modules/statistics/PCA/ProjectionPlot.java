@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,12 +15,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.modules.statistics.PCA;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -38,91 +35,79 @@ import java.util.logging.Logger;
  */
 public class ProjectionPlot implements GuineuModule, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private ProjectionPlotParameters parameters;
 
-    private Desktop desktop;
+        public ProjectionPlot() {
 
-    private ProjectionPlotParameters parameters;
+                this.desktop = GuineuCore.getDesktop();
 
-    
-    public void initModule() {
+                desktop.addMenuItem(GuineuMenu.STATISTICS,
+                        "Principal component analysis (PCA)",
+                        "Principal component analysis", KeyEvent.VK_P, this, "PCA_PLOT", null);
 
-        this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.STATISTICS,
+                        "Curvilinear distance analysis (CDA)",
+                        "Curvilinear distance analysis", KeyEvent.VK_C, this, "CDA_PLOT", null);
 
-        desktop.addMenuItem(GuineuMenu.STATISTICS,
-                "Principal component analysis (PCA)",
-                "Principal component analysis", KeyEvent.VK_P, this, "PCA_PLOT", null);
-
-        desktop.addMenuItem(GuineuMenu.STATISTICS,
-                "Curvilinear distance analysis (CDA)",
-                "Curvilinear distance analysis", KeyEvent.VK_C, this, "CDA_PLOT", null);
-        
-        desktop.addMenuItem(GuineuMenu.STATISTICS, "Sammon's projection",
-                "Sammon's projection", KeyEvent.VK_S,  this, "SAMMON_PLOT", null);
-
-    }
-
-    public String toString() {
-        return "Projection plot analyzer";
-    }
-
-    public void setParameters(ParameterSet parameters) {
-        this.parameters = (ProjectionPlotParameters) parameters;
-    }
-
-    public ProjectionPlotParameters getParameterSet() {
-        return parameters;
-    }
-
-    public void actionPerformed(ActionEvent event) {
-
-        Dataset selectedAlignedPeakLists[] = desktop.getSelectedDataFiles();
-        if (selectedAlignedPeakLists.length != 1) {
-            desktop.displayErrorMessage("Please select a single aligned peaklist");
-            return;
-        }
-
-        if (selectedAlignedPeakLists[0].getNumberRows() == 0) {
-            desktop.displayErrorMessage("Selected alignment result is empty");
-            return;
-        }
-
-        logger.finest("Showing projection plot setup dialog");
-
-        if ((parameters == null)
-                || (selectedAlignedPeakLists[0] != parameters.getSourcePeakList())) {
-            parameters = new ProjectionPlotParameters(
-                    selectedAlignedPeakLists[0]);
-        }
-
-        boolean forceXYComponents = true;
-        String command = event.getActionCommand();
-        if (command.equals("PCA_PLOT"))
-            forceXYComponents = false;
-
-        ProjectionPlotSetupDialog setupDialog = new ProjectionPlotSetupDialog(
-                selectedAlignedPeakLists[0], parameters,  forceXYComponents);
-        setupDialog.setVisible(true);
-
-        if (setupDialog.getExitCode() == ExitCode.OK) {
-            logger.info("Opening new projection plot");
-
-            ProjectionPlotDataset dataset = null;
-
-            if (command.equals("PCA_PLOT"))
-                dataset = new PCADataset(parameters);
-
-            if (command.equals("CDA_PLOT"))
-                dataset = new CDADataset(parameters);
-
-            if (command.equals("SAMMON_PLOT"))
-                dataset = new SammonDataset(parameters);
-
-            GuineuCore.getTaskController().addTask(dataset);
-            
+                desktop.addMenuItem(GuineuMenu.STATISTICS, "Sammon's projection",
+                        "Sammon's projection", KeyEvent.VK_S, this, "SAMMON_PLOT", null);
 
         }
 
-    }
+        public String toString() {
+                return "Projection plot analyzer";
+        }
 
+        public ProjectionPlotParameters getParameterSet() {
+                return parameters;
+        }
+
+        public void actionPerformed(ActionEvent event) {
+
+                Dataset selectedAlignedPeakLists[] = desktop.getSelectedDataFiles();
+                if (selectedAlignedPeakLists.length != 1) {
+                        desktop.displayErrorMessage("Please select a single aligned peaklist");
+                        return;
+                }
+
+                if (selectedAlignedPeakLists[0].getNumberRows() == 0) {
+                        desktop.displayErrorMessage("Selected alignment result is empty");
+                        return;
+                }
+
+                logger.finest("Showing projection plot setup dialog");
+
+                if (parameters == null) {
+                        parameters = new ProjectionPlotParameters();
+                }
+
+              
+                String command = event.getActionCommand();
+              
+                ExitCode exitCode = parameters.showSetupDialog();
+
+                if (exitCode == ExitCode.OK) {
+                        logger.info("Opening new projection plot");
+
+                        ProjectionPlotDataset dataset = null;
+
+                        if (command.equals("PCA_PLOT")) {
+                                dataset = new PCADataset(parameters);
+                        }
+
+                        if (command.equals("CDA_PLOT")) {
+                                dataset = new CDADataset(parameters);
+                        }
+
+                        if (command.equals("SAMMON_PLOT")) {
+                                dataset = new SammonDataset(parameters);
+                        }
+
+                        GuineuCore.getTaskController().addTask(dataset);
+
+                }
+
+        }
 }

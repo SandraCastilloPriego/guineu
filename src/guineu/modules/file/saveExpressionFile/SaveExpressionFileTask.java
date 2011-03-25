@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,9 +19,9 @@ package guineu.modules.file.saveExpressionFile;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -31,56 +31,56 @@ import guineu.taskcontrol.TaskStatus;
  */
 public class SaveExpressionFileTask implements Task {
 
-	private Dataset dataset;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private String path;
-	private InDataBase db;
-	private SimpleParameterSet parameters;
+        private Dataset dataset;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private String path;
+        private InDataBase db;
+        private SimpleParameterSet parameters;
 
-	public SaveExpressionFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
-		this.dataset = dataset;
-		this.path = path;
-		this.parameters = parameters;
-		db = new InOracle();
-	}
+        public SaveExpressionFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
+                this.dataset = dataset;
+                this.path = path;
+                this.parameters = parameters;
+                db = new InOracle();
+        }
 
-	public String getTaskDescription() {
-		return "Saving Dataset... ";
-	}
+        public String getTaskDescription() {
+                return "Saving Dataset... ";
+        }
 
-	public double getFinishedPercentage() {
-		return db.getProgress();
-	}
+        public double getFinishedPercentage() {
+                return db.getProgress();
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
 
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			if (dataset.getType() == DatasetType.EXPRESSION) {
-                String type = (String)parameters.getParameterValue(SaveExpressionParameters.type);
-				if (type.matches(".*Excel.*")) {
-					db.WriteExcelFile(dataset, path, parameters);
-				} else if(type.matches(".*csv.*")){
-					db.WriteCommaSeparatedFile(dataset, path, parameters);
-				}else{
-                    db.WriteExpressionData(dataset,path, null);
+        public void run() {
+                try {
+                        status = TaskStatus.PROCESSING;
+                        if (dataset.getType() == DatasetType.EXPRESSION) {
+                                String type = parameters.getParameter(SaveExpressionParameters.type).getValue();
+                                if (type.matches(".*Excel.*")) {
+                                        db.WriteExcelFile(dataset, path, parameters);
+                                } else if (type.matches(".*csv.*")) {
+                                        db.WriteCommaSeparatedFile(dataset, path, parameters);
+                                } else {
+                                        db.WriteExpressionData(dataset, path, null);
+                                }
+                        }
+                        status = TaskStatus.FINISHED;
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
                 }
-			}
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-		}
-	}
+        }
 }

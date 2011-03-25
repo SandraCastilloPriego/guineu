@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,10 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.NumberParameter;
 
 /**
  *
@@ -28,50 +28,38 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class ScoreAlignmentParameters extends SimpleParameterSet {
 
+        public static final NumberParameter rt1Lax = new NumberParameter(
+                "RT Lax:",
+                "RT Lax", null, new Double(15.0));
+        public static final NumberParameter rt2Lax = new NumberParameter(
+                "RT2 Lax:",
+                "RT2 Lax", null, new Double(0.3));
+        public static final NumberParameter rt1Penalty = new NumberParameter(
+                "RT penalty:",
+                "RT penalty", null, new Double(5.0));
+        public static final NumberParameter rt2Penalty = new NumberParameter(
+                "RT2 penalty:",
+                "RT2 penalty", null, new Double(35.0));
+        public static final NumberParameter minSpectrumMatch = new NumberParameter(
+                "Minimum Spectrum Match:",
+                "Minimun Spectrum Match", null, new Double(0.75));
+        public static final NumberParameter nameMatchBonus = new NumberParameter(
+                "Bonus for matching names:",
+                "Bonus for matching names");
+        public static final NumberParameter rtiPenalty = new NumberParameter(
+                "RTI penalty",
+                "RTI penalty", null, new Double(40.0));
+        public static final NumberParameter minSimilarity = new NumberParameter(
+                "Drop peaks with similarity less than:",
+                "Drop peaks with low similarity", null, new Double(600.0));
+        public static final NumberParameter rtiLax = new NumberParameter(
+                "RI Lax:",
+                "RI Lax", null, new Double(20.0));
+        public static final BooleanParameter useConcentration = new BooleanParameter(
+                "Use Concentrations: ",
+                "Use Concentrations", true);
 
-	public static final Parameter rt1Lax = new SimpleParameter(
-			ParameterType.DOUBLE, "RT Lax:",
-			"RT Lax", "", new Double(15.0),
-			new Double(0.0), null);
-	public static final Parameter rt2Lax = new SimpleParameter(
-			ParameterType.DOUBLE, "RT2 Lax:",
-			"RT2 Lax", "", new Double(0.3),
-			new Double(0.0), null);
-	public static final Parameter rt1Penalty = new SimpleParameter(
-			ParameterType.DOUBLE, "RT penalty:",
-			"RT penalty", "", new Double(5.0),
-			new Double(0.0), null);
-	public static final Parameter rt2Penalty = new SimpleParameter(
-			ParameterType.DOUBLE, "RT2 penalty:",
-			"RT2 penalty", "", new Double(35.0),
-			new Double(0.0), null);
-	public static final Parameter minSpectrumMatch = new SimpleParameter(
-			ParameterType.DOUBLE, "Minimum Spectrum Match:",
-			"Minimun Spectrum Match", "", new Double(0.75),
-			new Double(0.0), null);
-	public static final Parameter nameMatchBonus = new SimpleParameter(
-			ParameterType.DOUBLE, "Bonus for matching names:",
-			"Bonus for matching names", "", new Double(100.0),
-			new Double(0.0), null);
-	public static final Parameter rtiPenalty = new SimpleParameter(
-			ParameterType.DOUBLE, "RTI penalty",
-			"RTI penalty", "", new Double(40.0),
-			new Double(0.0), null);
-	public static final Parameter minSimilarity = new SimpleParameter(
-			ParameterType.DOUBLE, "Drop peaks with similarity less than:",
-			"Drop peaks with low similarity", "", new Double(600.0),
-			new Double(0.0), null);
-	public static final Parameter rtiLax = new SimpleParameter(
-			ParameterType.DOUBLE, "RI Lax:",
-			"RI Lax", "", new Double(20.0),
-			new Double(0.0), null);
-	
-	public static final Parameter useConcentration= new SimpleParameter(
-			ParameterType.BOOLEAN, "Use Concentrations: ",
-			"Use Concentrations", null, true, null);
-	
-	
-	public ScoreAlignmentParameters() {
-		super(new Parameter[]{rt1Lax, rt2Lax, rtiLax, rt1Penalty, rt2Penalty, rtiPenalty, minSpectrumMatch, nameMatchBonus, minSimilarity, useConcentration});
-	}
+        public ScoreAlignmentParameters() {
+                super(new UserParameter[]{rt1Lax, rt2Lax, rtiLax, rt1Penalty, rt2Penalty, rtiPenalty, minSpectrumMatch, nameMatchBonus, minSimilarity, useConcentration});
+        }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,27 +17,26 @@
  */
 package guineu.modules.file.saveExpressionFile;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.StringParameter;
 
 public class SaveExpressionParameters extends SimpleParameterSet {
 
-	static Object[] objects = {"Excel", "csv", "ExpressionData"};
-    public static final Parameter Expressionfilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "LCMS Filename",
-            "Name of exported peak list file name. If the file exists, it won't be overwritten.");
-    public static final Parameter fieldSeparator = new SimpleParameter(
-            ParameterType.STRING, "Field separator",
-            "Character(s) used to separate fields in the exported file",
-            (Object) ",");   
-    public static final Parameter type = new SimpleParameter(
-            ParameterType.STRING, "Type",
-            "Type of file", null, null, objects, null);
+        static String[] objects = {"Excel", "csv", "ExpressionData"};
+        public static final FileNameParameter Expressionfilename = new FileNameParameter(
+                "LCMS Filename",
+                "Name of exported peak list file name. If the file exists, it won't be overwritten.");
+        public static final StringParameter fieldSeparator = new StringParameter(
+                "Field separator",
+                "Character(s) used to separate fields in the exported file");
+        public static final ComboParameter<String> type = new ComboParameter<String>(
+                "Type",
+                "Type of file", objects);
 
-    public SaveExpressionParameters() {
-        super(new Parameter[]{Expressionfilename, type});
-    }
+        public SaveExpressionParameters() {
+                super(new UserParameter[]{Expressionfilename, type});
+        }
 }

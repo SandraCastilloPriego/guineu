@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -67,11 +67,11 @@ public class PeakCountFilterTask implements Task {
                 status = TaskStatus.PROCESSING;
                 try {
 
-                        int peakCount = (Integer) parameters.getParameterValue(PeakCountParameters.numFound);
+                        int peakCount = parameters.getParameter(PeakCountParameters.numFound).getInt();
                         peakCount--;
                         PeakCount filter = new PeakCount(peakCount);
                         SimpleGCGCDataset newAlignment = this.actualMap(dataset, filter);
-                        newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(PeakCountParameters.suffix));
+                        newAlignment.setDatasetName(newAlignment.toString() + parameters.getParameter(PeakCountParameters.suffix).getValue());
                         newAlignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(newAlignment, true);
                         status = TaskStatus.FINISHED;

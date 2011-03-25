@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,15 +18,15 @@
 package guineu.modules.R;
 
 
-import guineu.data.Parameter;
+
 import guineu.data.ParameterType;
 import guineu.data.LCMSColumnName;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.Parameter;
+import guineu.parameters.SimpleParameterSet;
 
 public class SaveTempParameters extends SimpleParameterSet {
 
-	static Object[] objects = {"Excel", "csv"};
+	/*static Object[] objects = {"Excel", "csv"};
     public static final Parameter LCMSfilename = new SimpleParameter(
             ParameterType.FILE_NAME,
             "LCMS Filename",
@@ -41,9 +41,9 @@ public class SaveTempParameters extends SimpleParameterSet {
     
     public static final Parameter type = new SimpleParameter(
             ParameterType.STRING, "LCMS type",
-            "Type of file", null, null, objects, null);
+            "Type of file", null, null, objects, null);*/
 
     public SaveTempParameters() {
-        super(new Parameter[]{LCMSfilename, type, exportLCMS});
+        super(new Parameter[]{/*LCMSfilename, type, exportLCMS*/});
     }
 }

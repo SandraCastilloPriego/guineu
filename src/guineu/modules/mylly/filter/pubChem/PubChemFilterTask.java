@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -66,11 +66,11 @@ public class PubChemFilterTask implements Task {
         public void run() {
                 status = TaskStatus.PROCESSING;
                 try {
-                        String name = (String) parameters.getParameterValue(PubChemParameters.fileNames);
+                        String name = parameters.getParameter(PubChemParameters.fileNames).getValue().getAbsolutePath();
                         PubChem filter = new PubChem();
                         filter.createCorrector(new File(name));
                         SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-                        alignment.setDatasetName(alignment.getDatasetName() + (String) parameters.getParameterValue(PubChemParameters.suffix));
+                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(PubChemParameters.suffix).getValue());
                         alignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(alignment, true);
                         status = TaskStatus.FINISHED;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,18 +18,14 @@
 package guineu.modules.filter.commonmolecules;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
-import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -44,7 +40,7 @@ public class CommonMolecules implements ActionListener, GuineuModule, TaskListen
     public static final String MODULE_NAME = "Search Common Peaks";
     private Desktop desktop;
 
-    public void initModule() {
+    public CommonMolecules() {
 
         this.desktop = GuineuCore.getDesktop();
 
@@ -56,9 +52,6 @@ public class CommonMolecules implements ActionListener, GuineuModule, TaskListen
 
     public ParameterSet getParameterSet() {
         return null;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
     }
 
     /**
@@ -93,14 +86,7 @@ public class CommonMolecules implements ActionListener, GuineuModule, TaskListen
         return tasks;
 
     }
-
-    public ExitCode setupParameters(ParameterSet parameters) {
-        ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (SimpleParameterSet) parameters);
-        dialog.setVisible(true);
-        return dialog.getExitCode();
-    }
+    
 
     public String toString() {
         return MODULE_NAME;

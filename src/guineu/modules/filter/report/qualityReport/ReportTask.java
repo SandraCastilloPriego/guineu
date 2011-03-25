@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -22,8 +22,8 @@ import com.csvreader.CsvReader;
 import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleBasicDataset;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
@@ -50,14 +50,14 @@ public class ReportTask implements Task {
         DescriptiveStatistics Stats[], superStats[];
 
         public ReportTask(SimpleParameterSet parameters) {
-                this.fileName = (String) parameters.getParameterValue(ReportParameters.filename);
-                this.date = (String) parameters.getParameterValue(ReportParameters.date);
-                this.sampleSet = (String) parameters.getParameterValue(ReportParameters.sampleSet);
-                this.ionMode = (String) parameters.getParameterValue(ReportParameters.ionModeCombo);
-                this.injection = (String) parameters.getParameterValue(ReportParameters.injection) + " ul";
-                this.sampleType = (String) parameters.getParameterValue(ReportParameters.typeCombo);
-                this.outputFile = (String) parameters.getParameterValue(ReportParameters.outputFilename);
-                this.comments = (String) parameters.getParameterValue(ReportParameters.area);
+                this.fileName = parameters.getParameter(ReportParameters.filename).getValue().getAbsolutePath();
+                this.date = parameters.getParameter(ReportParameters.date).getValue();
+                this.sampleSet = parameters.getParameter(ReportParameters.sampleSet).getValue();
+                this.ionMode = parameters.getParameter(ReportParameters.ionModeCombo).getValue();
+                this.injection = parameters.getParameter(ReportParameters.injection).getValue() + " ul";
+                this.sampleType = parameters.getParameter(ReportParameters.typeCombo).getValue();
+                this.outputFile = parameters.getParameter(ReportParameters.outputFilename).getValue().getAbsolutePath();
+                this.comments = parameters.getParameter(ReportParameters.area).getValue();
                 this.processedRows = 0;
         }
 
@@ -260,7 +260,7 @@ public class ReportTask implements Task {
                 dataset.addRow(getRow("", ""));
                 dataset.addRow(getRow("", ""));
 
-               
+
                 dataset.addRow(this.getTitle());
 
                 Stats = new DescriptiveStatistics[9];

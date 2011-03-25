@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -65,21 +65,21 @@ public class SimilarityFilterTask implements Task {
         public void run() {
                 status = TaskStatus.PROCESSING;
                 try {
-                        double minValue = (Double) parameters.getParameterValue(SimilarityParameters.minSimilarity);
-                        String typeSimilarity = (String) parameters.getParameterValue(SimilarityParameters.type);
+                        double minValue = parameters.getParameter(SimilarityParameters.minSimilarity).getDouble();
+                        String typeSimilarity = parameters.getParameter(SimilarityParameters.type).getValue();
                         String mode = Similarity.MEAN_SIMILARITY;
                         if (typeSimilarity.matches("maximum similarity")) {
                                 mode = Similarity.MAX_SIMILARITY;
                         }
 
-                        String typeAction = (String) parameters.getParameterValue(SimilarityParameters.action);
+                        String typeAction = parameters.getParameter(SimilarityParameters.action).getValue();
                         String action = Similarity.REMOVE;
                         if (typeAction.matches("Rename")) {
                                 action = Similarity.RENAME;
                         }
                         Similarity filter = new Similarity(minValue, action, mode);
                         SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-                        newAlignment.setDatasetName(newAlignment.toString() + (String) parameters.getParameterValue(SimilarityParameters.suffix));
+                        newAlignment.setDatasetName(newAlignment.toString() + parameters.getParameter(SimilarityParameters.suffix).getValue());
                         newAlignment.setType(DatasetType.GCGCTOF);
                         // Shows the new data set
                         GUIUtils.showNewTable(newAlignment, true);

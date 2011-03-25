@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,9 +18,9 @@
 package guineu.modules.file.saveOtherFile;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -67,7 +67,7 @@ public class SaveOtherFileTask implements Task {
     public void run() {
         try {
             status = TaskStatus.PROCESSING;
-            if (parameters.getParameterValue(SaveOtherParameters.type).toString().matches(".*Excel.*")) {
+            if (parameters.getParameter(SaveOtherParameters.type).getValue().matches(".*Excel.*")) {
                 db.WriteExcelFile(dataset, path, parameters);
             } else {
                 db.WriteCommaSeparatedFile(dataset, path, parameters);

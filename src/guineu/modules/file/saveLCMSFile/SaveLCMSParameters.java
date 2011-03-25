@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,32 +17,34 @@
  */
 package guineu.modules.file.saveLCMSFile;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
+import guineu.desktop.preferences.ColumnsLCMSParameters;
+import guineu.main.GuineuCore;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.MultiChoiceParameter;
+import guineu.parameters.parametersType.StringParameter;
 import guineu.data.LCMSColumnName;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.parametersType.FileNameParameter;
 
 public class SaveLCMSParameters extends SimpleParameterSet {
 
-	static Object[] objects = {"Excel", "csv", "ExpressionData"};
-    public static final Parameter LCMSfilename = new SimpleParameter(
-            ParameterType.FILE_NAME,
-            "LCMS Filename",
-            "Name of exported peak list file name. If the file exists, it won't be overwritten.");
-    public static final Parameter fieldSeparator = new SimpleParameter(
-            ParameterType.STRING, "Field separator",
-            "Character(s) used to separate fields in the exported file",
-            (Object) ",");
-    public static final Parameter exportLCMS = new SimpleParameter(
-            ParameterType.MULTIPLE_SELECTION, "Export LCMS elements",
-            "Multiple selection of row's elements to export", null, LCMSColumnName.values());
-    
-    public static final Parameter type = new SimpleParameter(
-            ParameterType.STRING, "LCMS type",
-            "Type of file", null, null, objects, null);
+        static String[] objects = {"Excel", "csv", "ExpressionData"};
+        public static final FileNameParameter LCMSfilename = new FileNameParameter(
+                "GCGC Filename",
+                "Name of exported peak list file name. If the file exists, it won't be overwritten.");
+        public static final StringParameter fieldSeparator = new StringParameter(
+                "Field separator",
+                "Character(s) used to separate fields in the exported file",
+                ",");
+        public static final MultiChoiceParameter<LCMSColumnName> exportLCMS = new MultiChoiceParameter<LCMSColumnName>(
+                "Export GCGC elements",
+                "Multiple selection of row's elements to export", null, GuineuCore.getLCMSColumnsParameters().getParameter(ColumnsLCMSParameters.LCMSdata).getValue());
+        public static final ComboParameter<String> type = new ComboParameter<String>(
+                "GCGC type",
+                "Type of file", objects);
 
-    public SaveLCMSParameters() {
-        super(new Parameter[]{LCMSfilename, type, exportLCMS});
-    }
+        public SaveLCMSParameters() {
+                super(new UserParameter[]{LCMSfilename, type, exportLCMS});
+        }
 }

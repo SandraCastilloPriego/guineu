@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -126,7 +126,7 @@ public class WriteDataBase {
      * @param excelName The name of the excel file where the experiments are.
      * @param type (LSMS or GCGCTof)
      * @param author (Author of the data)
-     * @param parameters MZmine2 parameters
+     * @param parameters parameters
      * @param study Study of the dataset
      * @param info Information about the dataset (writen by the user in a textbox)
      * @return the ID of the data in the database.

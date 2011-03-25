@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,18 +18,16 @@
 package guineu.modules.filter.report.areaVSheight;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -41,77 +39,63 @@ import java.util.logging.Logger;
  */
 public class Report implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private SimpleParameterSet parameters;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private SimpleParameterSet parameters;
 
-    public void initModule() {
-        this.parameters = new ReportParameters();
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.REPORT, "Report Height/Area..",
-                "Report Height/Area", KeyEvent.VK_H, this, null, null);
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Report");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Report on " + ((ReportTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Report on .. " + ((ReportTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+        public Report() {
+                this.parameters = new ReportParameters();
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.REPORT, "Report Height/Area..",
+                        "Report Height/Area", KeyEvent.VK_H, this, null, null);
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public void taskStarted(Task task) {
+                logger.info("Running Report");
         }
 
-        runModule();
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Report on " + ((ReportTask) task).getTaskDescription());
+                }
 
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Report parameters", parameters);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Report on .. " + ((ReportTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
 
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (ReportParameters) parameterValues;
-    }
-
-    public String toString() {
-        return "Report";
-    }
-
-    public Task[] runModule() {
-
-        // prepare a new group of tasks
-        Dataset[] datasets = desktop.getSelectedDataFiles();
-        Task tasks[] = new ReportTask[datasets.length];
-        for (int i = 0; i < datasets.length; i++) {
-            tasks[i] = new ReportTask(datasets[i], desktop, parameters);
+                runModule();
         }
-        GuineuCore.getTaskController().addTasks(tasks);
 
-        return tasks;
-    }
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        public String toString() {
+                return "Report";
+        }
+
+        public Task[] runModule() {
+
+                // prepare a new group of tasks
+                Dataset[] datasets = desktop.getSelectedDataFiles();
+                Task tasks[] = new ReportTask[datasets.length];
+                for (int i = 0; i < datasets.length; i++) {
+                        tasks[i] = new ReportTask(datasets[i], parameters);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+        }
 }

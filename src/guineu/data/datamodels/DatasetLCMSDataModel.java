@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -24,22 +24,28 @@ import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
-import guineu.desktop.impl.DesktopParameters;
+import guineu.desktop.numberFormat.RTFormatter;
+import guineu.desktop.numberFormat.RTFormatterType;
+import guineu.desktop.preferences.ColumnsLCMSParameters;
+import guineu.desktop.preferences.GuineuPreferences;
 import guineu.main.GuineuCore;
-import guineu.modules.configuration.tables.LCMS.LCMSColumnsViewParameters;
-import guineu.util.CollectionUtils;
 import guineu.util.Tables.DataTableModel;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 
 public class DatasetLCMSDataModel extends AbstractTableModel implements DataTableModel {
 
         private SimpleLCMSDataset dataset;
         private int fixNumberColumns;
-        private LCMSColumnsViewParameters LCMSViewParameters;
         private List<LCMSColumnName> columns;
         private LCMSColumnName[] elements;
+        private ColumnsLCMSParameters parameters;
 
         public DatasetLCMSDataModel(Dataset dataset) {
                 this.dataset = (SimpleLCMSDataset) dataset;
@@ -55,15 +61,11 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         public void setParameters() {
                 this.columns = new ArrayList<LCMSColumnName>();
                 fixNumberColumns = 0;
-                this.LCMSViewParameters = (LCMSColumnsViewParameters) ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getViewLCMSParameters();
-                Object elementsObjects[] = (Object[]) LCMSViewParameters.getParameterValue(LCMSColumnsViewParameters.columnSelection);
-                elements = CollectionUtils.changeArrayType(elementsObjects,
-                        LCMSColumnName.class);
+                parameters = GuineuCore.getLCMSColumnsParameters();
+                elements = parameters.getParameter(ColumnsLCMSParameters.LCMSdata).getValue();
                 for (LCMSColumnName column : elements) {
-                        if (column.isColumnShown()) {
-                                columns.add(column);
-                                fixNumberColumns++;
-                        }
+                        columns.add(column);
+                        fixNumberColumns++;
                 }
         }
 
@@ -109,10 +111,12 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         public Object getValueAt(final int row, final int column) {
                 try {
                         SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
-
                         if (column < this.fixNumberColumns) {
                                 Object value = peakRow.getVar(columns.get(column).getGetFunctionName());
-                                if (columns.get(column) == LCMSColumnName.STANDARD) {
+                                if (columns.get(column) == LCMSColumnName.RT) {
+                                        NumberFormat RTformat = GuineuCore.getRTFormat();
+                                        return RTformat.format((Double) value);
+                                } else if (columns.get(column) == LCMSColumnName.STANDARD) {
                                         if ((Integer) value == 0) {
                                                 return false;
                                         }
@@ -151,7 +155,10 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         public void setValueAt(Object aValue, int row, int column) {
                 SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
                 if (column < this.fixNumberColumns) {
-                        if (columns.get(column) == LCMSColumnName.IDENTIFICATION) {
+                        if (columns.get(column) == LCMSColumnName.RT) {
+                                NumberFormat f = new RTFormatter(RTFormatterType.NumberInSec, "#0.00000000");
+                                peakRow.setVar(this.columns.get(column).getSetFunctionName(), f.parse((String)aValue, new ParsePosition(0)));
+                        } else if (columns.get(column) == LCMSColumnName.IDENTIFICATION) {
                                 if (aValue.toString().contains("NA")) {
                                         peakRow.setVar(this.columns.get(column).getSetFunctionName(), IdentificationType.UNKNOWN.toString());
                                 } else {

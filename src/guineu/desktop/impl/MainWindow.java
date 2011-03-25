@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,12 +18,12 @@
 package guineu.desktop.impl;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.desktop.impl.helpsystem.GuineuHelpSet;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.impl.TaskProgressWindow;
 import guineu.util.ExceptionUtils;
 import guineu.util.TextUtils;
@@ -58,12 +58,11 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         WindowListener {
 
         static final String aboutHelpID = "guineu/desktop/help/AboutGuineu.html";
-        private DesktopParameters parameters;
         private JDesktopPane desktopPane;
         private JSplitPane split;
         private ItemSelector itemSelector;
         private TaskProgressWindow taskList;
-
+        
         public TaskProgressWindow getTaskList() {
                 return taskList;
         }
@@ -80,9 +79,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                         frame.setVisible(true);
                 } catch (Exception e) {
                         e.printStackTrace();
-                }
-                // TODO: adjust frame position
-
+                }  
         }
 
         /**
@@ -154,9 +151,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
          */
         public void initModule() {
 
-                SwingParameters.initSwingParameters();
-
-                parameters = new DesktopParameters();
+                SwingParameters.initSwingParameters();              
 
                 try {
                         BufferedImage GuineuIcon = ImageIO.read(new File(
@@ -242,12 +237,13 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 statusBar.setStatusText(text, textColor);
         }
 
-        public DesktopParameters getParameterSet() {
-                return parameters;
+        public ParameterSet getParameterSet() {
+               // return parameters;
+                return null;
         }
 
         public void setParameters(ParameterSet parameterValues) {
-                this.parameters = (DesktopParameters) parameterValues;
+               // this.parameters = (DesktopParameters) parameterValues;
         }
 
         public ItemSelector getItemSelector() {

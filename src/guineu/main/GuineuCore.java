@@ -1,5 +1,6 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
+ *
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,268 +18,460 @@
  */
 package guineu.main;
 
-import guineu.data.StorableParameterSet;
-import guineu.data.ParameterSet;
-
-import guineu.desktop.Desktop;
-import guineu.desktop.impl.MainWindow;
-import guineu.desktop.impl.helpsystem.HelpImpl;
-import guineu.taskcontrol.TaskController;
-import guineu.util.NumberFormatter;
-import guineu.util.NumberFormatter.FormatterType;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
+import guineu.desktop.Desktop;
+import guineu.desktop.impl.MainWindow;
+import guineu.desktop.impl.helpsystem.HelpImpl;
+import guineu.desktop.preferences.ColumnsGCGCParameters;
+import guineu.desktop.preferences.ColumnsLCMSParameters;
+import guineu.desktop.preferences.GuineuPreferences;
+import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.TaskController;
+import guineu.taskcontrol.impl.TaskControllerImpl;
+import guineu.util.Range;
+import guineu.util.dialogs.ExitCode;
+import java.io.FileOutputStream;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This interface represents Guineu core modules - I/O, task controller and GUI.
- *
+ */
+/**
  * @author Taken from MZmine2
  * http://mzmine.sourceforge.net/
  */
-public abstract class GuineuCore {
+public class GuineuCore implements Runnable {
 
-    public static final File CONFIG_FILE = new File("conf/config.xml");
-    // configuration XML structure
-    public static final String PARAMETER_ELEMENT_NAME = "parameter";
-    public static final String PARAMETERS_ELEMENT_NAME = "parameters";
-    public static final String MODULES_ELEMENT_NAME = "modules";
-    public static final String MODULE_ELEMENT_NAME = "module";
-    public static final String CLASS_ATTRIBUTE_NAME = "class";
-    public static final String NODES_ELEMENT_NAME = "nodes";
-    public static final String LOCAL_ATTRIBUTE_NAME = "local";
-    public static final String DESKTOP_ELEMENT_NAME = "desktop";
-    public static final String PREFERENCES_ELEMENT_NAME = "preferences";
-    private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
-    protected static TaskController taskController;
-    protected static Desktop desktop;
-    protected static GuineuModule[] initializedModules;
-    protected static GuineuPreferences preferences;
-    protected static HelpImpl help;
+        public static final File CONFIG_FILE = new File("conf/config.xml");
+        public static final File DEFAULT_CONFIG_FILE = new File(
+                "conf/config-default.xml");
+        public static final String STANDARD_RANGE = "standard_ranges";
+        public static final String STANDARD_NAME = "standard_name";
+        private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
+        protected static GuineuPreferences preferences;
+        protected static ColumnsLCMSParameters LCMSColumns;
+        protected static ColumnsGCGCParameters GCGCColumns;
+        protected static TaskController taskController;
+        protected static Desktop desktop;
+        protected static GuineuModule[] initializedModules;
+        protected static HelpImpl help;
+        protected static Hashtable<String, Range> standards;
 
-    public static String getGuineuVersion() {
-        return " 1.01";
-    }
-
-    /**
-     * Returns a reference to local task controller.
-     *
-     * @return TaskController reference
-     */
-    public static TaskController getTaskController() {
-        return taskController;
-    }
-
-    /**
-     * Returns a reference to Desktop. May return null on Guineu nodes with no
-     * GUI.
-     *
-     * @return Desktop reference or null
-     */
-    public static Desktop getDesktop() {
-        return desktop;
-    }
-
-  
-    /**
-     * Returns an array of all initialized Guineu modules
-     *
-     * @return Array of all initialized Guineu modules
-     */
-    public static GuineuModule[] getAllModules() {
-        return initializedModules;
-    }
-
-    /**
-     * Saves configuration and exits the application.
-     *
-     */
-    public static void exitGuineu() {
-        saveConfiguration(CONFIG_FILE);
-        // If we have GUI, ask if use really wants to quit
-        if (desktop != null) {
-            int selectedValue = JOptionPane.showInternalConfirmDialog(desktop.getMainFrame().getContentPane(),
-                    "Are you sure you want to exit Guineu?", "Exiting...",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
-            if (selectedValue != JOptionPane.YES_OPTION) {
-                return;
-            }
-            desktop.getMainFrame().dispose();
+        public static void setStandard(String name, Range range) {
+                standards.put(name, range);
         }
 
-        System.exit(0);
+        public static Hashtable getStandards() {
+                return standards;
+        }
 
-    }
+        /**
+         * Returns a reference to local task controller.
+         *
+         * @return TaskController reference
+         */
+        public static TaskController getTaskController() {
+                return taskController;
+        }
 
-    public static void saveConfiguration(File file) {
+        /**
+         * Returns a reference to Desktop.
+         */
+        public static Desktop getDesktop() {
+                return desktop;
+        }
 
-        try {
+        /**
+         * Returns an array of all initialized Guineu modules
+         *
+         * @return Array of all initialized Guineu modules
+         */
+        public static GuineuModule[] getAllModules() {
+                return initializedModules;
+        }
 
-            // load current configuration from XML
-            SAXReader reader = new SAXReader();
-            Document configuration = reader.read(CONFIG_FILE);
-            Element configRoot = configuration.getRootElement();
+        /**
+         *
+         *
+         * @return
+         */
+        public static HelpImpl getHelpImpl() {
+                return help;
+        }
 
-            /*Element preferencesConfigElement = configRoot.element(PREFERENCES_ELEMENT_NAME);
-            if (preferencesConfigElement == null) {
-            preferencesConfigElement = configRoot.addElement(PREFERENCES_ELEMENT_NAME);
-            }*
-            preferencesConfigElement.clearContent();
-            try {
-            preferences.exportValuesToXML(preferencesConfigElement);
-            } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not save preferences", e);
-            }
+        /**
+         * Saves configuration and exits the application.
+         *
+         */
+        public static ExitCode exitGuineu() {
 
-             */
-            // save desktop configuration
-            StorableParameterSet desktopParameters = ((MainWindow) desktop).getParameterSet();
-            Element desktopConfigElement = configRoot.element(DESKTOP_ELEMENT_NAME);
-            if (desktopConfigElement == null) {
-                desktopConfigElement = configRoot.addElement(DESKTOP_ELEMENT_NAME);
-            }
-            desktopConfigElement.clearContent();
-            try {
-                desktopParameters.exportValuesToXML(desktopConfigElement);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE,
-                        "Could not save desktop configuration", e);
-            }
+                // If we have GUI, ask if use really wants to quit
+                int selectedValue = JOptionPane.showInternalConfirmDialog(desktop.getMainFrame().getContentPane(),
+                        "Are you sure you want to exit?", "Exiting...",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-            // traverse modules
-            for (GuineuModule module : getAllModules()) {
-
-                ParameterSet currentParameters = module.getParameterSet();
-                if ((currentParameters == null) || (!(currentParameters instanceof StorableParameterSet))) {
-                    continue;
+                if (selectedValue != JOptionPane.YES_OPTION) {
+                        return ExitCode.CANCEL;
                 }
 
-                String className = module.getClass().getName();
-                String xpathLocation = "//configuration/modules/module[@class='" + className + "']";
-                Element moduleElement = (Element) configuration.selectSingleNode(xpathLocation);
-                if (moduleElement != null) {
+                desktop.getMainFrame().dispose();
 
-                    Element parametersElement = moduleElement.element(PARAMETERS_ELEMENT_NAME);
-                    if (parametersElement == null) {
-                        parametersElement = moduleElement.addElement(PARAMETERS_ELEMENT_NAME);
-                    } else {
-                        parametersElement.clearContent();
-                    }
+                logger.info("Exiting Guineu");
 
-                    try {
-                        ((StorableParameterSet) currentParameters).exportValuesToXML(parametersElement);
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE,
-                                "Could not save configuration of module " + module, e);
-                    }
+                System.exit(0);
+
+                return ExitCode.OK;
+
+        }
+
+        /**
+         * Main method
+         */
+        public static void main(String args[]) {
+                // create the GUI in the event-dispatching thread
+                GuineuCore core = new GuineuCore();
+                SwingUtilities.invokeLater(core);
+                standards = new Hashtable<String, Range>();
+
+        }
+
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
+
+                logger.info("Starting Guineu");
+                logger.fine("Loading configuration..");
+
+                File configFileToLoad = CONFIG_FILE;
+                if (!CONFIG_FILE.canRead()) {
+                        configFileToLoad = DEFAULT_CONFIG_FILE;
+                }
+                if (!configFileToLoad.canRead()) {
+                        logger.log(Level.SEVERE, "Cannot read default configuration file " + DEFAULT_CONFIG_FILE);
+                        System.exit(1);
                 }
 
-            }
+                Document configuration = null;
+                NodeList modulesItems = null;
 
-            // write the config file
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            XMLWriter writer = new XMLWriter(new FileWriter(file), format);
-            writer.write(configuration);
-            writer.close();
+                try {
+                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                        configuration = dBuilder.parse(configFileToLoad);
 
-            logger.info("Saved configuration to file " + file);
+                        XPathFactory factory = XPathFactory.newInstance();
+                        XPath xpath = factory.newXPath();
 
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not update configuration file " + file, e);
-        }
+                        XPathExpression expr = xpath.compile("//modules/module");
+                        modulesItems = (NodeList) expr.evaluate(configuration,
+                                XPathConstants.NODESET);
 
-    }
+                } catch (Exception e) {
 
-    public static void loadConfiguration(File file) {
-
-        try {
-            SAXReader reader = new SAXReader();
-            Document configuration = reader.read(file);
-            Element configRoot = configuration.getRootElement();
-
-            logger.finest("Loading desktop configuration");
-
-            /*Element preferencesConfigElement = configRoot.element(PREFERENCES_ELEMENT_NAME);
-            if (preferencesConfigElement != null) {
-            preferences.importValuesFromXML(preferencesConfigElement);
-            }
-             */
-            StorableParameterSet desktopParameters = (StorableParameterSet) desktop.getParameterSet();
-            Element desktopConfigElement = configRoot.element(DESKTOP_ELEMENT_NAME);
-            if (desktopConfigElement != null) {
-                desktopParameters.importValuesFromXML(desktopConfigElement);
-            }
-
-            logger.finest("Loading modules configuration");
-
-            for (GuineuModule module : getAllModules()) {
-                String className = module.getClass().getName();
-                String xpathLocation = "//configuration/modules/module[@class='" + className + "']";
-
-                Element moduleElement = (Element) configuration.selectSingleNode(xpathLocation);
-                if (moduleElement == null) {
-                    continue;
+                        logger.log(Level.SEVERE, "Error parsing the configuration file " + configFileToLoad + ", loading default configuration", e);
+                        System.exit(1);
+                        return;
                 }
 
-                Element parametersElement = moduleElement.element(PARAMETERS_ELEMENT_NAME);
+                logger.fine("Loading core classes..");
 
-                if (parametersElement != null) {
-                    ParameterSet moduleParameters = module.getParameterSet();
-                    if ((moduleParameters != null) && (moduleParameters instanceof StorableParameterSet)) {
-                        ((StorableParameterSet) moduleParameters).importValuesFromXML(parametersElement);
-                    }
+                // create instance of preferences
+                preferences = new GuineuPreferences();
+
+                LCMSColumns = new ColumnsLCMSParameters();
+
+                GCGCColumns = new ColumnsGCGCParameters();
+
+                // create instances of core modules
+
+                // load configuration from XML
+                GuineuCore.taskController = new TaskControllerImpl();
+                GuineuCore.desktop = new MainWindow();
+                help = new HelpImpl();
+
+                logger.fine("Initializing core classes..");
+
+
+                // Second, initialize desktop, because task controller needs to add
+                // TaskProgressWindow to the desktop
+                ((MainWindow) desktop).initModule();
+
+                // Last, initialize task controller
+                ((TaskControllerImpl) taskController).initModule();
+
+                logger.fine("Loading modules");
+
+                Vector<GuineuModule> moduleSet = new Vector<GuineuModule>();
+
+                for (int i = 0; i < modulesItems.getLength(); i++) {
+                        Element modElement = (Element) modulesItems.item(i);
+
+                        String className = modElement.getAttribute("class");
+
+                        try {
+
+                                logger.finest("Loading module " + className);
+
+                                // load the module class
+                                Class moduleClass = Class.forName(className);
+
+                                // create instance and init module
+                                GuineuModule moduleInstance = (GuineuModule) moduleClass.newInstance();
+
+                                // add to the module set
+                                moduleSet.add(moduleInstance);
+
+                        } catch (Throwable e) {
+                                logger.log(Level.SEVERE, "Could not load module " + className,
+                                        e);
+                                continue;
+                        }
+
                 }
 
-            }
+                GuineuCore.initializedModules = moduleSet.toArray(new GuineuModule[0]);
 
-            logger.info("Loaded configuration from file " + file);
+                try {
+                        loadConfiguration(configFileToLoad);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
 
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not parse configuration file " + file, e);
+                // register shutdown hook
+                ShutDownHook shutDownHook = new ShutDownHook();
+                Runtime.getRuntime().addShutdownHook(shutDownHook);
+
+                // show the GUI
+                logger.info("Showing main window");
+                ((MainWindow) desktop).setVisible(true);
+
+                // show the welcome message
+                desktop.setStatusBarText("Welcome to Guineu!");
+
         }
 
-    }
+        public static void saveConfiguration(File file)
+                throws ParserConfigurationException, TransformerException,
+                FileNotFoundException {
 
-    public static HelpImpl getHelpImpl() {
-        return help;
-    }
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-    public static GuineuPreferences getPreferences() {
-        return preferences;
-    }
+                Document configuration = dBuilder.newDocument();
+                Element configRoot = configuration.createElement("configuration");
+                configuration.appendChild(configRoot);
 
-    public static void setDesktop(MainWindow mainWindow) {
-        desktop = mainWindow;
-    }
+               /* Element prefElement = configuration.createElement("preferences");
+                configRoot.appendChild(prefElement);
+                preferences.saveValuesToXML(prefElement);*/
 
-    // Number formatting functions
-    public static NumberFormatter getIntensityFormat() {
-        return preferences.getIntensityFormat();
-    }
+                Element colLCMSElement = configuration.createElement("LCMSColumns");
+                configRoot.appendChild(colLCMSElement);
+                LCMSColumns.saveValuesToXML(colLCMSElement);
 
-    public static NumberFormatter getMZFormat() {
-        if (preferences == null || preferences.getMZFormat() == null) {
-            return new NumberFormatter(FormatterType.NUMBER, "0.000");
+                Element colGCGCElement = configuration.createElement("GCGCColumns");
+                configRoot.appendChild(colGCGCElement);
+                GCGCColumns.saveValuesToXML(colGCGCElement);
+
+                Element standardElement = configuration.createElement("Standards");
+                configRoot.appendChild(standardElement);
+                Set<String> set = standards.keySet();
+                Iterator<String> itr = set.iterator();
+                while (itr.hasNext()) {
+                        String str = itr.next();
+                        Element standard = configuration.createElement("parameter");
+                        standard.setAttribute("name", str);
+                        Element range = configuration.createElement("item");
+                        range.setTextContent(standards.get(str).toString());
+                        standard.appendChild(range);
+                        standardElement.appendChild(standard);
+                }
+
+                Element modulesElement = configuration.createElement("modules");
+                configRoot.appendChild(modulesElement);
+
+                // traverse modules
+                for (GuineuModule module : getAllModules()) {
+
+                        String className = module.getClass().getName();
+
+                        Element moduleElement = configuration.createElement("module");
+                        moduleElement.setAttribute("class", className);
+                        modulesElement.appendChild(moduleElement);
+
+                        Element paramElement = configuration.createElement("parameters");
+                        moduleElement.appendChild(paramElement);
+
+                        ParameterSet moduleParameters = module.getParameterSet();
+                        if (moduleParameters != null) {
+                                moduleParameters.saveValuesToXML(paramElement);
+                        }
+
+                }
+
+                TransformerFactory transfac = TransformerFactory.newInstance();
+                Transformer transformer = transfac.newTransformer();
+                transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                transformer.setOutputProperty(
+                        "{http://xml.apache.org/xslt}indent-amount", "4");
+
+                StreamResult result = new StreamResult(new FileOutputStream(file));
+                DOMSource source = new DOMSource(configuration);
+                transformer.transform(source, result);
+
+                logger.info("Saved configuration to file " + file);
+
         }
-        return preferences.getMZFormat();
-    }
 
-    public static NumberFormatter getRTFormat() {
-        if (preferences == null || preferences.getRTFormat() == null) {
-            return new NumberFormatter(FormatterType.TIME, "m:ss");
+        public static void loadConfiguration(File file)
+                throws ParserConfigurationException, SAXException, IOException,
+                XPathExpressionException {
+
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document configuration = dBuilder.parse(file);
+
+                XPathFactory factory = XPathFactory.newInstance();
+                XPath xpath = factory.newXPath();
+
+                logger.finest("Loading desktop configuration");
+
+               /* XPathExpression expr = xpath.compile("//configuration/preferences");
+                NodeList nodes = (NodeList) expr.evaluate(configuration,
+                        XPathConstants.NODESET);
+                if (nodes.getLength() == 1) {
+                        Element preferencesElement = (Element) nodes.item(0);
+                        preferences.loadValuesFromXML(preferencesElement);
+                }*/
+
+                XPathExpression expr = xpath.compile("//configuration/LCMSColumns");
+                NodeList nodes = (NodeList) expr.evaluate(configuration,
+                        XPathConstants.NODESET);
+                if (nodes.getLength() == 1) {
+                        Element preferencesElement = (Element) nodes.item(0);
+                        LCMSColumns.loadValuesFromXML(preferencesElement);
+                }
+
+
+                expr = xpath.compile("//configuration/GCGCColumns");
+                nodes = (NodeList) expr.evaluate(configuration,
+                        XPathConstants.NODESET);
+                if (nodes.getLength() == 1) {
+                        Element preferencesElement = (Element) nodes.item(0);
+                        GCGCColumns.loadValuesFromXML(preferencesElement);
+                }
+
+
+                expr = xpath.compile("//configuration/Standards");
+                nodes = (NodeList) expr.evaluate(configuration,
+                        XPathConstants.NODESET);
+                if (nodes.getLength() == 1) {
+                        Element preferencesElement = (Element) nodes.item(0);
+                        NodeList list = preferencesElement.getElementsByTagName("parameter");
+                        for (int i = 0; i < list.getLength(); i++) {
+                                Element nextElement = (Element) list.item(i);
+                                String paramName = nextElement.getAttribute("name");
+                                try {
+                                        String rangeString = nextElement.getTextContent();
+                                        String[] range = rangeString.split(" - ");
+                                        Range r = new Range(Double.valueOf(range[0]), Double.valueOf(range[1]));
+                                        standards.put(paramName, r);                                       
+                                } catch (Exception e) {
+                                        e.printStackTrace();
+                                }
+
+                        }
+                }
+
+
+                logger.finest("Loading modules configuration");
+
+                for (GuineuModule module : getAllModules()) {
+
+                        String className = module.getClass().getName();
+                        expr = xpath.compile("//configuration/modules/module[@class='" + className + "']/parameters");
+                        nodes = (NodeList) expr.evaluate(configuration,
+                                XPathConstants.NODESET);
+                        if (nodes.getLength() != 1) {
+                                continue;
+                        }
+
+                        Element moduleElement = (Element) nodes.item(0);
+
+                        ParameterSet moduleParameters = module.getParameterSet();
+                        if (moduleParameters != null) {
+                                moduleParameters.loadValuesFromXML(moduleElement);
+                        }
+                }
+
+                logger.info("Loaded configuration from file " + file);
         }
-        return preferences.getRTFormat();
-    }
+
+        // Number formatting functions
+        public static NumberFormat getIntensityFormat() {
+                return preferences.getParameter(GuineuPreferences.intensityFormat).getValue();
+        }
+
+        public static NumberFormat getMZFormat() {
+                return preferences.getParameter(GuineuPreferences.mzFormat).getValue();
+        }
+
+        public static NumberFormat getRTFormat() {
+                return preferences.getParameter(GuineuPreferences.rtFormat).getValue();
+        }
+
+        public static String getGuineuVersion() {
+                return "1.4";
+        }
+
+        public static GuineuPreferences getPreferences() {
+                return preferences;
+        }
+
+        public static void setPreferences(GuineuPreferences preferences2) {
+                preferences = preferences2;
+        }
+
+        public static ColumnsLCMSParameters getLCMSColumnsParameters() {
+                return LCMSColumns;
+        }
+
+        public static ColumnsGCGCParameters getGCGCColumnsParameters() {
+                return GCGCColumns;
+        }
 }

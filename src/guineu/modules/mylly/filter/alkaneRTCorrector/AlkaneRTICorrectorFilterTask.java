@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -70,12 +70,12 @@ public class AlkaneRTICorrectorFilterTask implements Task {
                 status = TaskStatus.PROCESSING;
                 try {
 
-                        String name = (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.fileNames);
+                        String name = parameters.getParameter(AlkaneRTICorrectorParameters.fileNames).getValue().getAbsolutePath();
                         AlkaneRTICorrector filter = AlkaneRTICorrector.createCorrector(new File(name));
                         List<GCGCData> newDatasets = filter.actualMap(datasets);
 
                         for (GCGCData dates : newDatasets) {
-                                dates.setName(dates.getName() + (String) parameters.getParameterValue(AlkaneRTICorrectorParameters.suffix));
+                                dates.setName(dates.getName() + parameters.getParameter(AlkaneRTICorrectorParameters.suffix).getValue());
                                 SimpleGCGCDataset newTableOther = this.writeDataset(dates.toList(), dates.getName());
                                 GuineuCore.getDesktop().AddNewFile(newTableOther);
                         }

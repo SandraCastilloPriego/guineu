@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.statistics.clustering;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -32,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import guineu.data.Dataset;
+import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import java.util.logging.Logger;
 
@@ -46,7 +46,7 @@ public class ClusteringTest implements GuineuModule, TaskListener, ActionListene
         private ClusteringParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public void initModule() {
+        public ClusteringTest() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.STATISTICS, "Clustering..",
                         "Clustering data", KeyEvent.VK_U, this, null, null);
@@ -75,21 +75,15 @@ public class ClusteringTest implements GuineuModule, TaskListener, ActionListene
         public void actionPerformed(ActionEvent e) {
                 try {
                         Dataset[] dataFiles = desktop.getSelectedDataFiles();
-                        if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {                                
-                                setupParameters(parameters);
+                        if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {
+                                ExitCode exitCode = this.parameters.showSetupDialog();
+                                if (exitCode != ExitCode.OK) {
+                                        return;
+                                }
+                                runModule();
                         } else {
                         }
                 } catch (Exception exception) {
-                }
-        }
-
-        public void setupParameters(ParameterSet currentParameters) {
-                final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                        "Please set parameter values for " + toString(),
-                        (ClusteringParameters) currentParameters, helpID);
-                dialog.setVisible(true);
-                if (dialog.getExitCode() == ExitCode.OK) {
-                        runModule();
                 }
         }
 

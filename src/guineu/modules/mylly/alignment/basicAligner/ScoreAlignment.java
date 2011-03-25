@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,22 +17,20 @@
  */
 package guineu.modules.mylly.alignment.basicAligner;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 
 /**
@@ -46,7 +44,7 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
         private BasicAlignerGCGCParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public void initModule() {
+        public ScoreAlignment() {
                 parameters = new BasicAlignerGCGCParameters();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.MYLLY, "Ransac Alignment..",
@@ -74,30 +72,19 @@ public class ScoreAlignment implements GuineuModule, TaskListener, ActionListene
 
         public void actionPerformed(ActionEvent e) {
                 try {
-                        setupParameters(parameters);
+                        ExitCode code = parameters.showSetupDialog();
+                        if (code == ExitCode.OK) {
+                                runModule();
+                        }
                 } catch (Exception exception) {
                 }
         }
-
-        public void setupParameters(ParameterSet currentParameters) {
-                final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                        "Please set parameter values for " + toString(),
-                        (BasicAlignerGCGCParameters) currentParameters, helpID);
-                dialog.setVisible(true);
-
-
-                if (dialog.getExitCode() == ExitCode.OK) {
-                        runModule();
-                }
-        }
+       
 
         public ParameterSet getParameterSet() {
                 return this.parameters;
         }
-
-        public void setParameters(ParameterSet parameterValues) {
-                parameters = (BasicAlignerGCGCParameters) parameters;
-        }
+       
 
         @Override
         public String toString() {

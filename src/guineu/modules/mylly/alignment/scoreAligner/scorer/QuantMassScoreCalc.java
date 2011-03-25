@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,68 +17,56 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.scorer;
 
-
-
-
-
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.Peak;
 
-
 /**
  * @author jmjarkko
  */
-public class QuantMassScoreCalc implements ScoreCalculator
-{	
-	/**
-	 * @see gcgcaligner.scorer.ScoreCalculator#calculateScore(gcgcaligner.alignment.AlignmentPath, gcgcaligner.datastruct.GCGCDatum, gcgcaligner.alignment.AlignmentParameters)
-	 */
-	public double calculateScore(
-			Peak path, 
-			Peak peak,
-			ScoreAlignmentParameters params)
-	{
-		double score = getWorstScore();
-		if (peak.hasQuantMass() && 
-				peak.getQuantMass() == path.getQuantMass() && 
-				path.matchesWithName(peak))
-		{
-			score = Math.abs(path.getRT1() - peak.getRT1()) * (Double)params.getParameterValue(ScoreAlignmentParameters.rt1Penalty) +
-			Math.abs(path.getRT2() - peak.getRT2()) * (Double)params.getParameterValue(ScoreAlignmentParameters.rt2Penalty)+
-			Math.abs(path.getRTI() - peak.getRTI()) * (Double)params.getParameterValue(ScoreAlignmentParameters.rtiPenalty);
-		}
-		return score;
-	}
+public class QuantMassScoreCalc implements ScoreCalculator {
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#getWorstScore()
-	 */
-	public double getWorstScore()
-	{
-		return Double.MAX_VALUE;
-	}
+        /**
+         * @see gcgcaligner.scorer.ScoreCalculator#calculateScore(gcgcaligner.alignment.AlignmentPath, gcgcaligner.datastruct.GCGCDatum, gcgcaligner.alignment.AlignmentParameters)
+         */
+        public double calculateScore(
+                Peak path,
+                Peak peak,
+                ScoreAlignmentParameters params) {
+                double score = getWorstScore();
+                if (peak.hasQuantMass() &&
+                        peak.getQuantMass() == path.getQuantMass() &&
+                        path.matchesWithName(peak)) {
+                        score = Math.abs(path.getRT1() - peak.getRT1()) * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() +
+                                Math.abs(path.getRT2() - peak.getRT2()) * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble() +
+                                Math.abs(path.getRTI() - peak.getRTI()) * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
+                }
+                return score;
+        }
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
-	 */
-	public boolean matches(Peak path, Peak peak,
-			ScoreAlignmentParameters params)
-	{
-		return calculateScore(path, peak, params) < getWorstScore();
-	}
-	
-	public boolean isValid(GCGCDatum peak)
-	{
-		if (peak.hasQuantMass())
-		{
-			return true;
-		}
-		return false;
-	}
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#getWorstScore()
+         */
+        public double getWorstScore() {
+                return Double.MAX_VALUE;
+        }
 
-	public String name()
-	{
-		return "uses quantified masses";
-	}
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
+         */
+        public boolean matches(Peak path, Peak peak,
+                ScoreAlignmentParameters params) {
+                return calculateScore(path, peak, params) < getWorstScore();
+        }
+
+        public boolean isValid(GCGCDatum peak) {
+                if (peak.hasQuantMass()) {
+                        return true;
+                }
+                return false;
+        }
+
+        public String name() {
+                return "uses quantified masses";
+        }
 }

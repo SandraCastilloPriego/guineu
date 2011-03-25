@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -33,52 +33,52 @@ import guineu.util.GUIUtils;
  */
 public class ClassIdentificationFilterTask implements Task {
 
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private Dataset dataset;
-	private ClassIdentificationParameters parameters;
-	private ClassIdentification filter;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private Dataset dataset;
+        private ClassIdentificationParameters parameters;
+        private ClassIdentification filter;
 
-	public ClassIdentificationFilterTask(Dataset dataset, ClassIdentificationParameters parameters) {
-		this.dataset = dataset;
-		this.parameters = parameters;
-		filter = new ClassIdentification();
-	}
+        public ClassIdentificationFilterTask(Dataset dataset, ClassIdentificationParameters parameters) {
+                this.dataset = dataset;
+                this.parameters = parameters;
+                filter = new ClassIdentification();
+        }
 
-	public String getTaskDescription() {
-		return "Filtering files with Class Identification Filter... ";
-	}
+        public String getTaskDescription() {
+                return "Filtering files with Class Identification Filter... ";
+        }
 
-	public double getFinishedPercentage() {		
-		return filter.getProgress();
-	}
+        public double getFinishedPercentage() {
+                return filter.getProgress();
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
 
-	public void run() {
-		status = TaskStatus.PROCESSING;
-		try {
+        public void run() {
+                status = TaskStatus.PROCESSING;
+                try {
 
-			String name = (String) parameters.getParameterValue(ClassIdentificationParameters.fileNames);
-			filter.createCorrector(new File(name));
-			SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-			alignment.setDatasetName(alignment.getDatasetName() + (String) parameters.getParameterValue(ClassIdentificationParameters.suffix));
-			alignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(alignment,true);
-			status = TaskStatus.FINISHED;
-		} catch (Exception ex) {
-			Logger.getLogger(ClassIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-			status = TaskStatus.ERROR;
-		}
-	}
+                        String name = parameters.getParameter(ClassIdentificationParameters.fileNames).getValue().getAbsolutePath();
+                        filter.createCorrector(new File(name));
+                        SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
+                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(ClassIdentificationParameters.suffix).getValue());
+                        alignment.setType(DatasetType.GCGCTOF);
+                        GUIUtils.showNewTable(alignment, true);
+                        status = TaskStatus.FINISHED;
+                } catch (Exception ex) {
+                        Logger.getLogger(ClassIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        status = TaskStatus.ERROR;
+                }
+        }
 }

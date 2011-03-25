@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -25,10 +25,8 @@ import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.util.Tables.DataTableModel;
 import javax.swing.table.AbstractTableModel;
 import guineu.data.Dataset;
-import guineu.desktop.impl.DesktopParameters;
+import guineu.desktop.preferences.ColumnsGCGCParameters;
 import guineu.main.GuineuCore;
-import guineu.modules.configuration.tables.GCGC.GCGCColumnsViewParameters;
-import guineu.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +39,6 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
 
         private SimpleGCGCDataset dataset;
         private int fixNumberColumns = 0;
-        private GCGCColumnsViewParameters GCGCViewParameters;
         private List<GCGCColumnName> columns;
         private GCGCColumnName[] elements;
 
@@ -59,15 +56,10 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
         public void setParameters() {
                 this.columns = new ArrayList<GCGCColumnName>();
                 fixNumberColumns = 0;
-                this.GCGCViewParameters = (GCGCColumnsViewParameters) ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getViewGCGCParameters();
-                Object elementsObjects[] = (Object[]) GCGCViewParameters.getParameterValue(GCGCColumnsViewParameters.columnSelection);
-                elements = CollectionUtils.changeArrayType(elementsObjects,
-                        GCGCColumnName.class);
+                elements = GuineuCore.getGCGCColumnsParameters().getParameter(ColumnsGCGCParameters.GCGCdata).getValue();
                 for (GCGCColumnName column : elements) {
-                        if (column.isColumnShown()) {
-                                columns.add(column);
-                                fixNumberColumns++;
-                        }
+                        columns.add(column);
+                        fixNumberColumns++;
                 }
         }
 

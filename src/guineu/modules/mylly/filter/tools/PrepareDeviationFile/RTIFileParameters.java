@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,9 @@
  */
 package guineu.modules.mylly.filter.tools.PrepareDeviationFile;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
 
 /**
  *
@@ -28,16 +27,14 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class RTIFileParameters extends SimpleParameterSet {
 
+        public static final FileNameParameter fileNames = new FileNameParameter(
+                "Input File: ",
+                "Input File");
+        public static final FileNameParameter outputFileNames = new FileNameParameter(
+                "Output File: ",
+                "Output File");
 
- public static final Parameter fileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "Input File: ",
-            "Input File", null, "Input File", null);
-
-  public static final Parameter outputFileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "Output File: ",
-            "Output File", null, "Output File", null);
-	
-	public RTIFileParameters() {
-		super(new Parameter[]{fileNames, outputFileNames});
-	}
+        public RTIFileParameters() {
+                super(new UserParameter[]{fileNames, outputFileNames});
+        }
 }

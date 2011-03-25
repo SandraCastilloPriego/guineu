@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,7 +21,6 @@ import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.QuantMassScoreCalc;
-import guineu.modules.mylly.alignment.scoreAligner.scorer.RTScore;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.SpectrumDotProd;
 import guineu.modules.mylly.datastruct.GCGCData;
@@ -144,7 +143,7 @@ public class ScoreAligner implements Aligner {
                 for (List<GCGCDatum> l : aList) {
                         LinkedList<GCGCDatum> newSubList = new LinkedList<GCGCDatum>();
                         for (GCGCDatum d : l) {
-                                if (d.getSimilarity() >= (Double) params.getParameterValue(ScoreAlignmentParameters.minSimilarity) || d.hasQuantMass()) {
+                                if (d.getSimilarity() >= params.getParameter(ScoreAlignmentParameters.minSimilarity).getDouble() || d.hasQuantMass()) {
                                         newSubList.add(d);
                                 }
                         }
@@ -313,7 +312,7 @@ public class ScoreAligner implements Aligner {
                                 }
                         }
 
-                        double gapPenalty = (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Lax) * (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Penalty) + (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Lax) * (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Penalty) + (Double) params.getParameterValue(ScoreAlignmentParameters.rtiLax) * (Double) params.getParameterValue(ScoreAlignmentParameters.rtiPenalty);
+                        double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
 
                         if (bestPeak != null && bestPeakScore < gapPenalty) {
                                 path.add(i, bestPeak, bestPeakScore);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -20,9 +20,7 @@ package guineu.modules.mylly.filter.NameGolmIdentification;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.desktop.impl.DesktopParameters;
-import guineu.main.GuineuCore;
-import guineu.modules.configuration.proxy.ProxyConfigurationParameters;
+import guineu.desktop.preferences.ProxySettings;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
@@ -61,11 +59,11 @@ public class NameGolmIdentificationFilterTask implements Task {
 
                 // Proxy configuration
                 try {
-                        ProxyConfigurationParameters proxy = (ProxyConfigurationParameters) ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getProxyParameters();
-                        String proxystr = (String) proxy.getParameterValue(ProxyConfigurationParameters.proxy);
+                        ProxySettings parameters = new ProxySettings();
+                        String proxystr = parameters.getParameter(ProxySettings.proxyAddress).getValue();
                         if (!proxystr.isEmpty()) {
                                 System.setProperty("http.proxyHost", proxystr);
-                                System.setProperty("http.proxyPort", (String) proxy.getParameterValue(ProxyConfigurationParameters.port));
+                                System.setProperty("http.proxyPort", parameters.getParameter(ProxySettings.proxyPort).getValue());
                         }
                 } catch (Exception e) {
                         System.out.println("Bad proxy configuration.");

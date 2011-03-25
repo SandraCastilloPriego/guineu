@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.alkaneRTCorrector;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -25,10 +24,8 @@ import guineu.main.GuineuModule;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
- 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -37,6 +34,7 @@ import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.parameters.ParameterSet;
 import java.util.ArrayList;
 
 /**
@@ -45,91 +43,79 @@ import java.util.ArrayList;
  */
 public class AlkaneRTICorrectorFilter implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private AlkaneRTICorrectorParameters parameters;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private AlkaneRTICorrectorParameters parameters;
 
-	public void initModule() {
-		parameters = new AlkaneRTICorrectorParameters();
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuSeparator(GuineuMenu.MYLLY);
-		desktop.addMenuItem(GuineuMenu.MYLLY, "Alkane RTI Corrector Filter..",
-				"Alkane RTI Corrector Filter", KeyEvent.VK_A, this, null, "icons/help.png");
+        public AlkaneRTICorrectorFilter() {
+                parameters = new AlkaneRTICorrectorParameters();
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuSeparator(GuineuMenu.MYLLY);
+                desktop.addMenuItem(GuineuMenu.MYLLY, "Alkane RTI Corrector Filter..",
+                        "Alkane RTI Corrector Filter", KeyEvent.VK_A, this, null, "icons/help.png");
 
-	}
+        }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Alkane RTI Corrector Filter");
-	}
+        public void taskStarted(Task task) {
+                logger.info("Running Alkane RTI Corrector Filter");
+        }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Alkane RTI Corrector Filter ");
-		}
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Alkane RTI Corrector Filter ");
+                }
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while Alkane RTI Corrector Filtering .. ";
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+                        String msg = "Error while Alkane RTI Corrector Filtering .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-		}
-	}
+                }
+        }
 
-	public void actionPerformed(ActionEvent e) {
-		try {
-			setupParameters(parameters);
-		} catch (Exception exception) {
-		}
-	}
+        public void actionPerformed(ActionEvent e) {
+                try {
+                        ExitCode exitcode = parameters.showSetupDialog();
+                        if (exitcode == ExitCode.OK) {
+                                runModule();
+                        }
+                } catch (Exception exception) {
+                }
+        }
 
-	public void setupParameters(ParameterSet currentParameters) {
-		final ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(AlkaneRTICorrectorParameters) currentParameters);
-		dialog.setVisible(true);
+        public ParameterSet getParameterSet() {
+                return this.parameters;
+        }
 
-		if (dialog.getExitCode() == ExitCode.OK) {
-			runModule();
-		}
-	}
+        public String toString() {
+                return "Alkane RTI Corrector Filter";
+        }
 
-	public ParameterSet getParameterSet() {
-		return this.parameters;
-	}
+        public Task[] runModule() {
 
-	public void setParameters(ParameterSet parameterValues) {
-		parameters = (AlkaneRTICorrectorParameters) parameters;
-	}
+                Dataset[] datasets = desktop.getSelectedDataFiles();
+                List<GCGCData> newDatasets = new ArrayList<GCGCData>();
 
-	public String toString() {
-		return "Alkane RTI Corrector Filter";
-	}
+                for (int i = 0; i < datasets.length; i++) {
+                        GCGCDatum[][] datum = ((SimpleGCGCDataset) datasets[i]).toArray();
+                        List<GCGCDatum> datumList = new ArrayList<GCGCDatum>();
+                        for (GCGCDatum data : datum[0]) {
+                                datumList.add(data.clone());
+                        }
+                        newDatasets.add(new GCGCData(datumList, datasets[i].getDatasetName()));
+                }
 
-	public Task[] runModule() {
+                // prepare a new group of tasks
+                Task tasks[] = new AlkaneRTICorrectorFilterTask[1];
 
-		Dataset[] datasets = desktop.getSelectedDataFiles();
-		List<GCGCData> newDatasets = new ArrayList<GCGCData>();
+                tasks[0] = new AlkaneRTICorrectorFilterTask(newDatasets, parameters);
 
-		for(int i = 0; i < datasets.length; i++){
-			GCGCDatum[][] datum = ((SimpleGCGCDataset)datasets[i]).toArray();
-			List<GCGCDatum> datumList = new ArrayList<GCGCDatum>();
-			for(GCGCDatum data: datum[0]){
-				datumList.add(data.clone());
-			}		
-			newDatasets.add(new GCGCData(datumList, datasets[i].getDatasetName()));
-		}
+                GuineuCore.getTaskController().addTasks(tasks);
 
-		// prepare a new group of tasks
-		Task tasks[] = new AlkaneRTICorrectorFilterTask[1];
-
-		tasks[0] = new AlkaneRTICorrectorFilterTask(newDatasets, parameters);
-
-		GuineuCore.getTaskController().addTasks(tasks);
-
-        return tasks;
+                return tasks;
 
 
 
-	}
+        }
 }

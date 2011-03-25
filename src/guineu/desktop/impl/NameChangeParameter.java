@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,9 @@
  */
 package guineu.desktop.impl;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.Parameter;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.parametersType.StringParameter;
 
 /**
  *
@@ -28,10 +27,9 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class NameChangeParameter extends SimpleParameterSet {
 
-        public static final Parameter name = new SimpleParameter(
-                ParameterType.STRING, "New Dataset Name",
-                "New Dataset Name", (Object) "");
-
+        public static final StringParameter name = new StringParameter(
+			 "New Dataset Name",  "New Dataset Name");
+       
         public NameChangeParameter() {
                 super(new Parameter[]{name});
         }

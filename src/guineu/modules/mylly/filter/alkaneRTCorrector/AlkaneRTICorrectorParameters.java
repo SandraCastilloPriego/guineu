@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,10 @@
  */
 package guineu.modules.mylly.filter.alkaneRTCorrector;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.StringParameter;
 
 /**
  *
@@ -28,18 +28,14 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class AlkaneRTICorrectorParameters extends SimpleParameterSet {
 
+        public static final StringParameter suffix = new StringParameter(
+                "Suffix: ",
+                "Suffix");
+        public static final FileNameParameter fileNames = new FileNameParameter(
+                "Filter File: ",
+                "Alkane RTI Corrector Filter File");
 
-	public static final Parameter suffix = new SimpleParameter(
-            ParameterType.STRING, "Suffix: ",
-            "Suffix", null, "-Alkane RTI Corrector Filter", null);
-
-
-    public static final Parameter fileNames = new SimpleParameter(
-            ParameterType.FILE_NAME, "Filter File: ",
-            "Alkane RTI Corrector Filter File", null, "Alkane RTI Corrector Filter File", null);
-	
-	
-	public AlkaneRTICorrectorParameters() {
-		super(new Parameter[]{suffix, fileNames});
-	}
+        public AlkaneRTICorrectorParameters() {
+                super(new UserParameter[]{suffix, fileNames});
+        }
 }

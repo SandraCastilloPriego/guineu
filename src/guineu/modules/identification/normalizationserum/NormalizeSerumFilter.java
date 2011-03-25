@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,13 +18,12 @@
 package guineu.modules.identification.normalizationserum;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -50,7 +49,7 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
         private Vector<StandardUmol> standards;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public void initModule() {
+        public NormalizeSerumFilter() {
                 this.standards = new Vector<StandardUmol>();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Serum Normalization Filter..",
@@ -83,7 +82,7 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
                 }
 
                 for (StandardUmol std : this.standards) {
-                        ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setStandard(std.getName(), std.getRange());
+                        GuineuCore.setStandard(std.getName(), std.getRange());
                 }
 
                 runModule();
@@ -92,7 +91,7 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
         public ExitCode setupParameters() {
                 Dataset[] datasets = desktop.getSelectedDataFiles();
                 if (datasets.length > 0) {
-                        Hashtable<String, Range> stdRanges = ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getStandards();
+                        Hashtable<String, Range> stdRanges =  GuineuCore.getStandards();
                         for (PeakListRow row : datasets[0].getRows()) {
                                 if (row.isSelected() || (Integer) row.getVar("getStandard") == 1) {
                                         StandardUmol std = new StandardUmol(row);
@@ -122,10 +121,7 @@ public class NormalizeSerumFilter implements GuineuModule, TaskListener, ActionL
 
         public ParameterSet getParameterSet() {
                 return null;
-        }
-
-        public void setParameters(ParameterSet parameterValues) {
-        }
+        }       
 
         public String toString() {
                 return "Serum Normalization Filter";

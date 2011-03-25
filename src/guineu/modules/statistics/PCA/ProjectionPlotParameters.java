@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,14 +17,12 @@
  */
 package guineu.modules.statistics.PCA;
 
-import guineu.data.Dataset;
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
 import guineu.data.PeakListRow;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
-import java.util.List;
-import java.util.Vector;
+import guineu.main.GuineuCore;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.MultiChoiceParameter;
 
 /**
  * @author Taken from MZmine2
@@ -33,115 +31,22 @@ import java.util.Vector;
  */
 public class ProjectionPlotParameters extends SimpleParameterSet {
 
-    // Normal (stored) parameters
-    public static final String ColoringTypeSingleColor = "No coloring";
-    public static final String ColoringTypeByParameterValue = "Color by parameter value";
-    public static final String ColoringTypeByFile = "Color by file";
-    private static final String[] ColoringTypePossibleValues = {
-        ColoringTypeSingleColor, ColoringTypeByParameterValue,
-        ColoringTypeByFile};
-   // private static final String[] typeOfPCA = {"correlation", "regression"};
+        public static final MultiChoiceParameter<String> dataFiles = new MultiChoiceParameter<String>(
+                "Data files", "Samples", GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]));
+        public static final ColoringTypeParameter coloringType = new ColoringTypeParameter();
+        public static final Integer[] componentPossibleValues = {1, 2, 3, 4, 5};
+        public static final ComboParameter<Integer> xAxisComponent = new ComboParameter<Integer>(
+                "X-axis component", "Component on the X-axis",
+                componentPossibleValues);
+        public static final ComboParameter<Integer> yAxisComponent = new ComboParameter<Integer>(
+                "Y-axis component", "Component on the Y-axis",
+                componentPossibleValues, componentPossibleValues[1]);
+        public static final MultiChoiceParameter<PeakListRow> rows = new MultiChoiceParameter<PeakListRow>(
+                "Peak list rows", "Peak list rows to include in calculation",
+                GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]));
 
-    public static final Parameter coloringType = new SimpleParameter(
-            ParameterType.STRING, "Coloring type", "Measure peaks using",
-            ColoringTypeSingleColor, ColoringTypePossibleValues);
-    public static final Integer[] componentPossibleValues = {1, 2, 3, 4, 5};
-    public static final Parameter xAxisComponent = new SimpleParameter(
-            ParameterType.INTEGER, "X-axis component",
-            "Component on the X-axis", componentPossibleValues[0],
-            componentPossibleValues);
-    public static final Parameter yAxisComponent = new SimpleParameter(
-            ParameterType.INTEGER, "Y-axis component",
-            "Component on the Y-axis", componentPossibleValues[1],
-            componentPossibleValues);
-    /*public static final Parameter typePCA = new SimpleParameter(
-            ParameterType.STRING, "Type",
-            "Type", typeOfPCA[1],
-            typeOfPCA);*/
-    // Non-stored parameter values
-    private Dataset sourcePeakList;
-    private String selectedParameter; // Parameter used when coloring by
-    // parameter value
-    private Vector<String> selectedSamples;
-    private List<PeakListRow> selectedRows;
-
-    public ProjectionPlotParameters(Dataset sourcePeakList) {
-        this();
-
-        this.sourcePeakList = sourcePeakList;
-        this.selectedSamples = sourcePeakList.getAllColumnNames();
-        this.selectedRows = sourcePeakList.getRows();
-
-    }
-
-    private ProjectionPlotParameters(Dataset sourcePeakList,
-            Object coloringTypeValue, Object xAxisComponentNumber, Object yAxisComponentNumber,
-            String selectedParameter, Vector<String> selectedSamples,
-            List<PeakListRow> selectedRows) {
-
-        this();
-
-        setParameterValue(coloringType, coloringTypeValue);
-        setParameterValue(xAxisComponent, xAxisComponentNumber);
-        setParameterValue(yAxisComponent, yAxisComponentNumber);
-
-        this.sourcePeakList = sourcePeakList;
-        this.selectedParameter = selectedParameter;
-        this.selectedSamples = selectedSamples;
-        this.selectedRows = selectedRows;
-    }
-
-    /**
-     * Represent method's parameters and their values in human-readable format
-     */
-    public String toString() {
-        return "Coloring mode: " + getParameterValue(coloringType) + ", selected parameter: " + selectedParameter;
-    }
-
-    public ProjectionPlotParameters clone() {
-        return new ProjectionPlotParameters(sourcePeakList, coloringType,
-                xAxisComponent, yAxisComponent,
-                selectedParameter, selectedSamples, selectedRows);
-    }
-
-    public Vector<String> getSelectedSamples() {
-        return selectedSamples;
-    }
-
-    public void setSelectedSamples(Vector<String> selectedDataFiles) {
-        this.selectedSamples = selectedDataFiles;
-    }
-
-    public String getSelectedParameter() {
-        return selectedParameter;
-    }
-
-    public void setSelectedParameter(String selectedParameter) {
-        this.selectedParameter = selectedParameter;
-    }
-
-    public String getParamValue(String sampleName) {
-        return this.sourcePeakList.getParametersValue(sampleName, selectedParameter);
-    }
-
-    public List<PeakListRow> getSelectedRows() {
-        return selectedRows;
-    }
-
-    public void setSelectedRows(List<PeakListRow> selectedRows) {
-        this.selectedRows = selectedRows;
-    }
-
-    public Dataset getSourcePeakList() {
-        return sourcePeakList;
-    }
-
-    public void setSourcePeakList(Dataset sourcePeakList) {
-        this.sourcePeakList = sourcePeakList;
-    }
-
-    public ProjectionPlotParameters() {
-        super(new Parameter[]{coloringType, xAxisComponent,
-                    yAxisComponent});
-    }
+        public ProjectionPlotParameters() {
+                super(new UserParameter[]{coloringType, xAxisComponent,
+                                yAxisComponent});
+        }
 }

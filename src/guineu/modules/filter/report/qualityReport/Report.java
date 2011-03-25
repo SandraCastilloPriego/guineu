@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,18 +17,16 @@
  */
 package guineu.modules.filter.report.qualityReport;
 
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -44,7 +42,7 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
     private Desktop desktop;
     private SimpleParameterSet parameters;
 
-    public void initModule() {
+    public Report() {
         this.parameters = new ReportParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.REPORT, "Summary Report..",
@@ -70,7 +68,7 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
+        ExitCode exitCode = parameters.showSetupDialog();
         if (exitCode != ExitCode.OK) {
             return;
         }
@@ -78,23 +76,12 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
         runModule();
     }
 
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Summary Report parameters", parameters);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
-    }
+   
 
     public ParameterSet getParameterSet() {
         return parameters;
     }
-
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (ReportParameters) parameterValues;
-    }
+   
 
     public String toString() {
         return "Summary Report";

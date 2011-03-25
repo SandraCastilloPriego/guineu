@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -87,7 +87,7 @@ public class OpenFileTask implements Task {
 	}
 
 	public void openFile() {
-		String fileDir = (String) parameters.getParameterValue(OpenMSMSFileParameters.parameters);
+		String fileDir = parameters.getParameter(OpenMSMSFileParameters.parameters).getValue().getAbsolutePath();
 
 		if (fileDir.matches(".*xls")) {
 			try {
@@ -141,7 +141,7 @@ public class OpenFileTask implements Task {
 		datasetOther.setType(DatasetType.BASIC);
 		datasetOther.addColumnName("m/z");
 		datasetOther.addColumnName("rt");
-		double margin = (Double) parameters.getParameterValue(OpenMSMSFileParameters.rtTolerance);
+		double margin = parameters.getParameter(OpenMSMSFileParameters.rtTolerance).getValue().getTolerance();
 		int i = 1;
 		int maxim = 1;
 		double rtAverage = 0;

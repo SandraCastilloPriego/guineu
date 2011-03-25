@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,18 +18,15 @@
 package guineu.modules.identification.CustomIdentification;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -45,7 +42,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
     private Desktop desktop;
     private CustomDBSearchParameters parameters;
 
-    public void initModule() {
+    public CustomDBSearch() {
 
         this.desktop = GuineuCore.getDesktop();
 
@@ -58,11 +55,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
 
     public ParameterSet getParameterSet() {
         return parameters;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-        this.parameters = (CustomDBSearchParameters) parameterValues;
-    }
+    }   
 
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -76,7 +69,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
             return;
         }
 
-        ExitCode exitCode = setupParameters(parameters);
+        ExitCode exitCode = parameters.showSetupDialog();
         if (exitCode != ExitCode.OK) {
             return;
         }
@@ -104,14 +97,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
 
     }
 
-    public ExitCode setupParameters(ParameterSet parameters) {
-        ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (SimpleParameterSet) parameters);
-        dialog.setVisible(true);
-        return dialog.getExitCode();
-    }
-
+    
     public String toString() {
         return MODULE_NAME;
     }
