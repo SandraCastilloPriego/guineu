@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,19 +17,17 @@
  */
 package guineu.modules.mylly.openGCGCDatasetFile;
 
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,10 +41,10 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private SimpleParameterSet parameters;
+    private OpenFileParameters parameters;
     final String helpID = GUIUtils.generateHelpID(this);
 
-    public void initModule() {
+    public OpenFile() {
         parameters = new OpenFileParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuSeparator(GuineuMenu.FILE);
@@ -71,19 +69,10 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
 
         }
     }
-
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters, helpID);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
-    }
+    
 
     public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
+        ExitCode exitCode = parameters.showSetupDialog();
         if (exitCode != ExitCode.OK) {
             return;
         }
@@ -94,18 +83,14 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
     public ParameterSet getParameterSet() {
         return parameters;
     }
-
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (SimpleParameterSet) parameterValues;
-    }
-
+    
     public String toString() {
         return "Open File";
     }
 
     public Task[] runModule() {
-        String path = (String) parameters.getParameterValue(OpenFileParameters.fileName);
-        int numColumns = (Integer) parameters.getParameterValue(OpenFileParameters.numColumns);
+        String path = (String) parameters.getParameter(OpenFileParameters.fileName).getValue().getAbsolutePath();
+        int numColumns = (Integer) parameters.getParameter(OpenFileParameters.numColumns).getValue().intValue();
         // prepare a new group of tasks
         if (path != null) {
             Task tasks[] = new OpenFileTask[1];

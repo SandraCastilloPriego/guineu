@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.filter.Alignment.centering.median;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -36,81 +36,74 @@ import java.util.logging.Logger;
  */
 public class MedianCentering implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
 
-	public void initModule() {
+        public MedianCentering() {
 
-		this.desktop = GuineuCore.getDesktop();
+                this.desktop = GuineuCore.getDesktop();
 
-		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Median centering..",
-				"Median centering", KeyEvent.VK_E, this, null, null);
-	}
+                desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Median centering..",
+                        "Median centering", KeyEvent.VK_E, this, null, null);
+        }
 
-	public String toString() {
-		return "Median centering";
-	}
+        public String toString() {
+                return "Median centering";
+        }
 
-	
-	public ParameterSet getParameterSet() {
-		return null;
-	}
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-	public void setParameters(ParameterSet parameters) {
-	}
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
 
-	
+                Dataset[] peakLists = desktop.getSelectedDataFiles();
 
-	/**
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent e) {
+                if (peakLists.length == 0) {
+                        desktop.displayErrorMessage("Please select peak lists for Median centering");
+                        return;
+                }
 
-		Dataset[] peakLists = desktop.getSelectedDataFiles();
+                runModule(null, peakLists, null);
 
-		if (peakLists.length == 0) {
-			desktop.displayErrorMessage("Please select peak lists for Median centering");
-			return;
-		}
-		
-		runModule(null, peakLists, null);
+        }
 
-	}
+        public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
+                ParameterSet parameters) {
 
-	
-	public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
-			ParameterSet parameters) {
+                // check peak lists
+                if ((peakLists == null) || (peakLists.length == 0)) {
+                        desktop.displayErrorMessage("Please select peak lists for Median centering");
+                        return null;
+                }
 
-		// check peak lists
-		if ((peakLists == null) || (peakLists.length == 0)) {
-			desktop.displayErrorMessage("Please select peak lists for Median centering");
-			return null;
-		}
+                // prepare a new group with just one task
+                Task task = new MedianCenteringTask(peakLists);
 
-		// prepare a new group with just one task
-		Task task = new MedianCenteringTask(peakLists);
+                GuineuCore.getTaskController().addTask(task);
 
-		GuineuCore.getTaskController().addTask(task);
+                return new Task[]{task};
 
-		return new Task[]{task};
+        }
 
-	}
+        public void taskStarted(Task task) {
+                logger.info("Running Median centering");
+        }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Median centering");
-	}
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Median centering on " + ((MedianCenteringTask) task).getTaskDescription());
+                }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Median centering on " + ((MedianCenteringTask) task).getTaskDescription());
-		}
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+                        String msg = "Error while Median centering on .. " + ((MedianCenteringTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-			String msg = "Error while Median centering on .. " + ((MedianCenteringTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
-
-		}
-	}
+                }
+        }
 }

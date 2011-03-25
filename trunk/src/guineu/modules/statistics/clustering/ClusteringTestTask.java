@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -51,9 +51,9 @@ public class ClusteringTestTask implements Task {
 
     public ClusteringTestTask(Dataset dataset, ClusteringParameters parameters) {
         this.dataset = dataset;
-        parameter = (String) parameters.getParameterValue(ClusteringParameters.clusteringAlgorithm);
-        dataType = (String) parameters.getParameterValue(ClusteringParameters.clusteringData);
-        numberOfClusters = (Integer) parameters.getParameterValue(ClusteringParameters.N);
+        parameter = parameters.getParameter(ClusteringParameters.clusteringAlgorithm).getValue();
+        dataType =  parameters.getParameter(ClusteringParameters.clusteringData).getValue();
+        numberOfClusters =  parameters.getParameter(ClusteringParameters.N).getInt();
 
         // Get the type algorithm from the enum.
         for (ClusteringAlgorithmsEnum e : ClusteringAlgorithmsEnum.values()) {

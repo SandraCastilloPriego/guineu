@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,12 +18,12 @@
 package guineu.modules.mylly.filter.NonPolarComponents;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -42,7 +42,7 @@ public class removeNonPolarFilter implements GuineuModule, TaskListener, ActionL
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
 
-    public void initModule() {
+    public removeNonPolarFilter() {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.MYLLY, "Remove Non-Polar Compounds..",
@@ -74,10 +74,7 @@ public class removeNonPolarFilter implements GuineuModule, TaskListener, ActionL
 
     public ParameterSet getParameterSet() {
         return null;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-    }
+    }  
 
     public String toString() {
         return "Remove Non-Polar Compounds";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,8 +18,8 @@
 package guineu.modules.filter.comparation;
 
 import guineu.data.Dataset;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -35,7 +35,7 @@ public class filterComparationTask implements Task {
     public filterComparationTask(Dataset[] datasets, Desktop desktop, SimpleParameterSet parameters) {
         this.desktop = desktop;
         this.datasets = datasets;
-        this.margin = (Double) parameters.getParameterValue(filterComparationParameters.difference);
+        this.margin = parameters.getParameter(filterComparationParameters.difference).getDouble();
     }
 
     public String getTaskDescription() {

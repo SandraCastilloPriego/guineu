@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,18 +18,15 @@
 package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,9 +40,9 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private SimpleParameterSet parameters;
+    private UnitsChangeFilterParameters parameters;
 
-    public void initModule() {
+    public UnitsChangeFilter() {
         this.parameters = new UnitsChangeFilterParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Change Units Filter..",
@@ -72,32 +69,18 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
     }
 
     public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
+        ExitCode exitCode = parameters.showSetupDialog();
         if (exitCode != ExitCode.OK) {
             return;
         }
 
         runModule();
     }
-
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Units Change parameters", parameters);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
-    }
-
+   
     public ParameterSet getParameterSet() {
         return parameters;
     }
-
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (UnitsChangeFilterParameters) parameterValues;
-    }
-
+   
     public String toString() {
         return "Change Units Filter";
     }

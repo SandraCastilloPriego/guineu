@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -62,21 +62,19 @@ public class RansacAlignerTask implements Task {
                 this.parameters = parameters;
 
                 // Get parameter values for easier use
-                peakListName = (String) parameters.getParameterValue(RansacAlignerParameters.peakListName);
+                peakListName = parameters.getParameter(RansacAlignerParameters.peakListName).getValue();
 
-                mzTolerance = (Double) parameters.getParameterValue(RansacAlignerParameters.MZTolerance);
+                mzTolerance = parameters.getParameter(RansacAlignerParameters.MZTolerance).getValue().getTolerance();
 
-                rtTolerance = (Double) parameters.getParameterValue(RansacAlignerParameters.RTTolerance);
+                rtTolerance = parameters.getParameter(RansacAlignerParameters.RTTolerance).getValue().getTolerance();
 
-                rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerParameters.RTToleranceValueAbs);
+                rtToleranceValueAbs = parameters.getParameter(RansacAlignerParameters.RTToleranceValueAbs).getValue().getTolerance();
         }
 
-       
         public String getTaskDescription() {
                 return "Ransac aligner, " + peakListName + " (" + peakLists.length + " peak lists)";
         }
 
-        
         public double getFinishedPercentage() {
                 if (totalRows == 0) {
                         return 0f;
@@ -87,17 +85,14 @@ public class RansacAlignerTask implements Task {
                 return progress; //
         }
 
-        
         public TaskStatus getStatus() {
                 return status;
         }
 
-       
         public String getErrorMessage() {
                 return errorMessage;
         }
 
-        
         public void cancel() {
                 status = TaskStatus.CANCELED;
         }
@@ -328,7 +323,7 @@ public class RansacAlignerTask implements Task {
                 }
 
                 data = this.smooth(data, RTrange);
-                Collections.sort(data, new RTs());               
+                Collections.sort(data, new RTs());
 
                 try {
                         PolynomialFitter fitter = new PolynomialFitter(3, new GaussNewtonOptimizer(true));

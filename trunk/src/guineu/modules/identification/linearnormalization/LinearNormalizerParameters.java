@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,9 @@
  */
 package guineu.modules.identification.linearnormalization;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
 
 /**
  * @author Taken from MZmine2
@@ -32,17 +31,17 @@ public class LinearNormalizerParameters extends SimpleParameterSet {
         public static final String NormalizationTypeAverageSquaredIntensity = "Average squared intensity";
         public static final String NormalizationTypeMaximumPeakHeight = "Maximum peak intensity";
         public static final String NormalizationTypeStandards = "Selected standards";
-        public static final Object[] normalizationTypePossibleValues = {
+        public static final String[] normalizationTypePossibleValues = {
                 NormalizationTypeStandards,
                 NormalizationTypeAverageIntensity,
                 NormalizationTypeAverageSquaredIntensity,
                 NormalizationTypeMaximumPeakHeight};
-        public static final Parameter normalizationType = new SimpleParameter(
-                ParameterType.STRING, "Normalization type",
-                "Normalize intensities by...", NormalizationTypeAverageIntensity,
+        public static final ComboParameter<String> normalizationType = new ComboParameter<String>(
+                "Normalization type",
+                "Normalize intensities by...",
                 normalizationTypePossibleValues);
 
         public LinearNormalizerParameters() {
-                super(new Parameter[]{normalizationType});
+                super(new UserParameter[]{normalizationType});
         }
 }

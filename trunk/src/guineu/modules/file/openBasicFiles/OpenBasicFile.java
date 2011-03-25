@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,12 +17,12 @@
  */
 package guineu.modules.file.openBasicFiles;
 
-import guineu.data.ParameterSet;
+
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -39,85 +39,63 @@ import java.util.logging.Logger;
  */
 public class OpenBasicFile implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private String FilePath;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private OpenBasicFileParameters parameters;
 
-    public void initModule() {
-
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILE, "Open other Files..",
-                "Opens files with any structure considering all the columns as a sample column", KeyEvent.VK_O, this, null, "icons/others.png");
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running other Files");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished other Files on " + ((OpenBasicFileTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while other Files on .. " + ((OpenBasicFileTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+        public OpenBasicFile() {
+                this.parameters = new OpenBasicFileParameters();
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.FILE, "Open other Files..",
+                        "Opens files with any structure considering all the columns as a sample column", KeyEvent.VK_O, this, null, "icons/others.png");
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public void taskStarted(Task task) {
+                logger.info("Running other Files");
         }
 
-        runModule();
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished other Files on " + ((OpenBasicFileTask) task).getTaskDescription());
+                }
 
-    public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
-        if (lastPath == null) {
-            lastPath = "";
-        }
-        File lastFilePath = new File(lastPath);
-        DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-        dialog.setVisible(true);
-        try {
-            this.FilePath = dialog.getCurrentDirectory();
-        } catch (Exception e) {
-        }
-        return dialog.getExitCode();
-    }
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+                        String msg = "Error while other Files on .. " + ((OpenBasicFileTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-    public void setParameters(ParameterSet parameterValues) {
-    }
-
-    public String toString() {
-        return "other Files";
-    }
-
-    public Task[] runModule() {
-
-        // prepare a new group of tasks
-        if (FilePath != null) {
-            Task tasks[] = new OpenBasicFileTask[1];
-            tasks[0] = new OpenBasicFileTask(FilePath, desktop);
-
-            GuineuCore.getTaskController().addTasks(tasks);
-
-            return tasks;
-        } else {
-            return null;
+                }
         }
 
-    }
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+
+                runModule();
+        }
+
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        public String toString() {
+                return "Other Files";
+        }
+
+        public Task[] runModule() {
+                File[] files = this.parameters.getParameter(OpenBasicFileParameters.fileNames).getValue();
+
+                // prepare a new group of tasks
+                Task tasks[] = new OpenBasicFileTask[files.length];
+                for (int i = 0; i < files.length; i++) {
+                        tasks[i] = new OpenBasicFileTask(files[i].getAbsolutePath(), desktop);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+        }
 }

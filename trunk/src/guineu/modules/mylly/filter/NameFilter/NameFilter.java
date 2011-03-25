@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,22 +17,20 @@
  */
 package guineu.modules.mylly.filter.NameFilter;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 
 /**
@@ -41,83 +39,70 @@ import guineu.util.GUIUtils;
  */
 public class NameFilter implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private NameFilterParameters parameters;
-    final String helpID = GUIUtils.generateHelpID(this);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private NameFilterParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
-
-    public void initModule() {
-        parameters = new NameFilterParameters();
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuSeparator(GuineuMenu.MYLLY);
-        desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
-                "Filter basen on compound names", KeyEvent.VK_O, this, null, null);
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Name Filter");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Name Filter ");
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Name Filtering .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+        public NameFilter() {
+                parameters = new NameFilterParameters();
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuSeparator(GuineuMenu.MYLLY);
+                desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
+                        "Filter basen on compound names", KeyEvent.VK_O, this, null, null);
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        try {
-            setupParameters(parameters);
-        } catch (Exception exception) {
+        public void taskStarted(Task task) {
+                logger.info("Running Name Filter");
         }
-    }
 
-    public void setupParameters(ParameterSet currentParameters) {
-        final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (NameFilterParameters) currentParameters, helpID);
-        dialog.setVisible(true);
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Name Filter ");
+                }
 
-        if (dialog.getExitCode() == ExitCode.OK) {
-            runModule();
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Name Filtering .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return this.parameters;
-    }
+        public void actionPerformed(ActionEvent e) {
+                try {
+                        ExitCode exitCode = parameters.showSetupDialog();
+                        if (exitCode == ExitCode.OK) {
+                                runModule();
+                        }
+                } catch (Exception exception) {
+                }
+        }
 
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (NameFilterParameters) parameters;
-    }
+        public ParameterSet getParameterSet() {
+                return this.parameters;
+        }
 
-    public String toString() {
-        return "Name Filter";
-    }
+        public String toString() {
+                return "Name Filter";
+        }
 
-    public Task[] runModule() {
+        public Task[] runModule() {
 
-        Dataset[] AlignmentFiles = desktop.getSelectedDataFiles();
-
-
-        // prepare a new group of tasks
-        Task tasks[] = new NameFilterTask[1];
-
-        tasks[0] = new NameFilterTask(AlignmentFiles, parameters);
-
-        GuineuCore.getTaskController().addTasks(tasks);
-
-        return tasks;
+                Dataset[] AlignmentFiles = desktop.getSelectedDataFiles();
 
 
-    }
+                // prepare a new group of tasks
+                Task tasks[] = new NameFilterTask[1];
+
+                tasks[0] = new NameFilterTask(AlignmentFiles, parameters);
+
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+
+        }
 }

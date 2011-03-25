@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,19 +17,17 @@
  */
 package guineu.modules.configuration.tables.GCGC;
 
-import guineu.data.ParameterSet;
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,85 +43,68 @@ import javax.swing.table.TableModel;
  */
 public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private SimpleParameterSet parameters;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private SimpleParameterSet parameters;
 
-    public void initModule() {
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.CONFIGURATION, "GCGC Table View..",
-                "Configuration of view of the GCxGC-MS table columns", KeyEvent.VK_G, this, null, "icons/conf2.png");
-        parameters = new GCGCColumnsViewParameters();
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running GCGC Table View");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished GCGC Table View ");
+        public GCGCColumnsView() {
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "GCGC Table View..",
+                        "Configuration of view of the GCxGC-MS table columns", KeyEvent.VK_G, this, null, "icons/conf2.png");
+                parameters = GuineuCore.getGCGCColumnsParameters();
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while GCGC Table View  .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
+        public void taskStarted(Task task) {
+                logger.info("Running GCGC Table View");
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
-        }
-        ((DesktopParameters) desktop.getParameterSet()).setViewGCGCParameters((GCGCColumnsViewParameters) parameters);
-        runModule();
-    }
-
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("GCGC Table View parameters", parameters);
-            dialog.setVisible(true);
-
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
-    }
-
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (GCGCColumnsViewParameters) parameterValues;
-    }
-
-    @Override
-    public String toString() {
-        return "LCMS Table View";
-    }
-
-    public Task[] runModule() {
-        JInternalFrame[] frames = desktop.getInternalFrames();
-        for (int i = 0; i < frames.length; i++) {
-            try {
-                JTable table = ((DataInternalFrame) frames[i]).getTable();
-                TableModel model = table.getModel();
-                if (model.getClass().toString().contains("DatasetGCGCDataModel")) {
-                    ((DatasetGCGCDataModel) model).setParameters();
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished GCGC Table View ");
                 }
-                table.setModel(model);
-                table.createDefaultColumnsFromModel();
-                table.revalidate();
-            } catch (Exception e) {
-            }
+
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while GCGC Table View  .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-        return null;
-    }
+
+        public void actionPerformed(ActionEvent e) {
+
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+                runModule();
+        }
+
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        @Override
+        public String toString() {
+                return "GCGC Table View";
+        }
+
+        public Task[] runModule() {
+                JInternalFrame[] frames = desktop.getInternalFrames();
+                for (int i = 0; i < frames.length; i++) {
+                        try {
+                                JTable table = ((DataInternalFrame) frames[i]).getTable();
+                                TableModel model = table.getModel();
+                                if (model.getClass().toString().contains("DatasetGCGCDataModel")) {
+                                        ((DatasetGCGCDataModel) model).setParameters();
+                                }
+                                table.setModel(model);
+                                table.createDefaultColumnsFromModel();
+                                table.revalidate();
+                        } catch (Exception e) {
+                        }
+                }
+                return null;
+        }
 }

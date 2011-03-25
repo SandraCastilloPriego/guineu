@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,12 +18,11 @@
 package guineu.modules.filter.concatenation;
 
 import guineu.modules.file.openBasicFiles.*;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -41,75 +40,76 @@ import java.util.logging.Logger;
  */
 public class filterConcatenate implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private String FilePath;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private String FilePath;
 
-    public void initModule() {
+        public filterConcatenate() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILTER, "concatenate File..",
-                "concatenate File", KeyEvent.VK_L, this, null, null);
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running concatenate File");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished concatenate File on " + ((filterConcatenateTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while concatenate File on .. " + ((filterConcatenateTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.FILTER, "concatenate File..",
+                        "concatenate File", KeyEvent.VK_L, this, null, null);
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        runModule();
-    }
-
-    public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastOpenProjectPath();
-        if (lastPath == null) {
-            lastPath = "";
+        public void taskStarted(Task task) {
+                logger.info("Running concatenate File");
         }
-        File lastFilePath = new File(lastPath);
-        DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-        dialog.setVisible(true);
-        try {
-            this.FilePath = dialog.getCurrentDirectory();
-        } catch (Exception e) {
+
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished concatenate File on " + ((filterConcatenateTask) task).getTaskDescription());
+                }
+
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while concatenate File on .. " + ((filterConcatenateTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-        return dialog.getExitCode();
-    }
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+        public void actionPerformed(ActionEvent e) {
+                runModule();
+        }
 
-    public void setParameters(ParameterSet parameterValues) {
-    }
+        public ExitCode setupParameters() {
+                /* DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
+                String lastPath = deskParameters.getLastOpenProjectPath();
+                if (lastPath == null) {
+                lastPath = "";
+                }
+                File lastFilePath = new File(lastPath);
+                DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
+                dialog.setVisible(true);
+                try {
+                this.FilePath = dialog.getCurrentDirectory();
+                } catch (Exception e) {
+                }
+                return dialog.getExitCode();*/
+                return null;
+        }
 
-    public String toString() {
-        return "concatenate File";
-    }
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-    public Task[] runModule() {
+        public void setParameters(ParameterSet parameterValues) {
+        }
 
-        Task tasks[] = new filterConcatenateTask[1];
-        tasks[0] = new filterConcatenateTask(desktop);
-        GuineuCore.getTaskController().addTasks(tasks);
+        public String toString() {
+                return "concatenate File";
+        }
 
-        return tasks;
+        public Task[] runModule() {
+
+                Task tasks[] = new filterConcatenateTask[1];
+                tasks[0] = new filterConcatenateTask(desktop);
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
 
 
-    }
+        }
 }

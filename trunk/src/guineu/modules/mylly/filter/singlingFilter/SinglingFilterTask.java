@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -40,9 +40,9 @@ public class SinglingFilterTask implements Task {
 
         public SinglingFilterTask(SimpleGCGCDataset dataset, SinglingParameters parameters) {
                 this.dataset = dataset;
-                minSimilarity = (Double) parameters.getParameterValue(SinglingParameters.similarity);
-                unknownPeaks = (Boolean) parameters.getParameterValue(SinglingParameters.unknownPeaks);
-                suffix = (String) parameters.getParameterValue(SinglingParameters.suffix);
+                minSimilarity = parameters.getParameter(SinglingParameters.similarity).getDouble();
+                unknownPeaks = parameters.getParameter(SinglingParameters.unknownPeaks).getValue();
+                suffix = parameters.getParameter(SinglingParameters.suffix).getValue();
         }
 
         public String getTaskDescription() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.statistics.foldChanges;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -39,85 +39,82 @@ import java.util.logging.Logger;
  */
 public class Foldtest implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private Dataset dataset;
-    private String[] group1, group2;
-    private String parameter;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private Dataset dataset;
+        private String[] group1, group2;
+        private String parameter;
 
-    public void initModule() {
+        public Foldtest() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.STATISTICS, "Fold Test..",
-                "Fold test using the means", KeyEvent.VK_F, this, null, "icons/fold.png");
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Fold Test");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished fold Test on " + ((FoldTestTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Fold Test on .. " + ((FoldTestTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.STATISTICS, "Fold Test..",
+                        "Fold test using the means", KeyEvent.VK_F, this, null, "icons/fold.png");
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public void taskStarted(Task task) {
+                logger.info("Running Fold Test");
         }
 
-        runModule();
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished fold Test on " + ((FoldTestTask) task).getTaskDescription());
+                }
 
-    public ExitCode setupParameters() {
-        try {
-            Dataset[] datasets = desktop.getSelectedDataFiles();
-            dataset = datasets[0];
-            FoldtestDataDialog dialog = new FoldtestDataDialog(dataset);
-            dialog.setVisible(true);
-            group1 = dialog.getGroup1();
-            group2 = dialog.getGroup2();
-            parameter = dialog.getParameter();
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Fold Test on .. " + ((FoldTestTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = setupParameters();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
 
-    public void setParameters(ParameterSet parameterValues) {
-    }
+                runModule();
+        }
 
-    public String toString() {
-        return "Fold Test";
-    }
+        public ExitCode setupParameters() {
+                try {
+                        Dataset[] datasets = desktop.getSelectedDataFiles();
+                        dataset = datasets[0];
+                        FoldtestDataDialog dialog = new FoldtestDataDialog(dataset);
+                        dialog.setVisible(true);
+                        group1 = dialog.getGroup1();
+                        group2 = dialog.getGroup2();
+                        parameter = dialog.getParameter();
+                        return dialog.getExitCode();
+                } catch (Exception exception) {
+                        return ExitCode.CANCEL;
+                }
+        }
 
-    public Task[] runModule() {
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-        // prepare a new group of tasks
+        public String toString() {
+                return "Fold Test";
+        }
 
-        Task tasks[] = new FoldTestTask[1];
-        tasks[0] = new FoldTestTask(group1, group2, dataset, desktop, parameter);
+        public Task[] runModule() {
 
-        GuineuCore.getTaskController().addTasks(tasks);
+                // prepare a new group of tasks
 
-        return tasks;
+                Task tasks[] = new FoldTestTask[1];
+                tasks[0] = new FoldTestTask(group1, group2, dataset, desktop, parameter);
+
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
 
 
 
-    }
+        }
 }

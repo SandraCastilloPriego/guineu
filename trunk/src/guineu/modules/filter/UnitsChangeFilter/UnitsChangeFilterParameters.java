@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,9 @@
  */
 package guineu.modules.filter.UnitsChangeFilter;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.NumberParameter;
 
 /**
  *
@@ -28,16 +27,14 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class UnitsChangeFilterParameters extends SimpleParameterSet {
 
-    public static final Parameter multiply = new SimpleParameter(
-            ParameterType.DOUBLE, "Multiply by",
-            "Multiply by","", new Double(0.0),
-            new Double(0.0), null);
-    public static final Parameter divide = new SimpleParameter(
-            ParameterType.DOUBLE, "Divide by",
-            "Divide by","", new Double(0.0),
-            new Double(0.0), null);
+        public static final NumberParameter multiply = new NumberParameter(
+                "Multiply by",
+                "Multiply by", null, new Double(0.0));
+        public static final NumberParameter divide = new NumberParameter(
+                "Divide by",
+                "Divide by", null, new Double(0.0));
 
-    public UnitsChangeFilterParameters() {
-        super(new Parameter[]{multiply, divide});
-    }
+        public UnitsChangeFilterParameters() {
+                super(new UserParameter[]{multiply, divide});
+        }
 }

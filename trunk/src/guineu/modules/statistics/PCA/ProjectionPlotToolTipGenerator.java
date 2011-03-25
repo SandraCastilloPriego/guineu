@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -42,13 +42,13 @@ public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
 
 		this.parameters = parameters;
 		
-		if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeSingleColor)
+		if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING)
 			labelMode = LabelMode.FileName;
 
-		if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByFile)
+		if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE)
 			labelMode = LabelMode.FileName;
 
-		if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue)
+		if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER)
 			labelMode = LabelMode.FileNameAndParameterValue;
 
 	}
@@ -65,7 +65,7 @@ public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
 		case FileNameAndParameterValue:
 			String ret = dataset.getRawDataFile(item).toString() + "\n";
 
-			ret += parameters.getSelectedParameter() + ": ";
+			//ret += parameters.getSelectedParameter() + ": ";
 			
 			int groupNumber = dataset.getGroupNumber(item);
 			Object paramValue = dataset.getGroupParameterValue(groupNumber);

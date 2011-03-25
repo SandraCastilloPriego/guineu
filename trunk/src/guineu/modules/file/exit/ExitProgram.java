@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,39 +18,34 @@
 
 package guineu.modules.file.exit;
 
-import guineu.data.ParameterSet;
+
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
-import guineu.taskcontrol.impl.TaskControllerImpl;
+import guineu.parameters.ParameterSet;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 /**
- *
- * @author scsandra
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
  */
 public class ExitProgram implements GuineuModule, ActionListener {
     private Desktop desktop;
     
         
-    public void initModule() {
-
+    public ExitProgram() {
         this.desktop = GuineuCore.getDesktop(); 
         desktop.addMenuSeparator(GuineuMenu.FILE);
         desktop.addMenuItem(GuineuMenu.FILE, "Exit..",
-                "Exit MZmine", KeyEvent.VK_E, this, null, null);
+                "Exit Guineu", KeyEvent.VK_E, this, null, null);
     }
 
     public ParameterSet getParameterSet() {
         return null;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-        
-    }
+    }  
 
     public void actionPerformed(ActionEvent e) {      
         GuineuCore.exitGuineu();

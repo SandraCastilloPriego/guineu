@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.database.openQualityControlFileDB;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -44,7 +44,7 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
     boolean combine = false;
     Dataset[] datasets;
 
-    public void initModule() {
+    public void OpenFileDB() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.REPORT, "Open database..",
                 "Visualize the content of the internal database", KeyEvent.VK_O, this, null, null);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,10 +21,7 @@ import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskStatus;
-import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
-
 import jmprojection.CDA;
 import jmprojection.Preprocess;
 import jmprojection.ProjectionStatus;
@@ -43,8 +40,8 @@ public class CDADataset extends AbstractXYDataset implements
     private double[] component1Coords;
     private double[] component2Coords;
     private ProjectionPlotParameters parameters;
-    private Vector<String> selectedRawDataFiles;
-    private List<PeakListRow> selectedRows;
+    private String[] selectedRawDataFiles;
+    private PeakListRow[] selectedRows;
     private int[] groupsForSelectedRawDataFiles;
     private Object[] parameterValuesForGroups;
     int numberOfGroups;
@@ -57,56 +54,55 @@ public class CDADataset extends AbstractXYDataset implements
 
     public CDADataset(ProjectionPlotParameters parameters) {
 
-        this.parameters = parameters;
+            this.parameters = parameters;
 
-        this.xAxisDimension = (Integer) parameters.getParameterValue(ProjectionPlotParameters.xAxisComponent);
-        this.yAxisDimension = (Integer) parameters.getParameterValue(ProjectionPlotParameters.yAxisComponent);
+            this.xAxisDimension = parameters.getParameter(ProjectionPlotParameters.xAxisComponent).getValue();
+            this.yAxisDimension = parameters.getParameter(ProjectionPlotParameters.yAxisComponent).getValue();
 
-        selectedRawDataFiles = parameters.getSelectedSamples();
-        selectedRows = parameters.getSelectedRows();
+            selectedRawDataFiles = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
+            selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
 
-        datasetTitle = "Curvilinear distance analysis";
+            datasetTitle = "Curvilinear distance analysis";
 
-        // Determine groups for selected raw data files
-        groupsForSelectedRawDataFiles = new int[selectedRawDataFiles.size()];
+            // Determine groups for selected raw data files
+            groupsForSelectedRawDataFiles = new int[selectedRawDataFiles.length];
 
-        if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeSingleColor) {
-            // All files to a single group
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                groupsForSelectedRawDataFiles[ind] = 0;
+            if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+                    // All files to a single group
+                    for (int ind = 0; ind < selectedRawDataFiles.length; ind++) {
+                            groupsForSelectedRawDataFiles[ind] = 0;
+                    }
+
+                    numberOfGroups = 1;
             }
 
-            numberOfGroups = 1;
-        }
+            if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
+                    // Each file to own group
+                    for (int ind = 0; ind < selectedRawDataFiles.length; ind++) {
+                            groupsForSelectedRawDataFiles[ind] = ind;
+                    }
 
-        if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByFile) {
-            // Each file to own group
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                groupsForSelectedRawDataFiles[ind] = ind;
+                    numberOfGroups = selectedRawDataFiles.length;
             }
 
-            numberOfGroups = selectedRawDataFiles.size();
-        }
-
-
-        if (parameters.getParameterValue(ProjectionPlotParameters.coloringType) == ProjectionPlotParameters.ColoringTypeByParameterValue) {
-            // Group files with same parameter value to same group
-            Vector<Object> availableParameterValues = new Vector<Object>();
-            for (String rawDataFile : selectedRawDataFiles) {
-                String paramValue = parameters.getParamValue(rawDataFile);
-                if (!availableParameterValues.contains(paramValue)) {
+            if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER) {
+                    // Group files with same parameter value to same group
+           /* Vector<Object> availableParameterValues = new Vector<Object>();
+                    for (String rawDataFile : selectedSamples) {
+                    String paramValue = parameters.getParamValue(rawDataFile);
+                    if (!availableParameterValues.contains(paramValue)) {
                     availableParameterValues.add(paramValue);
-                }
-            }
+                    }
+                    }
 
-            for (int ind = 0; ind < selectedRawDataFiles.size(); ind++) {
-                String paramValue = parameters.getParamValue(selectedRawDataFiles.elementAt(ind));
-                groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
-            }
-            parameterValuesForGroups = availableParameterValues.toArray();
+                    for (int ind = 0; ind < selectedSamples.size(); ind++) {
+                    String paramValue = parameters.getParamValue(selectedSamples.elementAt(ind));
+                    groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
+                    }
+                    parameterValuesForGroups = availableParameterValues.toArray();*/
 
-            numberOfGroups = parameterValuesForGroups.length;
-        }
+                    numberOfGroups = parameterValuesForGroups.length;
+            }
 
 
     }
@@ -164,7 +160,7 @@ public class CDADataset extends AbstractXYDataset implements
     }
 
     public String getRawDataFile(int item) {
-        return selectedRawDataFiles.get(item);
+        return selectedRawDataFiles[item];
     }
 
     public int getGroupNumber(int item) {
@@ -193,11 +189,11 @@ public class CDADataset extends AbstractXYDataset implements
 
         // Generate matrix of raw data (input to CDA)
 
-        double[][] rawData = new double[selectedRawDataFiles.size()][selectedRows.size()];
-        for (int rowIndex = 0; rowIndex < selectedRows.size(); rowIndex++) {
-            PeakListRow peakListRow = selectedRows.get(rowIndex);
-            for (int fileIndex = 0; fileIndex < selectedRawDataFiles.size(); fileIndex++) {
-                String rawDataFile = selectedRawDataFiles.get(fileIndex);
+        double[][] rawData = new double[selectedRawDataFiles.length][selectedRows.length];
+        for (int rowIndex = 0; rowIndex < selectedRows.length; rowIndex++) {
+            PeakListRow peakListRow = selectedRows[rowIndex];
+            for (int fileIndex = 0; fileIndex < selectedRawDataFiles.length; fileIndex++) {
+                String rawDataFile = selectedRawDataFiles[fileIndex];
                 try {
                     double p = (Double) peakListRow.getPeak(rawDataFile);
                     rawData[fileIndex][rowIndex] = p;
@@ -231,7 +227,7 @@ public class CDADataset extends AbstractXYDataset implements
 
         Desktop desktop = GuineuCore.getDesktop();
         ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
-                parameters);
+                parameters, this.datasetTitle);
         desktop.addInternalFrame(newFrame);
 
         status = TaskStatus.FINISHED;
@@ -255,10 +251,10 @@ public class CDADataset extends AbstractXYDataset implements
     }
 
     public String getTaskDescription() {
-        if ((parameters == null) || (parameters.getSourcePeakList() == null)) {
+        if ((parameters == null) ) {
             return "CDA projection";
         }
-        return "CDA projection " + parameters.getSourcePeakList();
+        return "CDA projection " + this.datasetTitle;
     }
 
     public double getFinishedPercentage() {

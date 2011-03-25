@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,11 @@
  */
 package guineu.modules.mylly.filter.SimilarityFilter;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.StringParameter;
 
 /**
  *
@@ -28,29 +29,22 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class SimilarityParameters extends SimpleParameterSet {
 
-	private static Object[] similarity = {"maximum similarity", "mean similarity"};
+        private static String[] similarity = {"maximum similarity", "mean similarity"};
+        private static String[] actionDone = {"Remove", "Rename"};
+        public static final StringParameter suffix = new StringParameter(
+                "Suffix: ",
+                "Suffix");
+        public static final ComboParameter<String> type = new ComboParameter<String>(
+                "Similarity used: ",
+                "Similarity used", similarity);
+        public static final ComboParameter<String> action = new ComboParameter<String>(
+                "Action: ",
+                "Action", actionDone);
+        public static final NumberParameter minSimilarity = new NumberParameter(
+                "Minimun similarity required:",
+                "Minimun similarity required");
 
-	private static Object[] actionDone = {"Remove", "Rename"};
-
-	public static final Parameter suffix = new SimpleParameter(
-            ParameterType.STRING, "Suffix: ",
-            "Suffix", null, "-Similarity Filter", null);
-
-	public static final Parameter type = new SimpleParameter(
-            ParameterType.STRING , "Similarity used: ",
-            "Similarity used", "", similarity);
-
-	public static final Parameter action = new SimpleParameter(
-            ParameterType.STRING , "Action: ",
-            "Action", "", actionDone);
-
-   	public static final Parameter minSimilarity = new SimpleParameter(
-			ParameterType.DOUBLE, "Minimun similarity required:",
-			"Minimun similarity required", "", new Double(0.0),
-			new Double(0.0), null);
-	
-	
-	public SimilarityParameters() {
-		super(new Parameter[]{suffix, type, action, minSimilarity});
-	}
+        public SimilarityParameters() {
+                super(new UserParameter[]{suffix, type, action, minSimilarity});
+        }
 }

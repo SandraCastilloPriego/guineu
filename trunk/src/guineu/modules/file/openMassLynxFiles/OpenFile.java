@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,12 +17,11 @@
  */
 package guineu.modules.file.openMassLynxFiles;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -30,7 +29,6 @@ import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -42,13 +40,13 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private String FilePath;
+        private massLynxParameters parameters;
 
-        public void initModule() {
-
+        public OpenFile() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.FILE, "Open Mass Lynx Files..",
                         "Open Mass Lynx Files", KeyEvent.VK_O, this, null, "icons/masslynx.png");
-
+                this.parameters = new massLynxParameters();
         }
 
         public void taskStarted(Task task) {
@@ -70,36 +68,19 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         }
 
         public void actionPerformed(ActionEvent e) {
-                ExitCode exitCode = setupParameters();
+                ExitCode exitCode = this.parameters.showSetupDialog();
                 if (exitCode != ExitCode.OK) {
                         return;
                 }
 
                 runModule();
         }
-
-        public ExitCode setupParameters() {
-                DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-                String lastPath = deskParameters.getLastOpenProjectPath();
-                if (lastPath == null) {
-                        lastPath = "";
-                }
-                File lastFilePath = new File(lastPath);
-                DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-                dialog.setVisible(true);
-                try {
-                        this.FilePath = dialog.getCurrentDirectory();
-                } catch (Exception e) {
-                }
-                return dialog.getExitCode();
-        }
+       
 
         public ParameterSet getParameterSet() {
-                return null;
+                return this.parameters;
         }
-
-        public void setParameters(ParameterSet parameterValues) {
-        }
+       
 
         public String toString() {
                 return "Mass Lynx Files";

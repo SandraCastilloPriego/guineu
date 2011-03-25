@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,70 +17,60 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.scorer;
 
-
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.Peak;
 
-
-
 /**
  * @author jmjarkko
  */
-public class RTIScoreCalculator implements ScoreCalculator
-{
+public class RTIScoreCalculator implements ScoreCalculator {
 
-	private double rt1Penalty;
-	private double rt2Penalty;
-	private double nameMatchBonus;
-	private ScoreAlignmentParameters lastParams;
-	private double rtiPenalty;
+        private double rt1Penalty;
+        private double rt2Penalty;
+        private double nameMatchBonus;
+        private ScoreAlignmentParameters lastParams;
+        private double rtiPenalty;
 
-	public double calculateScore(Peak path, Peak peak, ScoreAlignmentParameters params)
-		{
-		if (params != null && params != lastParams)
-		{
-			rtiPenalty = (Double)params.getParameterValue(ScoreAlignmentParameters.rtiPenalty);
-			rt1Penalty = (Double)params.getParameterValue(ScoreAlignmentParameters.rt1Penalty);
-			rt2Penalty = (Double)params.getParameterValue(ScoreAlignmentParameters.rt2Penalty);
-			nameMatchBonus = (Double)params.getParameterValue(ScoreAlignmentParameters.nameMatchBonus);
-		}
-		double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
-		double score = rt1Diff * rt1Penalty;
-		double rt2Diff = Math.abs(path.getRT2() - peak.getRT2());
-		score += rt2Penalty * rt2Diff;
-		if (path.matchesWithName(peak)){score += nameMatchBonus;}
-		score += rtiPenalty * Math.abs(path.getRTI() - peak.getRTI());
-		return score;
-	}
+        public double calculateScore(Peak path, Peak peak, ScoreAlignmentParameters params) {
+                if (params != null && params != lastParams) {
+                        rtiPenalty = params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
+                        rt1Penalty = params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble();
+                        rt2Penalty = params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble();
+                        nameMatchBonus = params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getDouble();
+                }
+                double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
+                double score = rt1Diff * rt1Penalty;
+                double rt2Diff = Math.abs(path.getRT2() - peak.getRT2());
+                score += rt2Penalty * rt2Diff;
+                if (path.matchesWithName(peak)) {
+                        score += nameMatchBonus;
+                }
+                score += rtiPenalty * Math.abs(path.getRTI() - peak.getRTI());
+                return score;
+        }
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
-	 */
-	public boolean matches(Peak path, Peak peak, ScoreAlignmentParameters params)
-	{
-		double gapPenalty = (Double)params.getParameterValue(ScoreAlignmentParameters.rt1Lax)*(Double)params.getParameterValue(ScoreAlignmentParameters.rt1Penalty)
-				+ (Double)params.getParameterValue(ScoreAlignmentParameters.rt2Lax)*(Double)params.getParameterValue(ScoreAlignmentParameters.rt2Penalty)
-				+ (Double)params.getParameterValue(ScoreAlignmentParameters.rtiLax)*(Double)params.getParameterValue(ScoreAlignmentParameters.rtiPenalty);
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
+         */
+        public boolean matches(Peak path, Peak peak, ScoreAlignmentParameters params) {
+                double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
 
-		return calculateScore(path, peak, params) < gapPenalty;
-	}
+                return calculateScore(path, peak, params) < gapPenalty;
+        }
 
-	/* (non-Javadoc)
-	 * @see gcgcaligner.ScoreCalculator#getWorstScore()
-	 */
-	public double getWorstScore()
-	{
-		return Double.MAX_VALUE;
-	}
-	
-	public boolean isValid(GCGCDatum peak)
-	{
-		return true;
-	}
+        /* (non-Javadoc)
+         * @see gcgcaligner.ScoreCalculator#getWorstScore()
+         */
+        public double getWorstScore() {
+                return Double.MAX_VALUE;
+        }
 
-	public String name()
-	{
-		return "Use retention times";
-	}
+        public boolean isValid(GCGCDatum peak) {
+                return true;
+        }
+
+        public String name() {
+                return "Use retention times";
+        }
 }

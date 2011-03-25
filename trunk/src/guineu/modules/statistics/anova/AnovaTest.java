@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.statistics.anova;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -32,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import guineu.data.Dataset;
+import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import java.util.logging.Logger;
 
@@ -46,7 +46,7 @@ public class AnovaTest implements GuineuModule, TaskListener, ActionListener {
         private AnovaParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public void initModule() {
+        public AnovaTest() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.STATISTICS, "Anova Test..",
                         "Anova statistical test", KeyEvent.VK_U, this, null, null);
@@ -77,29 +77,19 @@ public class AnovaTest implements GuineuModule, TaskListener, ActionListener {
                         if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {
                                 String[] parameterList = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
                                 parameters = new AnovaParameters(parameterList);
-                                setupParameters(parameters);
+                                ExitCode exitCode = this.parameters.showSetupDialog();
+                                if (exitCode != ExitCode.OK) {
+                                        return;
+                                }
+                                runModule();
                         } else {
                         }
                 } catch (Exception exception) {
                 }
         }
 
-        public void setupParameters(ParameterSet currentParameters) {
-                final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                        "Please set parameter values for " + toString(),
-                        (AnovaParameters) currentParameters, helpID);
-                dialog.setVisible(true);
-                if (dialog.getExitCode() == ExitCode.OK) {
-                        runModule();
-                }
-        }
-
         public ParameterSet getParameterSet() {
                 return this.parameters;
-        }
-
-        public void setParameters(ParameterSet parameterValues) {
-                parameters = (AnovaParameters) parameters;
         }
 
         public String toString() {

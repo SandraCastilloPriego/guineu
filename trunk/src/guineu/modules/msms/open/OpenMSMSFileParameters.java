@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,29 +15,27 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.msms.open;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.RTToleranceParameter;
 
 /**
  *
  * @author scsandra
  */
-public class OpenMSMSFileParameters extends SimpleParameterSet{
-	public static final Parameter rtTolerance = new SimpleParameter(
-			ParameterType.DOUBLE, "rt tolerance",
-			"Tolerance of the retention time",
-			"rt", new Double(1.0), new Double(0.0), null);
+public class OpenMSMSFileParameters extends SimpleParameterSet {
 
-    public static final Parameter parameters = new SimpleParameter(
-            ParameterType.FILE_NAME, "MSMS file: ",
-            "File path", null, "Parameters", null);
+        public static final RTToleranceParameter rtTolerance = new RTToleranceParameter(
+                "rt tolerance",
+                "Tolerance of the retention time");
+        public static final FileNameParameter parameters = new FileNameParameter(
+                "MSMS file: ",
+                "File path");
 
-	 public OpenMSMSFileParameters() {
-        super(new Parameter[] {rtTolerance, parameters});
-    }
+        public OpenMSMSFileParameters() {
+                super(new UserParameter[]{rtTolerance, parameters});
+        }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -44,10 +44,10 @@ public class RConsole extends javax.swing.JDialog {
 
        InDataBase writer = new InOracle();
         SaveTempParameters parameters = new SaveTempParameters();
-        parameters.setParameterValue(SaveTempParameters.LCMSfilename, dataset.getDatasetName());
-        parameters.setParameterValue(SaveTempParameters.type, "csv");
+       // parameters.setParameterValue(SaveTempParameters.LCMSfilename, dataset.getDatasetName());
+       // parameters.setParameterValue(SaveTempParameters.type, "csv");
 
-        writer.WriteCommaSeparatedFile(dataset, "/home/scsandra/Desktop/temp.csv", parameters);
+       // writer.WriteCommaSeparatedFile(dataset, "/home/scsandra/Desktop/temp.csv", parameters);
 
         String rResponse = RInterface.evaluateRCommand("test <- read.csv(\"/home/scsandra/Desktop/temp.csv\", header=T)\n print(test)");
         this.jTextArea1.setText(rResponse);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,11 @@
  */
 package guineu.modules.mylly.filter.peakCounter;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.StringParameter;
+import java.text.NumberFormat;
 
 /**
  *
@@ -28,19 +29,15 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class PeakCountParameters extends SimpleParameterSet {
 
+        static final NumberFormat format = NumberFormat.getIntegerInstance();
+        public static final StringParameter suffix = new StringParameter(
+                "Suffix: ",
+                "Suffix");
+        public static final NumberParameter numFound = new NumberParameter(
+                "Peak Count less than:",
+                "Peak Count Filter", format, new Integer(2));
 
-	public static final Parameter suffix = new SimpleParameter(
-            ParameterType.STRING, "Suffix: ",
-            "Suffix", null, "-Count Filter", null);
-
-
-   	public static final Parameter numFound = new SimpleParameter(
-			ParameterType.INTEGER, "Peak Count less than:",
-			"Peak Count Filter", "Samples", new Integer(2),
-			new Integer(0), null);
-	
-	
-	public PeakCountParameters() {
-		super(new Parameter[]{suffix, numFound});
-	}
+        public PeakCountParameters() {
+                super(new UserParameter[]{suffix, numFound});
+        }
 }

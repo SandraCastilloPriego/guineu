@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,13 +19,11 @@ package guineu.modules.identification.normalizationtissue;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -47,7 +45,7 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
     private ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Hashtable<String, Double> weights;
-    private String filePath;
+    private String filePath= "";
     private JButton btnHelp;
 
     /** Creates new form NormalizationDialog */
@@ -298,13 +296,8 @@ public class NormalizationDialog extends javax.swing.JDialog implements ActionLi
         }
     }
 
-    public ExitCode setupParameters() {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastNormalizationPath();
-        if (lastPath == null) {
-            lastPath = "";
-        }
-        File lastFilePath = new File(lastPath);
+    public ExitCode setupParameters() {      
+        File lastFilePath = new File(this.filePath);
         readFileDialog dialog = new readFileDialog(lastFilePath);
         dialog.setVisible(true);
         try {

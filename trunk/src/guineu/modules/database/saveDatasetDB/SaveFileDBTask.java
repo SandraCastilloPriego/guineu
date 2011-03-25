@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -42,10 +42,10 @@ public class SaveFileDBTask implements Task {
 
         public SaveFileDBTask(Dataset dataset, SaveFileParameters parameters) {
                 this.dataset = dataset;
-                this.author = (String) parameters.getParameterValue(SaveFileParameters.author);
-                this.datasetName = (String) parameters.getParameterValue(SaveFileParameters.name);
-                this.parameterFileName = (String) parameters.getParameterValue(SaveFileParameters.parameters);
-                this.study = (String) parameters.getParameterValue(SaveFileParameters.studyId);
+                this.author = parameters.getParameter(SaveFileParameters.author).getValue();
+                this.datasetName = parameters.getParameter(SaveFileParameters.name).getValue();
+                this.parameterFileName = parameters.getParameter(SaveFileParameters.parameters).getValue().getAbsolutePath();
+                this.study = parameters.getParameter(SaveFileParameters.studyId).getValue();
                 db = new InOracle();
         }
 
@@ -94,10 +94,10 @@ public class SaveFileDBTask implements Task {
                         } else if (dataset.getType() == DatasetType.GCGCTOF) {
                                 type = "GCxGC-MS";
                                 db.gcgctof(connection, (SimpleGCGCDataset) dataset, type, author, datasetName, study);
-                        }else if (dataset.getType() == DatasetType.QUALITYCONTROL) {                               
-                                db.qualityControlFiles(connection,(SimpleBasicDataset) dataset);
+                        } else if (dataset.getType() == DatasetType.QUALITYCONTROL) {
+                                db.qualityControlFiles(connection, (SimpleBasicDataset) dataset);
                         }
-                        
+
                         status = TaskStatus.FINISHED;
                 } catch (Exception e) {
                         status = TaskStatus.ERROR;

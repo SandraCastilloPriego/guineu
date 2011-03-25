@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -23,8 +23,8 @@ import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.data.impl.datasets.SimpleQualityControlDataset;
+import guineu.parameters.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;

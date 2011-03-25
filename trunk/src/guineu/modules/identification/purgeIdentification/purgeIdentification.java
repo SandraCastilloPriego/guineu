@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,16 +18,14 @@
 package guineu.modules.identification.purgeIdentification;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskStatus;
- 
+import guineu.taskcontrol.TaskStatus; 
 import guineu.taskcontrol.TaskListener;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -42,7 +40,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Desktop desktop;
 
-	public void initModule() {
+	public purgeIdentification() {
 
 		this.desktop = GuineuCore.getDesktop();
 		desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Clean Identification.. ",
@@ -74,9 +72,7 @@ public class purgeIdentification implements GuineuModule, TaskListener, ActionLi
 	public ParameterSet getParameterSet() {
 		return null;
 	}
-
-	public void setParameters(ParameterSet parameterValues) {
-	}
+	
 
 	public String toString() {
 		return "Purge Identification";

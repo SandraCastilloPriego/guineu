@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,22 +17,21 @@
  */
 package guineu.modules.mylly.openFiles;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -41,99 +40,76 @@ import java.util.logging.Logger;
  */
 public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private OpenGCGCFileParameters parameters;
-    final String helpID = GUIUtils.generateHelpID(this);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private OpenGCGCFileParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
-    public void initModule() {
+        public OpenFiles() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Files..",
-                "Open single peak list in CVS format", KeyEvent.VK_G, this, null, "icons/pickedpeakicon.png");
-        desktop.addMenuSeparator(GuineuMenu.FILE);
-        parameters = new OpenGCGCFileParameters();
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Open GCGC Files");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished open GCGC files on " + ((OpenFileTask) task).getTaskDescription());
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Files..",
+                        "Open single peak list in CVS format", KeyEvent.VK_G, this, null, "icons/pickedpeakicon.png");
+                desktop.addMenuSeparator(GuineuMenu.FILE);
+                parameters = new OpenGCGCFileParameters();
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while open GCGC files on .. " + ((OpenFileTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        try {
-            setupParameters(parameters);
-        } catch (Exception exception) {
-        }
-    }
-
-    public void setupParameters(ParameterSet currentParameters) {
-        DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-        String lastPath = deskParameters.getLastMyllyPath();
-        if (lastPath != null && !lastPath.isEmpty()) {
-            ((OpenGCGCFileParameters) currentParameters).setParameterValue(OpenGCGCFileParameters.fileNames, lastPath);
-        }
-        final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (OpenGCGCFileParameters) currentParameters, helpID);
-        dialog.setVisible(true);
-
-        if (dialog.getExitCode() == ExitCode.OK) {
-            runModule();
-        }
-    }
-
-    public ParameterSet getParameterSet() {
-        return null;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-    }
-
-    public String toString() {
-        return "Open File";
-    }
-
-    public Task[] runModule() {
-        String fileNames = (String) parameters.getParameterValue(OpenGCGCFileParameters.fileNames);
-        String separator = (String) parameters.getParameterValue(OpenGCGCFileParameters.separator);
-        boolean filterClassified = (Boolean) parameters.getParameterValue(OpenGCGCFileParameters.filterClassified);
-        // prepare a new group of tasks
-        if (fileNames != null) {
-            String[] fileSplit = null;
-            if (fileNames.contains("&&")) {
-                fileSplit = fileNames.split("&&");
-            } else {
-                fileSplit = new String[1];
-                fileSplit[0] = fileNames;
-            }
-            DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-            deskParameters.setLastMyllyPath(fileSplit[0]);
-
-            Task tasks[] = new OpenFileTask[fileSplit.length];
-            for (int i = 0; i < fileSplit.length; i++) {
-                tasks[i] = new OpenFileTask(fileSplit[i], separator, filterClassified);
-            }
-            GuineuCore.getTaskController().addTasks(tasks);
-
-            return tasks;
-
-        } else {
-            return null;
+        public void taskStarted(Task task) {
+                logger.info("Running Open GCGC Files");
         }
 
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished open GCGC files on " + ((OpenFileTask) task).getTaskDescription());
+                }
+
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while open GCGC files on .. " + ((OpenFileTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+                try {
+                        ExitCode exitCode = parameters.showSetupDialog();
+                        if (exitCode != ExitCode.OK) {
+                                return;
+                        }
+
+                        runModule();
+                } catch (Exception exception) {
+                }
+        }
+
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        public String toString() {
+                return "Open File";
+        }
+
+        public Task[] runModule() {
+                File[] fileNames = parameters.getParameter(OpenGCGCFileParameters.fileNames).getValue();
+                String separator = parameters.getParameter(OpenGCGCFileParameters.separator).getValue();
+                boolean filterClassified = parameters.getParameter(OpenGCGCFileParameters.filterClassified).getValue();
+                // prepare a new group of tasks
+                if (fileNames != null) {
+
+                        Task tasks[] = new OpenFileTask[fileNames.length];
+                        for (int i = 0; i < fileNames.length; i++) {
+                                tasks[i] = new OpenFileTask(fileNames[i], separator, filterClassified);
+                        }
+                        GuineuCore.getTaskController().addTasks(tasks);
+
+                        return tasks;
+
+                } else {
+                        return null;
+                }
+
+        }
 }

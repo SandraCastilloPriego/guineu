@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,13 +18,12 @@
 package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -49,9 +48,9 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
         private Desktop desktop;
         private Vector<StandardUmol> standards;
         private Hashtable<String, Double> weights;
-        final String helpID = GUIUtils.generateHelpID(this);
+        final String helpID = GUIUtils.generateHelpID(this);      
 
-        public void initModule() {
+        public NormalizeTissueFilter() {        
                 this.standards = new Vector<StandardUmol>();
                 this.weights = new Hashtable<String, Double>();
                 this.desktop = GuineuCore.getDesktop();
@@ -85,7 +84,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
                 }
 
                 for (StandardUmol std : this.standards) {
-                        ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).setStandard(std.getName(), std.getRange());
+                        GuineuCore.setStandard(std.getName(), std.getRange());
                 }
 
                 runModule();
@@ -94,7 +93,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
         public ExitCode setupParameters() {
                 Dataset[] datasets = desktop.getSelectedDataFiles();
                 if (datasets.length > 0) {
-                        Hashtable<String, Range> stdRanges = ((DesktopParameters) GuineuCore.getDesktop().getParameterSet()).getStandards();
+                        Hashtable<String, Range> stdRanges = GuineuCore.getStandards();
                         for (PeakListRow row : datasets[0].getRows()) {
                                 if (row.isSelected() || (Integer) row.getVar("getStandard") == 1) {
                                         StandardUmol std = new StandardUmol(row);
@@ -114,6 +113,7 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
                                 dialog.setVisible(true);
                                 return dialog.getExitCode();
                         } catch (Exception exception) {
+                                exception.printStackTrace();
                                 return ExitCode.CANCEL;
                         }
                 } else {
@@ -123,9 +123,6 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
 
         public ParameterSet getParameterSet() {
                 return null;
-        }
-
-        public void setParameters(ParameterSet parameterValues) {
         }
 
         public String toString() {

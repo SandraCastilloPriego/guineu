@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -25,6 +25,7 @@ import guineu.util.Range;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -49,173 +50,172 @@ import javax.swing.border.EtchedBorder;
  * over the raw data file.
  */
 public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
-		ActionListener {
+        ActionListener {
 
-	// Dialog components
-	private JPanel pnlPlotXY,  peakListsPanel;
-	private JCheckBox preview;
-	private AlignmentRansacPlot chart;
-	private JComboBox peakListsComboX,  peakListsComboY;
-	private JButton alignmentPreviewButton;
-	private RansacAlignerParameters parameters;
+        // Dialog components
+        private JPanel pnlPlotXY, peakListsPanel;
+        private JCheckBox preview;
+        private AlignmentRansacPlot chart;
+        private JComboBox peakListsComboX, peakListsComboY;
+        private JButton alignmentPreviewButton;
+        private RansacAlignerParameters parameters;
 
-	/**
-	 * @param parameters
-	 * @param massDetectorTypeNumber
-	 */
-	public RansacAlignerSetupDialog(String title, RansacAlignerParameters parameters, String helpID) {
+        /**
+         * @param parameters
+         * @param massDetectorTypeNumber
+         */
+        public RansacAlignerSetupDialog(String title, RansacAlignerParameters parameters, String helpID) {
 
-		super(title, parameters, helpID);
-		this.parameters = parameters;
-		addComponents();
-	}
+                super(parameters, helpID);
+                this.parameters = parameters;
+                addComponents();
+        }
 
-	
-	public void actionPerformed(ActionEvent event) {
+        public void actionPerformed(ActionEvent event) {
 
-		super.actionPerformed(event);
-		Object src = event.getSource();
+                super.actionPerformed(event);
+                Object src = event.getSource();
 
-		if (src == preview) {
-			if (preview.isSelected()) {
-				mainPanel.add(pnlPlotXY, BorderLayout.EAST);
-				peakListsPanel.setVisible(true);
-				pack();
-				this.setResizable(true);
-				setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
-			} else {
-				mainPanel.remove(pnlPlotXY);
-				peakListsPanel.setVisible(false);
-				this.setResizable(false);
-				pack();
-				setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
-			}
-		}
+                if (src == preview) {
+                        if (preview.isSelected()) {
+                                mainPanel.add(pnlPlotXY, BorderLayout.EAST);
+                                peakListsPanel.setVisible(true);
+                                pack();
+                                this.setResizable(true);
+                                setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
+                        } else {
+                                mainPanel.remove(pnlPlotXY);
+                                peakListsPanel.setVisible(false);
+                                this.setResizable(false);
+                                pack();
+                                setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
+                        }
+                }
 
-		if (src == alignmentPreviewButton) {
-			Dataset peakListX = (Dataset) peakListsComboX.getSelectedItem();
-			Dataset peakListY = (Dataset) peakListsComboY.getSelectedItem();
-
-
-			// Ransac Alignment
-			Vector<AlignStructMol> list = this.getVectorAlignment(peakListX, peakListY);
-			super.updateParameterSetFromComponents();
-			RANSAC ransac = new RANSAC(parameters);
-			ransac.alignment(list);
-
-			// Plot the result
-			this.chart.removeSeries();
-			this.chart.addSeries(list, peakListX.getDatasetName() + " vs " + peakListY.getDatasetName());
-			this.chart.printAlignmentChart(peakListX.getDatasetName() + " RT", peakListY.getDatasetName() + " RT");
-		}
-
-	}
-
-	/**
-	 * This function add all the additional components for this dialog over the
-	 * original ParameterSetupDialog.
-	 * 
-	 */
-	private void addComponents() {
-
-		// Elements of pnlpreview
-		JPanel pnlpreview = new JPanel(new BorderLayout());
-		preview = new JCheckBox(" Show preview of RANSAC alignment ");
-		preview.addActionListener(this);
-		preview.setHorizontalAlignment(SwingConstants.CENTER);
-		pnlpreview.add(new JSeparator(), BorderLayout.NORTH);
-		pnlpreview.add(preview, BorderLayout.CENTER);
-		pnlpreview.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
-
-		pnlpreview.add(new JSeparator(), BorderLayout.NORTH);
-		pnlpreview.add(preview, BorderLayout.CENTER);
-
-		// Panel for the combo boxes with the peak lists
-		peakListsPanel = new JPanel();
-		peakListsPanel.setLayout(new BoxLayout(peakListsPanel, BoxLayout.PAGE_AXIS));
+                if (src == alignmentPreviewButton) {
+                        Dataset peakListX = (Dataset) peakListsComboX.getSelectedItem();
+                        Dataset peakListY = (Dataset) peakListsComboY.getSelectedItem();
 
 
-		JPanel comboPanel = new JPanel();
-		Dataset[] peakLists = GuineuCore.getDesktop().getSelectedDataFiles();
-		peakListsComboX = new JComboBox();
-		peakListsComboY = new JComboBox();
-		for (Dataset peakList : peakLists) {
-			peakListsComboX.addItem(peakList);
-			peakListsComboY.addItem(peakList);
-		}
-		comboPanel.add(peakListsComboX);
-		comboPanel.add(peakListsComboY);
+                        // Ransac Alignment
+                        Vector<AlignStructMol> list = this.getVectorAlignment(peakListX, peakListY);
+                        super.updateParameterSetFromComponents();
+                        RANSAC ransac = new RANSAC(parameters);
+                        ransac.alignment(list);
 
-		// Preview button
-		alignmentPreviewButton = new JButton("Preview Alignmnet");
-		alignmentPreviewButton.addActionListener(this);
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.add(alignmentPreviewButton, BorderLayout.CENTER);
+                        // Plot the result
+                        this.chart.removeSeries();
+                        this.chart.addSeries(list, peakListX.getDatasetName() + " vs " + peakListY.getDatasetName());
+                        this.chart.printAlignmentChart(peakListX.getDatasetName() + " RT", peakListY.getDatasetName() + " RT");
+                }
 
-		peakListsPanel.add(comboPanel);
-		peakListsPanel.add(buttonPanel);
-		peakListsPanel.setVisible(false);
+        }
 
-		JPanel pnlVisible = new JPanel(new BorderLayout());
-		pnlVisible.add(pnlpreview, BorderLayout.NORTH);
-		pnlVisible.add(peakListsPanel, BorderLayout.CENTER);
+        /**
+         * This function add all the additional components for this dialog over the
+         * original ParameterSetupDialog.
+         *
+         */
+        private void addComponents() {
 
-		// Panel for XYPlot
-		pnlPlotXY = new JPanel(new BorderLayout());
-		Border one = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-		Border two = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-		pnlPlotXY.setBorder(BorderFactory.createCompoundBorder(one, two));
-		pnlPlotXY.setBackground(Color.white);
+                // Elements of pnlpreview
+                JPanel pnlpreview = new JPanel(new BorderLayout());
+                preview = new JCheckBox(" Show preview of RANSAC alignment ");
+                preview.addActionListener(this);
+                preview.setHorizontalAlignment(SwingConstants.CENTER);
+                pnlpreview.add(new JSeparator(), BorderLayout.NORTH);
+                pnlpreview.add(preview, BorderLayout.CENTER);
+                pnlpreview.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
 
-		chart = new AlignmentRansacPlot();
-		chart.setVisible(true);
-		pnlPlotXY.add(chart);
+                pnlpreview.add(new JSeparator(), BorderLayout.NORTH);
+                pnlpreview.add(preview, BorderLayout.CENTER);
 
-		componentsPanel.add(pnlVisible, BorderLayout.CENTER);
+                // Panel for the combo boxes with the peak lists
+                peakListsPanel = new JPanel();
+                peakListsPanel.setLayout(new BoxLayout(peakListsPanel, BoxLayout.PAGE_AXIS));
 
-		pack();
-		setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
 
-	}
+                JPanel comboPanel = new JPanel();
+                Dataset[] peakLists = GuineuCore.getDesktop().getSelectedDataFiles();
+                peakListsComboX = new JComboBox();
+                peakListsComboY = new JComboBox();
+                for (Dataset peakList : peakLists) {
+                        peakListsComboX.addItem(peakList);
+                        peakListsComboY.addItem(peakList);
+                }
+                comboPanel.add(peakListsComboX);
+                comboPanel.add(peakListsComboY);
 
-	/**
-	 * Create the vector which contains all the possible aligned peaks.	 
-	 * @return vector which contains all the possible aligned peaks.
-	 */
-	private Vector<AlignStructMol> getVectorAlignment(Dataset peakListX, Dataset peakListY) {
+                // Preview button
+                alignmentPreviewButton = new JButton("Preview Alignmnet");
+                alignmentPreviewButton.addActionListener(this);
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.add(alignmentPreviewButton, BorderLayout.CENTER);
 
-		Vector<AlignStructMol> alignMol = new Vector<AlignStructMol>();
+                peakListsPanel.add(comboPanel);
+                peakListsPanel.add(buttonPanel);
+                peakListsPanel.setVisible(false);
 
-		for (PeakListRow row : peakListX.getRows()) {
+                JPanel pnlVisible = new JPanel(new BorderLayout());
+                pnlVisible.add(pnlpreview, BorderLayout.NORTH);
+                pnlVisible.add(peakListsPanel, BorderLayout.CENTER);
 
-			// Calculate limits for a row with which the row can be aligned
-			double mzTolerance = (Double) parameters.getParameterValue(RansacAlignerParameters.MZTolerance);
-			double rtToleranceValueAbs = (Double) parameters.getParameterValue(RansacAlignerParameters.RTTolerance);
-			double mzMin = ((Double) row.getVar("getMZ")) - mzTolerance;
-			double mzMax = ((Double) row.getVar("getMZ")) + mzTolerance;
-			double rtMin, rtMax;
-			double rtToleranceValue = rtToleranceValueAbs;
-			rtMin = ((Double) row.getVar("getRT")) - rtToleranceValue;
-			rtMax = ((Double) row.getVar("getRT")) + rtToleranceValue;
+                // Panel for XYPlot
+                pnlPlotXY = new JPanel(new BorderLayout());
+                Border one = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+                Border two = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+                pnlPlotXY.setBorder(BorderFactory.createCompoundBorder(one, two));
+                pnlPlotXY.setBackground(Color.white);
 
-			// Get all rows of the aligned peaklist within parameter limits
-			List<PeakListRow> candidateRows = this.getRowsInsideScanAndMZRange(peakListY,
-					new Range(rtMin, rtMax), new Range(mzMin, mzMax));
+                chart = new AlignmentRansacPlot();
+                chart.setVisible(true);
+                pnlPlotXY.add(chart);
 
-			for (PeakListRow candidateRow : candidateRows) {
-				alignMol.addElement(new AlignStructMol((SimplePeakListRowLCMS)row, (SimplePeakListRowLCMS)candidateRow));
-			}
-		}
-		return alignMol;
-	}
+                mainPanel.add(pnlVisible, 0, 4);
 
-		private List<PeakListRow> getRowsInsideScanAndMZRange(Dataset peakListY, Range rangeRT, Range rangeMZ) {
-		List<PeakListRow> rangeRows = new ArrayList<PeakListRow>();
-		for(PeakListRow row : peakListY.getRows()){
-			if(rangeMZ.contains((Double)row.getVar("getMZ")) && rangeRT.contains((Double)row.getVar("getRT"))){
-				rangeRows.add(row);
-			}
-		}
-		return rangeRows;
-	}
+                pack();
+                setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
+
+        }
+
+        /**
+         * Create the vector which contains all the possible aligned peaks.
+         * @return vector which contains all the possible aligned peaks.
+         */
+        private Vector<AlignStructMol> getVectorAlignment(Dataset peakListX, Dataset peakListY) {
+
+                Vector<AlignStructMol> alignMol = new Vector<AlignStructMol>();
+
+                for (PeakListRow row : peakListX.getRows()) {
+
+                        // Calculate limits for a row with which the row can be aligned
+                        double mzTolerance = parameters.getParameter(RansacAlignerParameters.MZTolerance).getValue().getTolerance();
+                        double rtToleranceValueAbs = parameters.getParameter(RansacAlignerParameters.RTTolerance).getValue().getTolerance();
+                        double mzMin = ((Double) row.getVar("getMZ")) - mzTolerance;
+                        double mzMax = ((Double) row.getVar("getMZ")) + mzTolerance;
+                        double rtMin, rtMax;
+                        double rtToleranceValue = rtToleranceValueAbs;
+                        rtMin = ((Double) row.getVar("getRT")) - rtToleranceValue;
+                        rtMax = ((Double) row.getVar("getRT")) + rtToleranceValue;
+
+                        // Get all rows of the aligned peaklist within parameter limits
+                        List<PeakListRow> candidateRows = this.getRowsInsideScanAndMZRange(peakListY,
+                                new Range(rtMin, rtMax), new Range(mzMin, mzMax));
+
+                        for (PeakListRow candidateRow : candidateRows) {
+                                alignMol.addElement(new AlignStructMol((SimplePeakListRowLCMS) row, (SimplePeakListRowLCMS) candidateRow));
+                        }
+                }
+                return alignMol;
+        }
+
+        private List<PeakListRow> getRowsInsideScanAndMZRange(Dataset peakListY, Range rangeRT, Range rangeMZ) {
+                List<PeakListRow> rangeRows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : peakListY.getRows()) {
+                        if (rangeMZ.contains((Double) row.getVar("getMZ")) && rangeRT.contains((Double) row.getVar("getRT"))) {
+                                rangeRows.add(row);
+                        }
+                }
+                return rangeRows;
+        }
 }

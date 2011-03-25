@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,27 +15,25 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.mylly.openGCGCDatasetFile;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import java.text.NumberFormat;
 
+public class OpenFileParameters extends SimpleParameterSet {
 
-public class OpenFileParameters extends SimpleParameterSet{	
-	
-    public static final Parameter fileName = new SimpleParameter(
-            ParameterType.FILE_NAME, "File Name: ",
-            "File Name", null, "File Name", null);
+        public static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
+        public static final FileNameParameter fileName = new FileNameParameter(
+                "File Name: ",
+                "File Name");
+        public static final NumberParameter numColumns = new NumberParameter(
+                "Number of Columns for Parameters: ",
+                "Number of columns before the columns corresponding to the samples", integerFormat, new Integer(10));
 
-    public static final Parameter numColumns = new SimpleParameter(
-            ParameterType.INTEGER, "Number of Columns for Parameters: ",
-            "Number of columns before the columns corresponding to the samples", new Integer(10));
-    
-    public OpenFileParameters() {
-        super(new Parameter[] { fileName, numColumns });
-    }
-
+        public OpenFileParameters() {
+                super(new UserParameter[]{fileName, numColumns});
+        }
 }

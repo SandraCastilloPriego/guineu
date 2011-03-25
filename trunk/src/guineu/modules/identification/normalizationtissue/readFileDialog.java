@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -29,7 +29,6 @@ import javax.swing.JOptionPane;
 
 
 import com.sun.java.ExampleFileFilter;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.util.dialogs.ExitCode;
 
@@ -81,9 +80,7 @@ public class readFileDialog extends JDialog implements ActionListener {
 
         if (command.equals("ApproveSelection")) {
             try {
-                datasetFile = fileChooser.getSelectedFile();
-                DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-                deskParameters.setLastNormalizationPath(datasetFile.getPath());
+                datasetFile = fileChooser.getSelectedFile();                
                 exit = ExitCode.OK;
             } catch (Throwable e) {
                 JOptionPane.showMessageDialog(this,

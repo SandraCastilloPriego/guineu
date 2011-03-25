@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -140,7 +140,7 @@ public class SimpleGCGCDataset implements Dataset {
          *
          */
         public void setGCGCDataConcentration() {
-                if ((Boolean) params.getParameterValue(ScoreAlignmentParameters.useConcentration)) {
+                if ((Boolean) params.getParameter(ScoreAlignmentParameters.useConcentration).getValue()) {
                         for (PeakListRow row : peakList) {
                                 for (GCGCDatum data : (List<GCGCDatum>) row.getVar("getDatumArray")) {
                                         if (data.getConcentration() > 0) {

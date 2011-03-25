@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,9 +19,9 @@ package guineu.modules.file.saveGCGCFile;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -69,9 +69,9 @@ public class SaveGCGCFileTask implements Task {
         try {
             status = TaskStatus.PROCESSING;
             if (dataset.getType() == DatasetType.GCGCTOF) {
-                if (parameters.getParameterValue(SaveGCGCParameters.type).toString().matches(".*Excel.*")) {
+                if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*Excel.*")) {
                     db.WriteExcelFile(dataset, path, parameters);
-                } else if (parameters.getParameterValue(SaveGCGCParameters.type).toString().matches(".*csv.*")) {
+                } else if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*csv.*")) {
                     db.WriteCommaSeparatedFile(dataset, path, parameters);
                 } else {
                     db.WriteExpressionData(dataset, path, parameters);

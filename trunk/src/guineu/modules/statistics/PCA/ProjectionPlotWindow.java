@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -39,7 +39,7 @@ public class ProjectionPlotWindow extends JInternalFrame implements
 	private ProjectionPlotPanel plot;
 
 	public ProjectionPlotWindow(Desktop desktop, ProjectionPlotDataset dataset,
-			ProjectionPlotParameters parameters) {
+			ProjectionPlotParameters parameters, String title) {
 		super(null, true, true, true, true);
 
 		toolbar = new ProjectionPlotToolbar(this);
@@ -47,8 +47,7 @@ public class ProjectionPlotWindow extends JInternalFrame implements
 
 		plot = new ProjectionPlotPanel(this, dataset, parameters);
 		add(plot, BorderLayout.CENTER);
-
-		String title = parameters.getSourcePeakList().toString();
+                
 		title = title.concat(" : ");
 		title = title.concat(dataset.toString());		
 		this.setTitle(title);

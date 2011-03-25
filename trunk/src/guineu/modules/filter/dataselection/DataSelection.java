@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,11 +17,11 @@
  */
 package guineu.modules.filter.dataselection;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -41,7 +41,7 @@ public class DataSelection implements GuineuModule, TaskListener, ActionListener
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
 
-    public void initModule() {
+    public DataSelection() {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Selection Tools..",
@@ -77,11 +77,7 @@ public class DataSelection implements GuineuModule, TaskListener, ActionListener
     public ParameterSet getParameterSet() {
         return null;
     }
-
-    public void setParameters(ParameterSet parameterValues) {
-
-    }
-
+    
     public String toString() {
         return "Simplify Lipid Name Filter";
     }

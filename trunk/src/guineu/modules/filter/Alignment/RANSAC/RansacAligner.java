@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,16 +18,15 @@
 package guineu.modules.filter.Alignment.RANSAC;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,100 +37,82 @@ import java.util.logging.Logger;
  */
 public class RansacAligner implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private RansacAlignerParameters parameters;
-	private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private RansacAlignerParameters parameters;
+        private Desktop desktop;
 
-	public void initModule() {
+        public RansacAligner() {
 
-		this.desktop = GuineuCore.getDesktop();
+                this.desktop = GuineuCore.getDesktop();
+                parameters = new RansacAlignerParameters();
+                desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Combine datasets..",
+                        "Combine LC-MS datasets", KeyEvent.VK_A, this, null, "icons/alignment.png");
 
-		parameters = new RansacAlignerParameters();
+        }
 
-		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Combine datasets..",
-				"Combine LC-MS datasets", KeyEvent.VK_A, this, null,  "icons/alignment.png");
-		
-	}
+        public String toString() {
+                return "Ransac aligner";
+        }
 
-	public String toString() {
-		return "Ransac aligner";
-	}
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
 
-	
-	public ParameterSet getParameterSet() {
-		return parameters;
-	}
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
 
-	public void setParameters(ParameterSet parameters) {
-		this.parameters = (RansacAlignerParameters) parameters;
-	}
+                Dataset[] peakLists = desktop.getSelectedDataFiles();
 
-	
-	public ExitCode setupParameters(ParameterSet currentParameters) {
-		ParameterSetupDialog dialog = new RansacAlignerSetupDialog(
-				"Please set parameter values for " + toString(),
-				(RansacAlignerParameters) currentParameters, null);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
+                if (peakLists.length == 0) {
+                        desktop.displayErrorMessage("Please select peak lists for alignment");
+                        return;
+                }
 
-	/**
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent e) {
+                // Setup parameters
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
 
-		Dataset[] peakLists = desktop.getSelectedDataFiles();
+                runModule(null, peakLists, parameters);
 
-		if (peakLists.length == 0) {
-			desktop.displayErrorMessage("Please select peak lists for alignment");
-			return;
-		}
+        }
 
-		// Setup parameters
-		ExitCode exitCode = setupParameters(parameters);
-		if (exitCode != ExitCode.OK) {
-			return;
-		}
+        public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
+                RansacAlignerParameters parameters) {
 
-		runModule(null, peakLists, parameters.clone());
+                // check peak lists
+                if ((peakLists == null) || (peakLists.length == 0)) {
+                        desktop.displayErrorMessage("Please select peak lists for alignment");
+                        return null;
+                }
 
-	}
+                // prepare a new group with just one task
+                Task task = new RansacAlignerTask(peakLists, parameters);
 
-	
-	public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
-			ParameterSet parameters) {
+                GuineuCore.getTaskController().addTask(task);
 
-		// check peak lists
-		if ((peakLists == null) || (peakLists.length == 0)) {
-			desktop.displayErrorMessage("Please select peak lists for alignment");
-			return null;
-		}
+                return new Task[]{task};
 
-		// prepare a new group with just one task
-		Task task = new RansacAlignerTask(peakLists,
-				(RansacAlignerParameters) parameters);
+        }
 
-		GuineuCore.getTaskController().addTask(task);
+        public void taskStarted(Task task) {
+                logger.info("Running alignment");
+        }
 
-		return new Task[]{task};
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished alignment on " + ((RansacAlignerTask) task).getTaskDescription());
+                }
 
-	}
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-	public void taskStarted(Task task) {
-		logger.info("Running alignment");
-	}
+                        String msg = "Error while alignment on .. " + ((RansacAlignerTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished alignment on " + ((RansacAlignerTask) task).getTaskDescription());
-		}
-
-		if (task.getStatus() == TaskStatus.ERROR) {
-
-			String msg = "Error while alignment on .. " + ((RansacAlignerTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
-
-		}
-	}
+                }
+        }
 }

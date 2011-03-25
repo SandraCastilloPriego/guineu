@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.filter.classIdentification;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
@@ -33,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 
 /**
@@ -41,81 +41,69 @@ import guineu.util.GUIUtils;
  */
 public class ClassIdentificationFilter implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private ClassIdentificationParameters parameters;
-    final String helpID = GUIUtils.generateHelpID(this);
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private ClassIdentificationParameters parameters;
+        final String helpID = GUIUtils.generateHelpID(this);
 
-    public void initModule() {
-        parameters = new ClassIdentificationParameters();
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Class Identification Filter..",
-                "Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_C, this, null, null);
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Class Identification Filter");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Class Identification Filter ");
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Class Identification Filtering .. ";
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+        public ClassIdentificationFilter() {
+                parameters = new ClassIdentificationParameters();
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Class Identification Filter..",
+                        "Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_C, this, null, null);
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        try {
-            setupParameters(parameters);
-        } catch (Exception exception) {
+        public void taskStarted(Task task) {
+                logger.info("Class Identification Filter");
         }
-    }
 
-    public void setupParameters(ParameterSet currentParameters) {
-        final ParameterSetupDialog dialog = new ParameterSetupDialog(
-                "Please set parameter values for " + toString(),
-                (ClassIdentificationParameters) currentParameters, helpID);
-        dialog.setVisible(true);
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Class Identification Filter ");
+                }
 
-        if (dialog.getExitCode() == ExitCode.OK) {
-            runModule();
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Class Identification Filtering .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
         }
-    }
 
-    public ParameterSet getParameterSet() {
-        return this.parameters;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (ClassIdentificationParameters) parameters;
-    }
-
-    public String toString() {
-        return "Class Identification Filter";
-    }
-
-    public Task[] runModule() {
-
-        Dataset[] datasets = desktop.getSelectedDataFiles();
-
-
-        // prepare a new group of tasks
-        Task tasks[] = new ClassIdentificationFilterTask[datasets.length];
-        for (int i = 0; i < datasets.length; i++) {
-            tasks[i] = new ClassIdentificationFilterTask(datasets[i], parameters);
+        public void actionPerformed(ActionEvent e) {
+                try {
+                        ExitCode exitCode = parameters.showSetupDialog();
+                        if (exitCode == ExitCode.OK) {
+                                runModule();
+                        }
+                } catch (Exception exception) {
+                }
         }
-        GuineuCore.getTaskController().addTasks(tasks);
 
-        return tasks;
+        public ParameterSet getParameterSet() {
+                return this.parameters;
+        }
+
+        public String toString() {
+                return "Class Identification Filter";
+        }
+
+        public Task[] runModule() {
+
+                Dataset[] datasets = desktop.getSelectedDataFiles();
 
 
-    }
+                // prepare a new group of tasks
+                Task tasks[] = new ClassIdentificationFilterTask[datasets.length];
+                for (int i = 0; i < datasets.length; i++) {
+                        tasks[i] = new ClassIdentificationFilterTask(datasets[i], parameters);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+
+        }
 }

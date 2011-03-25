@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package guineu.modules.mylly.alignment.basicAligner;
 
-import guineu.modules.mylly.alignment.ransacAligner.functions.*;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
@@ -44,21 +43,18 @@ public class BasicAlignerGCGCTask implements Task {
         private String peakListName;
         private double RT1Tolerance;
         private double RT2Tolerance;
-        private BasicAlignerGCGCParameters parameters;
         private double progress;
-        private RANSAC ransac;
 
         public BasicAlignerGCGCTask(Dataset[] peakLists, BasicAlignerGCGCParameters parameters) {
 
                 this.peakLists = peakLists;
-                this.parameters = parameters;
 
                 // Get parameter values for easier use
-                peakListName = (String) parameters.getParameterValue(BasicAlignerGCGCParameters.peakListName);
+                peakListName = parameters.getParameter(BasicAlignerGCGCParameters.peakListName).getValue();
 
-                RT1Tolerance = (Double) parameters.getParameterValue(BasicAlignerGCGCParameters.RT1Tolerance);
+                RT1Tolerance = parameters.getParameter(BasicAlignerGCGCParameters.RT1Tolerance).getValue().getTolerance();
 
-                RT2Tolerance = (Double) parameters.getParameterValue(BasicAlignerGCGCParameters.RT2Tolerance);
+                RT2Tolerance = parameters.getParameter(BasicAlignerGCGCParameters.RT2Tolerance).getValue().getTolerance();
         }
 
         
@@ -70,10 +66,7 @@ public class BasicAlignerGCGCTask implements Task {
         public double getFinishedPercentage() {
                 if (totalRows == 0) {
                         return 0f;
-                }
-                if (ransac != null) {
-                        return ransac.getProgress();
-                }
+                }               
                 return progress; //
         }
 

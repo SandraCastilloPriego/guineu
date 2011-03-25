@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,9 +19,8 @@ package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -71,8 +70,8 @@ public class UnitsChangeFilterTask implements Task {
                 for (String experimentName : dataset.getAllColumnNames()) {
                     try {
                         Double peak = (Double) row.getPeak(experimentName);
-                        double divide = (Double) parameters.getParameterValue(UnitsChangeFilterParameters.divide);
-                        double multiply = (Double) parameters.getParameterValue(UnitsChangeFilterParameters.multiply);
+                        double divide =  parameters.getParameter(UnitsChangeFilterParameters.divide).getDouble();
+                        double multiply = parameters.getParameter(UnitsChangeFilterParameters.multiply).getDouble();
                         if (divide != 0) {
                             row.setPeak(experimentName, peak / divide);
                         }

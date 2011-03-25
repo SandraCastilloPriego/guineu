@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,11 @@
  */
 package guineu.modules.statistics.clustering;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import java.text.NumberFormat;
 
 /**
  *
@@ -28,24 +29,21 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class ClusteringParameters extends SimpleParameterSet {
 
-    private static String[] parameters = {"Cobweb", "DensityBasedClusterer", "FarthestFirst", "SimpleKMeans"};
-    private static String[] dataType = {"Samples", "Variables"};
+        private static String[] parameters = {"Cobweb", "DensityBasedClusterer", "FarthestFirst", "SimpleKMeans"};
+        private static String[] dataType = {"Samples", "Variables"};
+        public static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
+        public static final ComboParameter<String> clusteringAlgorithm = new ComboParameter<String>(
+                "Select the algorithm",
+                "Select the algorithm you want to use for clustering", parameters);
+        public static final ComboParameter<String> clusteringData = new ComboParameter<String>(
+                "Select the algorithm",
+                "Select the algorithm you want to use for clustering", dataType);
+        public static final NumberParameter N = new NumberParameter(
+                "Number of clusters to generate",
+                "Specify the number of clusters to generate.", integerFormat,
+                new Integer(3));
 
-
-    public static final Parameter clusteringAlgorithm = new SimpleParameter(
-            ParameterType.STRING, "Select the algorithm",
-            "Select the algorithm you want to use for clustering", null, parameters);
-
-    public static final Parameter clusteringData = new SimpleParameter(
-            ParameterType.STRING, "Select the algorithm",
-            "Select the algorithm you want to use for clustering", null, dataType);
-
-   public static final Parameter N = new SimpleParameter(
-			ParameterType.INTEGER, "Number of clusters to generate",
-			"Specify the number of clusters to generate.",
-			new Integer(3));
-
-    public ClusteringParameters() {
-        super(new Parameter[]{clusteringAlgorithm, clusteringData, N});
-    }
+        public ClusteringParameters() {
+                super(new UserParameter[]{clusteringAlgorithm, clusteringData, N});
+        }
 }

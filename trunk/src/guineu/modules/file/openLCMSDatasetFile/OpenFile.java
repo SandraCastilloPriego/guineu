@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,12 +17,11 @@
  */
 package guineu.modules.file.openLCMSDatasetFile;
 
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -38,13 +37,14 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private File[] FilePath;
+        private OpenFileParameters parameters;
 
-        public void initModule() {
-
+        public OpenFile() {
                 this.desktop = GuineuCore.getDesktop();
+
                 desktop.addMenuItem(GuineuMenu.FILE, "Open LCMS Local File..",
                         "Open LCMS Local File", KeyEvent.VK_L, this, null, "icons/spectrumicon.png");
-
+                parameters = new OpenFileParameters();
         }
 
         public void taskStarted(Task task) {
@@ -66,48 +66,30 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         }
 
         public void actionPerformed(ActionEvent e) {
-                ExitCode exitCode = setupParameters();
+                ExitCode exitCode = parameters.showSetupDialog();
                 if (exitCode != ExitCode.OK) {
                         return;
                 }
 
                 runModule();
         }
-
-        public ExitCode setupParameters() {
-                DesktopParameters deskParameters = (DesktopParameters) GuineuCore.getDesktop().getParameterSet();
-                String lastPath = deskParameters.getLastOpenProjectPath();
-                if (lastPath == null) {
-                        lastPath = "";
-                }
-                File lastFilePath = new File(lastPath);
-                DatasetOpenDialog dialog = new DatasetOpenDialog(lastFilePath);
-                dialog.setVisible(true);
-                try {
-                        this.FilePath = dialog.getCurrentDirectory();
-                } catch (Exception e) {
-                }
-                return dialog.getExitCode();
-        }
+       
 
         public ParameterSet getParameterSet() {
-                return null;
+                return parameters;
         }
 
-        public void setParameters(ParameterSet parameterValues) {
-        }
-
+       
         public String toString() {
                 return "Open File";
         }
 
         public Task[] runModule() {
-
+                this.FilePath = parameters.getParameter(OpenFileParameters.fileNames).getValue();
                 // prepare a new group of tasks
                 if (FilePath != null) {
                         Task tasks[] = new OpenFileTask[FilePath.length];
                         for (int i = 0; i < FilePath.length; i++) {
-
                                 tasks[i] = new OpenFileTask(FilePath[i].toString());
                         }
                         GuineuCore.getTaskController().addTasks(tasks);

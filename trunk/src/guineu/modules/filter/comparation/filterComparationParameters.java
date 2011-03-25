@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,10 +17,9 @@
  */
 package guineu.modules.filter.comparation;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.NumberParameter;
 
 /**
  *
@@ -28,11 +27,11 @@ import guineu.data.impl.SimpleParameterSet;
  */
 public class filterComparationParameters extends SimpleParameterSet {
 
-    public static final Parameter difference = new SimpleParameter(
-            ParameterType.DOUBLE, "Maximun difference between intensities",
-            "Maximun difference between intensities", "", new Double(15), null, null);
+        public static final NumberParameter difference = new NumberParameter(
+                "Maximun difference between intensities",
+                "Maximun difference between intensities", null, new Double(15));
 
-    public filterComparationParameters() {
-        super(new Parameter[]{difference});
-    }
+        public filterComparationParameters() {
+                super(new UserParameter[]{difference});
+        }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,19 +17,18 @@
  */
 package guineu.modules.configuration.tables.LCMS;
 
-import guineu.data.ParameterSet;
 import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.impl.DesktopParameters;
+import guineu.desktop.preferences.ColumnsLCMSParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,84 +44,67 @@ import javax.swing.table.TableModel;
  */
 public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
-	private SimpleParameterSet parameters;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private SimpleParameterSet parameters;
 
-	public void initModule() {
-		this.desktop = GuineuCore.getDesktop();
-		desktop.addMenuItem(GuineuMenu.CONFIGURATION, "LCMS Table View..",
-				"Configuration of view of the LC-MS table columns", KeyEvent.VK_L, this, null, "icons/conf1.png");
-		parameters = new LCMSColumnsViewParameters();
+        public LCMSColumnsView() {
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "LCMS Table View..",
+                        "Configuration of view of the LC-MS table columns", KeyEvent.VK_L, this, null, "icons/conf1.png");
+                parameters = GuineuCore.getLCMSColumnsParameters();
+        }
 
-	}
+        public void taskStarted(Task task) {
+                logger.info("Running LCMS Table View");
+        }
 
-	public void taskStarted(Task task) {
-		logger.info("Running LCMS Table View");
-	}
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished LCMS Table View ");
+                }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished LCMS Table View ");
-		}
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+                        String msg = "Error while LCMS Table View  .. ";
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-			String msg = "Error while LCMS Table View  .. ";
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
+                }
+        }
 
-		}
-	}
+        public void actionPerformed(ActionEvent e) {
 
-	public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+                runModule();
+        }
 
-		ExitCode exitCode = setupParameters();
-		if (exitCode != ExitCode.OK) {
-			return;
-		}
-		((DesktopParameters) desktop.getParameterSet()).setViewLCMSParameters((LCMSColumnsViewParameters) parameters);
-		runModule();
-	}
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
 
-	public ExitCode setupParameters() {
-		try {
-			ParameterSetupDialog dialog = new ParameterSetupDialog("LCMS Table View parameters", parameters);
-			dialog.setVisible(true);
+        public String toString() {
+                return "LCMS Table View";
+        }
 
-			return dialog.getExitCode();
-		} catch (Exception exception) {
-			return ExitCode.CANCEL;
-		}
-	}
-
-	public ParameterSet getParameterSet() {
-		return parameters;
-	}
-
-	public void setParameters(ParameterSet parameterValues) {
-		parameters = (LCMSColumnsViewParameters) parameterValues;
-	}
-
-	public String toString() {
-		return "LCMS Table View";
-	}
-
-	public Task[] runModule() {
-		JInternalFrame[] frames = desktop.getInternalFrames();
-		for (int i = 0; i < frames.length; i++) {
-			try {
-				JTable table = ((DataInternalFrame) frames[i]).getTable();
-				TableModel model = table.getModel();
-				if (model.getClass().toString().contains("DatasetLCMSDataModel")) {
-					((DatasetLCMSDataModel) model).setParameters();
-				}
-				table.setModel(model);
-				table.createDefaultColumnsFromModel();
-				table.revalidate();
-			} catch (Exception e) {
-			}
-		}
-		return null;
-	}
+        public Task[] runModule() {
+                JInternalFrame[] frames = desktop.getInternalFrames();
+                for (int i = 0; i < frames.length; i++) {
+                        try {
+                                JTable table = ((DataInternalFrame) frames[i]).getTable();
+                                TableModel model = table.getModel();
+                                if (model.getClass().toString().contains("DatasetLCMSDataModel")) {
+                                        ((DatasetLCMSDataModel) model).setParameters();
+                                }
+                                table.setModel(model);
+                                table.createDefaultColumnsFromModel();
+                                table.revalidate();
+                        } catch (Exception e) {
+                        }
+                }
+                return null;
+        }
 }

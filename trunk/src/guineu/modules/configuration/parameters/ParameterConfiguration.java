@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.configuration.parameters;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -42,8 +42,7 @@ public class ParameterConfiguration implements GuineuModule, TaskListener, Actio
         private Desktop desktop;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public void initModule() {
-
+        public ParameterConfiguration() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Parameters Configuration..",
                         "Parameters configuration", KeyEvent.VK_P, this, null, null);
@@ -74,15 +73,13 @@ public class ParameterConfiguration implements GuineuModule, TaskListener, Actio
                         dialog.setVisible(true);
                 }
         }
-
-        public ParameterSet getParameterSet() {
-                return null;
-        }
-
-        public void setParameters(ParameterSet parameterValues) {
-        }
+       
 
         public String toString() {
                 return "Parameters configuration";
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
         }
 }

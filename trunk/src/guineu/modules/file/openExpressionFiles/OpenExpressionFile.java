@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,17 +18,16 @@
 package guineu.modules.file.openExpressionFiles;
 
 
-import guineu.data.ParameterSet;
-import guineu.data.impl.SimpleParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
+import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -44,7 +43,7 @@ public class OpenExpressionFile implements GuineuModule, TaskListener, ActionLis
     private Desktop desktop;
     private SimpleParameterSet parameters;
 
-    public void initModule() {
+    public OpenExpressionFile() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILE, "Open Gene Expression Files..",
                 "Open Gene Expresion Files (Assaig, Feature and Pheno)", KeyEvent.VK_L, this, null, null);
@@ -68,24 +67,10 @@ public class OpenExpressionFile implements GuineuModule, TaskListener, ActionLis
 
         }
     }
-
-    public ExitCode setupParameters() {
-        try {
-            ParameterSetupDialog dialog = new ParameterSetupDialog("Gene Expression View parameters", parameters);
-            dialog.setVisible(true);
-            return dialog.getExitCode();
-        } catch (Exception exception) {
-            return ExitCode.CANCEL;
-        }
-    }
-
+   
     public ParameterSet getParameterSet() {
         return parameters;
-    }
-
-    public void setParameters(ParameterSet parameterValues) {
-        parameters = (SimpleParameterSet) parameterValues;
-    }
+    }   
 
     @Override
     public String toString() {
@@ -100,7 +85,7 @@ public class OpenExpressionFile implements GuineuModule, TaskListener, ActionLis
     }
 
     public void actionPerformed(ActionEvent arg0) {
-        ExitCode exitCode = setupParameters();
+        ExitCode exitCode = parameters.showSetupDialog();
         if (exitCode != ExitCode.OK) {
             return;
         }

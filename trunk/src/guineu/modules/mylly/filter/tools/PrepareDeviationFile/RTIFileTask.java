@@ -1,6 +1,19 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2007-2011 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
 package guineu.modules.mylly.filter.tools.PrepareDeviationFile;
 
@@ -28,158 +41,158 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class RTIFileTask implements Task {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private String fileName;
-    private String outputFileName;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private String fileName;
+        private String outputFileName;
 
-    public RTIFileTask(RTIFileParameters parameters) {       
-        fileName = (String) parameters.getParameterValue(RTIFileParameters.fileNames);
-        outputFileName = (String) parameters.getParameterValue(RTIFileParameters.outputFileNames);
-    }
-
-    public String getTaskDescription() {
-        return "Filtering files with Prepare RTI File... ";
-    }
-
-    public double getFinishedPercentage() {
-        return 1f;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        status = TaskStatus.PROCESSING;
-        try {
-            createNewFile();           
-            status = TaskStatus.FINISHED;
-        } catch (Exception ex) {
-            Logger.getLogger(RTIFileTask.class.getName()).log(Level.SEVERE, null, ex);
-            status = TaskStatus.ERROR;
-        }
-    }
-
-    private void createNewFile() throws FileNotFoundException, IOException {
-        BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
-        List<RIList> names = new ArrayList<RIList>();
-        String line;
-        RIList list = null;
-        while ((line = br.readLine()) != null) {
-            if (line.contains("Name:")) {
-                if (list != null) {
-                    names.add(list);
-                }
-                list = new RIList();
-                line = line.substring(line.indexOf("Name:") + 6);
-                list.names = line.split(", ");
-            }
-            if (line.contains("CAS#:")) {
-                if (list != null) {
-                    list.CAS = line.substring(line.indexOf("CAS#:") + 6, line.indexOf(" NIST#"));
-                }
-            }
-
-            if (line.contains("Value:") == true) {
-                if (list != null && list.RI == 0) {
-                    line = line.substring(line.indexOf("Value:") + 7, line.indexOf("iu"));
-                    list.RI = Double.valueOf(line).doubleValue();
-                    line = br.readLine();
-                    if (line.contains("Column Type")) {
-                        line = line.substring(line.indexOf("Type:") + 6);
-                        list.columnType = line;
-                    }
-                    if (line.contains("Column Type: Capillary")) {
-                        list.cap = true;
-                    }
-                } else if (list != null && list.RI != 0) {
-                    line = line.substring(line.indexOf("Value:") + 7, line.indexOf("iu"));
-                    double value = Double.valueOf(line).doubleValue();
-                    line = br.readLine();
-                    if ((line.contains("Column Type: Capillary") && !list.cap) || list.columnType.length() == 0) {
-                        list.RI = value;
-                        line = line.substring(line.indexOf("Type:") + 6);
-                        list.columnType = line;
-                        list.cap = true;
-                    }
-
-                }
-            }
-        }
-        try {
-            createXMLFile(names);
-        } catch (SAXException ex) {
-            Logger.getLogger(RTIFileTask.class.getName()).log(Level.SEVERE, null, ex);
+        public RTIFileTask(RTIFileParameters parameters) {
+                fileName = parameters.getParameter(RTIFileParameters.fileNames).getValue().getAbsolutePath();
+                outputFileName = parameters.getParameter(RTIFileParameters.outputFileNames).getValue().getAbsolutePath();
         }
 
-    }
+        public String getTaskDescription() {
+                return "Filtering files with Prepare RTI File... ";
+        }
 
-    private void createXMLFile(List<RIList> names) throws FileNotFoundException, IOException, SAXException {
-        FileOutputStream fos = new FileOutputStream(this.outputFileName);
-        // XERCES 1 or 2 additionnal classes.
-        OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-        of.setIndent(1);
-        of.setIndenting(true);
-        of.setEncoding("utf-8");
-        XMLSerializer serializer = new XMLSerializer(fos, of);
-        // SAX2.0 ContentHandler.
-        ContentHandler hd = serializer.asContentHandler();
-        hd.startDocument();
+        public double getFinishedPercentage() {
+                return 1f;
+        }
 
-        // USER attributes.
-        AttributesImpl atts = new AttributesImpl();
-        // USERS tag.
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-        atts.clear();
-        hd.startElement("", "", "Data", atts);
-        for (RIList list : names) {
-            atts.clear();
-            hd.startElement("", "", "Metabolite", atts);
-            for (String name : list.names) {
+        public String getErrorMessage() {
+                return errorMessage;
+        }
+
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
+
+        public void run() {
+                status = TaskStatus.PROCESSING;
+                try {
+                        createNewFile();
+                        status = TaskStatus.FINISHED;
+                } catch (Exception ex) {
+                        Logger.getLogger(RTIFileTask.class.getName()).log(Level.SEVERE, null, ex);
+                        status = TaskStatus.ERROR;
+                }
+        }
+
+        private void createNewFile() throws FileNotFoundException, IOException {
+                BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
+                List<RIList> names = new ArrayList<RIList>();
+                String line;
+                RIList list = null;
+                while ((line = br.readLine()) != null) {
+                        if (line.contains("Name:")) {
+                                if (list != null) {
+                                        names.add(list);
+                                }
+                                list = new RIList();
+                                line = line.substring(line.indexOf("Name:") + 6);
+                                list.names = line.split(", ");
+                        }
+                        if (line.contains("CAS#:")) {
+                                if (list != null) {
+                                        list.CAS = line.substring(line.indexOf("CAS#:") + 6, line.indexOf(" NIST#"));
+                                }
+                        }
+
+                        if (line.contains("Value:") == true) {
+                                if (list != null && list.RI == 0) {
+                                        line = line.substring(line.indexOf("Value:") + 7, line.indexOf("iu"));
+                                        list.RI = Double.valueOf(line).doubleValue();
+                                        line = br.readLine();
+                                        if (line.contains("Column Type")) {
+                                                line = line.substring(line.indexOf("Type:") + 6);
+                                                list.columnType = line;
+                                        }
+                                        if (line.contains("Column Type: Capillary")) {
+                                                list.cap = true;
+                                        }
+                                } else if (list != null && list.RI != 0) {
+                                        line = line.substring(line.indexOf("Value:") + 7, line.indexOf("iu"));
+                                        double value = Double.valueOf(line).doubleValue();
+                                        line = br.readLine();
+                                        if ((line.contains("Column Type: Capillary") && !list.cap) || list.columnType.length() == 0) {
+                                                list.RI = value;
+                                                line = line.substring(line.indexOf("Type:") + 6);
+                                                list.columnType = line;
+                                                list.cap = true;
+                                        }
+
+                                }
+                        }
+                }
+                try {
+                        createXMLFile(names);
+                } catch (SAXException ex) {
+                        Logger.getLogger(RTIFileTask.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+        }
+
+        private void createXMLFile(List<RIList> names) throws FileNotFoundException, IOException, SAXException {
+                FileOutputStream fos = new FileOutputStream(this.outputFileName);
+                // XERCES 1 or 2 additionnal classes.
+                OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
+                of.setIndent(1);
+                of.setIndenting(true);
+                of.setEncoding("utf-8");
+                XMLSerializer serializer = new XMLSerializer(fos, of);
+                // SAX2.0 ContentHandler.
+                ContentHandler hd = serializer.asContentHandler();
+                hd.startDocument();
+
+                // USER attributes.
+                AttributesImpl atts = new AttributesImpl();
+                // USERS tag.
+
                 atts.clear();
-                hd.startElement("", "", "Name", atts);
-                hd.characters(name.toCharArray(), 0, name.length());
-                hd.endElement("", "", "Name");
-            }
-            atts.clear();
-            hd.startElement("", "", "CAS", atts);
-            hd.characters(list.CAS.toCharArray(), 0, list.CAS.length());
-            hd.endElement("", "", "CAS");
-            atts.clear();
-            hd.startElement("", "", "RI", atts);
-            String value = String.valueOf(list.RI);
-            hd.characters(value.toCharArray(), 0, value.length());
-            hd.endElement("", "", "RI");
+                hd.startElement("", "", "Data", atts);
+                for (RIList list : names) {
+                        atts.clear();
+                        hd.startElement("", "", "Metabolite", atts);
+                        for (String name : list.names) {
+                                atts.clear();
+                                hd.startElement("", "", "Name", atts);
+                                hd.characters(name.toCharArray(), 0, name.length());
+                                hd.endElement("", "", "Name");
+                        }
+                        atts.clear();
+                        hd.startElement("", "", "CAS", atts);
+                        hd.characters(list.CAS.toCharArray(), 0, list.CAS.length());
+                        hd.endElement("", "", "CAS");
+                        atts.clear();
+                        hd.startElement("", "", "RI", atts);
+                        String value = String.valueOf(list.RI);
+                        hd.characters(value.toCharArray(), 0, value.length());
+                        hd.endElement("", "", "RI");
 
-            atts.clear();
-            atts.addAttribute("", "", "Type", "CDATA", list.columnType);
-            hd.startElement("", "", "Column", atts);
-            hd.endElement("", "", "ColumnType");
+                        atts.clear();
+                        atts.addAttribute("", "", "Type", "CDATA", list.columnType);
+                        hd.startElement("", "", "Column", atts);
+                        hd.endElement("", "", "ColumnType");
 
-            hd.endElement("", "", "Metabolite");
+                        hd.endElement("", "", "Metabolite");
+                }
+                hd.endElement("", "", "Data");
+                hd.endDocument();
+                fos.close();
         }
-        hd.endElement("", "", "Data");
-        hd.endDocument();
-        fos.close();
-    }
 
-    class RIList {
+        class RIList {
 
-        boolean cap = false;
-        String columnType = "";
-        String[] names;
-        String CAS = "";
-        double RI = 0;
-        String[] synonims;
-        String Spectrum;
-    }    
+                boolean cap = false;
+                String columnType = "";
+                String[] names;
+                String CAS = "";
+                double RI = 0;
+                String[] synonims;
+                String Spectrum;
+        }
 }

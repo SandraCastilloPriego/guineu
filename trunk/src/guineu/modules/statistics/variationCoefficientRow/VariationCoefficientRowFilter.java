@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,14 +18,14 @@
 package guineu.modules.statistics.variationCoefficientRow;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
- 
+
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -39,70 +39,66 @@ import java.util.logging.Logger;
  */
 public class VariationCoefficientRowFilter implements GuineuModule, TaskListener, ActionListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
 
-    public void initModule() {
+        public VariationCoefficientRowFilter() {
 
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.STATISTICS, "Coefficient of variation on each row..",
-                "Add a new column with the coefficient of variation of all the samples for each row", KeyEvent.VK_D, this, null, "icons/coefficientRow.png");
-
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Coefficient of variation....");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Coefficient of variation on " + ((variationCoefficientRowFilterTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Coefficient of variation on .. " + ((variationCoefficientRowFilterTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+                this.desktop = GuineuCore.getDesktop();
+                desktop.addMenuItem(GuineuMenu.STATISTICS, "Coefficient of variation on each row..",
+                        "Add a new column with the coefficient of variation of all the samples for each row", KeyEvent.VK_D, this, null, "icons/coefficientRow.png");
 
         }
-    }
 
-    public void actionPerformed(ActionEvent e) {
-        ExitCode exitCode = setupParameters();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public void taskStarted(Task task) {
+                logger.info("Running Coefficient of variation....");
         }
 
-        runModule();
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Coefficient of variation on " + ((variationCoefficientRowFilterTask) task).getTaskDescription());
+                }
 
-    public ExitCode setupParameters() {
-        return ExitCode.OK;
-    }
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }
+                        String msg = "Error while Coefficient of variation on .. " + ((variationCoefficientRowFilterTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-    public void setParameters(ParameterSet parameterValues) {
+                }
+        }
 
-    }
+        public void actionPerformed(ActionEvent e) {
+                ExitCode exitCode = setupParameters();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
 
-    @Override
-    public String toString() {
-        return "Coefficient of variation";
-    }
+                runModule();
+        }
 
-    public Task[] runModule() {
+        public ExitCode setupParameters() {
+                return ExitCode.OK;
+        }
 
-        // prepare a new group of tasks
-        Dataset[] datasets = desktop.getSelectedDataFiles();
-        Task tasks[] = new variationCoefficientRowFilterTask[1];
-        tasks[0] = new variationCoefficientRowFilterTask(datasets);
-        GuineuCore.getTaskController().addTasks(tasks);
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-        return tasks;
+        @Override
+        public String toString() {
+                return "Coefficient of variation";
+        }
 
-    }
+        public Task[] runModule() {
+
+                // prepare a new group of tasks
+                Dataset[] datasets = desktop.getSelectedDataFiles();
+                Task tasks[] = new variationCoefficientRowFilterTask[1];
+                tasks[0] = new variationCoefficientRowFilterTask(datasets);
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+        }
 }

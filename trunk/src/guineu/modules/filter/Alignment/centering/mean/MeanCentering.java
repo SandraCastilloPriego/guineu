@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.filter.Alignment.centering.mean;
 
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -36,79 +36,71 @@ import java.util.logging.Logger;
  */
 public class MeanCentering implements GuineuModule, TaskListener, ActionListener {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Desktop desktop;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
 
-	public void initModule() {
+        public MeanCentering() {
 
-		this.desktop = GuineuCore.getDesktop();
+                this.desktop = GuineuCore.getDesktop();
 
-		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Mean centering..",
-				"Mean centering", KeyEvent.VK_M, this, null, null);
-	}
+                desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Mean centering..",
+                        "Mean centering", KeyEvent.VK_M, this, null, null);
+        }
 
-	public String toString() {
-		return "Mean centering";
-	}
+        public String toString() {
+                return "Mean centering";
+        }
 
-	
-	public ParameterSet getParameterSet() {
-		return null;
-	}
+        public ParameterSet getParameterSet() {
+                return null;
+        }
 
-	public void setParameters(ParameterSet parameters) {
-	}
+        public void actionPerformed(ActionEvent e) {
 
-	
+                Dataset[] peakLists = desktop.getSelectedDataFiles();
 
-	
-	public void actionPerformed(ActionEvent e) {
+                if (peakLists.length == 0) {
+                        desktop.displayErrorMessage("Please select peak lists for Mean centering");
+                        return;
+                }
 
-		Dataset[] peakLists = desktop.getSelectedDataFiles();
+                runModule(null, peakLists, null);
 
-		if (peakLists.length == 0) {
-			desktop.displayErrorMessage("Please select peak lists for Mean centering");
-			return;
-		}
-		
-		runModule(null, peakLists, null);
+        }
 
-	}
+        public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
+                ParameterSet parameters) {
 
-	
-	public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
-			ParameterSet parameters) {
+                // check peak lists
+                if ((peakLists == null) || (peakLists.length == 0)) {
+                        desktop.displayErrorMessage("Please select peak lists for Mean centering");
+                        return null;
+                }
 
-		// check peak lists
-		if ((peakLists == null) || (peakLists.length == 0)) {
-			desktop.displayErrorMessage("Please select peak lists for Mean centering");
-			return null;
-		}
+                // prepare a new group with just one task
+                Task task = new MeanCenteringTask(peakLists);
 
-		// prepare a new group with just one task
-		Task task = new MeanCenteringTask(peakLists);
+                GuineuCore.getTaskController().addTask(task);
 
-		GuineuCore.getTaskController().addTask(task);
+                return new Task[]{task};
 
-		return new Task[]{task};
+        }
 
-	}
+        public void taskStarted(Task task) {
+                logger.info("Running Mean centering");
+        }
 
-	public void taskStarted(Task task) {
-		logger.info("Running Mean centering");
-	}
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Mean centering on " + ((MeanCenteringTask) task).getTaskDescription());
+                }
 
-	public void taskFinished(Task task) {
-		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished Mean centering on " + ((MeanCenteringTask) task).getTaskDescription());
-		}
+                if (task.getStatus() == TaskStatus.ERROR) {
 
-		if (task.getStatus() == TaskStatus.ERROR) {
+                        String msg = "Error while Mean centering on .. " + ((MeanCenteringTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
 
-			String msg = "Error while Mean centering on .. " + ((MeanCenteringTask) task).getErrorMessage();
-			logger.severe(msg);
-			desktop.displayErrorMessage(msg);
-
-		}
-	}
+                }
+        }
 }
