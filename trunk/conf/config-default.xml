@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration> 
+  <modules> 
+    <!-- DATABASE -->  
+    <module class="guineu.modules.database.saveDatasetDB.SaveFileDB"/> 
+    <module class="guineu.modules.database.openDataDB.OpenFileDB"/>  
+    <module class="guineu.modules.database.deleteDataDB.DeleteDatasetDB"/>  
+    <!-- FILES -->     
+    <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile"/>  
+    <module class="guineu.modules.mylly.openGCGCDatasetFile.OpenFile"/> 
+    <module class="guineu.modules.mylly.openFiles.OpenFiles"/>  
+    <!-- OPEN EXPERIMENT DATA: <module class="guineu.modules.file.openExperimentsData.OpenFile"/>-->  
+    <module class="guineu.modules.file.openBasicFiles.OpenBasicFile"/>  
+    <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  
+    <module class="guineu.modules.file.openExpressionFiles.OpenExpressionFile"/> 
+    <!-- OPEN MASS LYNX FILES: <module class="guineu.modules.file.openMassLynxFiles.Tuulikki.OpenFile"/> -->  
+    <module class="guineu.modules.file.exit.ExitProgram"/>  
+    <!-- DATABASE SAVE FILE: <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
+    <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"/> 
+    <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView"/> 
+    <module class="guineu.modules.configuration.parameters.ParameterConfiguration"/>  
+    <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"/> 
+    <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering"/>  
+    <module class="guineu.modules.filter.Alignment.centering.median.MedianCentering"/>  
+    <module class="guineu.modules.filter.Alignment.normalizationSTD.STDNormalization"/>  
+    <!-- CONCATETANE FILTER: <module class="guineu.modules.filter.concatenation.filterConcatenate"/>  -->  
+    <module class="guineu.modules.filter.transpose.TransposeFilter"/>  
+    <module class="guineu.modules.filter.splitdatasets.Split"/>  
+    <!-- RELATED PEAKS FILTER: <module class="guineu.modules.filter.relatedpeaks.RelatedPeaksFilter"/> -->  
+    <module class="guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilter"/> 
+    <!-- REPORTING MODULES -->  
+    <module class="guineu.modules.filter.report.qualityReport.Report"/> 
+    <module class="guineu.modules.database.openQualityControlFileDB.OpenFileDB"/>  
+    <module class="guineu.modules.filter.report.RTShift.Report"/> 
+    <module class="guineu.modules.filter.report.intensitiesReport.Report"/> 
+    <!-- IDENTIFICATION -->  
+    <module class="guineu.modules.filter.commonmolecules.CommonMolecules"/>  
+    <module class="guineu.modules.filter.dataselection.DataSelection"/>  
+    <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch"/> 
+    <!-- DATABASE IDENTIFICATION: <module class="guineu.modules.identification.identification.Identification"/>  -->  
+    <module class="guineu.modules.identification.AdductSearch.AdductSearch"/> 
+    <!-- DATABASE ESI NEGATIVE IDENTIFICATION: <module class="guineu.modules.identification.identificationNeg.Identification"/> -->  
+    <module class="guineu.modules.identification.simplelipidname.SimpleLipidNameFilter"/>  
+    <module class="guineu.modules.identification.purgeIdentification.purgeIdentification"/>  
+    <module class="guineu.modules.identification.normalizationserum.NormalizeSerumFilter"/>  
+    <module class="guineu.modules.identification.normalizationtissue.NormalizeTissueFilter"/>  
+    <module class="guineu.modules.identification.linearnormalization.LinearNormalizer"/> 
+    <!-- NOMIS NORMALIZATION: <module class="guineu.modules.identification.normalizationNOMIS.NormalizeNOMISFilter"/> -->  
+    <!-- NOMIS NORMALIZATION: <module class="guineu.modules.identification.normalizationNOMIS2.NormalizeNOMISFilter"/> -->  
+    <module class="guineu.modules.statistics.variationCoefficient.VariationCoefficient"/>  
+    <module class="guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRowFilter"/>  
+    <module class="guineu.modules.statistics.foldChanges.Foldtest"/>  
+    <module class="guineu.modules.statistics.Ttest.Ttest"/>  
+    <module class="guineu.modules.statistics.PCA.ProjectionPlot"/> 
+    <!-- UPGMA MODULE: <module class="guineu.modules.statistics.UPGMAClustering.UPGMA"/>  -->  
+    <module class="guineu.modules.statistics.Media.mediaFilter"/>  
+    <module class="guineu.modules.statistics.anova.AnovaTest"/> 
+    <module class="guineu.modules.statistics.clustering.ClusteringTest"/> 
+    <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->  
+    <!-- STANDARD VARIATION MODULE: <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
+    <!-- OPEN MSMS FILE:<module class="guineu.modules.msms.open.OpenFile"/> -->  
+    <!--<module class="guineu.modules.mylly.alignment.ransacAligner.ScoreAlignment"/> -->
+    <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"/> 
+    <!-- <module class="guineu.modules.mylly.filter.alkaneRTCorrector.AlkaneRTICorrectorFilter"/> -->  
+    <module class="guineu.modules.mylly.filter.NameFilter.NameFilter"/> 
+    <module class="guineu.modules.mylly.filter.calculateDeviations.CalculateDeviations"/> 
+    <module class="guineu.modules.mylly.filter.pubChem.PubChemFilter"/> 
+    <module class="guineu.modules.mylly.filter.GroupIdentification.GroupIdentificationFilter"/>  
+    <module class="guineu.modules.mylly.filter.NameGolmIdentification.NameGolmIdentificationFilter"/>  
+    <module class="guineu.modules.mylly.filter.pubChem.GolmIdentification.GetGolmIDsFilter"/>  
+    <module class="guineu.modules.mylly.filter.classIdentification.ClassIdentificationFilter"/> 
+    <module class="guineu.modules.mylly.filter.peakCounter.PeakCountFilter"/> 
+    <module class="guineu.modules.mylly.filter.SimilarityFilter.SimilarityFilter"/> 
+    <module class="guineu.modules.mylly.filter.singlingFilter.SinglingFilter"/> 
+    <module class="guineu.modules.mylly.filter.linearNormalizer.LinearNormalizerFilter"/>  
+    <module class="guineu.modules.mylly.filter.NonPolarComponents.removeNonPolarFilter"/>  
+    <module class="guineu.modules.mylly.filter.tools.PrepareDeviationFile.RTIFile"/> 
+    <module class="guineu.modules.mylly.filter.ConcentrationsFromMass.ConcentrationsFromMassFilter"/>  
+
+  </modules>  
+  <preferences>
+    <format type="m/z">
+      <type>NUMBER</type>
+      <pattern>#0.0000</pattern>
+    </format>
+    <format type="Retention time">
+      <type>TIME</type>
+      <pattern>H:mm:ss</pattern>
+    </format>
+    <format type="Intensity">
+      <type>NUMBER</type>
+      <pattern>#0.0</pattern>
+    </format>
+    <mainwindow>
+      <x>0</x>
+      <y>22</y>
+      <width>-1</width>
+      <height>-1</height>
+    </mainwindow>
+    <threads auto="true">4</threads>
+    <proxy_settings>
+      <proxy_address></proxy_address>
+      <proxy_port></proxy_port>
+    </proxy_settings>
+  </preferences> 
+</configuration>
