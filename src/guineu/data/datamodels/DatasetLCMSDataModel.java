@@ -24,19 +24,11 @@ import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
-import guineu.desktop.numberFormat.RTFormatter;
-import guineu.desktop.numberFormat.RTFormatterType;
 import guineu.desktop.preferences.ColumnsLCMSParameters;
-import guineu.desktop.preferences.GuineuPreferences;
 import guineu.main.GuineuCore;
 import guineu.util.Tables.DataTableModel;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 
 public class DatasetLCMSDataModel extends AbstractTableModel implements DataTableModel {
@@ -113,10 +105,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
                         SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
                         if (column < this.fixNumberColumns) {
                                 Object value = peakRow.getVar(columns.get(column).getGetFunctionName());
-                                if (columns.get(column) == LCMSColumnName.RT) {
-                                        NumberFormat RTformat = GuineuCore.getRTFormat();
-                                        return RTformat.format((Double) value);
-                                } else if (columns.get(column) == LCMSColumnName.STANDARD) {
+                                if (columns.get(column) == LCMSColumnName.STANDARD) {
                                         if ((Integer) value == 0) {
                                                 return false;
                                         }
@@ -155,10 +144,7 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         public void setValueAt(Object aValue, int row, int column) {
                 SimplePeakListRowLCMS peakRow = (SimplePeakListRowLCMS) this.dataset.getRow(row);
                 if (column < this.fixNumberColumns) {
-                        if (columns.get(column) == LCMSColumnName.RT) {
-                                NumberFormat f = new RTFormatter(RTFormatterType.NumberInSec, "#0.00000000");
-                                peakRow.setVar(this.columns.get(column).getSetFunctionName(), f.parse((String)aValue, new ParsePosition(0)));
-                        } else if (columns.get(column) == LCMSColumnName.IDENTIFICATION) {
+                        if (columns.get(column) == LCMSColumnName.IDENTIFICATION) {
                                 if (aValue.toString().contains("NA")) {
                                         peakRow.setVar(this.columns.get(column).getSetFunctionName(), IdentificationType.UNKNOWN.toString());
                                 } else {

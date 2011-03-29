@@ -34,10 +34,10 @@
         <parameter name="PC(34:0)">
             <item>0.0 - 0.0</item>
         </parameter>
-        <parameter name="PE(17:0/17:0)">
+        <parameter name="Cer(d18:1/17:0)">
             <item>0.0 - 0.0</item>
         </parameter>
-        <parameter name="Cer(d18:1/17:0)">
+        <parameter name="PE(17:0/17:0)">
             <item>0.0 - 0.0</item>
         </parameter>
     </Standards>
@@ -138,9 +138,6 @@
         </module>
         <module class="guineu.modules.configuration.general.GeneralConfiguration">
             <parameters>
-                <parameter name="m/z value format">#0.000</parameter>
-                <parameter name="Retention time value format" type="Time">HH:mm:ss</parameter>
-                <parameter name="Intensity format">0.0E0</parameter>
                 <parameter isautomatic="true" name="Number of concurrently running tasks">2</parameter>
                 <parameter name="Use proxy" selected="true">
                     <parameter name="Proxy adress">rohto.vtt.fi</parameter>
@@ -158,10 +155,17 @@
                 <parameter name="m/z tolerance"/>
                 <parameter name="RT tolerance after correction"/>
                 <parameter name="RT tolerance"/>
-                <parameter name="RANSAC Iterations">1000.0</parameter>
+                <parameter name="RANSAC Iterations">1000</parameter>
                 <parameter name="Minimun Number of Points">0.2</parameter>
                 <parameter name="Threshold value">3.0</parameter>
                 <parameter name="Linear model">false</parameter>
+            </parameters>
+        </module>
+        <module class="guineu.modules.filter.Alignment.dynamicProgramming.DynamicAligner">
+            <parameters>
+                <parameter name="Peak list name"/>
+                <parameter name="m/z tolerance"/>
+                <parameter name="RT tolerance"/>
             </parameters>
         </module>
         <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering">
