@@ -52,6 +52,8 @@ import org.xml.sax.SAXException;
 import guineu.desktop.Desktop;
 import guineu.desktop.impl.MainWindow;
 import guineu.desktop.impl.helpsystem.HelpImpl;
+import guineu.desktop.numberFormat.RTFormatter;
+import guineu.desktop.numberFormat.RTFormatterType;
 import guineu.desktop.preferences.ColumnsGCGCParameters;
 import guineu.desktop.preferences.ColumnsLCMSParameters;
 import guineu.desktop.preferences.GuineuPreferences;
@@ -452,7 +454,7 @@ public class GuineuCore implements Runnable {
         }
 
         public static NumberFormat getRTFormat() {
-                return preferences.getParameter(GuineuPreferences.rtFormat).getValue();
+                return new RTFormatter(RTFormatterType.NumberInSec, "0.0");
         }
 
         public static String getGuineuVersion() {
