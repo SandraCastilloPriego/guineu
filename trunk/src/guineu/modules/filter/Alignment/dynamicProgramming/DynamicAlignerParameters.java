@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,36 +17,28 @@
  */
 package guineu.modules.filter.Alignment.dynamicProgramming;
 
-import guineu.data.Parameter;
-import guineu.data.ParameterType;
-import guineu.data.impl.SimpleParameter;
-import guineu.data.impl.SimpleParameterSet;
-import guineu.main.GuineuCore;
+import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.MZToleranceParameter;
+import guineu.parameters.parametersType.RTToleranceParameter;
+import guineu.parameters.parametersType.StringParameter;
 import java.text.NumberFormat;
-
-
 
 public class DynamicAlignerParameters extends SimpleParameterSet {
 
-	public static final NumberFormat percentFormat = NumberFormat
-			.getPercentInstance();
+        public static final NumberFormat percentFormat = NumberFormat.getPercentInstance();
+        public static final StringParameter peakListName = new StringParameter(
+                "Peak list name",
+                "Peak list name");
+        public static final MZToleranceParameter MZTolerance = new MZToleranceParameter(
+                "m/z tolerance",
+                "Maximum allowed M/Z difference");
+        public static final RTToleranceParameter RTTolerance = new RTToleranceParameter(
+                "RT tolerance",
+                "Maximum allowed absolute RT difference");
 
-	public static final Parameter peakListName = new SimpleParameter(
-			ParameterType.STRING, "Peak list name", "Peak list name", null,
-			"Aligned peak list", null);
-
-	public static final Parameter MZTolerance = new SimpleParameter(
-			ParameterType.DOUBLE, "m/z tolerance",
-			"Maximum allowed M/Z difference", "m/z", new Double(0.02),
-			new Double(0.0), null, GuineuCore.getMZFormat());	
-
-	public static final Parameter RTTolerance = new SimpleParameter(
-			ParameterType.DOUBLE, "RT tolerance",
-			"Maximum allowed absolute RT difference", null, new Double(15.0),
-			new Double(0.0), null, GuineuCore.getRTFormat());
-
-	public DynamicAlignerParameters() {
-		super(new Parameter[] { peakListName, MZTolerance,
-				RTTolerance});
-	}
+        public DynamicAlignerParameters() {
+                super(new UserParameter[]{peakListName, MZTolerance,
+                                RTTolerance});
+        }
 }

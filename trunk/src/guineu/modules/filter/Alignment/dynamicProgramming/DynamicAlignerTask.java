@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -51,12 +51,13 @@ public class DynamicAlignerTask implements Task {
 
 		this.peakLists = peakLists;
 
-		// Get parameter values for easier use
-		peakListName = (String) parameters.getParameterValue(DynamicAlignerParameters.peakListName);
+                // Get parameter values for easier use
+                peakListName = parameters.getParameter(DynamicAlignerParameters.peakListName).getValue();
 
-		mzTolerance = (Double) parameters.getParameterValue(DynamicAlignerParameters.MZTolerance);
+                mzTolerance =  parameters.getParameter(DynamicAlignerParameters.MZTolerance).getValue().getTolerance();
 
-		rtTolerance = (Double) parameters.getParameterValue(DynamicAlignerParameters.RTTolerance);
+                rtTolerance =  parameters.getParameter(DynamicAlignerParameters.RTTolerance).getValue().getTolerance();
+
 
 	}
 

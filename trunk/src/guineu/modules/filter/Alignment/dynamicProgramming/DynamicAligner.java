@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 VTT Biotechnology
+ * Copyright 2007-2011 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,18 +17,16 @@
  */
 package guineu.modules.filter.Alignment.dynamicProgramming;
 
-import guineu.modules.filter.Alignment.RANSAC.*;
 import guineu.data.Dataset;
-import guineu.data.ParameterSet;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,7 +41,7 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 	private DynamicAlignerParameters parameters;
 	private Desktop desktop;
 
-	public void initModule() {
+	public DynamicAligner() {
 
 		this.desktop = GuineuCore.getDesktop();
 
@@ -62,19 +60,7 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 	public ParameterSet getParameterSet() {
 		return parameters;
 	}
-
-	public void setParameters(ParameterSet parameters) {
-		this.parameters = (DynamicAlignerParameters) parameters;
-	}
-
 	
-	public ExitCode setupParameters(ParameterSet currentParameters) {
-		ParameterSetupDialog dialog = new ParameterSetupDialog(
-				"Please set parameter values for " + toString(),
-				(DynamicAlignerParameters) currentParameters);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
 
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -89,7 +75,7 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 		}
 
 		// Setup parameters
-		ExitCode exitCode = setupParameters(parameters);
+		ExitCode exitCode = parameters.showSetupDialog();
 		if (exitCode != ExitCode.OK) {
 			return;
 		}
