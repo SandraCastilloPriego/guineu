@@ -17,7 +17,6 @@
  */
 package guineu.modules.filter.Alignment.RANSAC;
 
-import guineu.main.GuineuCore;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
@@ -53,7 +52,7 @@ public class RansacAlignerParameters extends SimpleParameterSet {
         public static final NumberParameter Margin = new NumberParameter(
                 "Threshold value",
                 "Threshold value for determining when a data point fits a model",
-                GuineuCore.getRTFormat(), new Double(3.0));
+                null, new Double(3.0));
         public static final BooleanParameter Linear = new BooleanParameter(
                 "Linear model",
                 "Switch between polynomial model or lineal model", new Boolean(
