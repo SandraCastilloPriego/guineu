@@ -104,6 +104,13 @@ public interface PeakListRow {
         public boolean isSelected();
 
         /**
+         * Sets whether the row will be selected in the table or not.
+         *
+         * @param selectionMode true or false
+         */
+        public void setSelectionMode(boolean selectionMode);
+
+        /**
          * @see guineu.data.GCGCColumnName
          * @see guineu.data.LCMSColumnName
          *
