@@ -19,6 +19,7 @@ package guineu.modules.filter.dataselection;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
+import guineu.data.GCGCColumnName;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
@@ -261,6 +262,10 @@ public class SelectionBar extends javax.swing.JPanel {
                                     for (LCMSColumnName name : LCMSColumnName.values()) {
                                             this.jComboBox1.addItem(name);
                                     }
+                            } else if (dataset.getType() == DatasetType.GCGCTOF) {
+                                    for (GCGCColumnName name : GCGCColumnName.values()) {
+                                            this.jComboBox1.addItem(name);
+                                    }
                             }
 
                             this.jComboBox1.revalidate();
@@ -293,7 +298,7 @@ public class SelectionBar extends javax.swing.JPanel {
 
         private void select() {
                 try {
-                        this.selectedTable =((DataInternalFrame) desktop.getSelectedFrame()).getTable();
+                        this.selectedTable = ((DataInternalFrame) desktop.getSelectedFrame()).getTable();
                         LCMSColumnName columnName = (LCMSColumnName) this.jComboBox1.getItemAt(this.jComboBox1.getSelectedIndex());
                         Dataset dataset = desktop.getSelectedDataFiles()[0];
 

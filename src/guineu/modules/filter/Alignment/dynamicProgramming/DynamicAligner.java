@@ -80,13 +80,12 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 			return;
 		}
 
-		runModule(null, peakLists, parameters.clone());
+		runModule(peakLists);
 
 	}
 
 	
-	public Task[] runModule(Dataset[] dataFiles, Dataset[] peakLists,
-			ParameterSet parameters) {
+	public Task[] runModule(Dataset[] peakLists) {
 
 		// check peak lists
 		if ((peakLists == null) || (peakLists.length == 0)) {

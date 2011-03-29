@@ -114,7 +114,7 @@ public class DynamicAlignerTask implements Task {
 		// Create a new aligned peak list
 		this.alignedPeakList = peakLists[0].clone();
 
-		this.alignedPeakList.setDatasetName("Aligned Dataset");
+		this.alignedPeakList.setDatasetName(this.peakListName);
 
 		for (Dataset dataset : this.peakLists) {
 			if (dataset != peakLists[0]) {
