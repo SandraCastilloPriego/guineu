@@ -21,8 +21,6 @@ import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskStatus;
-import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import jmprojection.Preprocess;
@@ -61,8 +59,8 @@ public class SammonDataset extends AbstractXYDataset implements
                 this.xAxisDimension = parameters.getParameter(ProjectionPlotParameters.xAxisComponent).getValue();
                 this.yAxisDimension = parameters.getParameter(ProjectionPlotParameters.yAxisComponent).getValue();
 
-                selectedRawDataFiles = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
-                selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
+                selectedRawDataFiles = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
+                selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
 
                 datasetTitle = "Curvilinear distance analysis";
 
