@@ -52,19 +52,7 @@ public class GetGolmIDsFilterTask implements Task {
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
 
-        public GetGolmIDsFilterTask(SimpleGCGCDataset dataset) {
-
-                // Proxy configuration
-                try {
-                        ProxySettings parameters = new ProxySettings();
-                        String proxystr = parameters.getParameter(ProxySettings.proxyAddress).getValue();
-                        if (!proxystr.isEmpty()) {
-                                System.setProperty("http.proxyHost", proxystr);
-                                System.setProperty("http.proxyPort", parameters.getParameter(ProxySettings.proxyPort).getValue());
-                        }
-                } catch (Exception e) {
-                        System.out.println("Bad proxy configuration.");
-                }
+        public GetGolmIDsFilterTask(SimpleGCGCDataset dataset) {               
                 this.dataset = dataset;
         }
 

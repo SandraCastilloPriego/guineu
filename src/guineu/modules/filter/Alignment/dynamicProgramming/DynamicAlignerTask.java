@@ -197,9 +197,9 @@ public class DynamicAlignerTask implements Task {
 				for (int i = 0; i < penalties.length; i++) {
 					matrix.setInsertPenalty(alignedPeakList.getRow(i), penalties[i] + 50);
 				}
-				matrix.computeAlignmentMatrix();
-				matrix.NWAlignment();
-				//matrix.getAlignment();
+				//matrix.computeAlignmentMatrix();
+				//matrix.NWAlignment();
+				matrix.getAlignment();
 
 				List<Integer> masterIndexes = matrix.getMasterIndexes();
 				List<Integer> peakListIndexes = matrix.getPeakListIndexes();

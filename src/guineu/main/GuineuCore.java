@@ -56,13 +56,14 @@ import guineu.desktop.numberFormat.RTFormatter;
 import guineu.desktop.numberFormat.RTFormatterType;
 import guineu.desktop.preferences.ColumnsGCGCParameters;
 import guineu.desktop.preferences.ColumnsLCMSParameters;
-import guineu.desktop.preferences.GuineuPreferences;
+import guineu.modules.configuration.general.GeneralconfigurationParameters;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.TaskController;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -82,7 +83,7 @@ public class GuineuCore implements Runnable {
         public static final String STANDARD_RANGE = "standard_ranges";
         public static final String STANDARD_NAME = "standard_name";
         private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
-        protected static GuineuPreferences preferences;
+        protected static GeneralconfigurationParameters preferences;
         protected static ColumnsLCMSParameters LCMSColumns;
         protected static ColumnsGCGCParameters GCGCColumns;
         protected static TaskController taskController;
@@ -211,7 +212,7 @@ public class GuineuCore implements Runnable {
                 logger.fine("Loading core classes..");
 
                 // create instance of preferences
-                preferences = new GuineuPreferences();
+                preferences = new GeneralconfigurationParameters();               
 
                 LCMSColumns = new ColumnsLCMSParameters();
 
@@ -282,6 +283,7 @@ public class GuineuCore implements Runnable {
 
                 // show the welcome message
                 desktop.setStatusBarText("Welcome to Guineu!");
+                preferences.setProxy();
 
         }
 
@@ -296,7 +298,7 @@ public class GuineuCore implements Runnable {
                 Element configRoot = configuration.createElement("configuration");
                 configuration.appendChild(configRoot);
 
-               /* Element prefElement = configuration.createElement("preferences");
+                /* Element prefElement = configuration.createElement("preferences");
                 configRoot.appendChild(prefElement);
                 preferences.saveValuesToXML(prefElement);*/
 
@@ -373,12 +375,12 @@ public class GuineuCore implements Runnable {
 
                 logger.finest("Loading desktop configuration");
 
-               /* XPathExpression expr = xpath.compile("//configuration/preferences");
+                /* XPathExpression expr = xpath.compile("//configuration/preferences");
                 NodeList nodes = (NodeList) expr.evaluate(configuration,
-                        XPathConstants.NODESET);
+                XPathConstants.NODESET);
                 if (nodes.getLength() == 1) {
-                        Element preferencesElement = (Element) nodes.item(0);
-                        preferences.loadValuesFromXML(preferencesElement);
+                Element preferencesElement = (Element) nodes.item(0);
+                preferences.loadValuesFromXML(preferencesElement);
                 }*/
 
                 XPathExpression expr = xpath.compile("//configuration/LCMSColumns");
@@ -412,7 +414,7 @@ public class GuineuCore implements Runnable {
                                         String rangeString = nextElement.getTextContent();
                                         String[] range = rangeString.split(" - ");
                                         Range r = new Range(Double.valueOf(range[0]), Double.valueOf(range[1]));
-                                        standards.put(paramName, r);                                       
+                                        standards.put(paramName, r);
                                 } catch (Exception e) {
                                         e.printStackTrace();
                                 }
@@ -446,11 +448,11 @@ public class GuineuCore implements Runnable {
 
         // Number formatting functions
         public static NumberFormat getIntensityFormat() {
-                return preferences.getParameter(GuineuPreferences.intensityFormat).getValue();
+                return preferences.getParameter(GeneralconfigurationParameters.intensityFormat).getValue();
         }
 
         public static NumberFormat getMZFormat() {
-                return preferences.getParameter(GuineuPreferences.mzFormat).getValue();
+                return new DecimalFormat("0.000");
         }
 
         public static NumberFormat getRTFormat() {
@@ -461,11 +463,11 @@ public class GuineuCore implements Runnable {
                 return "1.4";
         }
 
-        public static GuineuPreferences getPreferences() {
+        public static GeneralconfigurationParameters getPreferences() {
                 return preferences;
         }
 
-        public static void setPreferences(GuineuPreferences preferences2) {
+        public static void setPreferences(GeneralconfigurationParameters preferences2) {
                 preferences = preferences2;
         }
 

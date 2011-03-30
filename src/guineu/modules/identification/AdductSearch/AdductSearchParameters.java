@@ -37,7 +37,7 @@ public class AdductSearchParameters extends SimpleParameterSet {
                 AdductType.values());
         public static final NumberParameter customAdductValue = new NumberParameter(
                 "Custom adduct value",
-                "Mass value (m/z difference) for custom adduct");
+                "Mass value (m/z difference) for custom adduct", null, new Double(0.0));
         public static final MZToleranceParameter mzTolerance = new MZToleranceParameter(
                 "m/z tolerance",
                 "Tolerance value of the m/z difference between peaks");
