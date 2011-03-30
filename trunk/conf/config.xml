@@ -2,6 +2,7 @@
 <configuration>
     <LCMSColumns>
         <parameter name="Select columns for LC-MS">
+            <item>Selection</item>
             <item>Id</item>
             <item>Average m/z</item>
             <item>Average Retention time</item>
@@ -17,10 +18,19 @@
     </LCMSColumns>
     <GCGCColumns>
         <parameter name="Select columns for GCxGC-MS">
+            <item>Selection</item>
             <item>ID</item>
             <item>RT1</item>
             <item>RT2</item>
             <item>RTI</item>
+            <item>N Found</item>
+            <item>New Cas Number</item>
+            <item>Cas Number</item>
+            <item>Max similarity</item>
+            <item>Mean similarity</item>
+            <item>Similarity std dev</item>
+            <item>Pubchem ID</item>
+            <item>KEGG ID</item>
             <item>Mass</item>
         </parameter>
     </GCGCColumns>
@@ -34,10 +44,10 @@
         <parameter name="PC(34:0)">
             <item>0.0 - 0.0</item>
         </parameter>
-        <parameter name="Cer(d18:1/17:0)">
+        <parameter name="PE(17:0/17:0)">
             <item>0.0 - 0.0</item>
         </parameter>
-        <parameter name="PE(17:0/17:0)">
+        <parameter name="Cer(d18:1/17:0)">
             <item>0.0 - 0.0</item>
         </parameter>
     </Standards>
@@ -78,20 +88,14 @@
                     <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6930_GGT2_rep1run1_310809_1.txt</file>
                     <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6931_GGT2_rep1run1_310809_1.txt</file>
                     <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6932_GGT2_rep1run1_140909_1.txt</file>
-                    <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6933_GGT2_rep1run1_310809_1.txt</file>
-                    <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6934_GGT2_rep1run1_310809_1.txt</file>
-                    <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6935_GGT2_rep1run1_310809_1.txt</file>
                 </parameter>
             </parameters>
         </module>
         <module class="guineu.modules.file.openBasicFiles.OpenBasicFile">
             <parameters>
-                <parameter name="File names"/>
-            </parameters>
-        </module>
-        <module class="guineu.modules.file.openMassLynxFiles.OpenFile">
-            <parameters>
-                <parameter name="Choose the file:"/>
+                <parameter name="File names">
+                    <file>/home/scsandra/Alignment.txt</file>
+                </parameter>
             </parameters>
         </module>
         <module class="guineu.modules.file.openExpressionFiles.OpenExpressionFile">
@@ -108,6 +112,7 @@
         <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView">
             <parameters>
                 <parameter name="Select columns for LC-MS">
+                    <item>Selection</item>
                     <item>Id</item>
                     <item>Average m/z</item>
                     <item>Average Retention time</item>
@@ -125,10 +130,19 @@
         <module class="guineu.modules.configuration.tables.GCGC.GCGCColumnsView">
             <parameters>
                 <parameter name="Select columns for GCxGC-MS">
+                    <item>Selection</item>
                     <item>ID</item>
                     <item>RT1</item>
                     <item>RT2</item>
                     <item>RTI</item>
+                    <item>N Found</item>
+                    <item>New Cas Number</item>
+                    <item>Cas Number</item>
+                    <item>Max similarity</item>
+                    <item>Mean similarity</item>
+                    <item>Similarity std dev</item>
+                    <item>Pubchem ID</item>
+                    <item>KEGG ID</item>
                     <item>Mass</item>
                 </parameter>
             </parameters>
@@ -144,18 +158,18 @@
                     <parameter name="Proxy port">8000</parameter>
                 </parameter>
                 <parameter name="Guineu window state">
-                    <position>0:25</position>
+                    <position>-4:25</position>
                     <size>maximized:maximized</size>
                 </parameter>
             </parameters>
         </module>
         <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner">
             <parameters>
-                <parameter name="Peak list name"/>
-                <parameter name="m/z tolerance"/>
-                <parameter name="RT tolerance after correction"/>
-                <parameter name="RT tolerance"/>
-                <parameter name="RANSAC Iterations">1000</parameter>
+                <parameter name="Peak list name">aligned</parameter>
+                <parameter name="m/z tolerance" type="mz">0.04</parameter>
+                <parameter name="RT tolerance after correction" type="absolute">10.0</parameter>
+                <parameter name="RT tolerance" type="absolute">20.0</parameter>
+                <parameter name="RANSAC Iterations">1000.0</parameter>
                 <parameter name="Minimun Number of Points">0.2</parameter>
                 <parameter name="Threshold value">3.0</parameter>
                 <parameter name="Linear model">false</parameter>
@@ -163,9 +177,9 @@
         </module>
         <module class="guineu.modules.filter.Alignment.dynamicProgramming.DynamicAligner">
             <parameters>
-                <parameter name="Peak list name"/>
-                <parameter name="m/z tolerance"/>
-                <parameter name="RT tolerance"/>
+                <parameter name="Peak list name">sdsadasd</parameter>
+                <parameter name="m/z tolerance" type="mz">0.04</parameter>
+                <parameter name="RT tolerance" type="absolute">5.0</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering">
@@ -186,7 +200,7 @@
         <module class="guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilter">
             <parameters>
                 <parameter name="Multiply by">0.0</parameter>
-                <parameter name="Divide by">0.0</parameter>
+                <parameter name="Divide by">1000.0</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.filter.report.qualityReport.Report">
@@ -217,9 +231,6 @@
                 <parameter name="Use area ">true</parameter>
             </parameters>
         </module>
-        <module class="guineu.modules.filter.commonmolecules.CommonMolecules">
-            <parameters/>
-        </module>
         <module class="guineu.modules.filter.dataselection.DataSelection">
             <parameters/>
         </module>
@@ -244,7 +255,7 @@
             <parameters>
                 <parameter name="Time tolerance"/>
                 <parameter name="Adducts"/>
-                <parameter name="Custom adduct value"/>
+                <parameter name="Custom adduct value">0.0</parameter>
                 <parameter name="m/z tolerance"/>
                 <parameter name="Max adduct peak height">0.2</parameter>
             </parameters>
@@ -263,7 +274,7 @@
         </module>
         <module class="guineu.modules.identification.linearnormalization.LinearNormalizer">
             <parameters>
-                <parameter name="Normalization type"/>
+                <parameter name="Normalization type">Average intensity</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.statistics.variationCoefficient.VariationCoefficient">
@@ -279,7 +290,11 @@
             <parameters/>
         </module>
         <module class="guineu.modules.statistics.PCA.ProjectionPlot">
-            <parameters/>
+            <parameters>
+                <parameter name="Coloring type">No coloring</parameter>
+                <parameter name="X-axis component">1</parameter>
+                <parameter name="Y-axis component">2</parameter>
+            </parameters>
         </module>
         <module class="guineu.modules.statistics.Media.mediaFilter">
             <parameters/>
@@ -342,16 +357,16 @@
         </module>
         <module class="guineu.modules.mylly.filter.peakCounter.PeakCountFilter">
             <parameters>
-                <parameter name="Suffix: "/>
+                <parameter name="Suffix: ">dfgdfg</parameter>
                 <parameter name="Peak Count less than:">2.0</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.mylly.filter.SimilarityFilter.SimilarityFilter">
             <parameters>
-                <parameter name="Suffix: "/>
-                <parameter name="Similarity used: "/>
-                <parameter name="Action: "/>
-                <parameter name="Minimun similarity required:"/>
+                <parameter name="Suffix: ">gdfgdfg</parameter>
+                <parameter name="Similarity used: ">maximum similarity</parameter>
+                <parameter name="Action: ">Remove</parameter>
+                <parameter name="Minimun similarity required:">900</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.mylly.filter.singlingFilter.SinglingFilter">
