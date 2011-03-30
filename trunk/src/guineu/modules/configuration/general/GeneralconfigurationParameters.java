@@ -16,8 +16,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.desktop.preferences;
+package guineu.modules.configuration.general;
 
+import guineu.desktop.preferences.*;
 import guineu.desktop.numberFormat.NumberFormatParameter;
 import guineu.desktop.numberFormat.RTFormatParameter;
 import guineu.desktop.numberFormat.RTFormatter;
@@ -33,7 +34,7 @@ import java.text.DecimalFormat;
 /**
  *
  */
-public class GuineuPreferences extends SimpleParameterSet {
+public class GeneralconfigurationParameters extends SimpleParameterSet {
 
         public static final NumberFormatParameter mzFormat = new NumberFormatParameter(
                 "m/z value format",
@@ -53,10 +54,11 @@ public class GuineuPreferences extends SimpleParameterSet {
                 new ProxySettings());
         public static final WindowStateParameter windowState = new WindowStateParameter();
 
-        public GuineuPreferences() {
+        public GeneralconfigurationParameters() {
                 super(new Parameter[]{numOfThreads, proxySettings, windowState});
         }
 
+        @Override
         public ExitCode showSetupDialog() {
 
                 ExitCode retVal = super.showSetupDialog();
@@ -81,5 +83,20 @@ public class GuineuPreferences extends SimpleParameterSet {
                 }
 
                 return retVal;
+        }
+
+        public void setProxy() {
+                // Update system proxy settings
+                if (getParameter(proxySettings).getValue()) {
+                        ParameterSet proxyParams = getParameter(proxySettings).getEmbeddedParameters();
+                        String address = proxyParams.getParameter(
+                                ProxySettings.proxyAddress).getValue();
+                        String port = proxyParams.getParameter(ProxySettings.proxyPort).getValue();
+                        System.setProperty("http.proxyHost", address);
+                        System.setProperty("http.proxyPort", port);
+                } else {
+                        System.clearProperty("http.proxyHost");
+                        System.clearProperty("http.proxyPort");
+                }
         }
 }

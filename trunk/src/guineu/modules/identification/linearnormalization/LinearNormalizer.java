@@ -65,7 +65,7 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
         public ParameterSet getParameterSet() {
                 return parameters;
         }
-       
+
         public void actionPerformed(ActionEvent e) {
 
                 Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
@@ -81,12 +81,11 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
                         return;
                 }
 
-                runModule(selectedPeakLists, parameters.clone());
+                runModule(selectedPeakLists);
 
         }
 
-        public Task[] runModule(Dataset[] peakLists,
-                ParameterSet parameters) {
+        public Task[] runModule(Dataset[] peakLists) {
 
                 // check peak lists
                 if ((peakLists == null) || (peakLists.length == 0)) {

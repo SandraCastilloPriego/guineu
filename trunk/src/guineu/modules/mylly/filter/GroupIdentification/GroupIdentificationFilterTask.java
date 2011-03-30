@@ -56,19 +56,7 @@ public class GroupIdentificationFilterTask implements Task {
         private double progress = 0.0;
 
         public GroupIdentificationFilterTask(SimpleGCGCDataset dataset) {
-
-                // proxy configuration
-                try {
-                        ProxySettings parameters = new ProxySettings();
-                        String proxystr = parameters.getParameter(ProxySettings.proxyAddress).getValue();
-                        if (!proxystr.isEmpty()) {
-                                System.setProperty("http.proxyHost", proxystr);
-                                System.setProperty("http.proxyPort", parameters.getParameter(ProxySettings.proxyPort).getValue());
-                        }
-                } catch (Exception e) {
-                        System.out.println("Bad proxy configuration.");
-                }
-                this.dataset = dataset;
+               this.dataset = dataset;
         }
 
         public String getTaskDescription() {

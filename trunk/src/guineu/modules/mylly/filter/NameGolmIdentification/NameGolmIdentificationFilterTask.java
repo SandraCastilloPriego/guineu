@@ -56,18 +56,7 @@ public class NameGolmIdentificationFilterTask implements Task {
         private double progress = 0.0;
 
         public NameGolmIdentificationFilterTask(SimpleGCGCDataset dataset) {
-
-                // Proxy configuration
-                try {
-                        ProxySettings parameters = new ProxySettings();
-                        String proxystr = parameters.getParameter(ProxySettings.proxyAddress).getValue();
-                        if (!proxystr.isEmpty()) {
-                                System.setProperty("http.proxyHost", proxystr);
-                                System.setProperty("http.proxyPort", parameters.getParameter(ProxySettings.proxyPort).getValue());
-                        }
-                } catch (Exception e) {
-                        System.out.println("Bad proxy configuration.");
-                }
+                
                 this.dataset = dataset;
         }
 

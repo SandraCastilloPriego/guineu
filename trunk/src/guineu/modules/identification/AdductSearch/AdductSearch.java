@@ -68,13 +68,12 @@ public class AdductSearch implements GuineuModule, ActionListener {
             return;
         }
 
-        runModule(peakLists, parameters.clone());
+        runModule(peakLists);
 
     }
 
     
-    public Task[] runModule(Dataset[] peakLists,
-            ParameterSet parameters) {
+    public Task[] runModule(Dataset[] peakLists) {
         if (peakLists == null) {
             throw new IllegalArgumentException(
                     "Cannot run identification without a peak list");

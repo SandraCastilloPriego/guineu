@@ -19,11 +19,10 @@ package guineu.modules.configuration.general;
 
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.preferences.GuineuPreferences;
+import guineu.desktop.preferences.ProxySettings;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.parameters.ParameterSet;
-import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
@@ -41,15 +40,14 @@ public class GeneralConfiguration implements GuineuModule, TaskListener, ActionL
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
-        private GuineuPreferences parameters;
+        private GeneralconfigurationParameters parameters;
 
         public GeneralConfiguration() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuSeparator(GuineuMenu.CONFIGURATION);
                 desktop.addMenuItem(GuineuMenu.CONFIGURATION, "General configuration..",
                         "General configuration", KeyEvent.VK_G, this, null, null);
-                parameters = new GuineuPreferences();
-                GuineuCore.setPreferences(parameters);
+                parameters = GuineuCore.getPreferences();              
         }
 
         public void taskStarted(Task task) {
@@ -88,6 +86,4 @@ public class GeneralConfiguration implements GuineuModule, TaskListener, ActionL
         public String toString() {
                 return "General configuration";
         }
-
-        
 }

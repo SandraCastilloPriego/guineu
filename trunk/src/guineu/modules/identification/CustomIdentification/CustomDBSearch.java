@@ -37,86 +37,85 @@ import java.util.logging.Logger;
  */
 public class CustomDBSearch implements ActionListener, GuineuModule, TaskListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    public static final String MODULE_NAME = "Custom database search";
-    private Desktop desktop;
-    private CustomDBSearchParameters parameters;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        public static final String MODULE_NAME = "Custom database search";
+        private Desktop desktop;
+        private CustomDBSearchParameters parameters;
 
-    public CustomDBSearch() {
+        public CustomDBSearch() {
 
-        this.desktop = GuineuCore.getDesktop();
+                this.desktop = GuineuCore.getDesktop();
 
-        parameters = new CustomDBSearchParameters();
+                parameters = new CustomDBSearchParameters();
 
-        desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Identification by searching in CSV file",
-                "Custom identification using CSV file",
-                KeyEvent.VK_C, this, null, null);
-    }
-
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }   
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-
-        Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
-
-        if (selectedPeakLists.length < 1) {
-            desktop.displayErrorMessage("Please select a peak list");
-            return;
+                desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Identification by searching in CSV file",
+                        "Custom identification using CSV file",
+                        KeyEvent.VK_C, this, null, null);
         }
 
-        ExitCode exitCode = parameters.showSetupDialog();
-        if (exitCode != ExitCode.OK) {
-            return;
+        public ParameterSet getParameterSet() {
+                return parameters;
         }
 
-        runModule(selectedPeakLists, parameters.clone());
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e) {
 
-    }
+                Dataset[] selectedPeakLists = desktop.getSelectedDataFiles();
 
-    public Task[] runModule(Dataset[] peakLists,
-            ParameterSet parameters) {
+                if (selectedPeakLists.length < 1) {
+                        desktop.displayErrorMessage("Please select a peak list");
+                        return;
+                }
 
-        if (peakLists == null) {
-            throw new IllegalArgumentException(
-                    "Cannot run identification without a peak list");
-        }
-        // prepare a new sequence of tasks
-        Task tasks[] = new CustomDBSearchTask[peakLists.length];
-        for (int i = 0; i < peakLists.length; i++) {
-            tasks[i] = new CustomDBSearchTask(peakLists[i],
-                    (CustomDBSearchParameters) parameters);
-        }
-        GuineuCore.getTaskController().addTasks(tasks);
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
 
-        return tasks;
-
-    }
-
-    
-    public String toString() {
-        return MODULE_NAME;
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running identification");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Transpose Dataset on " + ((CustomDBSearchTask) task).getTaskDescription());
-        }
-
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while Transpose Dataset on .. " + ((CustomDBSearchTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
+                runModule(selectedPeakLists);
 
         }
-    }
+
+        public Task[] runModule(Dataset[] peakLists) {
+
+                if (peakLists == null) {
+                        throw new IllegalArgumentException(
+                                "Cannot run identification without a peak list");
+                }
+                // prepare a new sequence of tasks
+                Task tasks[] = new CustomDBSearchTask[peakLists.length];
+                for (int i = 0; i < peakLists.length; i++) {
+                        tasks[i] = new CustomDBSearchTask(peakLists[i],
+                                (CustomDBSearchParameters) parameters);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+        }
+
+        @Override
+        public String toString() {
+                return MODULE_NAME;
+        }
+
+        public void taskStarted(Task task) {
+                logger.info("Running identification");
+        }
+
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Transpose Dataset on " + ((CustomDBSearchTask) task).getTaskDescription());
+                }
+
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while Transpose Dataset on .. " + ((CustomDBSearchTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
+        }
 }
