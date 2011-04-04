@@ -18,6 +18,6 @@ The text files should contain these columns:
 _Separator_
     The files can have different separators between its fields. This separator can be "," , "space" or "tab" ("\t"). "\t" is the separator used by default.
 _Filter out peaks with classification_
-    When this parameter is checked, all the compounds with anything written in the column "Classification" will be ignore.
+    When this parameter is checked, all the compounds with anything written in the column "Classification" will be ignored.
 _GCGC files_
     Selection of all the files that should be opened
