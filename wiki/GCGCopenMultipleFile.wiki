@@ -9,7 +9,7 @@ CVS or Excel formats are supported by this algorithm. The order of the columns c
 
 These files should contain these columns:
 
-<font size=3>
+<font size=1>
 || *RT1* || *RT2* || *RTI* || *N Found* || *Cas number* || *Max similarity* || *Mean similarity* || *Similarity std dev* || *Metabolite name* || *Metabolite all names* || *Class* || *Pubchem ID* || *Mass* || *Difference* || *Spectrum* || *Sample 1* || *Sample 2* || *...* ||
 ||920||1.77||1570.2||6||0-00-0||942||933.33||4.84||Creatinine, TMS||Creatinine, TMS \\ Creatinine, TMS \\ Creatinine, TMS \\ Creatinine, TMS \\ Creatinine, TMS \\ Creatinine, TMS||null||null||115||0||{{{[ 73:999 , 115:716 , 45:343 , 143:305 , 100:285 , 171:98 , 59:91 , 116:83 , 74:82 , 114:36 , 75:8 ]}}}||393448||392641||...||
 </font>
