@@ -1,4 +1,5 @@
 #labels Featured
+#sidebar GCGCopenMultipleFile
 = Open multiple sample file =
 
 == Description ==
