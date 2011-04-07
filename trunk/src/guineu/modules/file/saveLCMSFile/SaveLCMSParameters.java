@@ -17,15 +17,13 @@
  */
 package guineu.modules.file.saveLCMSFile;
 
-import guineu.desktop.preferences.ColumnsLCMSParameters;
-import guineu.main.GuineuCore;
+import guineu.data.LCMSColumnName;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
-import guineu.parameters.parametersType.MultiChoiceParameter;
 import guineu.parameters.parametersType.StringParameter;
-import guineu.data.LCMSColumnName;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.MultiChoiceParameter;
 
 public class SaveLCMSParameters extends SimpleParameterSet {
 
@@ -39,7 +37,7 @@ public class SaveLCMSParameters extends SimpleParameterSet {
                 ",");
         public static final MultiChoiceParameter<LCMSColumnName> exportLCMS = new MultiChoiceParameter<LCMSColumnName>(
                 "Export GCGC elements",
-                "Multiple selection of row's elements to export", null, GuineuCore.getLCMSColumnsParameters().getParameter(ColumnsLCMSParameters.LCMSdata).getValue());
+                "Multiple selection of row's elements to export",LCMSColumnName.values());
         public static final ComboParameter<String> type = new ComboParameter<String>(
                 "GCGC type",
                 "Type of file", objects);

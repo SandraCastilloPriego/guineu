@@ -212,7 +212,7 @@ public class GuineuCore implements Runnable {
                 logger.fine("Loading core classes..");
 
                 // create instance of preferences
-                preferences = new GeneralconfigurationParameters();               
+                preferences = new GeneralconfigurationParameters();
 
                 LCMSColumns = new ColumnsLCMSParameters();
 
@@ -298,18 +298,6 @@ public class GuineuCore implements Runnable {
                 Element configRoot = configuration.createElement("configuration");
                 configuration.appendChild(configRoot);
 
-                /* Element prefElement = configuration.createElement("preferences");
-                configRoot.appendChild(prefElement);
-                preferences.saveValuesToXML(prefElement);*/
-
-                Element colLCMSElement = configuration.createElement("LCMSColumns");
-                configRoot.appendChild(colLCMSElement);
-                LCMSColumns.saveValuesToXML(colLCMSElement);
-
-                Element colGCGCElement = configuration.createElement("GCGCColumns");
-                configRoot.appendChild(colGCGCElement);
-                GCGCColumns.saveValuesToXML(colGCGCElement);
-
                 Element standardElement = configuration.createElement("Standards");
                 configRoot.appendChild(standardElement);
                 Set<String> set = standards.keySet();
@@ -375,34 +363,8 @@ public class GuineuCore implements Runnable {
 
                 logger.finest("Loading desktop configuration");
 
-                /* XPathExpression expr = xpath.compile("//configuration/preferences");
+                XPathExpression expr = xpath.compile("//configuration/Standards");
                 NodeList nodes = (NodeList) expr.evaluate(configuration,
-                XPathConstants.NODESET);
-                if (nodes.getLength() == 1) {
-                Element preferencesElement = (Element) nodes.item(0);
-                preferences.loadValuesFromXML(preferencesElement);
-                }*/
-
-                XPathExpression expr = xpath.compile("//configuration/LCMSColumns");
-                NodeList nodes = (NodeList) expr.evaluate(configuration,
-                        XPathConstants.NODESET);
-                if (nodes.getLength() == 1) {
-                        Element preferencesElement = (Element) nodes.item(0);
-                        LCMSColumns.loadValuesFromXML(preferencesElement);
-                }
-
-
-                expr = xpath.compile("//configuration/GCGCColumns");
-                nodes = (NodeList) expr.evaluate(configuration,
-                        XPathConstants.NODESET);
-                if (nodes.getLength() == 1) {
-                        Element preferencesElement = (Element) nodes.item(0);
-                        GCGCColumns.loadValuesFromXML(preferencesElement);
-                }
-
-
-                expr = xpath.compile("//configuration/Standards");
-                nodes = (NodeList) expr.evaluate(configuration,
                         XPathConstants.NODESET);
                 if (nodes.getLength() == 1) {
                         Element preferencesElement = (Element) nodes.item(0);

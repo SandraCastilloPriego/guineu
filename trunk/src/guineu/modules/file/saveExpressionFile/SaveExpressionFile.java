@@ -34,67 +34,71 @@ import java.util.logging.Logger;
  */
 public class SaveExpressionFile implements GuineuModule, TaskListener {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
-    private Dataset[] Datasets;
-    private SaveExpressionParameters parameters;
+        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private Desktop desktop;
+        private Dataset[] Datasets;
+        private SaveExpressionParameters parameters;
 
-    public SaveExpressionFile(Dataset[] Datasets) {
-        this.parameters = new SaveExpressionParameters();
-        this.Datasets = Datasets;
-    }
-
-    public void initModule() {
-        ExitCode exitCode = parameters.showSetupDialog();
-        if (exitCode != ExitCode.OK) {
-            return;
-        }
-        runModule();
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("Running Export Dataset");
-    }
-
-    public void taskFinished(Task task) {
-        if (task.getStatus() == TaskStatus.FINISHED) {
-            logger.info("Finished Save Dataset" + ((SaveExpressionFileTask) task).getTaskDescription());
+        public SaveExpressionFile(Dataset[] Datasets, ParameterSet parameters) {
+                this.Datasets = Datasets;
+                this.parameters = (SaveExpressionParameters) parameters;
         }
 
-        if (task.getStatus() == TaskStatus.ERROR) {
-
-            String msg = "Error while save Dataset on .. " + ((SaveExpressionFileTask) task).getErrorMessage();
-            logger.severe(msg);
-            desktop.displayErrorMessage(msg);
-
-        }
-    }
-    
-    public ParameterSet getParameterSet() {
-        return parameters;
-    }  
-
-    @Override
-    public String toString() {
-        return "Save Dataset";
-    }
-
-    public Task[] runModule() {
-
-        // prepare a new group of tasks
-        String path = (String) parameters.getParameter(SaveExpressionParameters.Expressionfilename).getValue().getAbsolutePath();
-        Task tasks[] = new SaveExpressionFileTask[Datasets.length];
-        for (int i = 0; i < Datasets.length; i++) {
-            String newpath = path;
-            if (i > 0) {
-                newpath = path.substring(0, path.length() - 4) + String.valueOf(i) + path.substring(path.length() - 4);
-            }
-            tasks[i] = new SaveExpressionFileTask(Datasets[i], parameters, newpath);
+        public SaveExpressionFile() {
+                this.parameters = new SaveExpressionParameters();
         }
 
-        GuineuCore.getTaskController().addTasks(tasks);
+        public void initModule() {
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode != ExitCode.OK) {
+                        return;
+                }
+                runModule();
+        }
 
-        return tasks;
+        public void taskStarted(Task task) {
+                logger.info("Running Export Data set");
+        }
 
-    }
+        public void taskFinished(Task task) {
+                if (task.getStatus() == TaskStatus.FINISHED) {
+                        logger.info("Finished Save Data set" + ((SaveExpressionFileTask) task).getTaskDescription());
+                }
+
+                if (task.getStatus() == TaskStatus.ERROR) {
+
+                        String msg = "Error while save Datas et on .. " + ((SaveExpressionFileTask) task).getErrorMessage();
+                        logger.severe(msg);
+                        desktop.displayErrorMessage(msg);
+
+                }
+        }
+
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
+
+        @Override
+        public String toString() {
+                return "Save Expression Data set";
+        }
+
+        public Task[] runModule() {
+
+                // prepare a new group of tasks
+                String path = (String) parameters.getParameter(SaveExpressionParameters.Expressionfilename).getValue().getAbsolutePath();
+                Task tasks[] = new SaveExpressionFileTask[Datasets.length];
+                for (int i = 0; i < Datasets.length; i++) {
+                        String newpath = path;
+                        if (i > 0) {
+                                newpath = path.substring(0, path.length() - 4) + String.valueOf(i) + path.substring(path.length() - 4);
+                        }
+                        tasks[i] = new SaveExpressionFileTask(Datasets[i], parameters, newpath);
+                }
+
+                GuineuCore.getTaskController().addTasks(tasks);
+
+                return tasks;
+
+        }
 }

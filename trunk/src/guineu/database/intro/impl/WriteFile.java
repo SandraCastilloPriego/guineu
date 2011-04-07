@@ -31,7 +31,6 @@ import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
 import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.parameters.SimpleParameterSet;
-import guineu.util.CollectionUtils;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

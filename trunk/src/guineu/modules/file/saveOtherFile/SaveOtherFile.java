@@ -28,7 +28,6 @@ import guineu.taskcontrol.TaskStatus;
 
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,10 +41,14 @@ public class SaveOtherFile implements GuineuModule, TaskListener {
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private Dataset[] Datasets;
-        private SimpleParameterSet parameters;
+        private SaveOtherParameters parameters;
 
-        public SaveOtherFile(Dataset[] Datasets) {
+        public SaveOtherFile(Dataset[] Datasets, ParameterSet parameters) {
                 this.Datasets = Datasets;
+                this.parameters = (SaveOtherParameters) parameters;
+        }
+
+        public SaveOtherFile() {
                 parameters = new SaveOtherParameters();
         }
 
@@ -58,17 +61,17 @@ public class SaveOtherFile implements GuineuModule, TaskListener {
         }
 
         public void taskStarted(Task task) {
-                logger.info("Running Save Dataset into Database");
+                logger.info("Running Save Dataset into File");
         }
 
         public void taskFinished(Task task) {
                 if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished Save Dataset" + ((SaveOtherFileTask) task).getTaskDescription());
+                        logger.info("Finished Save Data set" + ((SaveOtherFileTask) task).getTaskDescription());
                 }
 
                 if (task.getStatus() == TaskStatus.ERROR) {
 
-                        String msg = "Error while save Dataset on .. " + ((SaveOtherFileTask) task).getErrorMessage();
+                        String msg = "Error while save Data set on .. " + ((SaveOtherFileTask) task).getErrorMessage();
                         logger.severe(msg);
                         desktop.displayErrorMessage(msg);
 
@@ -81,7 +84,7 @@ public class SaveOtherFile implements GuineuModule, TaskListener {
 
         @Override
         public String toString() {
-                return "Save Dataset";
+                return "Save Other Data set";
         }
 
         public Task[] runModule() {

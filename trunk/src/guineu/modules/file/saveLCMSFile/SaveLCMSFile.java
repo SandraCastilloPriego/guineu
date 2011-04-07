@@ -39,8 +39,12 @@ public class SaveLCMSFile implements GuineuModule, TaskListener {
         private Dataset[] Datasets;
         private SaveLCMSParameters parameters;
 
-        public SaveLCMSFile(Dataset[] Datasets) {
+        public SaveLCMSFile(Dataset[] Datasets, ParameterSet parameters) {
                 this.Datasets = Datasets;
+                this.parameters = (SaveLCMSParameters) parameters;
+        }
+
+        public SaveLCMSFile() {
                 parameters = new SaveLCMSParameters();
         }
 
@@ -53,17 +57,17 @@ public class SaveLCMSFile implements GuineuModule, TaskListener {
         }
 
         public void taskStarted(Task task) {
-                logger.info("Running Save Dataset into Database");
+                logger.info("Running Save Data set into File");
         }
 
         public void taskFinished(Task task) {
                 if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished Save Dataset" + ((SaveLCMSFileTask) task).getTaskDescription());
+                        logger.info("Finished Save Data set" + ((SaveLCMSFileTask) task).getTaskDescription());
                 }
 
                 if (task.getStatus() == TaskStatus.ERROR) {
 
-                        String msg = "Error while save Dataset on .. " + ((SaveLCMSFileTask) task).getErrorMessage();
+                        String msg = "Error while save Data set on .. " + ((SaveLCMSFileTask) task).getErrorMessage();
                         logger.severe(msg);
                         desktop.displayErrorMessage(msg);
 
@@ -76,7 +80,7 @@ public class SaveLCMSFile implements GuineuModule, TaskListener {
 
         @Override
         public String toString() {
-                return "Save Dataset";
+                return "Save LCMS Data set";
         }
 
         public Task[] runModule() {
