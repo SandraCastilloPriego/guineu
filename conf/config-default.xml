@@ -13,6 +13,10 @@
     <module class="guineu.modules.file.openBasicFiles.OpenBasicFile"/>  
     <!-- <module class="guineu.modules.file.openMassLynxFiles.OpenFile"/>  -->
     <module class="guineu.modules.file.openExpressionFiles.OpenExpressionFile"/> 
+    <module class="guineu.modules.file.saveLCMSFile.SaveLCMSFile"/>
+    <module class="guineu.modules.file.saveGCGCFile.SaveGCGCFile"/>
+    <module class="guineu.modules.file.saveOtherFile.SaveOtherFile"/>
+    <module class="guineu.modules.file.saveExpressionFile.SaveExpressionFile"/>
     <module class="guineu.modules.file.exit.ExitProgram"/>  
     <!-- DATABASE SAVE FILE: <module class="guineu.modules.file.saveDatasetFile.SaveFile"/> -->  
     <module class="guineu.modules.configuration.tables.LCMS.LCMSColumnsView"/> 
