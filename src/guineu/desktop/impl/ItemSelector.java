@@ -23,12 +23,14 @@ import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
+import guineu.main.GuineuModule;
 import guineu.modules.database.saveQualityControFileDB.SaveQualityControlFileDB;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveExpressionFile.SaveExpressionFile;
 import guineu.modules.file.saveGCGCFile.SaveGCGCFile;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
 import guineu.modules.file.saveOtherFile.SaveOtherFile;
+import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import guineu.util.components.DragOrderedJList;
 import guineu.util.dialogs.ExitCode;
@@ -190,16 +192,44 @@ public class ItemSelector extends JPanel implements ActionListener,
                 if (command.equals("SAVE_DATASET")) {
                         Dataset[] selectedFiles = getSelectedDatasets();
                         if (selectedFiles[0] != null && selectedFiles[0].getType() == DatasetType.LCMS) {
-                                SaveLCMSFile save = new SaveLCMSFile(selectedFiles);
+                                ParameterSet parameters = null;
+                                for (GuineuModule module : GuineuCore.getAllModules()) {
+                                        if (module.toString().matches("Save LCMS Data set")) {
+                                                parameters = module.getParameterSet();
+                                                break;
+                                        }
+                                }
+                                SaveLCMSFile save = new SaveLCMSFile(selectedFiles, parameters);
                                 save.initModule();
                         } else if (selectedFiles[0].getType() == DatasetType.GCGCTOF) {
-                                SaveGCGCFile save = new SaveGCGCFile(selectedFiles);
+                                ParameterSet parameters = null;
+                                for (GuineuModule module : GuineuCore.getAllModules()) {
+                                        if (module.toString().matches("Save GCGC Data set")) {
+                                                parameters = module.getParameterSet();
+                                                break;
+                                        }
+                                }
+                                SaveGCGCFile save = new SaveGCGCFile(selectedFiles, parameters);
                                 save.initModule();
                         } else if (selectedFiles[0].getType() == DatasetType.EXPRESSION) {
-                                SaveExpressionFile save = new SaveExpressionFile(selectedFiles);
+                               ParameterSet parameters = null;
+                                for (GuineuModule module : GuineuCore.getAllModules()) {
+                                        if (module.toString().matches("Save Expression Data set")) {
+                                                parameters = module.getParameterSet();
+                                                break;
+                                        }
+                                }
+                                SaveExpressionFile save = new SaveExpressionFile(selectedFiles, parameters);
                                 save.initModule();
                         } else {
-                                SaveOtherFile save = new SaveOtherFile(selectedFiles);
+                                ParameterSet parameters = null;
+                                for (GuineuModule module : GuineuCore.getAllModules()) {
+                                        if (module.toString().matches("Save Other Data set")) {
+                                                parameters = module.getParameterSet();
+                                                break;
+                                        }
+                                }
+                                SaveOtherFile save = new SaveOtherFile(selectedFiles, parameters);
                                 save.initModule();
                         }
                 }

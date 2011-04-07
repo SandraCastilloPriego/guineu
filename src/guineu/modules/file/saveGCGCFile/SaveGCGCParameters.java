@@ -18,8 +18,6 @@
 package guineu.modules.file.saveGCGCFile;
 
 import guineu.data.GCGCColumnName;
-import guineu.desktop.preferences.ColumnsGCGCParameters;
-import guineu.main.GuineuCore;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
@@ -39,7 +37,7 @@ public class SaveGCGCParameters extends SimpleParameterSet {
                 ",");
         public static final MultiChoiceParameter<GCGCColumnName> exportGCGC = new MultiChoiceParameter<GCGCColumnName>(
                 "Export GCGC elements",
-                "Multiple selection of row's elements to export", null, GuineuCore.getGCGCColumnsParameters().getParameter(ColumnsGCGCParameters.GCGCdata).getValue());
+                "Multiple selection of row's elements to export", GCGCColumnName.values());
         public static final ComboParameter<String> type = new ComboParameter<String>(
                 "GCGC type",
                 "Type of file", objects);

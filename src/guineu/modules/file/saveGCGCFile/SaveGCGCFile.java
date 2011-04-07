@@ -39,8 +39,12 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
         private Dataset[] Datasets;
         private SaveGCGCParameters parameters;
 
-        public SaveGCGCFile(Dataset[] Datasets) {
+        public SaveGCGCFile(Dataset[] Datasets, ParameterSet parameters) {
                 this.Datasets = Datasets;
+                this.parameters =  (SaveGCGCParameters) parameters;
+        }
+
+        public SaveGCGCFile() {
                 parameters = new SaveGCGCParameters();
         }
 
@@ -53,7 +57,7 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
         }
 
         public void taskStarted(Task task) {
-                logger.info("Running Save Dataset into Database");
+                logger.info("Running Save Data set into a File");
         }
 
         public void taskFinished(Task task) {
@@ -63,7 +67,7 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
 
                 if (task.getStatus() == TaskStatus.ERROR) {
 
-                        String msg = "Error while save Dataset on .. " + ((SaveGCGCFileTask) task).getErrorMessage();
+                        String msg = "Error while save Data set on .. " + ((SaveGCGCFileTask) task).getErrorMessage();
                         logger.severe(msg);
                         desktop.displayErrorMessage(msg);
 
@@ -76,7 +80,7 @@ public class SaveGCGCFile implements GuineuModule, TaskListener {
 
         @Override
         public String toString() {
-                return "Save Dataset";
+                return "Save GCGC Data set";
         }
 
         public Task[] runModule() {
