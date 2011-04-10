@@ -134,18 +134,16 @@ public class DynamicAlignerTask implements Task {
 
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
-                                long tm = System.nanoTime();
                                 List<PeakListRow> masterRows = alignedPeakList.getRows();
                                 List<PeakListRow> rows = peakList.getRows();
                                 Collections.sort(masterRows, c);
                                 Collections.sort(rows, c);
 
-                                Matrix matrix = new Matrix(masterRows, rows);
+
+                                HashMap<Integer, Integer> alignedIndices = new HashMap<Integer, Integer>();
+
+
                                 //for each row in the main file which contains all the samples align until that moment.. get the graph of peaks..
-                                double[] penalties = new double[alignedPeakList.getNumberRows()];
-                                for (int i = 0; i < penalties.length; i++) {
-                                        penalties[i] = -1;
-                                }
 
                                 for (PeakListRow row : peakList.getRows()) {
                                         Graph rowGraph = null;
@@ -167,68 +165,59 @@ public class DynamicAlignerTask implements Task {
                                         }
 
                                         double maxScore = 0;
+                                        double[] scores = new double[candidateRows.length];
+                                        int index = 0;
                                         for (PeakListRow candidate : candidateRows) {
                                                 double diffMZ = 0;//Math.abs(((SimplePeakListRowLCMS) row).getMZ() - ((SimplePeakListRowLCMS) candidate).getMZ()) * 100;
                                                 this.increaseWindows = 0;
                                                 double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate, this.increaseWindows)) + diffMZ;
-                                                matrix.setScore(candidate, row, score);
+                                                scores[index] = score;
+
                                                 if (score > maxScore) {
                                                         maxScore = score;
                                                 }
 
-                                                int indexM = alignedPeakList.getRows().indexOf(candidate);
-                                                if (penalties[indexM] < score) {
-                                                        penalties[indexM] = score;
-                                                }
+
                                         }
 
                                         if (candidateRows.length > 0) {
                                                 maxScore = 1000;
                                         }
 
-                                        for (PeakListRow candidate : alignedPeakList.getRows()) {
-                                                if (!Contains(candidateRows, candidate)) {
-                                                        matrix.setScore(candidate, row, maxScore + 100);
+                                        double bestScore = 1050;
+                                        if (candidateRows.length == 0) {
+                                                alignedIndices.put(row.getID(), -1);
+                                        } else {
+                                                for (int i = 0; i < candidateRows.length; i++) {
+                                                        if (scores[i] < maxScore + 50) {
+                                                                if (alignedIndices.containsKey(row.getID())) {
+                                                                        if (scores[i] < bestScore) {
+                                                                                alignedIndices.put(row.getID(), i);
+                                                                                bestScore = scores[i];
+                                                                        }
+                                                                } else {
+                                                                        alignedIndices.put(row.getID(), i);
+                                                                }
+                                                        }
                                                 }
-
                                         }
-                                        matrix.setDeletePenalty(row, maxScore + 50);
-                                        progress = (double) processedRows++ / (double) totalRows;
 
-                                }
-                                tm = System.nanoTime() - tm;
-                                System.out.println("time spent in sandra part: " + tm + "ns");
-
-                                //	for (int i = 0; i < penalties.length; i++) {
-                                //		matrix.setInsertPenalty(alignedPeakList.getRow(i), penalties[i] + 50);
-                                //	}
-                                //matrix.computeAlignmentMatrix();
-                                //matrix.NWAlignment();
-                                matrix.getAlignment();
-
-                                HashMap<Integer, Integer> alignedIndices = matrix.getAlignedIndices();
-                                Iterator<Integer> iter = alignedIndices.keySet().iterator();
-                                tm = System.nanoTime() - tm;
-                                System.out.println("time spent in gopals part: " + tm + "ns");
-                                while (iter.hasNext()) {
-                                        int indexPeakList = iter.next();
-                                        int indexMasterList = alignedIndices.get(indexPeakList);
-
-                                        if (indexMasterList == -1 && indexPeakList > -1) {
-                                                PeakListRow row = rows.get(indexPeakList).clone();
-                                                alignedPeakList.addRow(row);
-                                        } else if (indexMasterList > -1 && indexPeakList > -1) {
-                                                PeakListRow masterRow = masterRows.get(indexMasterList);
-                                                PeakListRow row = rows.get(indexPeakList);
+                                        int id = alignedIndices.get(row.getID());
+                                        if (id != -1) {
+                                                PeakListRow masterRow = candidateRows[id];
 
                                                 setColumns(row, masterRow);
                                                 for (String name : peakList.getAllColumnNames()) {
                                                         masterRow.setPeak(name, (Double) row.getPeak(name));
                                                 }
+                                        } else {
+                                                alignedPeakList.addRow(row.clone());
                                         }
+
+                                        progress = (double) processedRows++ / (double) totalRows;
+
                                 }
-                                tm = System.nanoTime() - tm;
-                                System.out.println("time spent in data set part: " + tm + "ns");
+
                         }
                 }
 
@@ -370,172 +359,6 @@ public class DynamicAlignerTask implements Task {
 
                 public List<Double[]> getCoords() {
                         return this.coordinates;
-                }
-        }
-
-        class Matrix {
-
-                double[][] values;
-                //double[][] alignmentMatrix;
-                List<PeakListRow> masterRows, rows;
-                //List<Integer> alignedMasterIndices, alignedRowIndices;
-                HashMap<Integer, Integer> alignedIndices;
-                //double[] gapInsertPenalty, gapDeletePenalty;
-                double[] gapDeletePenalty;
-
-                public Matrix(List<PeakListRow> masterRows, List<PeakListRow> rows) {
-                        this.masterRows = masterRows;
-                        this.rows = rows;
-                        values = new double[masterRows.size()][rows.size()];
-                        //alignedMasterIndices = new ArrayList<Integer>();
-                        //alignedRowIndices = new ArrayList<Integer>();
-                        //gapInsertPenalty = new double[masterRows.size()];
-                        gapDeletePenalty = new double[rows.size()];
-                        alignedIndices = new HashMap<Integer, Integer>();
-                }
-
-                public void setScore(PeakListRow masterRow, PeakListRow row, double score) {
-                        int index1 = masterRows.indexOf(masterRow);
-                        int index2 = rows.indexOf(row);
-                        values[index1][index2] = score;
-                }
-
-                //public void setInsertPenalty(PeakListRow masterRow, double score) {
-                //	int index = masterRows.indexOf(masterRow);
-                //gapInsertPenalty[index] = 1 / score;
-                //	gapInsertPenalty[index] = score;
-                //	}
-                public void setDeletePenalty(PeakListRow row, double score) {
-                        int index = rows.indexOf(row);
-                        gapDeletePenalty[index] = score;
-                }
-
-//		public void computeAlignmentMatrix() {
-//			alignmentMatrix = new double[masterRows.size() + 1][rows.size() + 1];
-//
-//			alignmentMatrix[0][0] = 0;
-//			for (int i = 1; i <= masterRows.size(); i++) {
-//				alignmentMatrix[i][0] = Double.MAX_VALUE;
-//			}
-//			for (int j = 1; j <= rows.size(); j++) {
-//				alignmentMatrix[0][j] = Double.MAX_VALUE;
-//			}
-//
-//			for (int i = 1; i <= masterRows.size(); i++) {
-//				for (int j = 1; j <= rows.size(); j++) {
-//					double match = alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1];
-//					double delete = alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1];
-//					double insert = alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1];
-//					//alignmentMatrix[i][j] = Math.max(match, Math.max(delete, insert));
-//					alignmentMatrix[i][j] = Math.min(match, Math.min(delete, insert));
-//				}
-//			}
-////		}
-                public void getAlignment() {
-
-                        for (int j = 0; j < rows.size(); j++) {
-                                for (int i = 0; i < masterRows.size(); i++) {
-                                        if (values[i][j] < gapDeletePenalty[j]) {
-                                                if (alignedIndices.containsKey(j)) {
-                                                        if (values[i][j] < values[alignedIndices.get(j)][j]) {
-                                                                alignedIndices.put(j, i);
-                                                        }
-                                                } else {
-                                                        alignedIndices.put(j, i);
-                                                }
-                                        }
-                                }
-                        }
-
-                        for (int i = 0; i < masterRows.size(); i++) {
-                                if (!alignedIndices.containsKey(i)) {
-                                        alignedIndices.put(i, -1);
-                                }
-                        }
-
-                        for (int i = 0; i < rows.size(); i++) {
-                                if (!alignedIndices.containsKey(i)) {
-                                        alignedIndices.put(i, -1);
-                                }
-                        }
-                }
-
-                public void NWAlignment() {
-                        //	int i = masterRows.size();
-                        //	int j = rows.size();
-//			List<Boolean> isMasterRowAdded = new ArrayList<Boolean>();
-//			List<Boolean> isRowAdded = new ArrayList<Boolean>();
-////TODO: ADD THE FEATURE OF REMOVING ALIGNMENT WHEN A PEAK IS FRESHLY ALIGNED
-//			for (int k = 0; k < masterRows.size(); k++) {
-//				isMasterRowAdded.add(Boolean.FALSE);
-//			}
-//			for (int k = 0; k < rows.size(); k++) {
-//				isRowAdded.add(Boolean.FALSE);
-//			}
-//			while ((i > 1) && (j > 1)) {
-//
-//				if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j - 1] + values[i - 1][j - 1]) {
-//					//if(!isMasterRowAdded.get(i-1) && !isRowAdded.get(j-1)) {
-//						alignedMasterIndices.add(i - 1);
-//						alignedRowIndices.add(j - 1);
-//					//	isMasterRowAdded.set(i-1, Boolean.TRUE);
-//					//	isRowAdded.set(j-1, Boolean.TRUE);
-//						System.out.println((i-1)+" "+(j-1));
-//					//}
-//					i--;
-//					j--;
-//				} else if (alignmentMatrix[i][j] == alignmentMatrix[i - 1][j] + gapDeletePenalty[j - 1]) {
-//					//if(!isMasterRowAdded.get(i-1)) {
-//						alignedMasterIndices.add(i-1);
-//						alignedRowIndices.add(-1);
-//					//	isMasterRowAdded.set(i-1, Boolean.TRUE);
-//						System.out.println((i-1)+" -1");
-//				//	}
-//					i--;
-//				} else if (alignmentMatrix[i][j] == alignmentMatrix[i][j - 1] + gapInsertPenalty[i - 1]) {
-//				//	if(!isRowAdded.get(j-1)) {
-//						alignedMasterIndices.add(-1);
-//						alignedRowIndices.add(j-1);
-//					//	isRowAdded.set(j-1, Boolean.TRUE);
-//						System.out.println("-1 "+(j-1));
-//				//	}
-//					j--;
-//				}
-//			}
-//
-//			while (i > 1) {
-//			//	if(!isMasterRowAdded.get(i-1)) {
-//					alignedMasterIndices.add(i - 1);
-//					alignedRowIndices.add(-1);
-//			//		isMasterRowAdded.set(i-1, Boolean.TRUE);
-//			//	}
-//				i--;
-//			}
-//
-//			while (j > 1) {
-//			//	if(!isRowAdded.get(j-1)) {
-//					alignedMasterIndices.add(-1);
-//					alignedRowIndices.add(j - 1);
-//			//		isRowAdded.set(j-1, Boolean.TRUE);
-//			//	}
-//				j--;
-//			}
-                }
-
-                public List<Integer> getMasterIndexes() {
-                        List<Integer> list = new ArrayList();
-                        list.addAll(this.alignedIndices.values());
-                        return list;
-                }
-
-                public List<Integer> getPeakListIndexes() {
-                        List<Integer> list = new ArrayList();
-                        list.addAll(this.alignedIndices.keySet());
-                        return list;
-                }
-
-                public HashMap<Integer, Integer> getAlignedIndices() {
-                        return this.alignedIndices;
                 }
         }
 }
