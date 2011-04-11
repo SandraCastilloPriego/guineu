@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.dynamicProgramming;
+package guineu.modules.filter.Alignment.graphalignment;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
@@ -35,25 +35,26 @@ import java.util.logging.Logger;
 /**
  * 
  */
-public class DynamicAligner implements GuineuModule, TaskListener, ActionListener {
+public class GraphAligner implements GuineuModule, TaskListener, ActionListener {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private DynamicAlignerParameters parameters;
+	private GraphAlignerParameters parameters;
 	private Desktop desktop;
 
-	public DynamicAligner() {
+	public GraphAligner() {
 
 		this.desktop = GuineuCore.getDesktop();
 
-		parameters = new DynamicAlignerParameters();
+		parameters = new GraphAlignerParameters();
 
-		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Dynamic alignment..",
+		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Graph alignment..",
 				"Alignment of two or more data sets using dynamic programming.", KeyEvent.VK_A, this, null,  "icons/alignment.png");
 		desktop.addMenuSeparator(GuineuMenu.ALIGNMENT);
 	}
 
+        @Override
 	public String toString() {
-		return "Dynamic aligner";
+		return "Graph alignment";
 	}
 
 	
@@ -94,8 +95,8 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 		}
 
 		// prepare a new group with just one task
-		Task task = new DynamicAlignerTask(peakLists,
-				(DynamicAlignerParameters) parameters);
+		Task task = new GraphAlignerTask(peakLists,
+				(GraphAlignerParameters) parameters);
 
 		GuineuCore.getTaskController().addTask(task);
 
@@ -109,12 +110,12 @@ public class DynamicAligner implements GuineuModule, TaskListener, ActionListene
 
 	public void taskFinished(Task task) {
 		if (task.getStatus() == TaskStatus.FINISHED) {
-			logger.info("Finished alignment on " + ((DynamicAlignerTask) task).getTaskDescription());
+			logger.info("Finished alignment on " + ((GraphAlignerTask) task).getTaskDescription());
 		}
 
 		if (task.getStatus() == TaskStatus.ERROR) {
 
-			String msg = "Error while alignment on .. " + ((DynamicAlignerTask) task).getErrorMessage();
+			String msg = "Error while alignment on .. " + ((GraphAlignerTask) task).getErrorMessage();
 			logger.severe(msg);
 			desktop.displayErrorMessage(msg);
 

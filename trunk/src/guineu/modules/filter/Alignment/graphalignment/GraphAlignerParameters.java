@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.dynamicProgramming;
+package guineu.modules.filter.Alignment.graphalignment;
 
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
@@ -24,7 +24,7 @@ import guineu.parameters.parametersType.RTToleranceParameter;
 import guineu.parameters.parametersType.StringParameter;
 import java.text.NumberFormat;
 
-public class DynamicAlignerParameters extends SimpleParameterSet {
+public class GraphAlignerParameters extends SimpleParameterSet {
 
         public static final NumberFormat percentFormat = NumberFormat.getPercentInstance();
         public static final StringParameter peakListName = new StringParameter(
@@ -37,7 +37,7 @@ public class DynamicAlignerParameters extends SimpleParameterSet {
                 "RT tolerance",
                 "Maximum allowed absolute RT difference");
 
-        public DynamicAlignerParameters() {
+        public GraphAlignerParameters() {
                 super(new UserParameter[]{peakListName, MZTolerance,
                                 RTTolerance});
         }
