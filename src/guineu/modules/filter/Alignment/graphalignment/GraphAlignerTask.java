@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.Alignment.dynamicProgramming;
+package guineu.modules.filter.Alignment.graphalignment;
 
 import guineu.data.Dataset;
 import guineu.data.LCMSColumnName;
@@ -27,16 +27,13 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class DynamicAlignerTask implements Task {
+public class GraphAlignerTask implements Task {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
+        private final Logger logger = Logger.getLogger(this.getClass().getName());
         private Dataset peakLists[], alignedPeakList;
         private TaskStatus status = TaskStatus.WAITING;
         private String errorMessage;
@@ -49,29 +46,29 @@ public class DynamicAlignerTask implements Task {
         private double progress;
         private double increaseWindows = 0;
 
-        public DynamicAlignerTask(Dataset[] peakLists, DynamicAlignerParameters parameters) {
+        public GraphAlignerTask(Dataset[] peakLists, GraphAlignerParameters parameters) {
 
                 this.peakLists = peakLists;
 
                 // Get parameter values for easier use
-                peakListName = parameters.getParameter(DynamicAlignerParameters.peakListName).getValue();
+                peakListName = parameters.getParameter(GraphAlignerParameters.peakListName).getValue();
 
-                mzTolerance = parameters.getParameter(DynamicAlignerParameters.MZTolerance).getValue().getTolerance();
+                mzTolerance = parameters.getParameter(GraphAlignerParameters.MZTolerance).getValue().getTolerance();
 
-                rtTolerance = parameters.getParameter(DynamicAlignerParameters.RTTolerance).getValue().getTolerance();
+                rtTolerance = parameters.getParameter(GraphAlignerParameters.RTTolerance).getValue().getTolerance();
 
 
         }
 
         public String getTaskDescription() {
-                return "Dynamic aligner, " + peakListName + " (" + peakLists.length + " peak lists)";
+                return "Graph aligner, " + peakListName + " (" + peakLists.length + " peak lists)";
         }
 
         public double getFinishedPercentage() {
                 if (totalRows == 0) {
                         return 0f;
                 }
-                return progress; //
+                return progress; 
         }
 
         public TaskStatus getStatus() {
@@ -105,7 +102,7 @@ public class DynamicAlignerTask implements Task {
                 };
 
                 status = TaskStatus.PROCESSING;
-                logger.info("Running RANSAC aligner");
+                logger.info("Running Graph aligner");
 
                 // Remember how many rows we need to process.
                 for (int i = 0; i < peakLists.length; i++) {
@@ -134,17 +131,8 @@ public class DynamicAlignerTask implements Task {
 
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
-                                List<PeakListRow> masterRows = alignedPeakList.getRows();
-                                List<PeakListRow> rows = peakList.getRows();
-                                Collections.sort(masterRows, c);
-                                Collections.sort(rows, c);
-
-
-                                HashMap<Integer, Integer> alignedIndices = new HashMap<Integer, Integer>();
-
 
                                 //for each row in the main file which contains all the samples align until that moment.. get the graph of peaks..
-
                                 for (PeakListRow row : peakList.getRows()) {
                                         Graph rowGraph = null;
                                         double minRT = ((SimplePeakListRowLCMS) row).getRT() - this.rtTolerance;
@@ -164,55 +152,29 @@ public class DynamicAlignerTask implements Task {
                                                 rowGraph = this.getGraph(peakList, row, this.increaseWindows);
                                         }
 
-                                        double maxScore = 0;
-                                        double[] scores = new double[candidateRows.length];
-                                        int index = 0;
+                                        double bestScore = 10000;
+                                        PeakListRow bestCandidate = null;
                                         for (PeakListRow candidate : candidateRows) {
                                                 double diffMZ = 0;//Math.abs(((SimplePeakListRowLCMS) row).getMZ() - ((SimplePeakListRowLCMS) candidate).getMZ()) * 100;
                                                 this.increaseWindows = 0;
                                                 double score = this.getScore(rowGraph, this.getGraph(alignedPeakList, candidate, this.increaseWindows)) + diffMZ;
-                                                scores[index] = score;
-
-                                                if (score > maxScore) {
-                                                        maxScore = score;
-                                                }
-
-
-                                        }
-
-                                        if (candidateRows.length > 0) {
-                                                maxScore = 1000;
-                                        }
-
-                                        double bestScore = 1050;
-                                        if (candidateRows.length == 0) {
-                                                alignedIndices.put(row.getID(), -1);
-                                        } else {
-                                                for (int i = 0; i < candidateRows.length; i++) {
-                                                        if (scores[i] < maxScore + 50) {
-                                                                if (alignedIndices.containsKey(row.getID())) {
-                                                                        if (scores[i] < bestScore) {
-                                                                                alignedIndices.put(row.getID(), i);
-                                                                                bestScore = scores[i];
-                                                                        }
-                                                                } else {
-                                                                        alignedIndices.put(row.getID(), i);
-                                                                }
-                                                        }
+                                                if (score < bestScore) {
+                                                        bestScore = score;
+                                                        bestCandidate = candidate;
                                                 }
                                         }
 
-                                        int id = alignedIndices.get(row.getID());
-                                        if (id != -1) {
-                                                PeakListRow masterRow = candidateRows[id];
 
-                                                setColumns(row, masterRow);
-                                                for (String name : peakList.getAllColumnNames()) {
-                                                        masterRow.setPeak(name, (Double) row.getPeak(name));
-                                                }
-                                        } else {
+                                        if (bestCandidate == null) {
                                                 alignedPeakList.addRow(row.clone());
+                                        } else {
+                                                setColumns(row, bestCandidate);
+                                                for (String name : peakList.getAllColumnNames()) {
+                                                        bestCandidate.setPeak(name, (Double) row.getPeak(name));
+                                                }
                                         }
+
+
 
                                         progress = (double) processedRows++ / (double) totalRows;
 
@@ -225,8 +187,7 @@ public class DynamicAlignerTask implements Task {
                 GuineuCore.getDesktop().AddNewFile(alignedPeakList);
 
                 // Add task description to peakList
-
-                logger.info("Finished RANSAC aligner");
+                logger.info("Finished Graph aligner");
                 status = TaskStatus.FINISHED;
 
 
@@ -276,8 +237,7 @@ public class DynamicAlignerTask implements Task {
                 List<Double[]> coords1 = graphPeak.getCoords();
                 List<Double[]> coords2 = graphCandidate.getCoords();
 
-                //System.out.println("sizes: " + coords1.size() + " - " + coords2.size());
-
+            
                 if (coords1.size() > coords2.size()) {
                         coords1 = graphCandidate.getCoords();
                         coords2 = graphPeak.getCoords();
@@ -286,7 +246,6 @@ public class DynamicAlignerTask implements Task {
                 double score = 0;
 
                 for (Double[] coord1 : coords1) {
-                        //System.out.println(coord1[0] + " - " + coord1[1]);
                         Double[] bestCoord = null;
                         double difference = 100000000.0;
                         for (Double[] coord2 : coords2) {
@@ -301,15 +260,9 @@ public class DynamicAlignerTask implements Task {
 
                         score += difference;
                         if (bestCoord != null) {
-                                //System.out.println("Best: " + bestCoord[0] + " - " + bestCoord[1] + " diff: " + difference);
                                 coords2.remove(bestCoord);
                         }
                 }
-
-
-
-                //System.out.println(score);
-
                 return score;
         }
 
