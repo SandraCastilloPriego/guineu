@@ -1,39 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
-    <LCMSColumns>
-        <parameter name="Select columns for LC-MS">
-            <item>Selection</item>
-            <item>Id</item>
-            <item>Average m/z</item>
-            <item>Average Retention time</item>
-            <item>Name</item>
-            <item>All names</item>
-            <item>Identification type</item>
-            <item>Lipid class</item>
-            <item>Num found</item>
-            <item>Standard</item>
-            <item>FA Composition</item>
-            <item>Alignment</item>
-        </parameter>
-    </LCMSColumns>
-    <GCGCColumns>
-        <parameter name="Select columns for GCxGC-MS">
-            <item>Selection</item>
-            <item>ID</item>
-            <item>RT1</item>
-            <item>RT2</item>
-            <item>RTI</item>
-            <item>N Found</item>
-            <item>New Cas Number</item>
-            <item>Cas Number</item>
-            <item>Max similarity</item>
-            <item>Mean similarity</item>
-            <item>Similarity std dev</item>
-            <item>Pubchem ID</item>
-            <item>KEGG ID</item>
-            <item>Mass</item>
-        </parameter>
-    </GCGCColumns>
     <Standards>
         <parameter name="LysoPC(17:0)">
             <item>0.0 - 4550.0</item>
@@ -71,6 +37,7 @@
             <parameters>
                 <parameter name="File names">
                     <file>/home/scsandra/Desktop/example folder/095-077Muscle_normalized.csv</file>
+                    <file>/home/scsandra/Desktop/example folder/095-077Plasma_normalized.csv</file>
                 </parameter>
             </parameters>
         </module>
@@ -85,9 +52,7 @@
                 <parameter name="Separator: ">\t</parameter>
                 <parameter name="Filter out peaks with classification: ">true</parameter>
                 <parameter name="File names">
-                    <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6930_GGT2_rep1run1_310809_1.txt</file>
-                    <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6931_GGT2_rep1run1_310809_1.txt</file>
-                    <file>/home/scsandra/Desktop/example folder/EP fek (IA013) 270809/IA013EP_6932_GGT2_rep1run1_140909_1.txt</file>
+                    <file>/home/scsandra/Downloads/Guineu.try.input</file>
                 </parameter>
             </parameters>
         </module>
@@ -100,10 +65,57 @@
         </module>
         <module class="guineu.modules.file.openExpressionFiles.OpenExpressionFile">
             <parameters>
-                <parameter name="Dataset name"/>
-                <parameter name="Assaydata File"/>
-                <parameter name="Feature File"/>
-                <parameter name="Pheno File"/>
+                <parameter name="Dataset name">gdgfd</parameter>
+                <parameter name="Assaydata File">/home/scsandra/Desktop/1</parameter>
+                <parameter name="Feature File">/home/scsandra/Desktop/2</parameter>
+                <parameter name="Pheno File">/home/scsandra/Desktop/3</parameter>
+            </parameters>
+        </module>
+        <module class="guineu.modules.file.saveLCMSFile.SaveLCMSFile">
+            <parameters>
+                <parameter name="GCGC Filename">/home/scsandra/Desktop/dfsdfsfsdfsdfs.csv</parameter>
+                <parameter name="GCGC type">Excel</parameter>
+                <parameter name="Export GCGC elements">
+                    <item>Id</item>
+                    <item>Average m/z</item>
+                    <item>Average Retention time</item>
+                    <item>Name</item>
+                    <item>All names</item>
+                    <item>Identification type</item>
+                </parameter>
+            </parameters>
+        </module>
+        <module class="guineu.modules.file.saveGCGCFile.SaveGCGCFile">
+            <parameters>
+                <parameter name="GCGC Filename">/home/scsandra/Desktop/fdsfsdfsdfsdfsd.csv</parameter>
+                <parameter name="GCGC type">csv</parameter>
+                <parameter name="Export GCGC elements">
+                    <item>ID</item>
+                    <item>RT1</item>
+                    <item>RT2</item>
+                    <item>RTI</item>
+                    <item>N Found</item>
+                    <item>Cas Number</item>
+                    <item>Max similarity</item>
+                    <item>Mean similarity</item>
+                    <item>Similarity std dev</item>
+                    <item>Metabolite name</item>
+                    <item>Metabolite all names</item>
+                    <item>Difference</item>
+                    <item>Spectrum</item>
+                </parameter>
+            </parameters>
+        </module>
+        <module class="guineu.modules.file.saveOtherFile.SaveOtherFile">
+            <parameters>
+                <parameter name="Filename">/home/scsandra/Desktop/sdfsdfsdfsd</parameter>
+                <parameter name="type">csv</parameter>
+            </parameters>
+        </module>
+        <module class="guineu.modules.file.saveExpressionFile.SaveExpressionFile">
+            <parameters>
+                <parameter name="LCMS Filename"/>
+                <parameter name="Type"/>
             </parameters>
         </module>
         <module class="guineu.modules.file.exit.ExitProgram">
@@ -119,10 +131,8 @@
                     <item>Name</item>
                     <item>All names</item>
                     <item>Identification type</item>
-                    <item>Lipid class</item>
                     <item>Num found</item>
                     <item>Standard</item>
-                    <item>FA Composition</item>
                     <item>Alignment</item>
                 </parameter>
             </parameters>
@@ -144,6 +154,7 @@
                     <item>Pubchem ID</item>
                     <item>KEGG ID</item>
                     <item>Mass</item>
+                    <item>Spectrum</item>
                 </parameter>
             </parameters>
         </module>
@@ -158,8 +169,8 @@
                     <parameter name="Proxy port">8000</parameter>
                 </parameter>
                 <parameter name="Guineu window state">
-                    <position>-4:25</position>
-                    <size>maximized:maximized</size>
+                    <position>386:26</position>
+                    <size>790:595</size>
                 </parameter>
             </parameters>
         </module>
@@ -167,7 +178,7 @@
             <parameters>
                 <parameter name="Peak list name">aligned</parameter>
                 <parameter name="m/z tolerance" type="mz">0.04</parameter>
-                <parameter name="RT tolerance after correction" type="absolute">10.0</parameter>
+                <parameter name="RT tolerance after correction" type="absolute">5.0</parameter>
                 <parameter name="RT tolerance" type="absolute">20.0</parameter>
                 <parameter name="RANSAC Iterations">1000.0</parameter>
                 <parameter name="Minimun Number of Points">0.2</parameter>
@@ -175,11 +186,11 @@
                 <parameter name="Linear model">false</parameter>
             </parameters>
         </module>
-        <module class="guineu.modules.filter.Alignment.dynamicProgramming.DynamicAligner">
+        <module class="guineu.modules.filter.Alignment.graphalignment.GraphAligner">
             <parameters>
-                <parameter name="Peak list name">sdsadasd</parameter>
-                <parameter name="m/z tolerance" type="mz">0.04</parameter>
-                <parameter name="RT tolerance" type="absolute">5.0</parameter>
+                <parameter name="Peak list name"/>
+                <parameter name="m/z tolerance"/>
+                <parameter name="RT tolerance"/>
             </parameters>
         </module>
         <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering">
@@ -290,11 +301,7 @@
             <parameters/>
         </module>
         <module class="guineu.modules.statistics.PCA.ProjectionPlot">
-            <parameters>
-                <parameter name="Coloring type">No coloring</parameter>
-                <parameter name="X-axis component">1</parameter>
-                <parameter name="Y-axis component">2</parameter>
-            </parameters>
+            <parameters/>
         </module>
         <module class="guineu.modules.statistics.Media.mediaFilter">
             <parameters/>
@@ -366,7 +373,7 @@
                 <parameter name="Suffix: ">gdfgdfg</parameter>
                 <parameter name="Similarity used: ">maximum similarity</parameter>
                 <parameter name="Action: ">Remove</parameter>
-                <parameter name="Minimun similarity required:">900</parameter>
+                <parameter name="Minimun similarity required:">900.0</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.mylly.filter.singlingFilter.SinglingFilter">
