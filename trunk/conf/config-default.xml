@@ -24,7 +24,7 @@
     <module class="guineu.modules.configuration.parameters.ParameterConfiguration"/> 
     <module class="guineu.modules.configuration.general.GeneralConfiguration"/>           
     <module class="guineu.modules.filter.Alignment.RANSAC.RansacAligner"/> 
-    <module class="guineu.modules.filter.Alignment.dynamicProgramming.DynamicAligner"/> 
+    <module class="guineu.modules.filter.Alignment.graphalignment.GraphAligner"/> 
     <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering"/>  
     <module class="guineu.modules.filter.Alignment.centering.median.MedianCentering"/>  
     <module class="guineu.modules.filter.Alignment.normalizationSTD.STDNormalization"/>  
