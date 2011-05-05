@@ -20,7 +20,6 @@ package guineu.modules.mylly.filter.GroupIdentification;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.desktop.preferences.ProxySettings;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
@@ -247,7 +246,7 @@ public class GroupIdentificationFilterTask implements Task {
                                         finalGroup += name + ",";
                                 }
 
-                                ((SimplePeakListRowGCGC) row).setMolClass(finalGroup);
+                                ((SimplePeakListRowGCGC) row).setGolmGroup(finalGroup);
                                 count++;
                                 progress = (double) count / numRows;
                         }
