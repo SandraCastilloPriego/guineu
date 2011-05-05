@@ -63,7 +63,7 @@ public class FileNameParameter implements UserParameter<File, FileNameComponent>
 
 	@Override
 	public FileNameComponent createEditingComponent() {
-		return new FileNameComponent();
+		return new FileNameComponent(false);
 	}
 
 	@Override
