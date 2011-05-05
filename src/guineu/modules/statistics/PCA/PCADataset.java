@@ -220,8 +220,8 @@ public class PCADataset extends AbstractXYDataset implements
 
                 PCA pca = new PCA(selectedSamples.length, selectedRows.length);
                 Matrix X = new Matrix(rawData, selectedSamples.length, selectedRows.length);
-                X = pca.center(X);
-                X = pca.scale(X);
+              //  X = pca.center(X);
+              //  X = pca.scale(X);
                 pca.nipals(X);
                 mainComponents = pca.getPCs();
                 Collections.sort(mainComponents);
