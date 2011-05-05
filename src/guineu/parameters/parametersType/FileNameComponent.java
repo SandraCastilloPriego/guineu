@@ -16,7 +16,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.parameters.parametersType;
 
 import guineu.main.GuineuCore;
@@ -30,59 +29,86 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
 /**
  */
 public class FileNameComponent extends JPanel implements ActionListener {
 
-	public static final int TEXTFIELD_COLUMNS = 15;
-	public static final Font smallFont = new Font("SansSerif", Font.PLAIN, 10);
+        public static final int TEXTFIELD_COLUMNS = 15;
+        public static final Font smallFont = new Font("SansSerif", Font.PLAIN, 10);
+        private JTextField txtFilename;
+        private boolean multiSelection = false;
 
-	private JTextField txtFilename;
+        public FileNameComponent(boolean MultiSelection) {
 
-	public FileNameComponent() {
+                this.multiSelection = MultiSelection;
+                txtFilename = new JTextField();
+                txtFilename.setColumns(TEXTFIELD_COLUMNS);
+                txtFilename.setFont(smallFont);
+                add(txtFilename);
 
-		txtFilename = new JTextField();
-		txtFilename.setColumns(TEXTFIELD_COLUMNS);
-		txtFilename.setFont(smallFont);
-		add(txtFilename);
+                JButton btnFileBrowser = new JButton("...");
+                btnFileBrowser.addActionListener(this);
+                add(btnFileBrowser);
 
-		JButton btnFileBrowser = new JButton("...");
-		btnFileBrowser.addActionListener(this);
-		add(btnFileBrowser);
+        }
 
-	}
+        public File getValue() {
+                String fileName = txtFilename.getText();
+                File file = new File(fileName);
+                return file;
+        }
 
-	public File getValue() {
-		String fileName = txtFilename.getText();
-		File file = new File(fileName);
-		return file;
-	}
+        public File[] getValues() {
+                String fileName = txtFilename.getText();
+                String[] fileNames = fileName.split(";");
+                File[] files = new File[fileNames.length];
+                for (int i = 0; i < files.length; i++) {
+                        files[i] = new File(fileNames[i]);
+                }
 
-	public void setValue(File value) {
-		txtFilename.setText(value.getPath());
-	}
+                return files;
+        }
 
-	public void actionPerformed(ActionEvent e) {
+        public void setValue(File value) {
+                txtFilename.setText(value.getPath());
+        }
 
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setMultiSelectionEnabled(false);
+        public void setValues(File[] value) {
+                String files = "";
+                for (File file : value) {
+                        files += file + ";";
+                }
+                txtFilename.setText(files);
+        }
 
-		String currentPath = txtFilename.getText();
-		if (currentPath.length() > 0) {
-			File currentFile = new File(currentPath);
-			File currentDir = currentFile.getParentFile();
-			if (currentDir != null && currentDir.exists())
-				fileChooser.setCurrentDirectory(currentDir);
-		}
+        public void actionPerformed(ActionEvent e) {
 
-		int returnVal = fileChooser.showDialog(GuineuCore.getDesktop()
-				.getMainFrame(), "Select file");
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setMultiSelectionEnabled(this.multiSelection);
 
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			String selectedPath = fileChooser.getSelectedFile().getPath();
-			txtFilename.setText(selectedPath);
-		}
-	}
+                String currentPath = txtFilename.getText();
+                if (currentPath.length() > 0) {
+                        File currentFile = new File(currentPath);
+                        File currentDir = currentFile.getParentFile();
+                        if (currentDir != null && currentDir.exists()) {
+                                fileChooser.setCurrentDirectory(currentDir);
+                        }
+                }
 
+                int returnVal = fileChooser.showDialog(GuineuCore.getDesktop().getMainFrame(), "Select file");
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        if (this.multiSelection) {
+                                File[] files = fileChooser.getSelectedFiles();
+                                String text = "";
+                                for (File file : files) {
+                                        text += file.getAbsolutePath() + ";";
+                                }
+                                txtFilename.setText(text);
+                        } else {
+                                String selectedPath = fileChooser.getSelectedFile().getPath();
+                                txtFilename.setText(selectedPath);
+                        }
+                }
+        }
 }

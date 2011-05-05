@@ -17,15 +17,11 @@
  */
 package guineu.modules.mylly.openFiles;
 
-import guineu.main.GuineuCore;
-import guineu.modules.file.openLCMSDatasetFile.FileNamesParameter;
 import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.FileNamesParameter;
 import guineu.parameters.parametersType.StringParameter;
-import guineu.util.dialogs.ExitCode;
-import java.io.File;
-import javax.swing.JFileChooser;
 
 /**
  *
@@ -39,38 +35,10 @@ public class OpenGCGCFileParameters extends SimpleParameterSet {
         public static final BooleanParameter filterClassified = new BooleanParameter(
                 "Filter out peaks with classification: ",
                 "Filter out peaks with classification", true);
-        public static final FileNamesParameter fileNames = new FileNamesParameter();
+        public static final FileNamesParameter fileNames = new FileNamesParameter("Open GCxGC-MS files",
+                "Open GCxGC-MS files");
 
         public OpenGCGCFileParameters() {
                 super(new Parameter[]{separator, filterClassified, fileNames});
-        }
-
-        @Override
-        public ExitCode showSetupDialog() {
-
-                JFileChooser chooser = new JFileChooser();
-
-                File lastFiles[] = getParameter(fileNames).getValue();
-                if ((lastFiles != null) && (lastFiles.length > 0)) {
-                        File currentDir = lastFiles[0].getParentFile();
-                        if (currentDir.exists()) {
-                                chooser.setCurrentDirectory(currentDir);
-                        }
-                }
-
-                chooser.setMultiSelectionEnabled(true);
-
-                int returnVal = chooser.showOpenDialog(GuineuCore.getDesktop().getMainFrame());
-
-                if (returnVal != JFileChooser.APPROVE_OPTION) {
-                        return ExitCode.CANCEL;
-                }
-
-                File selectedFiles[] = chooser.getSelectedFiles();
-
-                getParameter(fileNames).setValue(selectedFiles);
-
-                return ExitCode.OK;
-
         }
 }
