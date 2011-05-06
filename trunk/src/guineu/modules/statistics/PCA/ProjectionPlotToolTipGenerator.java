@@ -15,8 +15,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.modules.statistics.PCA;
 
 import org.jfree.chart.labels.XYZToolTipGenerator;
@@ -30,66 +28,68 @@ import org.jfree.data.xy.XYZDataset;
  */
 public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
 
-	private ProjectionPlotParameters parameters;
-	
-	private enum LabelMode {
-		FileName, FileNameAndParameterValue
-	};
+        private ProjectionPlotParameters parameters;
 
-	private LabelMode labelMode;
+        private enum LabelMode {
 
-	ProjectionPlotToolTipGenerator(ProjectionPlotParameters parameters) {
+                FileName, FileNameAndParameterValue
+        };
+        private LabelMode labelMode;
 
-		this.parameters = parameters;
-		
-		if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING)
-			labelMode = LabelMode.FileName;
+        ProjectionPlotToolTipGenerator(ProjectionPlotParameters parameters) {
 
-		if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE)
-			labelMode = LabelMode.FileName;
+                this.parameters = parameters;
 
-		if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER)
-			labelMode = LabelMode.FileNameAndParameterValue;
+                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+                        labelMode = LabelMode.FileName;
+                } else if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
+                        labelMode = LabelMode.FileName;
+                } else {
+                        labelMode = LabelMode.FileNameAndParameterValue;
+                }
 
-	}
+        }
 
-	private String generateToolTip(ProjectionPlotDataset dataset, int item) {
+        private String generateToolTip(ProjectionPlotDataset dataset, int item) {
 
-		
-		switch (labelMode) {
-		
-		case FileName:
-		default:
-			return dataset.getRawDataFile(item).toString();
 
-		case FileNameAndParameterValue:
-			String ret = dataset.getRawDataFile(item).toString() + "\n";
+                switch (labelMode) {
 
-			//ret += parameters.getSelectedParameter() + ": ";
-			
-			int groupNumber = dataset.getGroupNumber(item);
-			Object paramValue = dataset.getGroupParameterValue(groupNumber);
-			if (paramValue != null)
-				ret += paramValue.toString();
-			else
-				ret += "N/A";
-			
-			return ret;
-		}
+                        case FileName:
+                        default:
+                                return dataset.getRawDataFile(item).toString();
 
-	}
+                        case FileNameAndParameterValue:
+                                String ret = dataset.getRawDataFile(item).toString() + "\n";
 
-	public String generateToolTip(XYDataset dataset, int series, int item) {
-		if (dataset instanceof ProjectionPlotDataset)
-			return generateToolTip((ProjectionPlotDataset)dataset, item);
-		else
-			return null;
-	}
+                                //ret += parameters.getSelectedParameter() + ": ";
 
-	public String generateToolTip(XYZDataset dataset, int series, int item) {
-		if (dataset instanceof ProjectionPlotDataset)
-			return generateToolTip((ProjectionPlotDataset)dataset, item);
-		else
-			return null;
-	}
+                                int groupNumber = dataset.getGroupNumber(item);
+                                Object paramValue = dataset.getGroupParameterValue(groupNumber);
+                                if (paramValue != null) {
+                                        ret += paramValue.toString();
+                                } else {
+                                        ret += "N/A";
+                                }
+
+                                return ret;
+                }
+
+        }
+
+        public String generateToolTip(XYDataset dataset, int series, int item) {
+                if (dataset instanceof ProjectionPlotDataset) {
+                        return generateToolTip((ProjectionPlotDataset) dataset, item);
+                } else {
+                        return null;
+                }
+        }
+
+        public String generateToolTip(XYZDataset dataset, int series, int item) {
+                if (dataset instanceof ProjectionPlotDataset) {
+                        return generateToolTip((ProjectionPlotDataset) dataset, item);
+                } else {
+                        return null;
+                }
+        }
 }

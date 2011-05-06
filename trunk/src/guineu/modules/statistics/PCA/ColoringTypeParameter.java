@@ -16,11 +16,11 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.statistics.PCA;
 
 import guineu.parameters.UserParameter;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 
@@ -36,100 +36,106 @@ import org.w3c.dom.Element;
  * http://mzmine.sourceforge.net/
  */
 public class ColoringTypeParameter implements
-		UserParameter<ColoringType, JComboBox> {
+        UserParameter<ColoringType, JComboBox> {
 
-	private String name, description;
-	private ColoringType value;
+        private String name, description;
+        private ColoringType value;
+        private List<String> metaData;
 
-	public ColoringTypeParameter() {
-		this.name = "Coloring type";
-		this.description = "Defines how points will be colored";
-	}
+        public ColoringTypeParameter() {
+                this.name = "Coloring type";
+                this.description = "Defines how points will be colored";
+        }
 
-	
-	@Override
-	public String getName() {
-		return name;
-	}
+        public ColoringTypeParameter(List<String> metaData) {
+                this.name = "Coloring type";
+                this.description = "Defines how points will be colored";
+                this.metaData = metaData;
+        }
 
-	
-	@Override
-	public String getDescription() {
-		return description;
-	}
+        @Override
+        public String getName() {
+                return name;
+        }
 
-	@Override
-	public JComboBox createEditingComponent() {
-		ArrayList<Object> choicesList = new ArrayList<Object>();
-		choicesList.add(ColoringType.NOCOLORING);
-		choicesList.add(ColoringType.COLORBYFILE);
-		/*for (UserParameter p : GuineuCore.getParameters()) {
-			choicesList.add(new ColoringType(p));
-		}*/
-		Object choices[] = choicesList.toArray();
-		JComboBox editor = new JComboBox(choices);
-		if (value != null)
-			editor.setSelectedItem(value);
-		return editor;
-	}
+        @Override
+        public String getDescription() {
+                return description;
+        }
 
-	@Override
-	public ColoringType getValue() {
-		return value;
-	}
+        @Override
+        public JComboBox createEditingComponent() {
+                ArrayList<Object> choicesList = new ArrayList<Object>();
+                choicesList.add(ColoringType.NOCOLORING);
+                choicesList.add(ColoringType.COLORBYFILE);
+                for (String metaD : this.metaData) {
+                        choicesList.add(new ColoringType("Color by " + metaD));
+                }
+                Object choices[] = choicesList.toArray();
+                JComboBox editor = new JComboBox(choices);
+                if (value != null) {
+                        editor.setSelectedItem(value);
+                }
+                return editor;
+        }
 
-	@Override
-	public void setValue(ColoringType value) {
-		this.value = value;
-	}
+        @Override
+        public ColoringType getValue() {
+                return value;
+        }
 
-	@Override
-	public ColoringTypeParameter clone() {
-		ColoringTypeParameter copy = new ColoringTypeParameter();
-		copy.setValue(this.getValue());
-		return copy;
-	}
+        @Override
+        public void setValue(ColoringType value) {
+                this.value = value;
+        }
 
-	@Override
-	public void setValueFromComponent(JComboBox component) {
-		value = (ColoringType) component.getSelectedItem();
-	}
+        @Override
+        public ColoringTypeParameter clone() {
+                ColoringTypeParameter copy = new ColoringTypeParameter(this.metaData);
+                copy.setValue(this.getValue());
+                return copy;
+        }
 
-	@Override
-	public void setValueToComponent(JComboBox component, ColoringType newValue) {
-		component.setSelectedItem(newValue);
-	}
+        @Override
+        public void setValueFromComponent(JComboBox component) {
+                value = (ColoringType) component.getSelectedItem();
+        }
 
-	@Override
-	public void loadValueFromXML(Element xmlElement) {
-		String elementString = xmlElement.getTextContent();
-		if (elementString.length() == 0)
-			return;
-		String attrValue = xmlElement.getAttribute("type");
-		if (attrValue.equals("parameter")) {
-			/*for (UserParameter p : MZmineCore.getCurrentProject()
-					.getParameters()) {
-				if (p.getName().equals(elementString)) {
-					value = new ColoringType(p);
-					break;
-				}
-			}*/
-		} else {
-			value = new ColoringType(elementString);
-		}
-	}
+        @Override
+        public void setValueToComponent(JComboBox component, ColoringType newValue) {
+                component.setSelectedItem(newValue);
+        }
 
-	@Override
-	public void saveValueToXML(Element xmlElement) {
-		if (value == null)
-			return;
-		if (value.isByParameter()) {
-			xmlElement.setAttribute("type", "parameter");
-			xmlElement.setTextContent(value.getParameter().getName());
-		} else {
-			xmlElement.setTextContent(value.toString());
-		}
+        @Override
+        public void loadValueFromXML(Element xmlElement) {
+                String elementString = xmlElement.getTextContent();
+                if (elementString.length() == 0) {
+                        return;
+                }
+                String attrValue = xmlElement.getAttribute("type");
+                if (attrValue.equals("parameter")) {
+                        for (String data : metaData) {
+                                if (data.equals(elementString)) {
+                                        value = new ColoringType(data);
+                                        break;
+                                }
+                        }
+                } else {
+                        value = new ColoringType(elementString);
+                }
+        }
 
-	}
+        @Override
+        public void saveValueToXML(Element xmlElement) {
+                if (value == null) {
+                        return;
+                }
+                if (value.isByParameter()) {
+                        xmlElement.setAttribute("type", "parameter");
+                        xmlElement.setTextContent(value.getParameter().getName());
+                } else {
+                        xmlElement.setTextContent(value.toString());
+                }
 
+        }
 }
