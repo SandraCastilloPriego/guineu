@@ -21,6 +21,8 @@ import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskStatus;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import jmprojection.Preprocess;
@@ -40,10 +42,11 @@ public class SammonDataset extends AbstractXYDataset implements
         private double[] component1Coords;
         private double[] component2Coords;
         private ProjectionPlotParameters parameters;
-        private String[] selectedRawDataFiles;
+        private String[] selectedSamples;
         private PeakListRow[] selectedRows;
         private int[] groupsForSelectedRawDataFiles;
         private Object[] parameterValuesForGroups;
+        private ColoringType coloringType;
         int numberOfGroups;
         private String datasetTitle;
         private int xAxisDimension;
@@ -59,47 +62,51 @@ public class SammonDataset extends AbstractXYDataset implements
                 this.xAxisDimension = parameters.getParameter(ProjectionPlotParameters.xAxisComponent).getValue();
                 this.yAxisDimension = parameters.getParameter(ProjectionPlotParameters.yAxisComponent).getValue();
 
-                selectedRawDataFiles = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
+                selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
                 selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
 
-                datasetTitle = "Curvilinear distance analysis";
+                coloringType = parameters.getParameter(
+                        ProjectionPlotParameters.coloringType).getValue();
+
+                datasetTitle = "Sammon's projection";
 
                 // Determine groups for selected raw data files
-                groupsForSelectedRawDataFiles = new int[selectedRawDataFiles.length];
+                groupsForSelectedRawDataFiles = new int[selectedSamples.length];
 
                 if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
                         // All files to a single group
-                        for (int ind = 0; ind < selectedRawDataFiles.length; ind++) {
+                        for (int ind = 0; ind < selectedSamples.length; ind++) {
                                 groupsForSelectedRawDataFiles[ind] = 0;
                         }
 
                         numberOfGroups = 1;
-                }
-
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
+                } else if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
                         // Each file to own group
-                        for (int ind = 0; ind < selectedRawDataFiles.length; ind++) {
+                        for (int ind = 0; ind < selectedSamples.length; ind++) {
                                 groupsForSelectedRawDataFiles[ind] = ind;
                         }
 
-                        numberOfGroups = selectedRawDataFiles.length;
-                }
-
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER) {
-                        // Group files with same parameter value to same group
-           /* Vector<Object> availableParameterValues = new Vector<Object>();
+                        numberOfGroups = selectedSamples.length;
+                } else {
+                        List<Object> availableParameterValues = new ArrayList<Object>();
+                        String parameter = coloringType.toString();
+                        parameter = parameter.replace("Color by ", "");
                         for (String rawDataFile : selectedSamples) {
-                        String paramValue = parameters.getParamValue(rawDataFile);
-                        if (!availableParameterValues.contains(paramValue)) {
-                        availableParameterValues.add(paramValue);
-                        }
+                                String paramValue = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersValue(rawDataFile, parameter);
+                                if (!availableParameterValues.contains(paramValue)) {
+                                        availableParameterValues.add(paramValue);
+                                }
                         }
 
-                        for (int ind = 0; ind < selectedSamples.size(); ind++) {
-                        String paramValue = parameters.getParamValue(selectedSamples.elementAt(ind));
-                        groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
+                        for (int ind = 0; ind < selectedSamples.length; ind++) {
+                                String paramValue = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersValue(selectedSamples[ind], parameter);
+                                groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
                         }
-                        parameterValuesForGroups = availableParameterValues.toArray();*/
+                        parameterValuesForGroups = availableParameterValues.toArray();
+
+                        numberOfGroups = parameterValuesForGroups.length;
+
+                        parameterValuesForGroups = availableParameterValues.toArray();
 
                         numberOfGroups = parameterValuesForGroups.length;
                 }
@@ -159,7 +166,7 @@ public class SammonDataset extends AbstractXYDataset implements
         }
 
         public String getRawDataFile(int item) {
-                return selectedRawDataFiles[item];
+                return selectedSamples[item];
         }
 
         public int getGroupNumber(int item) {
@@ -187,11 +194,11 @@ public class SammonDataset extends AbstractXYDataset implements
                 logger.info("Computing projection plot");
 
                 // Generate matrix of raw data (input to Sammon's projection)
-                double[][] rawData = new double[selectedRawDataFiles.length][selectedRows.length];
+                double[][] rawData = new double[selectedSamples.length][selectedRows.length];
                 for (int rowIndex = 0; rowIndex < selectedRows.length; rowIndex++) {
                         PeakListRow peakListRow = selectedRows[rowIndex];
-                        for (int fileIndex = 0; fileIndex < selectedRawDataFiles.length; fileIndex++) {
-                                String rawDataFile = selectedRawDataFiles[fileIndex];
+                        for (int fileIndex = 0; fileIndex < selectedSamples.length; fileIndex++) {
+                                String rawDataFile = selectedSamples[fileIndex];
                                 Object p = peakListRow.getPeak(rawDataFile);
                                 try {
                                         rawData[fileIndex][rowIndex] = (Double) p;

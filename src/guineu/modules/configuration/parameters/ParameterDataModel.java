@@ -28,9 +28,9 @@ public class ParameterDataModel extends AbstractTableModel {
          * All data in the main windows. It can be LCMS or GCGC-Tof data.
          */
         private static final long serialVersionUID = 1L;
-        private Vector<String> columns;
-        private Vector<String> parameters;
-        private Vector<String[]> rows; //content all data
+        private List<String> columns;
+        private List<String> parameters;
+        private List<String[]> rows; //content all data
         private int numColumns;
         private int numRows;
         private JTable table;
@@ -39,39 +39,39 @@ public class ParameterDataModel extends AbstractTableModel {
                 this.table = table;
 
                 // Column names
-                columns = new Vector<String>();
-                columns.addElement("Samples");
+                columns = new ArrayList<String>();
+                columns.add("Samples");
                 parameters = dataset.getParametersName();
                 for (String parameter : parameters) {
-                        columns.addElement(parameter);
+                        columns.add(parameter);
                 }
                 numColumns = columns.size();
 
 
                 // First column with the name of the samples
                 String[] col = dataset.getAllColumnNames().toArray(new String[0]);
-                rows = new Vector<String[]>();
-                rows.addElement(col);
+                rows = new ArrayList<String[]>();
+                rows.add(col);
                 numRows = dataset.getAllColumnNames().size();
 
                 // Parameter columns
                 for (int i = 0; i < dataset.getParametersName().size(); i++) {
-                        String parameterName = dataset.getParametersName().elementAt(i);
+                        String parameterName = dataset.getParametersName().get(i);
                         col = new String[dataset.getAllColumnNames().size()];
 
                         for (int e = 0; e < dataset.getAllColumnNames().size(); e++) {
                                 String experimentName = dataset.getAllColumnNames().elementAt(e);
                                 col[e] = dataset.getParametersValue(experimentName, parameterName);
                         }
-                        rows.addElement(col);
+                        rows.add(col);
                 }
         }
 
         public void addColumn(String column) {
-                this.columns.addElement(column);
-                this.parameters.addElement(column);
+                this.columns.add(column);
+                this.parameters.add(column);
                 String[] newCol = new String[numRows];
-                rows.addElement(newCol);
+                rows.add(newCol);
                 numColumns++;
         }
 
@@ -85,7 +85,7 @@ public class ParameterDataModel extends AbstractTableModel {
 
         public String getValueAt(final int row, final int column) {
                 try {
-                        return rows.elementAt(column)[row];
+                        return rows.get(column)[row];
                 } catch (Exception e) {
                         return "";
                 }
@@ -94,7 +94,7 @@ public class ParameterDataModel extends AbstractTableModel {
         @Override
         public String getColumnName(int columnIndex) {
                 try {
-                        return columns.elementAt(columnIndex);
+                        return columns.get(columnIndex);
                 } catch (Exception e) {
                         return null;
                 }
@@ -116,10 +116,10 @@ public class ParameterDataModel extends AbstractTableModel {
                         int[] tcolumns = table.getSelectedColumns();
                         for (int trow : trows) {
                                 for (int tcolumn : tcolumns) {
-                                        rows.elementAt(tcolumn)[trow] = aValue.toString();
+                                        rows.get(tcolumn)[trow] = aValue.toString();
                                 }
                         }
-                        rows.elementAt(column)[row] = aValue.toString();
+                        rows.get(column)[row] = aValue.toString();
                         fireTableCellUpdated(row, column);
                 } catch (Exception e) {
                 }
@@ -130,7 +130,7 @@ public class ParameterDataModel extends AbstractTableModel {
                         if (fillAllCells) {
                                 this.setValueAt(aValue, row, column);
                         } else {
-                                rows.elementAt(column)[row] = aValue.toString();
+                                rows.get(column)[row] = aValue.toString();
                                 fireTableCellUpdated(row, column);
                         }
                 } catch (Exception e) {
@@ -170,10 +170,10 @@ public class ParameterDataModel extends AbstractTableModel {
 
         public void addParameters(Dataset dataset) {
                 for (int i = 1; i < this.getColumnCount(); i++) {
-                        String parameterName = this.parameters.elementAt(i - 1);
-                        for (int e = 0; e < this.rows.elementAt(i).length; e++) {
-                                String experimentName = this.rows.elementAt(0)[e];
-                                String parameterValue = this.rows.elementAt(i)[e];
+                        String parameterName = this.parameters.get(i - 1);
+                        for (int e = 0; e < this.rows.get(i).length; e++) {
+                                String experimentName = this.rows.get(0)[e];
+                                String parameterValue = this.rows.get(i)[e];
                                 dataset.addParameterValue(experimentName, parameterName, parameterValue);
                         }
                 }

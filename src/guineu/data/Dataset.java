@@ -193,7 +193,7 @@ public interface Dataset {
          *
          * @return List of every parameters name
          */
-        public Vector<String> getParametersName();
+        public List<String> getParametersName();
 
         /**
          * Returns the value of one concrete parameter in one column.

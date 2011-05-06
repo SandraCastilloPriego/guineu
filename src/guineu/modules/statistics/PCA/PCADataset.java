@@ -26,6 +26,7 @@ import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskStatus;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,6 +48,7 @@ public class PCADataset extends AbstractXYDataset implements
         private PeakListRow[] selectedRows;
         private int[] groupsForSelectedRawDataFiles;
         private Object[] parameterValuesForGroups;
+        private ColoringType coloringType;
         int numberOfGroups;
         private String datasetTitle;
         private int xAxisPC;
@@ -67,44 +69,50 @@ public class PCADataset extends AbstractXYDataset implements
                 selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
                 selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
 
+                coloringType = parameters.getParameter(
+                        ProjectionPlotParameters.coloringType).getValue();
+
                 datasetTitle = "Principal component analysis";
 
                 // Determine groups for selected raw data files
                 groupsForSelectedRawDataFiles = new int[selectedSamples.length];
 
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+
+
+                if (coloringType == ColoringType.NOCOLORING) {
                         // All files to a single group
                         for (int ind = 0; ind < selectedSamples.length; ind++) {
                                 groupsForSelectedRawDataFiles[ind] = 0;
                         }
 
                         numberOfGroups = 1;
-                }
-
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
+                } else if (coloringType == ColoringType.COLORBYFILE) {
                         // Each file to own group
                         for (int ind = 0; ind < selectedSamples.length; ind++) {
                                 groupsForSelectedRawDataFiles[ind] = ind;
                         }
 
                         numberOfGroups = selectedSamples.length;
-                }
-
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER) {
-                        // Group files with same parameter value to same group
-           /* Vector<Object> availableParameterValues = new Vector<Object>();
+                } else {
+                        List<Object> availableParameterValues = new ArrayList<Object>();
+                        String parameter = coloringType.toString();
+                        parameter = parameter.replace("Color by ", "");
                         for (String rawDataFile : selectedSamples) {
-                        String paramValue = parameters.getParamValue(rawDataFile);
-                        if (!availableParameterValues.contains(paramValue)) {
-                        availableParameterValues.add(paramValue);
-                        }
+                                String paramValue = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersValue(rawDataFile, parameter);
+                                if (!availableParameterValues.contains(paramValue)) {
+                                        availableParameterValues.add(paramValue);
+                                }
                         }
 
-                        for (int ind = 0; ind < selectedSamples.size(); ind++) {
-                        String paramValue = parameters.getParamValue(selectedSamples.elementAt(ind));
-                        groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
+                        for (int ind = 0; ind < selectedSamples.length; ind++) {
+                                String paramValue = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersValue(selectedSamples[ind], parameter);
+                                groupsForSelectedRawDataFiles[ind] = availableParameterValues.indexOf(paramValue);
                         }
-                        parameterValuesForGroups = availableParameterValues.toArray();*/
+                        parameterValuesForGroups = availableParameterValues.toArray();
+
+                        numberOfGroups = parameterValuesForGroups.length;
+
+                        parameterValuesForGroups = availableParameterValues.toArray();
 
                         numberOfGroups = parameterValuesForGroups.length;
                 }
