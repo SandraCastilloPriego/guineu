@@ -99,7 +99,7 @@ public class RansacAligner implements GuineuModule, TaskListener, ActionListener
         }
 
         public void taskStarted(Task task) {
-                logger.info("Running alignment");
+                logger.info("Running RANSAC alignment");
         }
 
         public void taskFinished(Task task) {

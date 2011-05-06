@@ -22,10 +22,13 @@ import guineu.data.DatasetType;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.database.LCMSParserDataBase;
 import guineu.data.parser.impl.database.GCGCParserDataBase;
+import guineu.main.GuineuCore;
+import guineu.main.GuineuModule;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerParameters;
 import guineu.modules.filter.Alignment.RANSAC.RansacAlignerTask;
 import guineu.modules.mylly.alignment.basicAligner.BasicAlignerGCGCParameters;
 import guineu.modules.mylly.alignment.basicAligner.BasicAlignerGCGCTask;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -41,7 +44,6 @@ public class OpenCombineDBTask implements Task {
     private Dataset[] datasets;
     private String taskDescription = "";
     private RansacAlignerTask combineLCMSDatasets;
-    // private RansacAlignerGCGCTask combineGCGCDatasets;
     private BasicAlignerGCGCTask combineGCGCDatasets2;
 
     public OpenCombineDBTask(Dataset[] datasets) {
@@ -93,8 +95,14 @@ public class OpenCombineDBTask implements Task {
             switch (type) {
                 case LCMS:
 
-                    RansacAlignerParameters ransacParameters = new RansacAlignerParameters();
-                    combineLCMSDatasets = new RansacAlignerTask(datasets, ransacParameters);
+                    ParameterSet ransacParameters = null;
+                                for (GuineuModule module : GuineuCore.getAllModules()) {
+                                        if (module.toString().matches("Running RANSAC alignment")) {
+                                                ransacParameters = module.getParameterSet();
+                                                break;
+                                        }
+                                }
+                    combineLCMSDatasets = new RansacAlignerTask(datasets,(RansacAlignerParameters) ransacParameters);
                     combineLCMSDatasets.run();
                     break;
 
