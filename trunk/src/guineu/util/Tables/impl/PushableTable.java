@@ -251,12 +251,11 @@ public class PushableTable implements DataTable, ActionListener {
          * Creates the tooltips of the table.
          *
          */
-        private void createTooltips() {
+        public void createTooltips() {
                 try {
                         ToolTipHeader toolheader;
                         String[] toolTipStr = new String[model.getColumnCount()];
-                        for (int i = 0; i <
-                                model.getColumnCount(); i++) {
+                        for (int i = 0; i < model.getColumnCount(); i++) {
                                 toolTipStr[i] = model.getColumnName(i);
                         }
 

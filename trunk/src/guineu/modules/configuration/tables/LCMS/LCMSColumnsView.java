@@ -20,7 +20,6 @@ package guineu.modules.configuration.tables.LCMS;
 import guineu.data.datamodels.DatasetLCMSDataModel;
 import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
-import guineu.desktop.preferences.ColumnsLCMSParameters;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.parameters.ParameterSet;
@@ -36,6 +35,7 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
+import javax.swing.ToolTipManager;
 import javax.swing.table.TableModel;
 
 /**
@@ -101,6 +101,8 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
                                 }
                                 table.setModel(model);
                                 table.createDefaultColumnsFromModel();
+                                ToolTipManager.sharedInstance().unregisterComponent(table);
+                                ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
                                 table.revalidate();
                         } catch (Exception e) {
                         }
