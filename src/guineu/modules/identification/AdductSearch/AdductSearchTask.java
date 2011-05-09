@@ -18,12 +18,12 @@
 package guineu.modules.identification.AdductSearch;
 
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.CollectionUtils;
 import guineu.util.PeakListRowSorter;
 import guineu.util.SortingDirection;
 import guineu.util.SortingProperty;
@@ -87,6 +87,12 @@ public class AdductSearchTask implements Task {
         public void run() {
 
                 status = TaskStatus.PROCESSING;
+
+                if(peakList.getType() != DatasetType.LCMS){
+                        status = TaskStatus.ERROR;
+                        errorMessage = "Wrong data set type. This module is for the adduct search in LC-MS data";
+                        return;
+                }
 
                 logger.info("Starting adducts search in " + peakList);
 
