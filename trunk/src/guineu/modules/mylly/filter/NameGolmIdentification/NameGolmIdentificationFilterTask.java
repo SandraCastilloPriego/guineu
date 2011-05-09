@@ -20,7 +20,6 @@ package guineu.modules.mylly.filter.NameGolmIdentification;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.desktop.preferences.ProxySettings;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
@@ -55,8 +54,7 @@ public class NameGolmIdentificationFilterTask implements Task {
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
 
-        public NameGolmIdentificationFilterTask(SimpleGCGCDataset dataset) {
-                
+        public NameGolmIdentificationFilterTask(SimpleGCGCDataset dataset) {                
                 this.dataset = dataset;
         }
 
