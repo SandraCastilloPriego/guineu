@@ -17,23 +17,24 @@
  */
 package guineu.modules.mylly.filter.tools.PrepareDeviationFile;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.FileOutputStream;
-import org.xml.sax.ContentHandler;
+import java.io.StringWriter;
+import java.io.Writer;
+import org.jfree.xml.writer.AttributeList;
+import org.jfree.xml.writer.XMLWriter;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  *
@@ -128,61 +129,60 @@ public class RTIFileTask implements Task {
                                 }
                         }
                 }
-                try {
-                        createXMLFile(names);
-                } catch (SAXException ex) {
-                        Logger.getLogger(RTIFileTask.class.getName()).log(Level.SEVERE, null, ex);
-                }
+
+                createXMLFile(names);
+
 
         }
 
-        private void createXMLFile(List<RIList> names) throws FileNotFoundException, IOException, SAXException {
-                FileOutputStream fos = new FileOutputStream(this.outputFileName);
-                // XERCES 1 or 2 additionnal classes.
-                OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
-                of.setIndent(1);
-                of.setIndenting(true);
-                of.setEncoding("utf-8");
-                XMLSerializer serializer = new XMLSerializer(fos, of);
-                // SAX2.0 ContentHandler.
-                ContentHandler hd = serializer.asContentHandler();
-                hd.startDocument();
+        private void createXMLFile(List<RIList> names) throws FileNotFoundException, IOException {
+                FileWriter w = new FileWriter(this.outputFileName);
+                XMLWriter xmlW = new XMLWriter(w);
+                xmlW.writeXmlDeclaration();
+                xmlW.allowLineBreak();
 
-                // USER attributes.
-                AttributesImpl atts = new AttributesImpl();
-                // USERS tag.
+                xmlW.startBlock();
+                AttributeList attributes = new AttributeList();
+                xmlW.writeTag("Data", false);
 
-                atts.clear();
-                hd.startElement("", "", "Data", atts);
                 for (RIList list : names) {
-                        atts.clear();
-                        hd.startElement("", "", "Metabolite", atts);
+                        xmlW.startBlock();
+                        xmlW.writeTag("Metabolite", false);
                         for (String name : list.names) {
-                                atts.clear();
-                                hd.startElement("", "", "Name", atts);
-                                hd.characters(name.toCharArray(), 0, name.length());
-                                hd.endElement("", "", "Name");
+                                xmlW.startBlock();
+                                xmlW.writeTag("Name", false);
+                                xmlW.writeText(name);
+                                xmlW.writeCloseTag("Name");
+                                xmlW.endBlock();
                         }
-                        atts.clear();
-                        hd.startElement("", "", "CAS", atts);
-                        hd.characters(list.CAS.toCharArray(), 0, list.CAS.length());
-                        hd.endElement("", "", "CAS");
-                        atts.clear();
-                        hd.startElement("", "", "RI", atts);
-                        String value = String.valueOf(list.RI);
-                        hd.characters(value.toCharArray(), 0, value.length());
-                        hd.endElement("", "", "RI");
 
-                        atts.clear();
-                        atts.addAttribute("", "", "Type", "CDATA", list.columnType);
-                        hd.startElement("", "", "Column", atts);
-                        hd.endElement("", "", "ColumnType");
+                        xmlW.startBlock();
+                        xmlW.writeTag("CAS", false);
+                        xmlW.writeText(list.CAS);
+                        xmlW.writeCloseTag("CAS");
+                        xmlW.endBlock();
 
-                        hd.endElement("", "", "Metabolite");
+                        xmlW.startBlock();
+                        xmlW.writeTag("RI", false);
+                        xmlW.writeText(String.valueOf(list.RI));
+                        xmlW.writeCloseTag("RI");
+                        xmlW.endBlock();
+
+                        attributes.setAttribute("Type", list.columnType);
+                        xmlW.startBlock();
+                        xmlW.writeTag("Column", attributes, false);
+                        xmlW.writeText(String.valueOf(list.RI));
+                        xmlW.writeCloseTag("Column");                        
+                        xmlW.endBlock();
+                        xmlW.writeCloseTag("Metabolite");
+                        xmlW.endBlock();
                 }
-                hd.endElement("", "", "Data");
-                hd.endDocument();
-                fos.close();
+
+                xmlW.endBlock();
+
+                xmlW.close();
+
+
         }
 
         class RIList {
