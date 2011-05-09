@@ -27,14 +27,20 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
+import guineu.util.Tables.DataTableModel;
+import guineu.util.Tables.impl.PushableTable;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
+import javax.swing.ToolTipManager;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 /**
@@ -94,13 +100,19 @@ public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListen
                 JInternalFrame[] frames = desktop.getInternalFrames();
                 for (int i = 0; i < frames.length; i++) {
                         try {
+
                                 JTable table = ((DataInternalFrame) frames[i]).getTable();
-                                TableModel model = table.getModel();
+                                DataTableModel model = (DataTableModel) table.getModel();
+
                                 if (model.getClass().toString().contains("DatasetGCGCDataModel")) {
                                         ((DatasetGCGCDataModel) model).setParameters();
                                 }
                                 table.setModel(model);
                                 table.createDefaultColumnsFromModel();
+
+                                ToolTipManager.sharedInstance().unregisterComponent(table);
+                                ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
+
                                 table.revalidate();
                         } catch (Exception e) {
                         }
