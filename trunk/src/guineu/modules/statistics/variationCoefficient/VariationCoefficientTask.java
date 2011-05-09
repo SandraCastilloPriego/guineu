@@ -38,103 +38,109 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  */
 public class VariationCoefficientTask implements Task {
 
-	private Dataset[] datasets;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private Desktop desktop;
-	private double progress;
+        private Dataset[] datasets;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private Desktop desktop;
+        private double progress;
 
-	public VariationCoefficientTask(Dataset[] datasets, Desktop desktop) {
-		this.datasets = datasets;
-		this.desktop = desktop;
+        public VariationCoefficientTask(Dataset[] datasets, Desktop desktop) {
+                this.datasets = datasets;
+                this.desktop = desktop;
 
-	}
+        }
 
-	public String getTaskDescription() {
-		return "Coefficient of variation... ";
-	}
+        public String getTaskDescription() {
+                return "Coefficient of variation... ";
+        }
 
-	public double getFinishedPercentage() {
-		return progress;
-	}
+        public double getFinishedPercentage() {
+                return progress;
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public TaskStatus getStatus() {
+                return status;
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public String getErrorMessage() {
+                return errorMessage;
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
 
-	public void run() {
-		try {
-			this.variationCoefficient();
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
+        public void run() {
+                try {
+                        this.variationCoefficient();
+                } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
 
-	public void variationCoefficient() {
-		status = TaskStatus.PROCESSING;
-		try {
-			progress = 0.0f;
-			Vector<VariationCoefficientData> data = new Vector<VariationCoefficientData>();
-			for (Dataset dataset : datasets) {
-				VariationCoefficientData vcdata = new VariationCoefficientData();
-				vcdata.variationCoefficient = getvariationCoefficient(dataset);
-				vcdata.NumberIdentMol = getNumberIdentMol(dataset);
-				vcdata.datasetName = dataset.getDatasetName();
-				vcdata.numberMol = dataset.getNumberRows();
-				vcdata.numberExperiments = dataset.getNumberCols();
-				data.addElement(vcdata);
-			}
-                        
-			DataTableModel model = new VariationCoefficientDataModel(data);
-			DataTable table = new PushableTable(model);
-			table.formatNumbers(1);
-			DataInternalFrame frame = new DataInternalFrame("Coefficient of variation", table.getTable(), new Dimension(450, 450));
-			desktop.addInternalFrame(frame);
-			frame.setVisible(true);
+        public void variationCoefficient() {
+                status = TaskStatus.PROCESSING;
+                try {
+                        progress = 0.0f;
+                        Vector<VariationCoefficientData> data = new Vector<VariationCoefficientData>();
+                        for (Dataset dataset : datasets) {
+                                VariationCoefficientData vcdata = new VariationCoefficientData();
+                                vcdata.variationCoefficient = getvariationCoefficient(dataset);
+                                vcdata.NumberIdentMol = getNumberIdentMol(dataset);
+                                vcdata.datasetName = dataset.getDatasetName();
+                                vcdata.numberMol = dataset.getNumberRows();
+                                vcdata.numberExperiments = dataset.getNumberCols();
+                                data.addElement(vcdata);
+                        }
 
-			progress = 1f;
+                        DataTableModel model = new VariationCoefficientDataModel(data);
+                        DataTable table = new PushableTable(model);
+                        table.formatNumbers(1);
+                        DataInternalFrame frame = new DataInternalFrame("Coefficient of variation", table.getTable(), new Dimension(450, 450));
+                        desktop.addInternalFrame(frame);
+                        frame.setVisible(true);
 
-		} catch (Exception ex) {
-		}
-		status = TaskStatus.FINISHED;
-	}
+                        progress = 1f;
 
-	private int getNumberIdentMol(Dataset dataset) {
-		int cont = 0;
-		for (PeakListRow row : dataset.getRows()) {
-			if (!((String) row.getVar("getName")).toLowerCase().matches("unknown")) {
-				cont++;
-			}
-		}
-		return cont;
-	}
+                } catch (Exception ex) {
+                }
+                status = TaskStatus.FINISHED;
+        }
 
-	private double getvariationCoefficient(Dataset dataset) {
-		DescriptiveStatistics superStats = new DescriptiveStatistics();
-		DescriptiveStatistics stats = new DescriptiveStatistics();
-		for (PeakListRow row : dataset.getRows()) {
-			stats.clear();
-			for (String experimentName : dataset.getAllColumnNames()) {
-				Object value = row.getPeak(experimentName);
-				if (value != null && value instanceof Double) {
-					stats.addValue((Double) value);
-				}
-			}
-			if (stats.getMean() > 0) {
-				double value = stats.getStandardDeviation() / stats.getMean();
-				superStats.addValue(value);
-			}
-		}
-		return superStats.getMean();
-	}
+        private int getNumberIdentMol(Dataset dataset) {
+                int cont = 0;
+                for (PeakListRow row : dataset.getRows()) {
+                        if (!((String) row.getVar("getName")).toLowerCase().matches("unknown")) {
+                                cont++;
+                        }
+                }
+                return cont;
+        }
+
+        private double getvariationCoefficient(Dataset dataset) {
+                DescriptiveStatistics superStats = new DescriptiveStatistics();
+                DescriptiveStatistics stats = new DescriptiveStatistics();
+                for (PeakListRow row : dataset.getRows()) {
+                        stats.clear();
+                        for (String experimentName : dataset.getAllColumnNames()) {
+                                Object value = row.getPeak(experimentName);
+                                if (value != null && value instanceof Double) {
+                                        stats.addValue((Double) value);
+                                } else {
+
+                                        try {
+                                                stats.addValue(Double.valueOf((String) value));
+                                        } catch (Exception e) {
+                                        }
+                                }
+                        }
+                        if (stats.getMean() > 0) {
+                                double value = stats.getStandardDeviation() / stats.getMean();
+                                superStats.addValue(value);
+                        }
+                }
+                return superStats.getMean();
+        }
 }
