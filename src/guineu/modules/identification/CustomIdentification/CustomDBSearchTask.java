@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.Ostermiller.util.CSVParser;
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
@@ -36,7 +37,7 @@ import guineu.taskcontrol.TaskStatus;
 class CustomDBSearchTask implements Task {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
-        private SimpleLCMSDataset peakList;
+        private Dataset peakList;
         private TaskStatus status;
         private String errorMessage;
         private String[][] databaseValues;
@@ -51,7 +52,8 @@ class CustomDBSearchTask implements Task {
 
         CustomDBSearchTask(Dataset peakList, CustomDBSearchParameters parameters) {
                 status = TaskStatus.WAITING;
-                this.peakList = (SimpleLCMSDataset) peakList;
+
+                this.peakList = peakList;
 
                 dataBaseFile = parameters.getParameter(CustomDBSearchParameters.dataBaseFile).getValue().getAbsolutePath();
                 fieldSeparator = parameters.getParameter(CustomDBSearchParameters.fieldSeparator).getValue();
@@ -67,6 +69,7 @@ class CustomDBSearchTask implements Task {
                 } else {
                         type = IdentificationType.MS;
                 }
+
         }
 
         public void cancel() {
@@ -96,35 +99,39 @@ class CustomDBSearchTask implements Task {
          * @see java.lang.Runnable#run()
          */
         public void run() {
+                if (peakList.getType() == DatasetType.LCMS) {
 
-                status = TaskStatus.PROCESSING;
-                File dbFile = new File(dataBaseFile);
+                        status = TaskStatus.PROCESSING;
+                        File dbFile = new File(dataBaseFile);
 
-                try {
-                        // read database contents in memory
-                        FileReader dbFileReader = new FileReader(dbFile);
-                        databaseValues = CSVParser.parse(dbFileReader, fieldSeparator.charAt(0));
-                        if (ignoreFirstLine) {
-                                finishedLines++;
-                        }
-                        for (; finishedLines < databaseValues.length; finishedLines++) {
-                                try {
-                                        processOneLine(databaseValues[finishedLines]);
-                                } catch (Exception e) {
-                                        // ingore incorrect lines
+                        try {
+                                // read database contents in memory
+                                FileReader dbFileReader = new FileReader(dbFile);
+                                databaseValues = CSVParser.parse(dbFileReader, fieldSeparator.charAt(0));
+                                if (ignoreFirstLine) {
+                                        finishedLines++;
                                 }
-                        }
-                        dbFileReader.close();
+                                for (; finishedLines < databaseValues.length; finishedLines++) {
+                                        try {
+                                                processOneLine(databaseValues[finishedLines]);
+                                        } catch (Exception e) {
+                                                // ingore incorrect lines
+                                        }
+                                }
+                                dbFileReader.close();
 
-                } catch (Exception e) {
-                        logger.log(Level.WARNING, "Could not read file " + dbFile, e);
+                        } catch (Exception e) {
+                                logger.log(Level.WARNING, "Could not read file " + dbFile, e);
+                                status = TaskStatus.ERROR;
+                                errorMessage = e.toString();
+                                return;
+                        }
+                        status = TaskStatus.FINISHED;
+                } else {
                         status = TaskStatus.ERROR;
-                        errorMessage = e.toString();
+                        errorMessage = "Wrong data set type. This module is for the identification of LC-MS data";
                         return;
                 }
-
-
-                status = TaskStatus.FINISHED;
 
         }
 
