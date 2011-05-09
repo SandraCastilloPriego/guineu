@@ -26,7 +26,6 @@ import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
