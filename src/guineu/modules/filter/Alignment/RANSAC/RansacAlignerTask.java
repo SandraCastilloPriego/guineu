@@ -23,6 +23,8 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.main.GuineuCore;
+import guineu.parameters.parametersType.MZTolerance;
+import guineu.parameters.parametersType.RTTolerance;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
@@ -49,9 +51,9 @@ public class RansacAlignerTask implements Task {
         private int processedRows, totalRows;
         // Parameters
         private String peakListName;
-        private double mzTolerance;
-        private double rtTolerance;
-        private double rtToleranceValueAbs;
+        private MZTolerance mzTolerance;
+        private RTTolerance rtTolerance;
+        private RTTolerance rtToleranceAfterRTcorrection;
         private RansacAlignerParameters parameters;
         private double progress;
         private RANSAC ransac;
@@ -64,11 +66,11 @@ public class RansacAlignerTask implements Task {
                 // Get parameter values for easier use
                 peakListName = parameters.getParameter(RansacAlignerParameters.peakListName).getValue();
 
-                mzTolerance = parameters.getParameter(RansacAlignerParameters.MZTolerance).getValue().getTolerance();
+                mzTolerance = parameters.getParameter(RansacAlignerParameters.MZTolerance).getValue();
 
-                rtTolerance = parameters.getParameter(RansacAlignerParameters.RTTolerance).getValue().getTolerance();
+                rtTolerance = parameters.getParameter(RansacAlignerParameters.RTTolerance).getValue();
 
-                rtToleranceValueAbs = parameters.getParameter(RansacAlignerParameters.RTToleranceValueAbs).getValue().getTolerance();
+                rtToleranceAfterRTcorrection = parameters.getParameter(RansacAlignerParameters.RTToleranceValueAbs).getValue();
         }
 
         public String getTaskDescription() {
@@ -230,31 +232,23 @@ public class RansacAlignerTask implements Task {
                 PeakListRow allRows[] = peakList.getRows().toArray(new PeakListRow[0]);
 
                 for (PeakListRow row : allRows) {
-                        // Calculate limits for a row with which the row can be aligned
-                        double mzMin = ((SimplePeakListRowLCMS) row).getMZ() - mzTolerance;
-                        double mzMax = ((SimplePeakListRowLCMS) row).getMZ() + mzTolerance;
-                        double rtMin, rtMax;
-
                         double rt = function.value(((SimplePeakListRowLCMS) row).getRT());
 
                         if (Double.isNaN(rt) || rt == -1) {
                                 rt = ((SimplePeakListRowLCMS) row).getRT();
                         }
 
-                        double rtToleranceValue = 0.0f;
-                        rtToleranceValue = rtToleranceValueAbs;
-                        rtMin = rt - rtToleranceValue;
-                        rtMax = rt + rtToleranceValue;
-
+                        Range mzRange = this.mzTolerance.getToleranceRange(((SimplePeakListRowLCMS) row).getMZ());
+                        Range rtRange = this.rtToleranceAfterRTcorrection.getToleranceRange(rt);
                         // Get all rows of the aligned peaklist within parameter limits
-                        PeakListRow candidateRows[] = ((SimpleLCMSDataset) alignedPeakList).getRowsInsideRTAndMZRange(new Range(rtMin, rtMax),
-                                new Range(mzMin, mzMax));
+                        PeakListRow candidateRows[] = ((SimpleLCMSDataset) alignedPeakList).getRowsInsideRTAndMZRange(rtRange,
+                                mzRange);
 
                         for (PeakListRow candidate : candidateRows) {
                                 RowVsRowScore score;
                                 try {
-                                        score = new RowVsRowScore(row, candidate, mzTolerance,
-                                                rtToleranceValue, rt);
+                                        score = new RowVsRowScore(row, candidate, mzTolerance.getTolerance(),
+                                                rtToleranceAfterRTcorrection.getTolerance(), rt);
 
                                         scoreSet.add(score);
                                         errorMessage = score.getErrorMessage();
@@ -403,15 +397,9 @@ public class RansacAlignerTask implements Task {
                         if (status == TaskStatus.CANCELED) {
                                 return null;
                         }
-                        // Calculate limits for a row with which the row can be aligned
-                        double mzMin = ((SimplePeakListRowLCMS) row).getMZ() - mzTolerance;
-                        double mzMax = ((SimplePeakListRowLCMS) row).getMZ() + mzTolerance;
-                        double rtMin, rtMax;
-                        double rtToleranceValue = rtTolerance;
-                        rtMin = ((SimplePeakListRowLCMS) row).getRT() - rtToleranceValue;
-                        rtMax = ((SimplePeakListRowLCMS) row).getRT() + rtToleranceValue;
-                        Range mzRange = new Range(mzMin, mzMax);
-                        Range rtRange = new Range(rtMin, rtMax);
+                        // Calculate limits for a row with which the row can be aligned 
+                        Range mzRange = this.mzTolerance.getToleranceRange(((SimplePeakListRowLCMS) row).getMZ());
+                        Range rtRange = this.rtTolerance.getToleranceRange(((SimplePeakListRowLCMS) row).getRT());
 
                         // Get all rows of the aligned peaklist within parameter limits
                         PeakListRow candidateRows[] = ((SimpleLCMSDataset) peakListY).getRowsInsideRTAndMZRange(rtRange, mzRange);
