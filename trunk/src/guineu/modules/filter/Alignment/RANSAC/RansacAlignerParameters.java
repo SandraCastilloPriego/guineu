@@ -24,6 +24,7 @@ import guineu.parameters.parametersType.MZToleranceParameter;
 import guineu.parameters.parametersType.NumberParameter;
 import guineu.parameters.parametersType.RTToleranceParameter;
 import guineu.parameters.parametersType.StringParameter;
+import guineu.util.dialogs.ExitCode;
 import java.text.NumberFormat;
 
 public class RansacAlignerParameters extends SimpleParameterSet {
@@ -62,4 +63,10 @@ public class RansacAlignerParameters extends SimpleParameterSet {
                 super(new UserParameter[]{peakListName, MZTolerance, RTToleranceValueAbs,
                                 RTTolerance, Iterations, NMinPoints, Margin, Linear});
         }
+
+        public ExitCode showSetupDialog() {
+		RansacAlignerSetupDialog dialog = new RansacAlignerSetupDialog(this, null);
+		dialog.setVisible(true);
+		return dialog.getExitCode();
+	}
 }
