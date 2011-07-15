@@ -64,8 +64,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
          * @param parameters
          * @param massDetectorTypeNumber
          */
-        public RansacAlignerSetupDialog(String title, RansacAlignerParameters parameters, String helpID) {
-
+        public RansacAlignerSetupDialog(RansacAlignerParameters parameters, String helpID) {
                 super(parameters, helpID);
                 this.parameters = parameters;
                 addComponents();
@@ -78,15 +77,20 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 
                 if (src == preview) {
                         if (preview.isSelected()) {
-                                mainPanel.add(pnlPlotXY, BorderLayout.EAST);
+                                // Set the height of the preview to 200 cells, so it will span
+                                // the whole vertical length of the dialog (buttons are at row
+                                // no
+                                // 100). Also, we set the weight to 10, so the preview component
+                                // will consume most of the extra available space.
+                                mainPanel.add(pnlPlotXY, 3, 0, 1, 200, 10, 10);
                                 peakListsPanel.setVisible(true);
+                                updateMinimumSize();
                                 pack();
-                                this.setResizable(true);
                                 setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
                         } else {
                                 mainPanel.remove(pnlPlotXY);
                                 peakListsPanel.setVisible(false);
-                                this.setResizable(false);
+                                updateMinimumSize();
                                 pack();
                                 setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
                         }
@@ -105,7 +109,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 
                         // Plot the result
                         this.chart.removeSeries();
-                        this.chart.addSeries(list, peakListX.getDatasetName() + " vs " + peakListY.getDatasetName());
+                        this.chart.addSeries(list, peakListX.getDatasetName() + " vs " + peakListY.getDatasetName(), this.parameters.getParameter(RansacAlignerParameters.Linear).getValue());
                         this.chart.printAlignmentChart(peakListX.getDatasetName() + " RT", peakListY.getDatasetName() + " RT");
                 }
 
@@ -132,7 +136,8 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 
                 // Panel for the combo boxes with the peak lists
                 peakListsPanel = new JPanel();
-                peakListsPanel.setLayout(new BoxLayout(peakListsPanel, BoxLayout.PAGE_AXIS));
+                peakListsPanel.setLayout(new BoxLayout(peakListsPanel,
+                        BoxLayout.PAGE_AXIS));
 
 
                 JPanel comboPanel = new JPanel();
@@ -168,11 +173,11 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
                 pnlPlotXY.setBackground(Color.white);
 
                 chart = new AlignmentRansacPlot();
-                chart.setVisible(true);
-                pnlPlotXY.add(chart);
+                pnlPlotXY.add(chart, BorderLayout.CENTER);
 
-                mainPanel.add(pnlVisible, 0, 4);
+                mainPanel.add(pnlVisible, 0, getNumberOfParameters() + 3, 3, 1, 0, 0);
 
+                updateMinimumSize();
                 pack();
                 setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
 
