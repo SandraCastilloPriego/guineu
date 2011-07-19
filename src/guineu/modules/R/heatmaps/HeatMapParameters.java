@@ -20,6 +20,7 @@ package guineu.modules.R.heatmaps;
 import guineu.main.GuineuCore;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
+import guineu.parameters.parametersType.BooleanParameter;
 import guineu.parameters.parametersType.ComboParameter;
 
 public class HeatMapParameters extends SimpleParameterSet {
@@ -29,8 +30,23 @@ public class HeatMapParameters extends SimpleParameterSet {
         public static final ComboParameter<String> fileTypeSelection = new ComboParameter<String>(
                 "Output file type", "Output file type",
                 fileTypes, fileTypes[0]);
+        public static final BooleanParameter scale = new BooleanParameter(
+                "Scaling",
+                "Scaling the data with the standard deviation of each colum.", true);
+
+        public static final BooleanParameter log = new BooleanParameter(
+                "Log",
+                "Log scaling of the data", true);
+
+        public static final BooleanParameter plegend = new BooleanParameter(
+                "P-value legend",
+                "Adds the p-value legend", true);
+
+        public static final BooleanParameter rcontrol = new BooleanParameter(
+                "Show control samples",
+                "Shows control samples if this option is selected", true);
 
         public HeatMapParameters() {
-                super(new UserParameter[]{selectionData, fileTypeSelection});
+                super(new UserParameter[]{selectionData, fileTypeSelection, scale, log, plegend});
         }
 }

@@ -96,24 +96,24 @@ public class HeatMapTask implements Task {
                         re.eval("x<-data.matrix(dataset, rownames.force=NA)", false);
                         if (this.outputType.contains("pdf")) {
                                 re.eval("pdf(\"temp.pdf\")", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", density.info=\"none\", col=bluered(256))", false);
+                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
                         } else if (this.outputType.contains("fig")) {
                                 re.eval("xfig(\"temp.fig\", width = 7, height = 7, horizontal = FALSE, pointsize = 12)", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", density.info=\"none\", col=bluered(256))", false);
+                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
                                 re.eval("system(\"fig2dev -L emf temp.fig > temp.emf\"", false);
-                        }else if (this.outputType.contains("png")) {
+                        } else if (this.outputType.contains("png")) {
                                 re.eval("png(\"temp.png\",width=800,height=800)", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", density.info=\"none\", col=bluered(256))", false);
+                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
-                        }else if (this.outputType.contains("svg")) {
+                        } else if (this.outputType.contains("svg")) {
                                 re.eval("library(\"RSvgDevice\")", false);
                                 re.eval("devSVG(\"temp.svg\")", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", density.info=\"none\", col=bluered(256))", false);
+                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
                         }
-                     //   re.eval("quit(save=\"no\", status=0, runLast= FALSE)", false);
+                        //   re.eval("quit(save=\"no\", status=0, runLast= FALSE)", false);
                         re.end();
 
                         status = TaskStatus.FINISHED;
@@ -131,10 +131,13 @@ public class HeatMapTask implements Task {
                 Dataset newDataset = FileUtils.getDataset(dataset, "");
                 List<String> controlNames = new ArrayList<String>();
                 for (String name : columnNames) {
-                        if (!dataset.getParametersValue(name, parameterName).contains("ontrol")) {
-                                newDataset.addColumnName(name);
-                        } else {
+                        if (dataset.getParametersValue(name, parameterName).equals("control") || !dataset.getParametersValue(name, parameterName).equals("Control")) {
                                 controlNames.add(name);
+                                if(rcontrol){
+                                      newDataset.addColumnName(name);
+                                }
+                        } else {
+                                newDataset.addColumnName(name);
                         }
                 }
 
@@ -149,9 +152,19 @@ public class HeatMapTask implements Task {
                                 average /= controlNames.size();
 
                                 for (String columnName : columnNames) {
-                                        newRow.setPeak(columnName, ((Double) newRow.getPeak(columnName)) / average);
+                                        double peakValue = ((Double) newRow.getPeak(columnName)) / average;
+                                        if(log){
+                                                peakValue = Math.log(peakValue);
+                                        }
+
+                                        newRow.setPeak(columnName, peakValue);
                                 }
                         }
+                }
+
+
+                if(scale){
+                        //scale
                 }
                 return newDataset;
         }
