@@ -19,8 +19,6 @@ package guineu.modules.R;
 
 
 
-import guineu.data.ParameterType;
-import guineu.data.LCMSColumnName;
 import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
 
