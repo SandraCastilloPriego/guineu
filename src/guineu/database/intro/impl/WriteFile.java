@@ -62,7 +62,12 @@ public class WriteFile {
          */
         public void WriteCommaSeparatedFileLCMS(Dataset dataset, String path, SimpleParameterSet parameters) {
                 try {
-                        LCMSColumnName elementsObjects[] = parameters.getParameter(SaveLCMSParameters.exportLCMS).getValue();
+                        LCMSColumnName elementsObjects[] = null;
+                        if (parameters == null) {
+                                elementsObjects = LCMSColumnName.values();   
+                        } else {
+                                elementsObjects = parameters.getParameter(SaveLCMSParameters.exportLCMS).getValue();
+                        }
 
                         CsvWriter w = new CsvWriter(path);
 
