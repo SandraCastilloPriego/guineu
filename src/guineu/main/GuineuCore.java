@@ -62,11 +62,15 @@ import guineu.taskcontrol.TaskController;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
+import org.rosuda.JRI.RMainLoopCallbacks;
+import org.rosuda.JRI.Rengine;
 
 /**
  * This interface represents Guineu core modules - I/O, task controller and GUI.
@@ -91,6 +95,7 @@ public class GuineuCore implements Runnable {
         protected static GuineuModule[] initializedModules;
         protected static HelpImpl help;
         protected static Hashtable<String, Range> standards;
+        protected static Rengine re;
 
         public static void setStandard(String name, Range range) {
                 standards.put(name, range);
@@ -208,6 +213,9 @@ public class GuineuCore implements Runnable {
                         System.exit(1);
                         return;
                 }
+
+                // create R engine
+                re = this.getRengine();
 
                 logger.fine("Loading core classes..");
 
@@ -439,5 +447,61 @@ public class GuineuCore implements Runnable {
 
         public static ColumnsGCGCParameters getGCGCColumnsParameters() {
                 return GCGCColumns;
+        }
+
+        public static Rengine getR() {
+                return re;
+        }
+
+        private Rengine getRengine() {
+                String[] args = new String[1];
+                args[0] = "--vanilla";
+                if (!Rengine.versionCheck()) {
+                        System.err.println("** Version mismatch - Java files don't match library version.");
+                }
+                Rengine localRe = new Rengine(args, false, new TextConsole());
+                if (!localRe.waitForR()) {
+                        System.out.println("Cannot load R");
+                        return null;
+                }
+                return localRe;
+        }
+
+        class TextConsole implements RMainLoopCallbacks {
+
+                public void rWriteConsole(Rengine re, String text, int oType) {
+                }
+
+                public void rBusy(Rengine re, int which) {
+                }
+
+                public String rReadConsole(Rengine re, String prompt, int addToHistory) {
+                        return null;
+                }
+
+                public void rShowMessage(Rengine re, String message) {
+                }
+
+                public String rChooseFile(Rengine re, int newFile) {
+                        FileDialog fd = new FileDialog(new Frame(), (newFile == 0) ? "Select a file" : "Select a new file", (newFile == 0) ? FileDialog.LOAD : FileDialog.SAVE);
+                        fd.show();
+                        String res = null;
+                        if (fd.getDirectory() != null) {
+                                res = fd.getDirectory();
+                        }
+                        if (fd.getFile() != null) {
+                                res = (res == null) ? fd.getFile() : (res + fd.getFile());
+                        }
+                        return res;
+                }
+
+                public void rFlushConsole(Rengine re) {
+                }
+
+                public void rLoadHistory(Rengine re, String filename) {
+                }
+
+                public void rSaveHistory(Rengine re, String filename) {
+                }
         }
 }

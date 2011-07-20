@@ -62,7 +62,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         private JSplitPane split;
         private ItemSelector itemSelector;
         private TaskProgressWindow taskList;
-        
+
         public TaskProgressWindow getTaskList() {
                 return taskList;
         }
@@ -79,7 +79,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                         frame.setVisible(true);
                 } catch (Exception e) {
                         e.printStackTrace();
-                }  
+                }
         }
 
         /**
@@ -151,7 +151,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
          */
         public void initModule() {
 
-                SwingParameters.initSwingParameters();              
+                SwingParameters.initSwingParameters();
 
                 try {
                         BufferedImage GuineuIcon = ImageIO.read(new File(
@@ -238,12 +238,12 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         }
 
         public ParameterSet getParameterSet() {
-               // return parameters;
+                // return parameters;
                 return null;
         }
 
         public void setParameters(ParameterSet parameterValues) {
-               // this.parameters = (DesktopParameters) parameterValues;
+                // this.parameters = (DesktopParameters) parameterValues;
         }
 
         public ItemSelector getItemSelector() {
