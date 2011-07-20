@@ -22,6 +22,8 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
 import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.NumberParameter;
+import java.text.NumberFormat;
 
 public class HeatMapParameters extends SimpleParameterSet {
 
@@ -33,20 +35,29 @@ public class HeatMapParameters extends SimpleParameterSet {
         public static final BooleanParameter scale = new BooleanParameter(
                 "Scaling",
                 "Scaling the data with the standard deviation of each colum.", true);
-
         public static final BooleanParameter log = new BooleanParameter(
                 "Log",
                 "Log scaling of the data", true);
-
         public static final BooleanParameter plegend = new BooleanParameter(
                 "P-value legend",
                 "Adds the p-value legend", true);
-
         public static final BooleanParameter rcontrol = new BooleanParameter(
                 "Show control samples",
                 "Shows control samples if this option is selected", true);
+        public static final NumberParameter height = new NumberParameter(
+                "Height",
+                "Height", NumberFormat.getIntegerInstance(), 10);
+        public static final NumberParameter width = new NumberParameter(
+                "Width",
+                "Width", NumberFormat.getIntegerInstance(), 10);
+        public static final NumberParameter columnMargin = new NumberParameter(
+                "Column margin",
+                "Column margin", NumberFormat.getIntegerInstance(), 10);
+        public static final NumberParameter rowMargin = new NumberParameter(
+                "Row margin",
+                "Row margin", NumberFormat.getIntegerInstance(), 10);
 
         public HeatMapParameters() {
-                super(new UserParameter[]{selectionData, fileTypeSelection, scale, log, plegend});
+                super(new UserParameter[]{selectionData, fileTypeSelection, scale, log, rcontrol, plegend, height, width, columnMargin, rowMargin});
         }
 }

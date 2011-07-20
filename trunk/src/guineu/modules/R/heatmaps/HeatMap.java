@@ -26,10 +26,14 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
+import org.rosuda.JRI.RMainLoopCallbacks;
+import org.rosuda.JRI.Rengine;
 
 /**
  *
@@ -39,11 +43,13 @@ public class HeatMap implements GuineuModule, TaskListener, ActionListener {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private HeatMapParameters parameters;
+        private Rengine re = null;
 
         public HeatMap() {
                 GuineuCore.getDesktop().addMenuItem(GuineuMenu.STATISTICS, "Heat Map..",
                         "Creates a Heat Map with the selected molecules in the selected data set", KeyEvent.VK_H, this, null, "icons/others.png");
 
+                re = GuineuCore.getR();
         }
 
         public void taskStarted(Task task) {
@@ -72,7 +78,6 @@ public class HeatMap implements GuineuModule, TaskListener, ActionListener {
                 if (exitCode != ExitCode.OK) {
                         return;
                 }
-
                 runModule();
         }
 
@@ -90,7 +95,9 @@ public class HeatMap implements GuineuModule, TaskListener, ActionListener {
                 // prepare a new group of tasks
                 Task tasks[] = new HeatMapTask[selectedDatasets.length];
                 for (int i = 0; i < selectedDatasets.length; i++) {
-                        tasks[i] = new HeatMapTask(selectedDatasets[i], this.parameters);
+                        if (re != null) {
+                                tasks[i] = new HeatMapTask(selectedDatasets[i], this.parameters, re);
+                        }
                 }
                 GuineuCore.getTaskController().addTasks(tasks);
 

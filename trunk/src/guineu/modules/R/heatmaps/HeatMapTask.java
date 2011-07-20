@@ -25,14 +25,11 @@ import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.components.FileUtils;
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import org.rosuda.JRI.RMainLoopCallbacks;
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.rosuda.JRI.Rengine;
 
 /**
@@ -45,11 +42,30 @@ public class HeatMapTask implements Task {
         private String errorMessage;
         private InDataBase db;
         private String outputType;
+        private boolean log, rcontrol, scale, plegend;
+        private int height, width, columnMargin, rowMargin;
+        private int maxLength = 0;
+        private Rengine re;
 
-        public HeatMapTask(Dataset dataset, ParameterSet parameters) {
+        public HeatMapTask(Dataset dataset, ParameterSet parameters, Rengine re) {
+                this.re = re;
                 outputType = parameters.getParameter(HeatMapParameters.fileTypeSelection).getValue();
                 String parameterName = parameters.getParameter(HeatMapParameters.selectionData).getValue();
-                Dataset newDataset = this.modifyDataset(dataset, parameterName);
+
+                log = parameters.getParameter(HeatMapParameters.log).getValue();
+                scale = parameters.getParameter(HeatMapParameters.scale).getValue();
+                rcontrol = parameters.getParameter(HeatMapParameters.rcontrol).getValue();
+                plegend = parameters.getParameter(HeatMapParameters.plegend).getValue();
+
+                height = parameters.getParameter(HeatMapParameters.height).getInt();
+                width = parameters.getParameter(HeatMapParameters.width).getInt();
+                columnMargin = parameters.getParameter(HeatMapParameters.columnMargin).getInt();
+                rowMargin = parameters.getParameter(HeatMapParameters.rowMargin).getInt();
+
+                Dataset newDataset = dataset;
+                if (parameterName != null) {
+                        newDataset = this.modifyDataset(dataset, parameterName);
+                }
                 db = new InOracle();
                 db.WriteCommaSeparatedFile(newDataset, "temp.csv", null);
         }
@@ -79,15 +95,9 @@ public class HeatMapTask implements Task {
         public void run() {
                 try {
                         status = TaskStatus.PROCESSING;
-                        String[] args = new String[1];
-                        args[0] = "--vanilla";
-                        System.out.println("Creating Rengine (with arguments)");
-                        Rengine re = new Rengine(args, false, new TextConsole());
-                        System.out.println("Rengine created, waiting for R");
-                        if (!re.waitForR()) {
-                                System.out.println("Cannot load R");
-                                return;
-                        }
+
+
+                        String marginParameter = "margins = c(" + this.columnMargin + "," + this.rowMargin + ")";
 
                         re.eval("dataset1<-read.csv(file=\"temp.csv\",head=TRUE, sep=\",\")", false);
                         re.eval("dataset<-dataset1[,-c(1:15)]", false);
@@ -95,27 +105,50 @@ public class HeatMapTask implements Task {
                         re.eval("library(gplots)", false);
                         re.eval("x<-data.matrix(dataset, rownames.force=NA)", false);
                         if (this.outputType.contains("pdf")) {
-                                re.eval("pdf(\"temp.pdf\")", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
+                                re.eval("pdf(\"temp.pdf\", height=" + this.height + ", width=" + this.width + ")", false);
+                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
+                                /* re.eval("png(\"preview.png\", height=1000, width=1000)", false);
+                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(256))", false);
+                                re.eval("dev.off()", false);
+                                ImageFrame preview = new ImageFrame("preview.png", 1000, 1000);*/
+
                         } else if (this.outputType.contains("fig")) {
-                                re.eval("xfig(\"temp.fig\", width = 7, height = 7, horizontal = FALSE, pointsize = 12)", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
+                                re.eval("xfig(\"temp.fig\", height=" + this.height + ", width=" + this.width + ", horizontal = FALSE, pointsize = 12)", false);
+                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
                                 re.eval("system(\"fig2dev -L emf temp.fig > temp.emf\"", false);
-                        } else if (this.outputType.contains("png")) {
-                                re.eval("png(\"temp.png\",width=800,height=800)", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
+                                /*re.eval("png(\"preview.png\", height=1000, width=1000)", false);
+                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
+                                ImageFrame preview = new ImageFrame("preview.png", 1000, 1000);*/
+
                         } else if (this.outputType.contains("svg")) {
                                 re.eval("library(\"RSvgDevice\")", false);
-                                re.eval("devSVG(\"temp.svg\")", false);
-                                re.eval("heatmap.2(x, margins=c(10,10), trace=\"none\", col=bluered(256))", false);
+                                re.eval("devSVG(\"temp.svg\", height=" + this.height + ", width=" + this.width + ")", false);
+                                re.eval("heatmap.2(x," + marginParameter + ",trace=\"none\", col=bluered(256))", false);
                                 re.eval("dev.off()", false);
-                        }
-                        //   re.eval("quit(save=\"no\", status=0, runLast= FALSE)", false);
-                        re.end();
+                                /*re.eval("png(\"preview.png\", height=1000, width=1000)", false);
+                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(256))", false);
+                                re.eval("dev.off()", false);
+                                ImageFrame preview = new ImageFrame("preview.png", 1000, 1000);*/
 
+                        } else if (this.outputType.contains("png")) {
+                                re.eval("png(\"temp.png\", height=" + this.height + ", width=" + this.width + ")", false);
+                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(256))", false);
+                                re.eval("dev.off()", false);
+                                //   ImageFrame preview = new ImageFrame("temp.png", this.height, this.width);
+                        }
+
+
+                        re.end();
+                        File f = new File("temp.csv");
+                        f.delete();
+                        /* try {
+                        f = new File("preview.png");
+                        f.deleteOnExit();
+                        } catch (Exception e) {
+                        }*/
                         status = TaskStatus.FINISHED;
 
                 } catch (Exception e) {
@@ -130,20 +163,57 @@ public class HeatMapTask implements Task {
                 Vector<String> columnNames = dataset.getAllColumnNames();
                 Dataset newDataset = FileUtils.getDataset(dataset, "");
                 List<String> controlNames = new ArrayList<String>();
+
                 for (String name : columnNames) {
-                        if (dataset.getParametersValue(name, parameterName).equals("control") || !dataset.getParametersValue(name, parameterName).equals("Control")) {
-                                controlNames.add(name);
-                                if(rcontrol){
-                                      newDataset.addColumnName(name);
+                        try {
+                                if (dataset.getParametersValue(name, parameterName).equals("control") || dataset.getParametersValue(name, parameterName).equals("Control")) {
+                                        controlNames.add(name);
+                                        if (rcontrol) {
+                                                newDataset.addColumnName(name);
+                                        }
+                                } else {
+                                        newDataset.addColumnName(name);
                                 }
-                        } else {
-                                newDataset.addColumnName(name);
+                                // gets the maximum lenght of the sample names
+                                if (name.length() > maxLength) {
+                                        maxLength = name.length();
+                                }
+                        } catch (NullPointerException e) {
                         }
+                }
+                if (controlNames.isEmpty()) {
+                        newDataset = dataset.clone();
                 }
 
                 double average = 0;
                 for (PeakListRow row : dataset.getRows()) {
                         if (row.isSelected()) {
+                                PeakListRow newRow = row.clone();
+                               /* if (!rcontrol) {
+                                        newRow.removeNoSamplePeaks(controlNames.toArray(new String[0]));
+                                }*/
+                                newDataset.addRow(newRow);
+
+                                for (String controlColumnName : controlNames) {
+                                        average += (Double) row.getPeak(controlColumnName);
+                                }
+                                average /= controlNames.size();
+
+                                for (String columnName : columnNames) {
+                                        double peakValue = ((Double) newRow.getPeak(columnName)) / average;
+                                        if (log) {
+                                                peakValue = Math.log(peakValue);
+                                        }
+
+                                        newRow.setPeak(columnName, peakValue);
+                                }
+                        }
+                }
+
+                // if the user didn't selecte any concrete row, all the rows are considered to be selected
+                if (newDataset.getNumberRows() == 0) {
+                        for (PeakListRow row : dataset.getRows()) {
+
                                 PeakListRow newRow = row.clone();
                                 newDataset.addRow(newRow);
                                 for (String controlColumnName : controlNames) {
@@ -153,68 +223,31 @@ public class HeatMapTask implements Task {
 
                                 for (String columnName : columnNames) {
                                         double peakValue = ((Double) newRow.getPeak(columnName)) / average;
-                                        if(log){
+                                        if (log) {
                                                 peakValue = Math.log(peakValue);
                                         }
 
                                         newRow.setPeak(columnName, peakValue);
                                 }
+
                         }
                 }
 
-
-                if(scale){
-                        //scale
+                // scale with std dev of each column
+                if (scale) {
+                        DescriptiveStatistics stdDevStats = new DescriptiveStatistics();
+                        for (String name : columnNames) {
+                                for (PeakListRow row : newDataset.getRows()) {
+                                        stdDevStats.addValue((Double) row.getPeak(name));
+                                }
+                        }
+                        double stdDev = stdDevStats.getStandardDeviation();
+                        for (String name : columnNames) {
+                                for (PeakListRow row : newDataset.getRows()) {
+                                        row.setPeak(name, ((Double) row.getPeak(name)) / stdDev);
+                                }
+                        }
                 }
                 return newDataset;
-        }
-
-        class TextConsole implements RMainLoopCallbacks {
-
-                public void rWriteConsole(Rengine re, String text, int oType) {
-                        System.out.print(text);
-                }
-
-                public void rBusy(Rengine re, int which) {
-                        System.out.println("rBusy(" + which + ")");
-                }
-
-                public String rReadConsole(Rengine re, String prompt, int addToHistory) {
-                        System.out.print(prompt);
-                        try {
-                                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                                String s = br.readLine();
-                                return (s == null || s.length() == 0) ? s : s + "\n";
-                        } catch (Exception e) {
-                                System.out.println("jriReadConsole exception: " + e.getMessage());
-                        }
-                        return null;
-                }
-
-                public void rShowMessage(Rengine re, String message) {
-                        System.out.println("rShowMessage \"" + message + "\"");
-                }
-
-                public String rChooseFile(Rengine re, int newFile) {
-                        FileDialog fd = new FileDialog(new Frame(), (newFile == 0) ? "Select a file" : "Select a new file", (newFile == 0) ? FileDialog.LOAD : FileDialog.SAVE);
-                        fd.show();
-                        String res = null;
-                        if (fd.getDirectory() != null) {
-                                res = fd.getDirectory();
-                        }
-                        if (fd.getFile() != null) {
-                                res = (res == null) ? fd.getFile() : (res + fd.getFile());
-                        }
-                        return res;
-                }
-
-                public void rFlushConsole(Rengine re) {
-                }
-
-                public void rLoadHistory(Rengine re, String filename) {
-                }
-
-                public void rSaveHistory(Rengine re, String filename) {
-                }
         }
 }
