@@ -17,8 +17,6 @@
  */
 package guineu.modules.mylly.alignment.scoreAligner.functions;
 
-import guineu.modules.mylly.alignment.*;
-
 /**
  *
  * @author Jarkko Miettinen
