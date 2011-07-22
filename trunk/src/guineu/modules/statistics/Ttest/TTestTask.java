@@ -86,7 +86,7 @@ public class TTestTask implements Task {
                         newDataset.addColumnName("Ttest");
                         Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
                         for (String group : availableParameterValues) {
-                                newDataset.addColumnName(group);
+                                newDataset.addColumnName("Mean of " +group);
                         }
                         int cont = 0;
 
@@ -95,7 +95,7 @@ public class TTestTask implements Task {
                                 newRow.removePeaks();
                                 newRow.setPeak("Ttest", t.get(cont)[0]);
                                 for (int i = 0; i < 2; i++) {
-                                        newRow.setPeak(availableParameterValues.get(i), t.get(cont)[i + 1]);
+                                        newRow.setPeak("Mean of "+availableParameterValues.get(i), t.get(cont)[i + 1]);
                                 }
                                 cont++;
                                 newDataset.addRow(newRow);
