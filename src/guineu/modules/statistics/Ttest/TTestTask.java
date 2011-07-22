@@ -23,6 +23,8 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -73,21 +75,29 @@ public class TTestTask implements Task {
         public void run() {
                 try {
                         status = TaskStatus.PROCESSING;
-                        double[] t = new double[dataset.getNumberRows()];
+                        List<double[]> t = new ArrayList<double[]>();
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
-                                t[i] = this.Ttest(i);
+                                t.add(this.Ttest(i));
                         }
 
                         progress = 0.5f;
 
                         Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
                         newDataset.addColumnName("Ttest");
+                        Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                        for (String group : availableParameterValues) {
+                                newDataset.addColumnName(group);
+                        }
                         int cont = 0;
 
                         for (PeakListRow row : dataset.getRows()) {
                                 PeakListRow newRow = row.clone();
                                 newRow.removePeaks();
-                                newRow.setPeak("Ttest", t[cont++]);
+                                newRow.setPeak("Ttest", t.get(cont)[0]);
+                                for (int i = 0; i < 2; i++) {
+                                        newRow.setPeak(availableParameterValues.get(i), t.get(cont)[i + 1]);
+                                }
+                                cont++;
                                 newDataset.addRow(newRow);
                         }
                         GUIUtils.showNewTable(newDataset, true);
@@ -100,9 +110,10 @@ public class TTestTask implements Task {
                 }
         }
 
-        public double Ttest(int mol) throws IllegalArgumentException, MathException {
+        public double[] Ttest(int mol) throws IllegalArgumentException, MathException {
                 DescriptiveStatistics stats1 = new DescriptiveStatistics();
                 DescriptiveStatistics stats2 = new DescriptiveStatistics();
+                double[] values = new double[3];
                 String parameter1 = "";
 
                 if (parameter == null) {
@@ -137,10 +148,13 @@ public class TTestTask implements Task {
                                         }
                                 }
                         } else {
-                                return -1;
+                                return null;
                         }
                 }
                 TTestImpl ttest = new TTestImpl();
-                return ttest.tTest((StatisticalSummary) stats1, (StatisticalSummary) stats2);
+                values[0] = ttest.tTest((StatisticalSummary) stats1, (StatisticalSummary) stats2);
+                values[1] = stats1.getMean();
+                values[2] = stats2.getMean();
+                return values;
         }
 }
