@@ -17,7 +17,9 @@
  */
 package guineu.modules.configuration.parameters;
 
+import com.csvreader.CsvReader;
 import guineu.data.Dataset;
+import guineu.modules.identification.normalizationtissue.readFileDialog;
 import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
 import java.awt.Dimension;
@@ -28,8 +30,14 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -75,7 +83,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 }
 
                 // Table properties
-                setTableProperties();                
+                setTableProperties();
 
                 // Help button
                 btnHelp = new HelpButton(helpID);
@@ -211,7 +219,6 @@ public class ParameterDialog extends JDialog implements ActionListener {
         private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadFileButtonActionPerformed
                 openSelectionFile();
         }//GEN-LAST:event_loadFileButtonActionPerformed
-
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton addParameterButton;
         private javax.swing.JPanel btnPanel;
@@ -465,7 +472,48 @@ public class ParameterDialog extends JDialog implements ActionListener {
         }
 
         private void openSelectionFile() {
-                throw new UnsupportedOperationException("Not yet implemented");
+                readFileDialog dialog = new readFileDialog(null);
+                dialog.setVisible(true);
+                String filePath = "";
+                try {
+                        filePath = dialog.getCurrentDirectory();
+                } catch (Exception e) {
+                }
+                try {
+                        CsvReader reader = new CsvReader(new FileReader(filePath));
+                        try {
+                                reader.readHeaders();
+
+                                String[] header = reader.getHeaders();
+                                for (int i = 1; i < header.length; i++) {
+                                        model.addColumn(header[i]);
+                                }
+                                ((ParameterDataModel) model).fireTableStructureChanged();
+                                table.getColumnModel().getColumn(0).setMinWidth(300);
+                                while (reader.readRecord()) {
+                                        String[] values = reader.getValues();
+                                        int index = -1;
+                                        for (int e = 0; e < model.getRowCount(); e++) {
+                                                String sampleName = model.getValueAt(e, 0);
+                                                if (sampleName.equals(values[0])) {
+                                                        index = e;
+                                                }
+                                        }
+                                        if (index > -1) {
+                                                for (int i = 1; i < values.length; i++) {
+                                                        model.setValueAt(values[i], index, i);
+                                                }
+                                        }
+                                }
+                                ((ParameterDataModel) model).addParameters(dataset);
+                                ((ParameterDataModel) model).fireTableDataChanged();                               
+
+                        } catch (IOException ex) {
+                                Logger.getLogger(ParameterDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        reader.close();
+                } catch (FileNotFoundException ex) {
+                }
         }
 
         /**
