@@ -45,9 +45,9 @@ public class readFileDialog extends JDialog implements ActionListener {
     public readFileDialog(File lastpath) {
 
         super(GuineuCore.getDesktop().getMainFrame(),
-                "Please select a dataset file to open...", true);
+                "Please select a data set file to open...", true);
 
-        logger.finest("Displaying dataset open dialog");
+        logger.finest("Displaying data set open dialog");
 
         fileChooser = new JFileChooser();
         if (lastpath != null) {
