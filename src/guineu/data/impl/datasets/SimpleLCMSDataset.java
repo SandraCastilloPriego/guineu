@@ -80,7 +80,7 @@ public class SimpleLCMSDataset implements Dataset {
                 if (!this.parameterNames.contains(parameterName)) {
                         parameterNames.addElement(parameterName);
                 }
-        }       
+        }
 
         public void deleteParameter(String parameterName) {
                 for (String experimentName : sampleNames) {
@@ -105,7 +105,7 @@ public class SimpleLCMSDataset implements Dataset {
                 Vector<String> availableParameterValues = new Vector<String>();
                 for (String rawDataFile : this.getAllColumnNames()) {
                         String paramValue = this.getParametersValue(rawDataFile, parameter);
-                        if (!availableParameterValues.contains(paramValue)) {
+                        if (!availableParameterValues.contains(paramValue) && !paramValue.isEmpty()) {
                                 availableParameterValues.add(paramValue);
                         }
                 }
@@ -114,7 +114,7 @@ public class SimpleLCMSDataset implements Dataset {
 
         public Vector<String> getParametersName() {
                 return parameterNames;
-        }     
+        }
 
         public String getDatasetName() {
                 return this.datasetName;
@@ -172,7 +172,7 @@ public class SimpleLCMSDataset implements Dataset {
                 this.type = type;
         }
 
-         /**
+        /**
          * Add new rows into the data set. The rows can be in any kind of Collection class.
          *
          * @param rows Rows to be added.
@@ -204,7 +204,7 @@ public class SimpleLCMSDataset implements Dataset {
                 SimpleLCMSDataset newDataset = new SimpleLCMSDataset(this.datasetName);
                 for (String experimentName : this.sampleNames) {
                         newDataset.addColumnName(experimentName);
-                        for(String parameterName: this.parameterNames){
+                        for (String parameterName : this.parameterNames) {
                                 newDataset.addParameterValue(experimentName, parameterName, this.getParametersValue(experimentName, parameterName));
                         }
 
@@ -215,7 +215,7 @@ public class SimpleLCMSDataset implements Dataset {
                 newDataset.setType(this.type);
 
                 newDataset.infoDataset = infoDataset;
-                
+
                 return newDataset;
         }
 
@@ -234,8 +234,8 @@ public class SimpleLCMSDataset implements Dataset {
         public PeakListRow[] getRowsInsideRTAndMZRange(Range rtRange, Range mzRange) {
                 List<PeakListRow> rows = new ArrayList<PeakListRow>();
                 for (PeakListRow row : this.peakList) {
-                        if (rtRange.contains((Double) row.getVar(LCMSColumnName.RT.getGetFunctionName())) &&
-                                mzRange.contains((Double) row.getVar(LCMSColumnName.MZ.getGetFunctionName()))) {
+                        if (rtRange.contains((Double) row.getVar(LCMSColumnName.RT.getGetFunctionName()))
+                                && mzRange.contains((Double) row.getVar(LCMSColumnName.MZ.getGetFunctionName()))) {
                                 rows.add(row);
                         }
                 }
