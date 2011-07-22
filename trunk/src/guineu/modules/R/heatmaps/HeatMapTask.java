@@ -208,7 +208,11 @@ public class HeatMapTask implements Task {
                                 for (String columnName : columnNames) {
                                         double peakValue = ((Double) newRow.getPeak(columnName)) / average;
                                         if (log) {
-                                                peakValue = Math.log(peakValue);
+                                                try {
+                                                        peakValue = Math.log(peakValue);
+                                                } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                }
                                         }
 
                                         newRow.setPeak(columnName, peakValue);
@@ -230,7 +234,11 @@ public class HeatMapTask implements Task {
                                 for (String columnName : columnNames) {
                                         double peakValue = ((Double) newRow.getPeak(columnName)) / average;
                                         if (log) {
-                                                peakValue = Math.log(peakValue);
+                                                try {
+                                                        peakValue = Math.log(peakValue);
+                                                } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                }
                                         }
 
                                         newRow.setPeak(columnName, peakValue);
@@ -319,7 +327,11 @@ public class HeatMapTask implements Task {
                                         double peakValue = meanGroupStats.getMean() / meanControlStats.getMean();
 
                                         if (log) {
-                                                peakValue = Math.log(peakValue);
+                                                try {
+                                                        peakValue = Math.log(peakValue);
+                                                } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                }
                                         }
                                         newRow.setPeak(group, peakValue);
                                 }
@@ -373,7 +385,11 @@ public class HeatMapTask implements Task {
                                         double peakValue = meanGroupStats.getMean() / meanControlStats.getMean();
 
                                         if (log) {
-                                                peakValue = Math.log(peakValue);
+                                                try {
+                                                        peakValue = Math.log(peakValue);
+                                                } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                }
                                         }
                                         newRow.setPeak(group, peakValue);
                                 }
