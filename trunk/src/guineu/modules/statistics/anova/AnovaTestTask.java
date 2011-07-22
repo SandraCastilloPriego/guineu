@@ -108,8 +108,10 @@ public class AnovaTestTask implements Task {
                         }
                         return TestUtils.oneWayAnovaPValue(classes);
                 } catch (IllegalArgumentException ex) {
+                        ex.printStackTrace();
                         return -1;
                 } catch (MathException ex) {
+                        ex.printStackTrace();
                         return -1;
                 }
         }
