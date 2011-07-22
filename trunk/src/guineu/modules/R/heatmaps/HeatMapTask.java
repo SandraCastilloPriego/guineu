@@ -303,10 +303,10 @@ public class HeatMapTask implements Task {
                                                 meanControlStats.addValue((Double) row.getPeak(sampleName));
                                         }
                                 }
-
-                                meanGroupStats.clear();
+                                
                                 int i = 0;
                                 for (String group : groups) {
+                                        meanGroupStats.clear();
                                         for (String sampleName : dataset.getAllColumnNames()) {
                                                 if (dataset.getParametersValue(sampleName, parameterName).equals(group)) {
                                                         meanGroupStats.addValue((Double) row.getPeak(sampleName));
@@ -320,7 +320,6 @@ public class HeatMapTask implements Task {
                                         } else {
                                                 // get the p-value
                                                 sig[i++] = this.getPvalue(meanGroupStats, meanControlStats);
-
                                         }
 
                                         // get the fold changes
@@ -361,10 +360,10 @@ public class HeatMapTask implements Task {
                                                 meanControlStats.addValue((Double) row.getPeak(sampleName));
                                         }
                                 }
-
-                                meanGroupStats.clear();
+                                
                                 int i = 0;
                                 for (String group : groups) {
+                                        meanGroupStats.clear();
                                         for (String sampleName : dataset.getAllColumnNames()) {
                                                 if (dataset.getParametersValue(sampleName, parameterName).equals(group)) {
                                                         meanGroupStats.addValue((Double) row.getPeak(sampleName));
@@ -380,7 +379,6 @@ public class HeatMapTask implements Task {
                                                 sig[i++] = this.getPvalue(meanGroupStats, meanControlStats);
 
                                         }
-
                                         // get the fold changes
                                         double peakValue = meanGroupStats.getMean() / meanControlStats.getMean();
 
@@ -437,9 +435,11 @@ public class HeatMapTask implements Task {
                         double pValue = ttest.tTest(group1, group2);
                         if (pValue < 0.05) {
                                 sig = "*";
-                        } else if (pValue < 0.01) {
+                        }
+                        if (pValue < 0.01) {
                                 sig = "**";
-                        } else if (pValue < 0.001) {
+                        }
+                        if (pValue < 0.001) {
                                 sig = "***";
                         }
 
