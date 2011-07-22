@@ -267,10 +267,10 @@ public class SimpleGCGCDataset implements Dataset {
          */
         public GCGCDatum getPeak(int rowIx, int colIx) {
                 if (rowIx < 0 || rowIx >= getNumberRows() || colIx < 0 || colIx >= getNumberCols()) {
-                        throw new IndexOutOfBoundsException("indices out of bounds: rowIx = " +
-                                rowIx + " valid range [0," + getNumberRows() + "]" +
-                                " colIx = " + colIx + " valid range [0," + getNumberCols() +
-                                "]");
+                        throw new IndexOutOfBoundsException("indices out of bounds: rowIx = "
+                                + rowIx + " valid range [0," + getNumberRows() + "]"
+                                + " colIx = " + colIx + " valid range [0," + getNumberCols()
+                                + "]");
                 }
                 return ((List<GCGCDatum>) peakList.get(rowIx).getVar("getDatumArray")).get(colIx);
         }
@@ -350,7 +350,7 @@ public class SimpleGCGCDataset implements Dataset {
                 Vector<String> availableParameterValues = new Vector<String>();
                 for (String rawDataFile : this.getAllColumnNames()) {
                         String paramValue = this.getParametersValue(rawDataFile, parameter);
-                        if (!availableParameterValues.contains(paramValue)) {
+                        if (!availableParameterValues.contains(paramValue) && !paramValue.isEmpty()) {
                                 availableParameterValues.add(paramValue);
                         }
                 }
@@ -459,8 +459,8 @@ public class SimpleGCGCDataset implements Dataset {
         public PeakListRow[] getRowsInsideRT1AndRT2Range(Range RT1Range, Range RT2Range) {
                 List<PeakListRow> rows = new ArrayList<PeakListRow>();
                 for (PeakListRow row : this.peakList) {
-                        if (RT1Range.contains((Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName())) &&
-                                RT2Range.contains((Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName()))) {
+                        if (RT1Range.contains((Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName()))
+                                && RT2Range.contains((Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName()))) {
                                 rows.add(row);
                         }
                 }
