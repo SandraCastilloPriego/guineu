@@ -22,12 +22,17 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
 import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.NumberParameter;
 import java.text.NumberFormat;
 
 public class HeatMapParameters extends SimpleParameterSet {
 
         public static final String[] fileTypes = {"pdf", "svg", "png", "fig"};
+
+        public static final FileNameParameter fileName = new FileNameParameter(
+                "Output name",
+                "Select the path and name of the output file.");
         public static final ParameterSelection selectionData = new ParameterSelection(GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName());
         public static final ComboParameter<String> fileTypeSelection = new ComboParameter<String>(
                 "Output file type", "Output file type",
@@ -41,6 +46,9 @@ public class HeatMapParameters extends SimpleParameterSet {
         public static final BooleanParameter plegend = new BooleanParameter(
                 "P-value legend",
                 "Adds the p-value legend", true);
+       public static final NumberParameter star = new NumberParameter(
+                "Size p-value legend",
+                "Size of the p-value legend", NumberFormat.getIntegerInstance(), 5);
         public static final BooleanParameter rcontrol = new BooleanParameter(
                 "Show control samples",
                 "Shows control samples if this option is selected", true);
@@ -58,6 +66,6 @@ public class HeatMapParameters extends SimpleParameterSet {
                 "Row margin", NumberFormat.getIntegerInstance(), 10);
 
         public HeatMapParameters() {
-                super(new UserParameter[]{selectionData, fileTypeSelection, scale, log, rcontrol, plegend, height, width, columnMargin, rowMargin});
+                super(new UserParameter[]{fileName, selectionData, fileTypeSelection, scale, log, rcontrol, plegend, star, height, width, columnMargin, rowMargin});
         }
 }
