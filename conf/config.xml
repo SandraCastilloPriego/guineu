@@ -10,10 +10,10 @@
         <parameter name="PC(34:0)">
             <item>0.0 - 0.0</item>
         </parameter>
-        <parameter name="PE(17:0/17:0)">
+        <parameter name="Cer(d18:1/17:0)">
             <item>0.0 - 0.0</item>
         </parameter>
-        <parameter name="Cer(d18:1/17:0)">
+        <parameter name="PE(17:0/17:0)">
             <item>0.0 - 0.0</item>
         </parameter>
     </Standards>
@@ -36,8 +36,7 @@
         <module class="guineu.modules.file.openLCMSDatasetFile.OpenFile">
             <parameters>
                 <parameter name="File names">
-                    <file>/home/scsandra/Desktop/example folder/095-077Muscle_normalized.csv</file>
-                    <file>/home/scsandra/Desktop/example folder/095-077Plasma_normalized.csv</file>
+                    <file>/home/scsandra/Desktop/example folder/206MB_Heart2.csv</file>
                 </parameter>
             </parameters>
         </module>
@@ -51,15 +50,18 @@
             <parameters>
                 <parameter name="Separator: ">\t</parameter>
                 <parameter name="Filter out peaks with classification: ">true</parameter>
-                <parameter name="File names">
-                    <file>/home/scsandra/Downloads/Guineu.try.input</file>
+                <parameter name="Open GCxGC-MS files">
+                    <file>/home/scsandra/Desktop/Example_Files/Example1.txt</file>
+                    <file>/home/scsandra/Desktop/Example_Files/Example2.txt</file>
+                    <file>/home/scsandra/Desktop/Example_Files/Example3.txt</file>
+                    <file>/home/scsandra/Desktop/Example_Files/Example4.txt</file>
                 </parameter>
             </parameters>
         </module>
         <module class="guineu.modules.file.openBasicFiles.OpenBasicFile">
             <parameters>
                 <parameter name="File names">
-                    <file>/home/scsandra/Alignment.txt</file>
+                    <file>/home/scsandra/Desktop/Bile_acids.csv</file>
                 </parameter>
             </parameters>
         </module>
@@ -125,12 +127,9 @@
             <parameters>
                 <parameter name="Select columns for LC-MS">
                     <item>Selection</item>
-                    <item>Id</item>
                     <item>Average m/z</item>
                     <item>Average Retention time</item>
                     <item>Name</item>
-                    <item>All names</item>
-                    <item>Identification type</item>
                     <item>Num found</item>
                     <item>Standard</item>
                     <item>Alignment</item>
@@ -141,20 +140,10 @@
             <parameters>
                 <parameter name="Select columns for GCxGC-MS">
                     <item>Selection</item>
-                    <item>ID</item>
-                    <item>RT1</item>
                     <item>RT2</item>
                     <item>RTI</item>
                     <item>N Found</item>
-                    <item>New Cas Number</item>
                     <item>Cas Number</item>
-                    <item>Max similarity</item>
-                    <item>Mean similarity</item>
-                    <item>Similarity std dev</item>
-                    <item>Pubchem ID</item>
-                    <item>KEGG ID</item>
-                    <item>Mass</item>
-                    <item>Spectrum</item>
                 </parameter>
             </parameters>
         </module>
@@ -169,8 +158,8 @@
                     <parameter name="Proxy port">8000</parameter>
                 </parameter>
                 <parameter name="Guineu window state">
-                    <position>386:26</position>
-                    <size>790:595</size>
+                    <position>0:27</position>
+                    <size>maximized:maximized</size>
                 </parameter>
             </parameters>
         </module>
@@ -188,9 +177,9 @@
         </module>
         <module class="guineu.modules.filter.Alignment.graphalignment.GraphAligner">
             <parameters>
-                <parameter name="Peak list name"/>
-                <parameter name="m/z tolerance"/>
-                <parameter name="RT tolerance"/>
+                <parameter name="Peak list name">alignment</parameter>
+                <parameter name="m/z tolerance" type="mz">0.04</parameter>
+                <parameter name="RT tolerance" type="absolute">5.0</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.filter.Alignment.centering.mean.MeanCentering">
@@ -247,8 +236,8 @@
         </module>
         <module class="guineu.modules.identification.CustomIdentification.CustomDBSearch">
             <parameters>
-                <parameter name="Database file"/>
-                <parameter name="Field separator"/>
+                <parameter name="Database file">/home/scsandra/Desktop/example folder/Identification files/theoretical_pos_without_RT.csv</parameter>
+                <parameter name="Field separator">,</parameter>
                 <parameter name="Field order">
                     <item>ID</item>
                     <item>m/z</item>
@@ -257,17 +246,35 @@
                     <item>Formula</item>
                 </parameter>
                 <parameter name="Ignore first line">true</parameter>
-                <parameter name="m/z tolerance"/>
-                <parameter name="Time tolerance"/>
-                <parameter name="MSMS Identification">true</parameter>
+                <parameter name="m/z tolerance" type="mz">0.04</parameter>
+                <parameter name="Time tolerance" type="absolute">100.0</parameter>
+                <parameter name="MSMS Identification">false</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.identification.AdductSearch.AdductSearch">
             <parameters>
-                <parameter name="Time tolerance"/>
-                <parameter name="Adducts"/>
-                <parameter name="Custom adduct value">0.0</parameter>
-                <parameter name="m/z tolerance"/>
+                <parameter name="Time tolerance" type="absolute">334.0</parameter>
+                <parameter name="Adducts">
+                    <item>All related peaks 0.000 m/z</item>
+                    <item>[M+NH4] 17.027 m/z</item>
+                    <item>[M+Na] 21.982 m/z</item>
+                    <item>[[M+NH4] - [M+Na]] 4.955 m/z</item>
+                    <item>[M-CH3] 14.016 m/z</item>
+                    <item>[M+HCOO] 46.006 m/z</item>
+                    <item>[M+C2H3OO], [[M-CH3] - [M+HCOO]] 60.022 m/z</item>
+                    <item>[[M-CH3] - [M+C2H3OO]] 74.038 m/z</item>
+                    <item>[M+Na-H] 21.982 m/z</item>
+                    <item>[M+K-H] 37.956 m/z</item>
+                    <item>[M+Mg-2H] 21.969 m/z</item>
+                    <item>[M+NH3] 17.026 m/z</item>
+                    <item>[M+H3PO4] 97.977 m/z</item>
+                    <item>[M+H2SO4] 97.967 m/z</item>
+                    <item>[M+H2CO3] 62.000 m/z</item>
+                    <item>[(Deuterium)]glycerol 5.000 m/z</item>
+                    <item>Custom 0.000 m/z</item>
+                </parameter>
+                <parameter name="Custom adduct value">5.0</parameter>
+                <parameter name="m/z tolerance" type="mz">0.9</parameter>
                 <parameter name="Max adduct peak height">0.2</parameter>
             </parameters>
         </module>
@@ -314,6 +321,15 @@
                 <parameter name="Select the algorithm"/>
                 <parameter name="Select the algorithm"/>
                 <parameter name="Number of clusters to generate">3.0</parameter>
+            </parameters>
+        </module>
+        <module class="guineu.modules.R.heatmaps.HeatMap">
+            <parameters>
+                <parameter name="Parameter selection" type="parameter">No parameters</parameter>
+                <parameter name="Output file type">pdf</parameter>
+                <parameter name="Scaling">true</parameter>
+                <parameter name="Log">true</parameter>
+                <parameter name="P-value legend">true</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment">
@@ -378,9 +394,9 @@
         </module>
         <module class="guineu.modules.mylly.filter.singlingFilter.SinglingFilter">
             <parameters>
-                <parameter name="Suffix: "/>
+                <parameter name="Suffix: ">dsfsdf</parameter>
                 <parameter name="Filter Unknowns Peaks: ">true</parameter>
-                <parameter name="Minimun similarity required:"/>
+                <parameter name="Minimun similarity required:">1000.0</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.mylly.filter.linearNormalizer.LinearNormalizerFilter">
@@ -391,8 +407,8 @@
         </module>
         <module class="guineu.modules.mylly.filter.tools.PrepareDeviationFile.RTIFile">
             <parameters>
-                <parameter name="Input File: "/>
-                <parameter name="Output File: "/>
+                <parameter name="Input File: ">/home/scsandra/Desktop/example folder/Jarkko/RI_list_literature.txt</parameter>
+                <parameter name="Output File: ">/home/scsandra/ssddfsdf.xml</parameter>
             </parameters>
         </module>
         <module class="guineu.modules.mylly.filter.ConcentrationsFromMass.ConcentrationsFromMassFilter">
