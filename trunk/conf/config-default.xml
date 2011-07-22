@@ -57,7 +57,8 @@
     <module class="guineu.modules.statistics.Media.mediaFilter"/>  
     <module class="guineu.modules.statistics.anova.AnovaTest"/> 
     <module class="guineu.modules.statistics.clustering.ClusteringTest"/> 
-    <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->  
+    <!-- R MODULE: <module class="guineu.modules.R.R"/>  -->
+    <module class="guineu.modules.R.heatmaps.HeatMap"/>  
     <!-- STANDARD VARIATION MODULE: <module class="guineu.modules.statistics.standardVariation.standardVariation"/> -->  
     <!-- OPEN MSMS FILE:<module class="guineu.modules.msms.open.OpenFile"/> -->  
     <module class="guineu.modules.mylly.alignment.scoreAligner.ScoreAlignment"/> 
