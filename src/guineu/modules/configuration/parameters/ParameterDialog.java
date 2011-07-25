@@ -125,7 +125,6 @@ public class ParameterDialog extends JDialog implements ActionListener {
 
                 jScrollPane1.setPreferredSize(new java.awt.Dimension(800, 502));
 
-                table.setAutoCreateRowSorter(true);
                 table.setModel(new javax.swing.table.DefaultTableModel(
                         new Object [][] {
                                 {null, null, null, null},
@@ -139,6 +138,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 ));
                 table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
                 table.setFillsViewportHeight(true);
+                table.setUpdateSelectionOnSort(false);
                 jScrollPane1.setViewportView(table);
 
                 jPanel3.add(jScrollPane1);
@@ -422,8 +422,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 // Selection mode
 
                 table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-                table.setColumnSelectionAllowed(true);
-
+                table.setColumnSelectionAllowed(false);
 
                 // Size of the firts column which corresponds to the sample list column
 
@@ -503,7 +502,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                                         }
                                 }
                                 ((ParameterDataModel) model).addParameters(dataset);
-                                ((ParameterDataModel) model).fireTableDataChanged();                               
+                                ((ParameterDataModel) model).fireTableDataChanged();
 
                         } catch (IOException ex) {
                                 Logger.getLogger(ParameterDialog.class.getName()).log(Level.SEVERE, null, ex);
