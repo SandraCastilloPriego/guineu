@@ -111,11 +111,9 @@ public class ParameterDataModel extends AbstractTableModel {
 
         @Override
         public void setValueAt(Object aValue, int row, int column) {
-                try {
-                        int[] trows = table.getSelectedRows();
-                        int[] tcolumns = table.getSelectedColumns();
-                        for (int trow : trows) {
-                                for (int tcolumn : tcolumns) {
+                try {                  
+                        for (int trow : table.getSelectedRows()) {
+                                for (int tcolumn : table.getSelectedColumns()) {
                                         rows.get(tcolumn)[trow] = aValue.toString();
                                 }
                         }
