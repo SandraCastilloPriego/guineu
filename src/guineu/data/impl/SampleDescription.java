@@ -28,7 +28,6 @@ public class SampleDescription {
 
         Hashtable<String, String> parameters;
 
-        
         public SampleDescription() {
                 parameters = new Hashtable<String, String>();
         }
@@ -51,8 +50,12 @@ public class SampleDescription {
          * @param parameterName Name of the parameter
          */
         public void deleteParameter(String parameterName) {
-                if (parameters.containsKey(parameterName)) {
-                        parameters.remove(parameterName);
+                try {
+                        if (parameters.containsKey(parameterName)) {
+                                parameters.remove(parameterName);
+                        }
+                } catch (NullPointerException e) {
+                        System.out.println("Error: No parameter was selected");
                 }
         }
 
