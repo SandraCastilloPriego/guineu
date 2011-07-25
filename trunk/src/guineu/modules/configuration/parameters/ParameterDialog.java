@@ -488,16 +488,25 @@ public class ParameterDialog extends JDialog implements ActionListener {
                                 table.getColumnModel().getColumn(0).setMinWidth(300);
                                 while (reader.readRecord()) {
                                         String[] values = reader.getValues();
-                                        int index = -1;
+                                        int rowIndex = -1;
                                         for (int e = 0; e < model.getRowCount(); e++) {
                                                 String sampleName = model.getValueAt(e, 0);
                                                 if (sampleName.equals(values[0])) {
-                                                        index = e;
+                                                        rowIndex = e;
                                                 }
                                         }
-                                        if (index > -1) {
+
+
+                                        if (rowIndex > -1) {
                                                 for (int i = 1; i < values.length; i++) {
-                                                        model.setValueAt(values[i], index, i);
+                                                        int columnIndex = -1;
+                                                        for (int e = 0; e < model.getColumnCount(); e++) {
+                                                                String columnName = model.getColumnName(e);
+                                                                if (columnName.equals(header[i])) {
+                                                                        columnIndex = e;
+                                                                }
+                                                        }
+                                                        model.setValueAt(values[i], rowIndex, columnIndex);
                                                 }
                                         }
                                 }
