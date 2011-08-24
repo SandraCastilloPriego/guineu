@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
-import org.rosuda.JRI.Rengine;
 
 /**
  *
@@ -40,13 +39,11 @@ public class HeatMap implements GuineuModule, TaskListener, ActionListener {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private HeatMapParameters parameters;
-        private Rengine re = null;
 
         public HeatMap() {
                 GuineuCore.getDesktop().addMenuItem(GuineuMenu.STATISTICS, "Heat Map..",
                         "Creates a Heat Map with the selected molecules in the selected data set", KeyEvent.VK_H, this, null, "icons/others.png");
 
-                re = GuineuCore.getR();
         }
 
         public void taskStarted(Task task) {
@@ -92,9 +89,8 @@ public class HeatMap implements GuineuModule, TaskListener, ActionListener {
                 // prepare a new group of tasks
                 Task tasks[] = new HeatMapTask[selectedDatasets.length];
                 for (int i = 0; i < selectedDatasets.length; i++) {
-                        if (re != null) {
-                                tasks[i] = new HeatMapTask(selectedDatasets[i], this.parameters, re);
-                        }
+                        
+                        tasks[i] = new HeatMapTask(selectedDatasets[i], this.parameters);
                 }
                 GuineuCore.getTaskController().addTasks(tasks);
 

@@ -20,18 +20,16 @@ package guineu.modules.mylly.openGCGCDatasetFile;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.FileNameParameter;
-import guineu.parameters.parametersType.NumberParameter;
-import java.text.NumberFormat;
+import guineu.parameters.parametersType.IntegerParameter;
 
 public class OpenFileParameters extends SimpleParameterSet {
 
-        public static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
         public static final FileNameParameter fileName = new FileNameParameter(
                 "File Name: ",
                 "File Name");
-        public static final NumberParameter numColumns = new NumberParameter(
+        public static final IntegerParameter numColumns = new IntegerParameter(
                 "Number of Columns for Parameters: ",
-                "Number of columns before the columns corresponding to the samples", integerFormat, new Integer(10));
+                "Number of columns before the columns corresponding to the samples", 10);
 
         public OpenFileParameters() {
                 super(new UserParameter[]{fileName, numColumns});

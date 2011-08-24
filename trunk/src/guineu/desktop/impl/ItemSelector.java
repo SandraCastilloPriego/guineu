@@ -113,7 +113,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                 DatasetFiles.addListSelectionListener(listener);
         }
 
-        public ExitCode setupParameters() {
+        /*public ExitCode setupParameters() {
                 try {
                         ParameterSetupDialog nameDialog = new ParameterSetupDialog(parameterName);
                         nameDialog.setVisible(true);
@@ -121,7 +121,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                 } catch (Exception exception) {
                         return ExitCode.CANCEL;
                 }
-        }
+        }*/
 
         public void setupInfoDialog(Dataset data) {
                 try {
@@ -143,11 +143,11 @@ public class ItemSelector extends JPanel implements ActionListener,
                 if (command.equals("CHANGE_NAME") || changeName) {
                         try {
                                 Dataset[] selectedFiles = this.getSelectedDatasets();
-                                ExitCode code = this.setupParameters();
+                               // ExitCode code = this.setupParameters();
                                 changeName = true;
-                                if (code != ExitCode.OK) {
+                                /*if (code != ExitCode.OK) {
                                         return;
-                                }
+                                }*/
                                 int index = DatasetNamesModel.indexOf(selectedFiles[0].getDatasetName());
                                 DatasetNamesModel.setElementAt(selectedFiles[0].getDatasetName(), index);
                         } catch (Exception exception) {

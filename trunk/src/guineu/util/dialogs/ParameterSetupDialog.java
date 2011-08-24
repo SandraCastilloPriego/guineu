@@ -19,7 +19,6 @@
 
 package guineu.util.dialogs;
 
-
 import guineu.main.GuineuCore;
 import guineu.parameters.Parameter;
 import guineu.parameters.ParameterSet;
@@ -27,12 +26,12 @@ import guineu.parameters.UserParameter;
 import guineu.util.GUIUtils;
 import guineu.util.components.GridBagPanel;
 import guineu.util.components.HelpButton;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -44,29 +43,29 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
-// TODO: tooltips?
 
 /**
  * This class represents the parameter setup dialog to set the values of
  * SimpleParameterSet. Each Parameter is represented by a component. The
  * component can be obtained by calling getComponentForParameter(). Type of
  * component depends on parameter type:
- *
- *
- *
+ * 
+ * 
+ * 
  */
 public class ParameterSetupDialog extends JDialog implements ActionListener,
-		PropertyChangeListener {
-
-	// public static final int TEXTFIELD_COLUMNS = 10;
+		DocumentListener {
 
 	private ExitCode exitCode = ExitCode.UNKNOWN;
 
 	private String helpID;
 
 	// Parameters and their representation in the dialog
-	private ParameterSet parameterSet;
+	protected ParameterSet parameterSet;
 	private Map<String, JComponent> parametersAndComponents;
 	private Map<UserParameter, Object> autoValues;
 
@@ -86,30 +85,8 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 	/**
 	 * Constructor
 	 */
-	public ParameterSetupDialog(ParameterSet parameters) {
-		this(parameters, null, null);
-	}
-
-	/**
-	 * Constructor
-	 */
-	public ParameterSetupDialog(ParameterSet parameters, String helpID) {
-		this(parameters, null, helpID);
-	}
-
-	/**
-	 * Constructor
-	 */
 	public ParameterSetupDialog(ParameterSet parameters,
 			Map<UserParameter, Object> autoValues) {
-		this(parameters, autoValues, null);
-	}
-
-	/**
-	 * Constructor
-	 */
-	public ParameterSetupDialog(ParameterSet parameters,
-			Map<UserParameter, Object> autoValues, String helpID) {
 
 		// Make dialog modal
 		super(GuineuCore.getDesktop().getMainFrame(), "Please set parameters",
@@ -117,7 +94,7 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 
 		this.parameterSet = parameters;
 		this.autoValues = autoValues;
-		this.helpID = helpID;
+		this.helpID = GUIUtils.generateHelpID(parameters);
 
 		parametersAndComponents = new Hashtable<String, JComponent>();
 
@@ -163,15 +140,15 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 			UserParameter up = (UserParameter) p;
 
 			JComponent comp = up.createEditingComponent();
+			comp.setToolTipText(up.getDescription());
 
 			// Set the initial value
 			Object value = up.getValue();
 			if (value != null)
 				up.setValueToComponent(comp, value);
 
-			// This only applies to text boxes, but we can add it to all
-			// components
-			comp.addPropertyChangeListener("value", this);
+			// Add listeners so we are notified about any change in the values
+			addListenersToComponent(comp);
 
 			// By calling this we make sure the components will never be resized
 			// smaller than their optimal size
@@ -195,13 +172,6 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 
 			mainPanel.add(comp, 1, rowCounter, 1, 1, 1, verticalWeight,
 					GridBagConstraints.VERTICAL);
-			// comp.setBorder(BorderFactory.createLineBorder(Color.green));
-
-			/*
-			 * String unitStr = p.getUnits(); if (unitStr != null) { JLabel
-			 * unitLabel = new JLabel(unitStr); mainPanel.add(unitLabel, 2,
-			 * rowCounter); }
-			 */
 
 			rowCounter++;
 
@@ -286,10 +256,6 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 		return exitCode;
 	}
 
-	public void propertyChange(PropertyChangeEvent event) {
-		parametersChanged();
-	}
-
 	protected JComponent getComponentForParameter(Parameter p) {
 		return parametersAndComponents.get(p.getName());
 	}
@@ -302,11 +268,6 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 			UserParameter up = (UserParameter) p;
 			JComponent component = parametersAndComponents.get(p.getName());
 			up.setValueFromComponent(component);
-
-			if (up.getValue() == null) {
-				throw new IllegalArgumentException(
-						"Please set value for parameter " + p.getName());
-			}
 		}
 	}
 
@@ -321,10 +282,20 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 	public void closeDialog(ExitCode exitCode) {
 		if (exitCode == ExitCode.OK) {
 			// commit the changes to the parameter set
-			try {
-				updateParameterSetFromComponents();
-			} catch (Exception invalidValueException) {
-				GuineuCore.getDesktop().displayException(invalidValueException);
+			updateParameterSetFromComponents();
+
+			ArrayList<String> messages = new ArrayList<String>();
+			boolean allParametersOK = parameterSet
+					.checkUserParameterValues(messages);
+
+			if (!allParametersOK) {
+				StringBuilder message = new StringBuilder(
+						"Please check the parameter settings:\n\n");
+				for (String m : messages) {
+					message.append(m);
+					message.append("\n");
+				}
+				GuineuCore.getDesktop().displayMessage(message.toString());
 				return;
 			}
 		}
@@ -340,6 +311,45 @@ public class ParameterSetupDialog extends JDialog implements ActionListener,
 	 */
 	protected void parametersChanged() {
 
+	}
+
+	private void addListenersToComponent(JComponent comp) {
+		if (comp instanceof JTextComponent) {
+			JTextComponent textComp = (JTextComponent) comp;
+			textComp.getDocument().addDocumentListener(this);
+		}
+		if (comp instanceof JComboBox) {
+			JComboBox comboComp = (JComboBox) comp;
+			comboComp.addActionListener(this);
+		}
+		if (comp instanceof JCheckBox) {
+			JCheckBox checkComp = (JCheckBox) comp;
+			checkComp.addActionListener(this);
+		}
+		if (comp instanceof JPanel) {
+			JPanel panelComp = (JPanel) comp;
+			for (int i = 0; i < panelComp.getComponentCount(); i++) {
+				Component child = panelComp.getComponent(i);
+				if (!(child instanceof JComponent))
+					continue;
+				addListenersToComponent((JComponent) child);
+			}
+		}
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent event) {
+		parametersChanged();
+	}
+
+	@Override
+	public void insertUpdate(DocumentEvent event) {
+		parametersChanged();
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent event) {
+		parametersChanged();
 	}
 
 }

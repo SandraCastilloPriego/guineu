@@ -25,6 +25,7 @@ import guineu.parameters.Parameter;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
+import java.util.Collection;
 
 
 
@@ -117,5 +118,17 @@ public class WindowStateParameter implements Parameter {
 		sizeElement.setTextContent(mainWindowWidth + ":" + mainWindowHeight);
 
 	}
+
+        public Object getValue() {
+                return null;
+        }
+
+        public void setValue(Object newValue) {
+                
+        }
+
+        public boolean checkValue(Collection errorMessages) {
+                return true;
+        }
 
 }

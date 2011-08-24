@@ -21,6 +21,7 @@ package guineu.desktop.numberFormat;
 
 import guineu.parameters.UserParameter;
 import java.text.DecimalFormat;
+import java.util.Collection;
 
 import javax.swing.JTextField;
 
@@ -110,5 +111,9 @@ public class NumberFormatParameter implements
 	public void saveValueToXML(Element xmlElement) {
 		xmlElement.setTextContent(value.toPattern());
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                return true;
+        }
 
 }

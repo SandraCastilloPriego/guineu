@@ -23,7 +23,6 @@ import guineu.parameters.parametersType.ComboParameter;
 import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.StringParameter;
 import guineu.parameters.parametersType.TextAreaParameter;
-
 /**
  *
  * @author scsandra

@@ -20,7 +20,7 @@ package guineu.modules.mylly.alignment.scoreAligner;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.DoubleParameter;
 
 /**
  *
@@ -28,33 +28,33 @@ import guineu.parameters.parametersType.NumberParameter;
  */
 public class ScoreAlignmentParameters extends SimpleParameterSet {
 
-        public static final NumberParameter rt1Lax = new NumberParameter(
+        public static final DoubleParameter rt1Lax = new DoubleParameter(
                 "RT Lax:",
-                "RT Lax", null, new Double(15.0));
-        public static final NumberParameter rt2Lax = new NumberParameter(
+                "RT Lax", 15.0);
+        public static final DoubleParameter rt2Lax = new DoubleParameter(
                 "RT2 Lax:",
-                "RT2 Lax", null, new Double(0.3));
-        public static final NumberParameter rt1Penalty = new NumberParameter(
+                "RT2 Lax", 0.3);
+        public static final DoubleParameter rt1Penalty = new DoubleParameter(
                 "RT penalty:",
-                "RT penalty", null, new Double(5.0));
-        public static final NumberParameter rt2Penalty = new NumberParameter(
+                "RT penalty", 5.0);
+        public static final DoubleParameter rt2Penalty = new DoubleParameter(
                 "RT2 penalty:",
-                "RT2 penalty", null, new Double(35.0));
-        public static final NumberParameter minSpectrumMatch = new NumberParameter(
+                "RT2 penalty", 35.0);
+        public static final DoubleParameter minSpectrumMatch = new DoubleParameter(
                 "Minimum Spectrum Match:",
-                "Minimun Spectrum Match", null, new Double(0.75));
-        public static final NumberParameter nameMatchBonus = new NumberParameter(
+                "Minimun Spectrum Match", 0.75);
+        public static final DoubleParameter nameMatchBonus = new DoubleParameter(
                 "Bonus for matching names:",
                 "Bonus for matching names");
-        public static final NumberParameter rtiPenalty = new NumberParameter(
+        public static final DoubleParameter rtiPenalty = new DoubleParameter(
                 "RTI penalty",
-                "RTI penalty", null, new Double(40.0));
-        public static final NumberParameter minSimilarity = new NumberParameter(
+                "RTI penalty", 40.0);
+        public static final DoubleParameter minSimilarity = new DoubleParameter(
                 "Drop peaks with similarity less than:",
-                "Drop peaks with low similarity", null, new Double(600.0));
-        public static final NumberParameter rtiLax = new NumberParameter(
+                "Drop peaks with low similarity", 600.0);
+        public static final DoubleParameter rtiLax = new DoubleParameter(
                 "RI Lax:",
-                "RI Lax", null, new Double(20.0));
+                "RI Lax", 20.0);
         public static final BooleanParameter useConcentration = new BooleanParameter(
                 "Use Concentrations: ",
                 "Use Concentrations", true);

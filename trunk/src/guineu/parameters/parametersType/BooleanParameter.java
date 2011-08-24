@@ -20,6 +20,7 @@
 package guineu.parameters.parametersType;
 
 import guineu.parameters.UserParameter;
+import java.util.Collection;
 import javax.swing.JCheckBox;
 
 
@@ -51,13 +52,17 @@ public class BooleanParameter implements UserParameter<Boolean, JCheckBox> {
 		this.value = defaultValue;
 	}
 
-	
+	/**
+	 * @see net.sf.mzmine.data.Parameter#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
-	
+	/**
+	 * @see net.sf.mzmine.data.Parameter#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return description;
@@ -110,4 +115,12 @@ public class BooleanParameter implements UserParameter<Boolean, JCheckBox> {
 		xmlElement.setTextContent(value.toString());
 	}
 
+	@Override
+	public boolean checkValue(Collection<String> errorMessages) {
+		if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
+	}
 }

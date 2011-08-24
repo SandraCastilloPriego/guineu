@@ -20,8 +20,8 @@ package guineu.modules.mylly.filter.ConcentrationsFromMass;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.DoubleParameter;
 import guineu.parameters.parametersType.FileNameParameter;
-import guineu.parameters.parametersType.NumberParameter;
 
 /**
  *
@@ -35,7 +35,7 @@ public class ConcentrationsFromMassParameters extends SimpleParameterSet {
         public static final BooleanParameter direction = new BooleanParameter(
                 "TIC to EIC",
                 "Oposite direction", new Boolean(false));
-        public static final NumberParameter spectrumPeak = new NumberParameter(
+        public static final DoubleParameter spectrumPeak = new DoubleParameter(
                 "Peak from Spectrum",
                 "Peak from Spectrum");
 

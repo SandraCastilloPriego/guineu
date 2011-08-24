@@ -21,15 +21,15 @@ package guineu.parameters;
 
 
 import guineu.util.dialogs.ExitCode;
-import java.util.Map;
 
+import java.util.Collection;
 
 import org.w3c.dom.Element;
 
 /**
  * This class represents a general parameter set of a module. Typical module
  * will use a SimpleParameterSet instance.
- * 
+ *
  * @param <T>
  */
 public interface ParameterSet {
@@ -42,6 +42,10 @@ public interface ParameterSet {
 
 	public void saveValuesToXML(Element element);
 
+	public boolean checkUserParameterValues(Collection<String> errorMessages);
+
+	public boolean checkAllParameterValues(Collection<String> errorMessages);
+
 	public ParameterSet clone();
 
 	/**
@@ -50,7 +54,5 @@ public interface ParameterSet {
 	public String toString();
 
 	public ExitCode showSetupDialog();
-
-	public ExitCode showSetupDialog(Map<UserParameter, Object> autoValues);
 
 }

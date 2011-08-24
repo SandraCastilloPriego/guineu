@@ -19,9 +19,8 @@ package guineu.modules.mylly.filter.peakCounter;
 
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.IntegerParameter;
 import guineu.parameters.parametersType.StringParameter;
-import java.text.NumberFormat;
 
 /**
  *
@@ -29,13 +28,12 @@ import java.text.NumberFormat;
  */
 public class PeakCountParameters extends SimpleParameterSet {
 
-        static final NumberFormat format = NumberFormat.getIntegerInstance();
         public static final StringParameter suffix = new StringParameter(
                 "Suffix: ",
                 "Suffix");
-        public static final NumberParameter numFound = new NumberParameter(
+        public static final IntegerParameter numFound = new IntegerParameter(
                 "Peak Count less than:",
-                "Peak Count Filter", format, new Integer(2));
+                "Peak Count Filter",2);
 
         public PeakCountParameters() {
                 super(new UserParameter[]{suffix, numFound});

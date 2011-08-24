@@ -17,21 +17,15 @@
  */
 package guineu.modules.R.heatmaps;
 
-import com.csvreader.CsvWriter;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.database.intro.InDataBase;
-import guineu.database.intro.impl.InOracle;
+import guineu.modules.R.RUtilities;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.components.FileUtils;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -44,48 +38,40 @@ import org.rosuda.JRI.Rengine;
  */
 public class HeatMapTask implements Task {
 
+        private Logger logger = Logger.getLogger(this.getClass().getName());
         private TaskStatus status = TaskStatus.WAITING;
         private String errorMessage;
-        private InDataBase db;
         private String outputType;
         private boolean log, rcontrol, scale, plegend;
         private int height, width, columnMargin, rowMargin, starSize;
         private int maxLength = 0;
         private File outputFile;
-        private Rengine re;
-        private List<String[]> significance;
+        private String[] rowNames, colNames;
+        private String[][] pValueMatrix;
+        private Dataset dataset;
+        private String parameterName, referenceGroup;
+        private double finishedPercentage = 0.0f;
 
-        public HeatMapTask(Dataset dataset, ParameterSet parameters, Rengine re) {
-                this.re = re;
+        public HeatMapTask(Dataset dataset, ParameterSet parameters) {
+                this.dataset = dataset;
+
                 outputFile = parameters.getParameter(HeatMapParameters.fileName).getValue();
                 outputType = parameters.getParameter(HeatMapParameters.fileTypeSelection).getValue();
-                String parameterName = parameters.getParameter(HeatMapParameters.selectionData).getValue();
+                parameterName = parameters.getParameter(HeatMapParameters.selectionData).getValue();
+                referenceGroup = parameters.getParameter(HeatMapParameters.referenceGroup).getValue();
 
                 log = parameters.getParameter(HeatMapParameters.log).getValue();
                 scale = parameters.getParameter(HeatMapParameters.scale).getValue();
-                rcontrol = parameters.getParameter(HeatMapParameters.rcontrol).getValue();
+                rcontrol = parameters.getParameter(HeatMapParameters.showControlSamples).getValue();
                 plegend = parameters.getParameter(HeatMapParameters.plegend).getValue();
 
-                height = parameters.getParameter(HeatMapParameters.height).getInt();
-                width = parameters.getParameter(HeatMapParameters.width).getInt();
-                columnMargin = parameters.getParameter(HeatMapParameters.columnMargin).getInt();
-                rowMargin = parameters.getParameter(HeatMapParameters.rowMargin).getInt();
-                starSize = parameters.getParameter(HeatMapParameters.star).getInt();
+                height = parameters.getParameter(HeatMapParameters.height).getValue();
+                width = parameters.getParameter(HeatMapParameters.width).getValue();
+                columnMargin = parameters.getParameter(HeatMapParameters.columnMargin).getValue();
+                rowMargin = parameters.getParameter(HeatMapParameters.rowMargin).getValue();
+                starSize = parameters.getParameter(HeatMapParameters.star).getValue();
 
-                Dataset newDataset = dataset;
-                if (parameterName != null) {
-                        if (plegend) {
-                                newDataset = this.GroupingDataset(dataset, parameterName);
-                        } else {
-                                newDataset = this.modifyDataset(dataset, parameterName);
-                        }
-                }
-                db = new InOracle();
-                db.WriteCommaSeparatedFile(newDataset, "temp.csv", null);
 
-                if (plegend) {
-                        this.saveTemporalSignificaceFile(this.significance);
-                }
         }
 
         public String getTaskDescription() {
@@ -93,7 +79,7 @@ public class HeatMapTask implements Task {
         }
 
         public double getFinishedPercentage() {
-                return 0.0f;
+                return finishedPercentage;
         }
 
         public TaskStatus getStatus() {
@@ -111,321 +97,411 @@ public class HeatMapTask implements Task {
         public void run() {
                 try {
                         status = TaskStatus.PROCESSING;
-
-
-                        String marginParameter = "margins = c(" + this.columnMargin + "," + this.rowMargin + ")";
-
-                        re.eval("dataset1<-read.csv(file=\"temp.csv\",head=TRUE, sep=\",\")", false);
-                        re.eval("dataset<-dataset1[,-c(1:15)]", false);
-                        re.eval("rownames(dataset)<-paste(dataset1[,2], dataset1[,5], sep=\"_\")", false);
-                        re.eval("library(gplots)", false);
-                        re.eval("x<-data.matrix(dataset, rownames.force=NA)", false);
-
-                        re.eval("br<-c(seq(from=min(x,na.rm=T),to=0,length.out=256),seq(from=0,to=max(x,na.rm=T),length.out=256))", false);
-
-                        if (plegend) {
-                                re.eval("stars<-read.csv(file=\"stars.csv\",head=FALSE, sep=\",\")", false);
-                        }
-
-
-                        if (this.outputType.contains("pdf")) {
-                                re.eval("pdf(\"" + this.outputFile + "\", height=" + this.height + ", width=" + this.width + ")", false);
-
-                        } else if (this.outputType.contains("fig")) {
-                                re.eval("xfig(\"" + this.outputFile + "\", height=" + this.height + ", width=" + this.width + ", horizontal = FALSE, pointsize = 12)", false);
-                        } else if (this.outputType.contains("svg")) {
-                                if (!this.outputFile.getAbsolutePath().contains(".svg")) {
-                                        this.outputFile = new File(this.outputFile.getAbsolutePath() + ".svg");
+                        logger.info("Heat map plot");
+                        double[][] newDataset;
+                        System.out.println("1");
+                        if (!parameterName.isEmpty() && !referenceGroup.isEmpty()) {
+                                if (plegend) {
+                                        newDataset = this.GroupingDataset(dataset);
+                                } else {
+                                        newDataset = this.modifyDataset(dataset);
                                 }
-                                re.eval("library(\"RSvgDevice\")", false);
-                                re.eval("devSVG(\"" + this.outputFile + "\", height=" + this.height + ", width=" + this.width + ")", false);
-                        } else if (this.outputType.contains("png")) {
-                                if (!this.outputFile.getAbsolutePath().contains(".png")) {
-                                        this.outputFile = new File(this.outputFile.getAbsolutePath() + ".png");
-                                }
-                                re.eval("png(\"" + this.outputFile + "\", height=" + this.height + ", width=" + this.width + ")", false);
-                        }
-                        if (plegend) {
-                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(length(br)-1), breaks=br, cellnote=stars, notecol=\"black\", notecex=" + starSize + ")", false);
                         } else {
-                                re.eval("heatmap.2(x," + marginParameter + ", trace=\"none\", col=bluered(length(br)-1), breaks=br)", false);
+                                status = TaskStatus.ERROR;
+                                if (parameterName.isEmpty()) {
+                                        errorMessage = "Sample parameters have to be defined.";
+                                } else if (referenceGroup.isEmpty()) {
+                                        errorMessage = "Reference group has to be defined.";
+                                }
+                                return;
                         }
-                        re.eval("dev.off()", false);
 
-                        re.end();
-                        File f = new File("temp.csv");
-                        f.delete();
-                        f = new File("stars.csv");
-                        f.delete();
+                        System.out.println("2");
+                        if (newDataset == null || newDataset.length == 0 || newDataset[0].length == 0) {
+                                status = TaskStatus.ERROR;
+                                errorMessage = "The data for heat map is empty.";
+                                return;
+                        }
+                        System.out.println("3");
+                        final Rengine rEngine;
+                        try {
+                                rEngine = RUtilities.getREngine();
+                        } catch (Throwable t) {
+
+                                throw new IllegalStateException(
+                                        "Heat map requires R but it couldn't be loaded (" + t.getMessage() + ')');
+                        }
+                        System.out.println("4");
+                        finishedPercentage = 0.3f;
+
+                        synchronized (RUtilities.R_SEMAPHORE) {
+
+                                // Load gplots library
+                                if (rEngine.eval("require(gplots)").asBool().isFALSE()) {
+                                        status = TaskStatus.ERROR;
+                                        errorMessage = "The \"gplots\" R package couldn't be loaded - is it installed in R?";
+                                }
+
+                                try {
+
+                                        if (outputType.contains("png")) {
+                                                if (height < 500 || width < 500) {
+
+                                                        status = TaskStatus.ERROR;
+                                                        errorMessage = "Figure height or width is too small. Minimun height and width is 500.";
+                                                        return;
+                                                }
+                                        }
+
+                                        rEngine.eval("dataset<- matrix(\"\",nrow =" + newDataset[0].length + ",ncol=" + newDataset.length + ")");
+
+                                        if (plegend) {
+                                                rEngine.eval("stars<- matrix(\"\",nrow =" + newDataset[0].length + ",ncol=" + newDataset.length + ")");
+                                        }
+
+                                        // assing the values to the matrix
+                                        for (int row = 0; row < newDataset[0].length; row++) {
+
+                                                for (int column = 0; column < newDataset.length; column++) {
+
+                                                        int r = row + 1;
+                                                        int c = column + 1;
+
+                                                        double value = newDataset[column][row];
+
+                                                        if (plegend) {
+                                                                String pValue = pValueMatrix[column][row];
+                                                                rEngine.eval("stars[" + r + "," + c + "] = \"" + pValue + "\"");
+                                                        }
+
+                                                        if (!Double.isInfinite(value) && !Double.isNaN(value)) {
+
+                                                                rEngine.eval("dataset[" + r + "," + c + "] = " + value);
+                                                        } else {
+
+                                                                rEngine.eval("dataset[" + r + "," + c + "] = NA");
+                                                        }
+                                                }
+                                        }
+                                        finishedPercentage = 0.4f;
+                                        System.out.println("5");
+                                        rEngine.eval("dataset <- apply(dataset, 2, as.numeric)");
+
+                                        // Assign row names to the data set
+                                        long rows = rEngine.rniPutStringArray(rowNames);
+                                        rEngine.rniAssign("rowNames", rows, 0);
+                                        rEngine.eval("rownames(dataset)<-rowNames");
+
+                                        // Assign column names to the data set
+                                        long columns = rEngine.rniPutStringArray(colNames);
+                                        rEngine.rniAssign("colNames", columns, 0);
+                                        rEngine.eval("colnames(dataset)<-colNames");
+
+                                        finishedPercentage = 0.5f;
+
+                                        // Remove the rows with too many NA's. The distances between rows can't be calculated if the rows don't have
+                                        // at least one sample in common.
+                                        rEngine.eval(" d <- as.matrix(dist(dataset))");
+                                        rEngine.eval("d[upper.tri(d)] <- 0");
+                                        rEngine.eval("dataset <- dataset[-na.action(na.omit(d)),]");
+
+                                        finishedPercentage = 0.8f;
+
+                                        String marginParameter = "margins = c(" + columnMargin + "," + rowMargin + ")";
+                                        rEngine.eval("br<-c(seq(from=min(dataset,na.rm=T),to=0,length.out=256),seq(from=0,to=max(dataset,na.rm=T),length.out=256))", false);
+
+                                        // Possible output file types
+                                        if (outputType.contains("pdf")) {
+
+                                                rEngine.eval("pdf(\"" + outputFile + "\", height=" + height + ", width=" + width + ")");
+                                        } else if (outputType.contains("fig")) {
+
+                                                rEngine.eval("xfig(\"" + outputFile + "\", height=" + height + ", width=" + width + ", horizontal = FALSE, pointsize = 12)");
+                                        } else if (outputType.contains("svg")) {
+
+                                                // Load RSvgDevice library
+                                                if (rEngine.eval("require(RSvgDevice)").asBool().isFALSE()) {
+
+                                                        throw new IllegalStateException("The \"RSvgDevice\" R package couldn't be loaded - is it installed in R?");
+                                                }
+
+                                                rEngine.eval("devSVG(\"" + outputFile + "\", height=" + height + ", width=" + width + ")");
+                                        } else if (outputType.contains("png")) {
+
+                                                rEngine.eval("png(\"" + outputFile + "\", height=" + height + ", width=" + width + ")");
+                                        }
+
+                                        if (plegend) {
+
+                                                rEngine.eval("heatmap.2(dataset," + marginParameter + ", trace=\"none\", col=bluered(length(br)-1), breaks=br, cellnote=stars, notecol=\"black\", notecex=" + starSize + ", na.color=\"grey\")", false);
+                                        } else {
+
+                                                rEngine.eval("heatmap.2(dataset," + marginParameter + ", trace=\"none\", col=bluered(length(br)-1), breaks=br, na.color=\"grey\")", false);
+                                        }
+
+                                        rEngine.eval("dev.off()", false);
+                                        finishedPercentage = 1.0f;
+
+                                } catch (Throwable t) {
+
+                                        throw new IllegalStateException("R error during the heat map creation", t);
+                                }
+                        }
 
                         status = TaskStatus.FINISHED;
 
                 } catch (Exception e) {
                         status = TaskStatus.ERROR;
-
-                        errorMessage = e.toString();
+                        errorMessage = "hola" + e.toString();
                         return;
                 }
         }
 
-        private Dataset modifyDataset(Dataset dataset, String parameterName) {
-                Vector<String> columnNames = dataset.getAllColumnNames();
-                Dataset newDataset = FileUtils.getDataset(dataset, "");
-                List<String> controlNames = new ArrayList<String>();
+        private double[][] modifyDataset(Dataset dataset) {
+                // Determine the reference group and non reference group (the rest of
+                // the samples) for raw data files
+                List<String> referenceDataFiles = new ArrayList<String>();
+                List<String> nonReferenceDataFiles = new ArrayList<String>();
 
-                for (String name : columnNames) {
-                        try {
-                                if (dataset.getParametersValue(name, parameterName).equals("control") || dataset.getParametersValue(name, parameterName).equals("Control")) {
-                                        controlNames.add(name);
-                                        if (rcontrol) {
-                                                newDataset.addColumnName(name);
-                                        }
-                                } else {
-                                        newDataset.addColumnName(name);
-                                }
-                                // gets the maximum lenght of the sample names
-                                if (name.length() > maxLength) {
-                                        maxLength = name.length();
-                                }
-                        } catch (NullPointerException e) {
+                for (String rawDataFile : dataset.getAllColumnNames()) {
+
+                        String paramValue = dataset.getParametersValue(rawDataFile, parameterName);
+
+                        if (paramValue.equals(referenceGroup)) {
+
+                                referenceDataFiles.add(rawDataFile);
+                        } else {
+
+                                nonReferenceDataFiles.add(rawDataFile);
                         }
                 }
-                if (controlNames.isEmpty()) {
-                        newDataset = dataset.clone();
+
+                int numRows = 0;
+                for (int row = 0; row < dataset.getNumberRows(); row++) {
+
+                        if (dataset.getRow(row).isSelected()) {
+
+                                numRows++;
+                        }
+                }
+                boolean useCompleteDataset = false;
+                if (numRows == 0) {
+                        numRows = dataset.getNumberRows();
+                        useCompleteDataset = true;
                 }
 
-                double average = 0;
-                for (PeakListRow row : dataset.getRows()) {
-                        if (row.isSelected()) {
-                                PeakListRow newRow = row.clone();
-                                newDataset.addRow(newRow);
+                // Create a new aligned peak list with all the samples if the reference
+                // group has to be shown or with only
+                // the non reference group if not.
+                double[][] dataMatrix;
+                if (rcontrol) {
+                        dataMatrix = new double[dataset.getNumberCols()][numRows];
+                } else {
+                        dataMatrix = new double[nonReferenceDataFiles.size()][numRows];
+                }
 
-                                for (String controlColumnName : controlNames) {
-                                        average += (Double) row.getPeak(controlColumnName);
+                // Data files that should be in the heat map
+                List<String> shownDataFiles = null;
+                if (rcontrol) {
+                        shownDataFiles = dataset.getAllColumnNames();
+                } else {
+                        shownDataFiles = nonReferenceDataFiles;
+                }
+
+                for (int row = 0, rowIndex = 0; row < dataset.getNumberRows(); row++) {
+                        PeakListRow rowPeak = dataset.getRow(row);
+                        if (rowPeak.isSelected() || useCompleteDataset) {
+
+                                // Average area or height of the reference group
+                                double referenceAverage = 0;
+                                int referencePeakCount = 0;
+                                for (int column = 0; column < referenceDataFiles.size(); column++) {
+
+                                        if (rowPeak.getPeak(referenceDataFiles.get(column)) != null) {
+
+                                                referenceAverage += (Double) rowPeak.getPeak(
+                                                        referenceDataFiles.get(column));
+                                                referencePeakCount++;
+                                        }
                                 }
-                                average /= controlNames.size();
+                                if (referencePeakCount > 0) {
 
-                                for (String columnName : columnNames) {
-                                        double peakValue = ((Double) newRow.getPeak(columnName)) / average;
-                                        if (log) {
-                                                try {
-                                                        peakValue = Math.log(peakValue);
-                                                } catch (Exception e) {
-                                                        e.printStackTrace();
+                                        referenceAverage /= referencePeakCount;
+                                }
+
+                                // Divide the area or height of each peak by the average of the
+                                // area or height of the reference peaks in each row
+                                for (int column = 0; column < shownDataFiles.size(); column++) {
+                                        double value = Double.NaN;
+                                        if (rowPeak.getPeak(shownDataFiles.get(column)) != null) {
+
+                                                value = (Double) rowPeak.getPeak(shownDataFiles.get(column)) / referenceAverage;
+
+                                                if (log) {
+
+                                                        value = Math.log(value);
                                                 }
                                         }
 
-                                        newRow.setPeak(columnName, peakValue);
+                                        dataMatrix[column][rowIndex] = value;
                                 }
+                                rowIndex++;
                         }
                 }
 
-                // if the user didn't selecte any concrete row, all the rows are considered to be selected
-                if (newDataset.getNumberRows() == 0) {
-                        for (PeakListRow row : dataset.getRows()) {
-
-                                PeakListRow newRow = row.clone();
-                                newDataset.addRow(newRow);
-                                for (String controlColumnName : controlNames) {
-                                        average += (Double) newRow.getPeak(controlColumnName);
-                                }
-                                average /= controlNames.size();
-
-                                for (String columnName : columnNames) {
-                                        double peakValue = ((Double) newRow.getPeak(columnName)) / average;
-                                        if (log) {
-                                                try {
-                                                        peakValue = Math.log(peakValue);
-                                                } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                }
-                                        }
-
-                                        newRow.setPeak(columnName, peakValue);
-                                }
-
-                        }
-                }
-
-                // scale with std dev of each column
+                // Scale the data dividing the peak area/height by the standard
+                // deviation of each column
                 if (scale) {
-                        DescriptiveStatistics stdDevStats = new DescriptiveStatistics();
-                        for (String name : columnNames) {
-                                for (PeakListRow row : newDataset.getRows()) {
-                                        stdDevStats.addValue((Double) row.getPeak(name));
-                                }
-                        }
-                        double stdDev = stdDevStats.getStandardDeviation();
-                        for (String name : columnNames) {
-                                for (PeakListRow row : newDataset.getRows()) {
-                                        row.setPeak(name, ((Double) row.getPeak(name)) / stdDev);
-                                }
+                        scale(dataMatrix);
+                }
+
+                // Create two arrays: row and column names
+                rowNames = new String[dataMatrix[0].length];
+                colNames = new String[shownDataFiles.size()];
+
+                for (int column = 0; column < shownDataFiles.size(); column++) {
+
+                        colNames[column] = shownDataFiles.get(column);
+                }
+                for (int row = 0, rowIndex = 0; row < dataset.getNumberRows(); row++) {
+                        if (dataset.getRow(row).isSelected() || useCompleteDataset) {
+
+                                rowNames[rowIndex++] = dataset.getRow(row).getName();
                         }
                 }
-                return newDataset;
+
+                return dataMatrix;
         }
 
-        private Dataset GroupingDataset(Dataset dataset, String parameterName) {
-                Dataset newDataset = FileUtils.getDataset(dataset, "");
-                Vector<String> groups = dataset.getParameterAvailableValues(parameterName);
+        private double[][] GroupingDataset(Dataset dataset) {
                 DescriptiveStatistics meanControlStats = new DescriptiveStatistics();
                 DescriptiveStatistics meanGroupStats = new DescriptiveStatistics();
-                significance = new ArrayList<String[]>();
 
+                // Determine the reference group and non reference group (the rest of
+                // the samples) for raw data files
+                List<String> referenceDataFiles = new ArrayList<String>();
+                List<String> nonReferenceDataFiles = new ArrayList<String>();
 
+                List<String> groups = new ArrayList<String>();
+                System.out.println("1.1");
+                for (String rawDataFile : dataset.getAllColumnNames()) {
 
-                for (String group : groups) {
-                        if (group.equals("Control") || group.equals("control")) {
-                                if (rcontrol) {
-                                        newDataset.addColumnName(group);
-                                }
+                        String paramValue = dataset.getParametersValue(rawDataFile, parameterName);
+                        System.out.println(paramValue);
+                        if (!groups.contains(paramValue)) {
+                                groups.add(paramValue);
+                        }
+                        if (paramValue.equals(referenceGroup)) {
+
+                                referenceDataFiles.add(rawDataFile);
                         } else {
-                                newDataset.addColumnName(group);
+
+                                nonReferenceDataFiles.add(rawDataFile);
                         }
                 }
+                System.out.println("1.2");
+                int numRows = 0;
+                for (int row = 0; row < dataset.getNumberRows(); row++) {
 
-                int rowCount = 0;
-                for (PeakListRow row : dataset.getRows()) {
-                        if (row.isSelected()) {
-                                int size = 0;
-                                if (rcontrol) {
-                                        size = groups.size();
-                                } else {
-                                        size = groups.size() - 1;
-                                }
-                                String[] sig = new String[size];
-                                PeakListRow newRow = row.clone();
-                                newRow.setID(rowCount++);
-                                newRow.removePeaks();
+                        if (dataset.getRow(row).isSelected()) {
+                                numRows++;
+                        }
+                }
+                System.out.println("1.3");
+                boolean useCompleteDataset = false;
+                if (numRows == 0) {
+                        numRows = dataset.getNumberRows();
+                        useCompleteDataset = true;
+                }
+
+                // Create a new aligned peak list with all the samples if the reference
+                // group has to be shown or with only
+                // the non reference group if not.
+                double[][] dataMatrix;
+                if (groups.size() > 1) {
+                        dataMatrix = new double[groups.size() - 1][numRows];
+                        pValueMatrix = new String[groups.size() - 1][numRows];
+                } else {
+                        return null;
+                }
+                System.out.println("1.4");                             
+
+                for (int row = 0, rowIndex = 0; row < dataset.getNumberRows(); row++) {
+                        PeakListRow rowPeak = dataset.getRow(row);
+                        if (rowPeak.isSelected() || useCompleteDataset) {
+                                // Average height of the reference group
                                 meanControlStats.clear();
-                                for (String sampleName : dataset.getAllColumnNames()) {
-                                        if (dataset.getParametersValue(sampleName, parameterName).equals("control") || dataset.getParametersValue(sampleName, parameterName).equals("Control")) {
-                                                meanControlStats.addValue((Double) row.getPeak(sampleName));
+                                for (int column = 0; column < referenceDataFiles.size(); column++) {
+
+                                        if (rowPeak.getPeak(referenceDataFiles.get(column)) != null) {
+
+                                                meanControlStats.addValue((Double) rowPeak.getPeak(referenceDataFiles.get(column)));
                                         }
                                 }
-                                
-                                int i = 0;
-                                for (String group : groups) {
+
+                                // Divide the height of each peak by the average of the
+                                // area or height of the reference peaks in each row
+                                int columnIndex = 0;
+                                for (int column = 0; column < groups.size(); column++) {
+                                        String group = groups.get(column);
                                         meanGroupStats.clear();
-                                        for (String sampleName : dataset.getAllColumnNames()) {
-                                                if (dataset.getParametersValue(sampleName, parameterName).equals(group)) {
-                                                        meanGroupStats.addValue((Double) row.getPeak(sampleName));
-                                                }
-                                        }
-                                        if (group.equals("Control") || group.equals("control")) {
-                                                if (rcontrol) {
-                                                        // get the p-value
-                                                        sig[i++] = this.getPvalue(meanGroupStats, meanControlStats);
-                                                }
-                                        } else {
-                                                // get the p-value
-                                                sig[i++] = this.getPvalue(meanGroupStats, meanControlStats);
-                                        }
+                                        if (!group.equals(referenceGroup)) {
 
-                                        // get the fold changes
-                                        double peakValue = meanGroupStats.getMean() / meanControlStats.getMean();
+                                                for (int dataColumn = 0; dataColumn < nonReferenceDataFiles.size(); dataColumn++) {
 
-                                        if (log) {
-                                                try {
-                                                        peakValue = Math.log(peakValue);
-                                                } catch (Exception e) {
-                                                        e.printStackTrace();
+                                                        String paramValue = dataset.getParametersValue(nonReferenceDataFiles.get(dataColumn), parameterName);
+                                                        if (rowPeak.getPeak(nonReferenceDataFiles.get(dataColumn)) != null
+                                                                && paramValue.equals(group)) {
+
+                                                                meanGroupStats.addValue((Double) rowPeak.getPeak(nonReferenceDataFiles.get(dataColumn)));
+                                                        }
                                                 }
+
+                                                double value = meanGroupStats.getMean()
+                                                        / meanControlStats.getMean();
+                                                if (meanGroupStats.getN() > 1
+                                                        && meanControlStats.getN() > 1) {
+                                                        pValueMatrix[columnIndex][rowIndex] = this.getPvalue(meanGroupStats, meanControlStats);
+                                                } else {
+                                                        pValueMatrix[columnIndex][rowIndex] = "";
+                                                }
+
+                                                if (log) {
+
+                                                        value = Math.log(value);
+                                                }
+                                                dataMatrix[columnIndex++][rowIndex] = value;
                                         }
-                                        newRow.setPeak(group, peakValue);
                                 }
-                                newDataset.addRow(newRow);
-                                this.significance.add(sig);
+                                rowIndex++;
                         }
                 }
-
-
-                // if the user didn't selecte any concrete row, all the rows are considered to be selected
-                if (newDataset.getNumberRows() == 0) {
-                        rowCount = 0;
-                        for (PeakListRow row : dataset.getRows()) {
-                                int size = 0;
-                                if (rcontrol) {
-                                        size = groups.size();
-                                } else {
-                                        size = groups.size() - 1;
-                                }
-                                String[] sig = new String[size];
-                                PeakListRow newRow = row.clone();
-                                newRow.setID(rowCount++);
-                                newRow.removePeaks();
-                                meanControlStats.clear();
-                                for (String sampleName : dataset.getAllColumnNames()) {
-                                        if (dataset.getParametersValue(sampleName, parameterName).equals("control") || dataset.getParametersValue(sampleName, parameterName).equals("Control")) {
-                                                meanControlStats.addValue((Double) row.getPeak(sampleName));
-                                        }
-                                }
-                                
-                                int i = 0;
-                                for (String group : groups) {
-                                        meanGroupStats.clear();
-                                        for (String sampleName : dataset.getAllColumnNames()) {
-                                                if (dataset.getParametersValue(sampleName, parameterName).equals(group)) {
-                                                        meanGroupStats.addValue((Double) row.getPeak(sampleName));
-                                                }
-                                        }
-                                        if (group.equals("Control") || group.equals("control")) {
-                                                if (rcontrol) {
-                                                        // get the p-value
-                                                        sig[i++] = this.getPvalue(meanGroupStats, meanControlStats);
-                                                }
-                                        } else {
-                                                // get the p-value
-                                                sig[i++] = this.getPvalue(meanGroupStats, meanControlStats);
-
-                                        }
-                                        // get the fold changes
-                                        double peakValue = meanGroupStats.getMean() / meanControlStats.getMean();
-
-                                        if (log) {
-                                                try {
-                                                        peakValue = Math.log(peakValue);
-                                                } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                }
-                                        }
-                                        newRow.setPeak(group, peakValue);
-                                }
-                                newDataset.addRow(newRow);
-                                this.significance.add(sig);
-                        }
-                }
-
-                // scale with std dev of each column
+                System.out.println("1.5");
+                // Scale the data dividing the peak area/height by the standard
+                // deviation of each column
                 if (scale) {
-                        DescriptiveStatistics stdDevStats = new DescriptiveStatistics();
-                        for (String name : newDataset.getAllColumnNames()) {
-                                for (PeakListRow row : newDataset.getRows()) {
-                                        stdDevStats.addValue((Double) row.getPeak(name));
-                                }
-                        }
-                        double stdDev = stdDevStats.getStandardDeviation();
-                        for (String name : newDataset.getAllColumnNames()) {
-                                for (PeakListRow row : newDataset.getRows()) {
-                                        row.setPeak(name, ((Double) row.getPeak(name)) / stdDev);
-                                }
+                        scale(dataMatrix);
+                }
+                System.out.println("1.6");
+                // Create two arrays: row and column names
+                rowNames = new String[dataMatrix[0].length];
+                colNames = new String[groups.size() - 1];
+
+                int columnIndex = 0;
+                for (String group : groups) {
+
+                        if (!group.equals(referenceGroup)) {
+
+                                colNames[columnIndex++] = group;
                         }
                 }
-
-                return newDataset;
-        }
-
-        private void saveTemporalSignificaceFile(List<String[]> significance) {
-                try {
-                        CsvWriter w = new CsvWriter("stars.csv");
-                        for (String[] stars : significance) {
-                                w.writeRecord(stars);
+                for (int row = 0, rowIndex = 0; row < dataset.getNumberRows(); row++) {
+                        if (dataset.getRow(row).isSelected() || useCompleteDataset) {
+                                rowNames[rowIndex++] = dataset.getRow(row).getName();
                         }
-                        w.endRecord();
-                        w.close();
-                } catch (IOException ex) {
-                        Logger.getLogger(HeatMapTask.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                System.out.println("1.7");
+                return dataMatrix;
         }
 
         private String getPvalue(DescriptiveStatistics group1, DescriptiveStatistics group2) {
@@ -445,11 +521,32 @@ public class HeatMapTask implements Task {
 
                 } catch (IllegalArgumentException ex) {
                         sig = "-";
-                        Logger.getLogger(HeatMapTask.class.getName()).log(Level.SEVERE, null, ex);
+
                 } catch (MathException ex) {
                         sig = "-";
-                        Logger.getLogger(HeatMapTask.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return sig;
+        }
+
+        private void scale(double[][] peakList) {
+                DescriptiveStatistics stdDevStats = new DescriptiveStatistics();
+
+                for (int columns = 0; columns < peakList.length; columns++) {
+                        stdDevStats.clear();
+                        for (int row = 0; row < peakList[columns].length; row++) {
+                                if (!Double.isInfinite(peakList[columns][row])
+                                        && !Double.isNaN(peakList[columns][row])) {
+                                        stdDevStats.addValue(peakList[columns][row]);
+                                }
+                        }
+
+                        double stdDev = stdDevStats.getStandardDeviation();
+
+                        for (int row = 0; row < peakList[columns].length; row++) {
+                                if (stdDev != 0) {
+                                        peakList[columns][row] = peakList[columns][row] / stdDev;
+                                }
+                        }
+                }
         }
 }

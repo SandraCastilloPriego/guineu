@@ -53,7 +53,7 @@ public class ClusteringTestTask implements Task {
         this.dataset = dataset;
         parameter = parameters.getParameter(ClusteringParameters.clusteringAlgorithm).getValue();
         dataType =  parameters.getParameter(ClusteringParameters.clusteringData).getValue();
-        numberOfClusters =  parameters.getParameter(ClusteringParameters.N).getInt();
+        numberOfClusters =  parameters.getParameter(ClusteringParameters.N).getValue();
 
         // Get the type algorithm from the enum.
         for (ClusteringAlgorithmsEnum e : ClusteringAlgorithmsEnum.values()) {

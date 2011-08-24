@@ -23,6 +23,7 @@ import guineu.parameters.ParameterSet;
 import guineu.parameters.Parameter;
 
 import guineu.parameters.UserParameter;
+import java.util.Collection;
 import org.w3c.dom.Element;
 
 /**
@@ -123,4 +124,12 @@ public class OptionalModuleParameter implements
 			xmlElement.setAttribute("selected", value.toString());
 		embeddedParameters.saveValuesToXML(xmlElement);
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
+        }
 }

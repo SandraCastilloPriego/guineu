@@ -19,26 +19,33 @@
 
 package guineu.parameters;
 
+import java.util.Collection;
+
 import org.w3c.dom.Element;
 
 /**
  * Parameter interface, represents parameters or variables used in the project
  */
-public interface Parameter {
+public interface Parameter<ValueType> {
 
 	/**
 	 * Returns this parameter's name. The name must be unique within one
 	 * ParameterSet.
-	 * 
+	 *
 	 * @return Parameter name
 	 */
 	public String getName();
-	
+
+	public ValueType getValue();
+
+	public void setValue(ValueType newValue);
+
+	public boolean checkValue(Collection<String> errorMessages);
+
 	public void loadValueFromXML(Element xmlElement);
 
 	public void saveValueToXML(Element xmlElement);
 
-	// Modules which have one single parameter set may return this
 	public Parameter clone();
-	
+
 }

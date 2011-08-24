@@ -20,6 +20,7 @@ package guineu.modules.statistics.PCA;
 
 import guineu.parameters.UserParameter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -137,5 +138,13 @@ public class ColoringTypeParameter implements
                         xmlElement.setTextContent(value.toString());
                 }
 
+        }
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
         }
 }

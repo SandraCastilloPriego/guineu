@@ -70,8 +70,8 @@ public class UnitsChangeFilterTask implements Task {
                 for (String experimentName : dataset.getAllColumnNames()) {
                     try {
                         Double peak = (Double) row.getPeak(experimentName);
-                        double divide =  parameters.getParameter(UnitsChangeFilterParameters.divide).getDouble();
-                        double multiply = parameters.getParameter(UnitsChangeFilterParameters.multiply).getDouble();
+                        double divide =  parameters.getParameter(UnitsChangeFilterParameters.divide).getValue();
+                        double multiply = parameters.getParameter(UnitsChangeFilterParameters.multiply).getValue();
                         if (divide != 0) {
                             row.setPeak(experimentName, peak / divide);
                         }

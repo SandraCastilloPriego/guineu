@@ -52,7 +52,7 @@ public class ConcentrationsFromMassFilterTask implements Task {
                 this.dataset = dataset;
                 this.fileName = parameters.getParameter(ConcentrationsFromMassParameters.fileNames).getValue().getAbsolutePath();
                 this.direction = parameters.getParameter(ConcentrationsFromMassParameters.direction).getValue();
-                this.spectrumPeak = parameters.getParameter(ConcentrationsFromMassParameters.spectrumPeak).getDouble();
+                this.spectrumPeak = parameters.getParameter(ConcentrationsFromMassParameters.spectrumPeak).getValue();
                 this.table = new Hashtable<String, List<Data>>();
         }
 

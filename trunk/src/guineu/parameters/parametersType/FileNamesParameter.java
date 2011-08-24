@@ -1,23 +1,26 @@
 /*
- * Copyright 2011
- * This file is part of XXXXXX.
- * XXXXXX is free software; you can redistribute it and/or modify it under the
+ * Copyright 2007-2011 VTT Biotechnology
+ *
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
- * XXXXXX is distributed in the hope that it will be useful, but WITHOUT ANY
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
- * XXXXXX; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
- * Fifth Floor, Boston, MA 02110-1301 USA
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 package guineu.parameters.parametersType;
 
 import guineu.parameters.UserParameter;
 import java.io.File;
+import java.util.Collection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -102,5 +105,13 @@ public class FileNamesParameter implements UserParameter<File[], FileNameCompone
 
         public void setValueFromComponent(FileNameComponent component) {
                 this.value = component.getValues();
+        }
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
         }
 }

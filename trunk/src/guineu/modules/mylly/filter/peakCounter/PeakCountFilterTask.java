@@ -67,7 +67,7 @@ public class PeakCountFilterTask implements Task {
                 status = TaskStatus.PROCESSING;
                 try {
 
-                        int peakCount = parameters.getParameter(PeakCountParameters.numFound).getInt();
+                        int peakCount = parameters.getParameter(PeakCountParameters.numFound).getValue();
                         peakCount--;
                         PeakCount filter = new PeakCount(peakCount);
                         SimpleGCGCDataset newAlignment = this.actualMap(dataset, filter);

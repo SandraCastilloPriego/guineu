@@ -25,7 +25,6 @@ import guineu.util.Range;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
          * @param massDetectorTypeNumber
          */
         public RansacAlignerSetupDialog(RansacAlignerParameters parameters, String helpID) {
-                super(parameters, helpID);
+                super(parameters, null);
                 this.parameters = parameters;
                 addComponents();
         }

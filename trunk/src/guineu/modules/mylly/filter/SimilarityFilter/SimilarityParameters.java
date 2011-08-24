@@ -20,7 +20,7 @@ package guineu.modules.mylly.filter.SimilarityFilter;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.DoubleParameter;
 import guineu.parameters.parametersType.StringParameter;
 
 /**
@@ -40,7 +40,7 @@ public class SimilarityParameters extends SimpleParameterSet {
         public static final ComboParameter<String> action = new ComboParameter<String>(
                 "Action: ",
                 "Action", actionDone);
-        public static final NumberParameter minSimilarity = new NumberParameter(
+        public static final DoubleParameter minSimilarity = new DoubleParameter(
                 "Minimun similarity required:",
                 "Minimun similarity required");
 

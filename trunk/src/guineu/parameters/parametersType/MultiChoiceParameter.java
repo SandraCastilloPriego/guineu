@@ -22,6 +22,7 @@ package guineu.parameters.parametersType;
 import guineu.parameters.UserParameter;
 import guineu.util.CollectionUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 
 
 import org.w3c.dom.Document;
@@ -152,5 +153,13 @@ public class MultiChoiceParameter<ValueType> implements
 			xmlElement.appendChild(newElement);
 		}
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (values == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
+        }
 
 }

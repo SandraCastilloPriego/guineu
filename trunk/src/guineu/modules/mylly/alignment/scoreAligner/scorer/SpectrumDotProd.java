@@ -44,26 +44,26 @@ public class SpectrumDotProd implements ScoreCalculator {
                 double score;
 
                 double rtiDiff = Math.abs(path.getRTI() - peak.getRTI());
-                if (rtiDiff > params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble()) {
+                if (rtiDiff > params.getParameter(ScoreAlignmentParameters.rtiLax).getValue()) {
                         return WORST_SCORE;
                 }
                 double rt2Diff = Math.abs(path.getRT2() - peak.getRT2());
-                if (rt2Diff > params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble()) {
+                if (rt2Diff > params.getParameter(ScoreAlignmentParameters.rt2Lax).getValue()) {
                         return WORST_SCORE;
                 }
                 double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
-                if (rt1Diff > params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble()) {
+                if (rt1Diff > params.getParameter(ScoreAlignmentParameters.rt1Lax).getValue()) {
                         return WORST_SCORE;
                 }
                 double comparison = compareSpectraVal(path.getSpectrum(), peak.getSpectrum());
 
-                if (comparison > params.getParameter(ScoreAlignmentParameters.minSpectrumMatch).getDouble()) {
-                        score = rtiDiff * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble() +
-                                rt1Diff * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() +
-                                rt2Diff * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble();
+                if (comparison > params.getParameter(ScoreAlignmentParameters.minSpectrumMatch).getValue()) {
+                        score = rtiDiff * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue()
+                                + rt1Diff * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue()
+                                + rt2Diff * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue();
 
                         if (path.matchesWithName(peak)) {
-                                score -= params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getDouble();
+                                score -= params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getValue();
                         }
                 } else {
                         score = WORST_SCORE;
