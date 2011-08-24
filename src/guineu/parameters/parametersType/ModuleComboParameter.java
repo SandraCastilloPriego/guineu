@@ -23,6 +23,7 @@ import guineu.main.GuineuModule;
 import guineu.parameters.ParameterSet;
 import guineu.parameters.Parameter;
 import guineu.parameters.UserParameter;
+import java.util.Collection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -151,4 +152,13 @@ public class ModuleComboParameter<ModuleType extends GuineuModule> implements
 			xmlElement.appendChild(newElement);
 		}
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		ParameterSet moduleParameters = value.getParameterSet();
+		return moduleParameters.checkUserParameterValues(errorMessages);
+        }
 }

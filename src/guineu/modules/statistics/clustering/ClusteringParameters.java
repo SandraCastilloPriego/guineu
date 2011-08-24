@@ -20,8 +20,7 @@ package guineu.modules.statistics.clustering;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
-import guineu.parameters.parametersType.NumberParameter;
-import java.text.NumberFormat;
+import guineu.parameters.parametersType.IntegerParameter;
 
 /**
  *
@@ -30,18 +29,16 @@ import java.text.NumberFormat;
 public class ClusteringParameters extends SimpleParameterSet {
 
         private static String[] parameters = {"Cobweb", "DensityBasedClusterer", "FarthestFirst", "SimpleKMeans"};
-        private static String[] dataType = {"Samples", "Variables"};
-        public static final NumberFormat integerFormat = NumberFormat.getIntegerInstance();
+        private static String[] dataType = {"Samples", "Variables"};     
         public static final ComboParameter<String> clusteringAlgorithm = new ComboParameter<String>(
                 "Select the algorithm",
                 "Select the algorithm you want to use for clustering", parameters);
         public static final ComboParameter<String> clusteringData = new ComboParameter<String>(
                 "Select the algorithm",
                 "Select the algorithm you want to use for clustering", dataType);
-        public static final NumberParameter N = new NumberParameter(
+        public static final IntegerParameter N = new IntegerParameter(
                 "Number of clusters to generate",
-                "Specify the number of clusters to generate.", integerFormat,
-                new Integer(3));
+                "Specify the number of clusters to generate.",3);
 
         public ClusteringParameters() {
                 super(new UserParameter[]{clusteringAlgorithm, clusteringData, N});

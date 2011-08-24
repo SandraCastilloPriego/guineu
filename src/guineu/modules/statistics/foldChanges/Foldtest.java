@@ -48,23 +48,23 @@ public class Foldtest implements GuineuModule, TaskListener, ActionListener {
         public Foldtest() {
 
                 this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.STATISTICS, "Fold Test..",
-                        "Fold test using the means", KeyEvent.VK_F, this, null, "icons/fold.png");
+                desktop.addMenuItem(GuineuMenu.STATISTICS, "Fold changes..",
+                        "Fold changes using the means", KeyEvent.VK_F, this, null, "icons/fold.png");
 
         }
 
         public void taskStarted(Task task) {
-                logger.info("Running Fold Test");
+                logger.info("Running Fold changes");
         }
 
         public void taskFinished(Task task) {
                 if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished fold Test on " + ((FoldTestTask) task).getTaskDescription());
+                        logger.info("Finished Fold changes on " + ((FoldTestTask) task).getTaskDescription());
                 }
 
                 if (task.getStatus() == TaskStatus.ERROR) {
 
-                        String msg = "Error while Fold Test on .. " + ((FoldTestTask) task).getErrorMessage();
+                        String msg = "Error while Fold changes on .. " + ((FoldTestTask) task).getErrorMessage();
                         logger.severe(msg);
                         desktop.displayErrorMessage(msg);
 

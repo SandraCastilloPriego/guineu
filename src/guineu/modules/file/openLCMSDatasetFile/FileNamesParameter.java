@@ -20,6 +20,7 @@ package guineu.modules.file.openLCMSDatasetFile;
 
 import guineu.parameters.Parameter;
 import java.io.File;
+import java.util.Collection;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,5 +73,17 @@ public class FileNamesParameter implements Parameter {
 			xmlElement.appendChild(newElement);
 		}
 	}
+
+        public void setValue(Object newValue) {
+
+        }
+
+        public boolean checkValue(Collection errorMessages) {
+                if (value == null) {
+			errorMessages.add(getName() + " is not set");
+			return false;
+		}
+		return true;
+        }
 
 }

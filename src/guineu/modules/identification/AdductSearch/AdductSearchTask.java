@@ -53,8 +53,8 @@ public class AdductSearchTask implements Task {
                 rtTolerance = parameters.getParameter(AdductSearchParameters.rtTolerance).getValue().getTolerance();
                 mzTolerance = parameters.getParameter(AdductSearchParameters.mzTolerance).getValue().getTolerance();
                 selectedAdducts = parameters.getParameter(AdductSearchParameters.adducts).getValue();
-                customMassDifference = parameters.getParameter(AdductSearchParameters.customAdductValue).getDouble();
-                maxAdductHeight = parameters.getParameter(AdductSearchParameters.maxAdductHeight).getDouble();
+                customMassDifference = parameters.getParameter(AdductSearchParameters.customAdductValue).getValue();
+                maxAdductHeight = parameters.getParameter(AdductSearchParameters.maxAdductHeight).getValue();
 
         }
 

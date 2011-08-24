@@ -34,10 +34,10 @@ public class RTIScoreCalculator implements ScoreCalculator {
 
         public double calculateScore(Peak path, Peak peak, ScoreAlignmentParameters params) {
                 if (params != null && params != lastParams) {
-                        rtiPenalty = params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
-                        rt1Penalty = params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble();
-                        rt2Penalty = params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble();
-                        nameMatchBonus = params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getDouble();
+                        rtiPenalty = params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue();
+                        rt1Penalty = params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue();
+                        rt2Penalty = params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue();
+                        nameMatchBonus = params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getValue();
                 }
                 double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
                 double score = rt1Diff * rt1Penalty;
@@ -54,7 +54,7 @@ public class RTIScoreCalculator implements ScoreCalculator {
          * @see gcgcaligner.ScoreCalculator#matches(gcgcaligner.AlignmentPath, gcgcaligner.GCGCDatum, gcgcaligner.AlignmentParameters)
          */
         public boolean matches(Peak path, Peak peak, ScoreAlignmentParameters params) {
-                double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
+                double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getValue() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getValue() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue() + params.getParameter(ScoreAlignmentParameters.rtiLax).getValue() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue();
 
                 return calculateScore(path, peak, params) < gapPenalty;
         }

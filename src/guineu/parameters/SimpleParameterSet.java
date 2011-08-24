@@ -20,24 +20,21 @@
 package guineu.parameters;
 
 import guineu.main.GuineuCore;
+import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * @author Taken from MZmine2
- * http://mzmine.sourceforge.net/
- */
-
-/**
- * Simple storage for the parameters. A typical Guineu module will inherit this
+ * Simple storage for the parameters. A typical MZmine module will inherit this
  * class and define the parameters for the constructor.
  */
 public class SimpleParameterSet implements ParameterSet {
@@ -47,14 +44,10 @@ public class SimpleParameterSet implements ParameterSet {
 	private static final String parameterElement = "parameter";
 	private static final String nameAttribute = "name";
 
-	private Parameter parameters[];
+	private Parameter<?> parameters[];
 
 	public SimpleParameterSet(Parameter parameters[]) {
-		// Create a copy rather than reference
-		this.parameters = new Parameter[parameters.length];
-		for (int i = 0; i < parameters.length; i++) {
-			this.parameters[i] = parameters[i].clone();
-		}
+		this.parameters = parameters;
 	}
 
 	public Parameter[] getParameters() {
@@ -95,14 +88,23 @@ public class SimpleParameterSet implements ParameterSet {
 	 * Represent method's parameters and their values in human-readable format
 	 */
 	public String toString() {
+
 		StringBuilder s = new StringBuilder();
 		for (int i = 0; i < parameters.length; i++) {
-			if (!(parameters[i] instanceof UserParameter))
+
+			Parameter param = parameters[i];
+			Object value = param.getValue();
+
+			if (value == null)
 				continue;
-			UserParameter up = (UserParameter) parameters[i];
-			s.append(up.getName());
+
+			s.append(param.getName());
 			s.append(": ");
-			s.append(up.getValue());
+			if (value.getClass().isArray()) {
+				s.append(Arrays.toString((Object[]) value));
+			} else {
+				s.append(value.toString());
+			}
 			if (i < parameters.length - 1)
 				s.append(", ");
 		}
@@ -113,12 +115,26 @@ public class SimpleParameterSet implements ParameterSet {
 	 * Make a deep copy
 	 */
 	public ParameterSet clone() {
+
+		// Make a deep copy of the parameters
 		Parameter newParameters[] = new Parameter[parameters.length];
 		for (int i = 0; i < parameters.length; i++) {
 			newParameters[i] = parameters[i].clone();
 		}
-		SimpleParameterSet copy = new SimpleParameterSet(newParameters);
-		return copy;
+
+		try {
+			// Do not make a new instance of SimpleParameterSet, but instead
+			// clone the runtime class of this instance - runtime type may be
+			// inherited class. This is important in order to keep the proper
+			// behavior of showSetupDialog() method for cloned classes
+
+			SimpleParameterSet newSet = this.getClass().newInstance();
+			newSet.parameters = newParameters;
+			return newSet;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -133,16 +149,39 @@ public class SimpleParameterSet implements ParameterSet {
 
 	@Override
 	public ExitCode showSetupDialog() {
-		ParameterSetupDialog dialog = new ParameterSetupDialog(this);
+		return showSetupDialog(null);
+	}
+
+	protected ExitCode showSetupDialog(Map<UserParameter, Object> autoValues) {
+		ParameterSetupDialog dialog = new ParameterSetupDialog(this, autoValues);
 		dialog.setVisible(true);
 		return dialog.getExitCode();
 	}
 
 	@Override
-	public ExitCode showSetupDialog(Map<UserParameter, Object> autoValues) {
-		ParameterSetupDialog dialog = new ParameterSetupDialog(this, autoValues);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
+	public boolean checkUserParameterValues(Collection<String> errorMessages) {
+		boolean allParametersOK = true;
+		for (Parameter<?> p : parameters) {
+			// Only check UserParameter instances, because other parameters
+			// cannot be influenced by the dialog
+			if (!(p instanceof UserParameter))
+				continue;
+			boolean pOK = p.checkValue(errorMessages);
+			if (!pOK)
+				allParametersOK = false;
+		}
+		return allParametersOK;
+	}
+
+	@Override
+	public boolean checkAllParameterValues(Collection<String> errorMessages) {
+		boolean allParametersOK = true;
+		for (Parameter<?> p : parameters) {
+			boolean pOK = p.checkValue(errorMessages);
+			if (!pOK)
+				allParametersOK = false;
+		}
+		return allParametersOK;
 	}
 
 }

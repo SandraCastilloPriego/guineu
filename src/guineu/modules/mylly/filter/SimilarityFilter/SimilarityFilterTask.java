@@ -65,7 +65,7 @@ public class SimilarityFilterTask implements Task {
         public void run() {
                 status = TaskStatus.PROCESSING;
                 try {
-                        double minValue = parameters.getParameter(SimilarityParameters.minSimilarity).getDouble();
+                        double minValue = parameters.getParameter(SimilarityParameters.minSimilarity).getValue();
                         String typeSimilarity = parameters.getParameter(SimilarityParameters.type).getValue();
                         String mode = Similarity.MEAN_SIMILARITY;
                         if (typeSimilarity.matches("maximum similarity")) {

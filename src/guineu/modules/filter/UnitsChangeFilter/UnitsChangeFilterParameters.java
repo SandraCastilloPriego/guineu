@@ -19,7 +19,7 @@ package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.DoubleParameter;
 
 /**
  *
@@ -27,12 +27,12 @@ import guineu.parameters.parametersType.NumberParameter;
  */
 public class UnitsChangeFilterParameters extends SimpleParameterSet {
 
-        public static final NumberParameter multiply = new NumberParameter(
+        public static final DoubleParameter multiply = new DoubleParameter(
                 "Multiply by",
-                "Multiply by", null, new Double(0.0));
-        public static final NumberParameter divide = new NumberParameter(
+                "Multiply by", 0.0);
+        public static final DoubleParameter divide = new DoubleParameter(
                 "Divide by",
-                "Divide by", null, new Double(0.0));
+                "Divide by", 0.0);
 
         public UnitsChangeFilterParameters() {
                 super(new UserParameter[]{multiply, divide});

@@ -19,7 +19,7 @@ package guineu.modules.mylly.alignment.basicAligner;
 
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.DoubleParameter;
 import guineu.parameters.parametersType.RTToleranceParameter;
 import guineu.parameters.parametersType.StringParameter;
 import java.text.NumberFormat;
@@ -35,13 +35,13 @@ public class BasicAlignerGCGCParameters extends SimpleParameterSet {
         public static final RTToleranceParameter RT2Tolerance = new RTToleranceParameter(
                 "RT2 tolerance",
                 "Maximum allowed absolute RT2 difference");
-        public static final NumberParameter rt1Lax = new NumberParameter(
+        public static final DoubleParameter rt1Lax = new DoubleParameter(
                 "RT Lax:",
                 "RT Lax");
-        public static final NumberParameter rt2Lax = new NumberParameter(
+        public static final DoubleParameter rt2Lax = new DoubleParameter(
                 "RT2 Lax:",
                 "RT2 Lax");
-        public static final NumberParameter nameMatchBonus = new NumberParameter(
+        public static final DoubleParameter nameMatchBonus = new DoubleParameter(
                 "Bonus for matching names:",
                 "Bonus for matching names");
 

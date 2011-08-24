@@ -143,7 +143,7 @@ public class ScoreAligner implements Aligner {
                 for (List<GCGCDatum> l : aList) {
                         LinkedList<GCGCDatum> newSubList = new LinkedList<GCGCDatum>();
                         for (GCGCDatum d : l) {
-                                if (d.getSimilarity() >= params.getParameter(ScoreAlignmentParameters.minSimilarity).getDouble() || d.hasQuantMass()) {
+                                if (d.getSimilarity() >= params.getParameter(ScoreAlignmentParameters.minSimilarity).getValue() || d.hasQuantMass()) {
                                         newSubList.add(d);
                                 }
                         }
@@ -312,7 +312,7 @@ public class ScoreAligner implements Aligner {
                                 }
                         }
 
-                        double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
+                        double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getValue() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getValue() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue() + params.getParameter(ScoreAlignmentParameters.rtiLax).getValue() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue();
 
                         if (bestPeak != null && bestPeakScore < gapPenalty) {
                                 path.add(i, bestPeak, bestPeakScore);

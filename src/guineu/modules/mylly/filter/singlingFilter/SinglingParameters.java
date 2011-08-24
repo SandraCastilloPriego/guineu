@@ -20,7 +20,7 @@ package guineu.modules.mylly.filter.singlingFilter;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.DoubleParameter;
 import guineu.parameters.parametersType.StringParameter;
 
 /**
@@ -35,7 +35,7 @@ public class SinglingParameters extends SimpleParameterSet {
         public static final BooleanParameter unknownPeaks = new BooleanParameter(
                 "Filter Unknowns Peaks: ",
                 "Filter Unknowns Peaks", true);
-        public static final NumberParameter similarity = new NumberParameter(
+        public static final DoubleParameter similarity = new DoubleParameter(
                 "Minimun similarity required:",
                 "Minimun similarity required:");
 

@@ -21,6 +21,7 @@ package guineu.desktop.preferences;
 
 
 import guineu.parameters.UserParameter;
+import java.util.Collection;
 import org.w3c.dom.Element;
 
 /**
@@ -116,5 +117,13 @@ public class NumOfThreadsParameter implements
 		xmlElement.setAttribute("isautomatic", String.valueOf(automatic));
 		xmlElement.setTextContent(value.toString());
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
+        }
 
 }

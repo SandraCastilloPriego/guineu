@@ -52,7 +52,7 @@ public class FoldTestTask implements Task {
     }
 
     public String getTaskDescription() {
-        return "Fold Changes Test... ";
+        return "Fold Changes... ";
     }
 
     public double getFinishedPercentage() {
@@ -79,14 +79,14 @@ public class FoldTestTask implements Task {
                 t[i] = this.Foldtest(i);
             }
 
-            Dataset newDataset = FileUtils.getDataset(dataset, "Fold Test - ");
+            Dataset newDataset = FileUtils.getDataset(dataset, "Fold changes - ");
             progress = 0.3f;
-            newDataset.addColumnName("Fold test");
+            newDataset.addColumnName("Fold changes");
             int cont = 0;
             for (PeakListRow row : dataset.getRows()) {
                 PeakListRow newRow = row.clone();
                 newRow.removePeaks();
-                newRow.setPeak("Fold test", t[cont++]);
+                newRow.setPeak("Fold changes", t[cont++]);
                 newDataset.addRow(newRow);
             }
             progress = 0.5f;

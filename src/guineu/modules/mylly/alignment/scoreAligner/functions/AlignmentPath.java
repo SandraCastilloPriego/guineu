@@ -416,7 +416,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
                         if (foundPeak) {
                                 combinedPath.add(i, peak, matchScore);
                         } else {
-                                double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getDouble() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getDouble() + params.getParameter(ScoreAlignmentParameters.rtiLax).getDouble() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getDouble();
+                                double gapPenalty = params.getParameter(ScoreAlignmentParameters.rt1Lax).getValue() * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue() + params.getParameter(ScoreAlignmentParameters.rt2Lax).getValue() * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue() + params.getParameter(ScoreAlignmentParameters.rtiLax).getValue() * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue();
 
                                 combinedPath.addGap(i, gapPenalty);
                         }

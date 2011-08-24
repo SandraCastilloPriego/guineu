@@ -20,6 +20,7 @@
 package guineu.parameters.parametersType;
 
 import guineu.parameters.UserParameter;
+import java.util.Collection;
 import javax.swing.JTextField;
 
 
@@ -103,5 +104,13 @@ public class StringParameter implements UserParameter<String, JTextField> {
 			return;
 		xmlElement.setTextContent(value);
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
+        }
 
 }

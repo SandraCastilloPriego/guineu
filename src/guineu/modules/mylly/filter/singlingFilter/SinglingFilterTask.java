@@ -40,7 +40,7 @@ public class SinglingFilterTask implements Task {
 
         public SinglingFilterTask(SimpleGCGCDataset dataset, SinglingParameters parameters) {
                 this.dataset = dataset;
-                minSimilarity = parameters.getParameter(SinglingParameters.similarity).getDouble();
+                minSimilarity = parameters.getParameter(SinglingParameters.similarity).getValue();
                 unknownPeaks = parameters.getParameter(SinglingParameters.unknownPeaks).getValue();
                 suffix = parameters.getParameter(SinglingParameters.suffix).getValue();
         }

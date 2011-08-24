@@ -20,8 +20,10 @@ package guineu.modules.filter.Alignment.RANSAC;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.DoubleParameter;
+import guineu.parameters.parametersType.IntegerParameter;
 import guineu.parameters.parametersType.MZToleranceParameter;
-import guineu.parameters.parametersType.NumberParameter;
+import guineu.parameters.parametersType.PercentParameter;
 import guineu.parameters.parametersType.RTToleranceParameter;
 import guineu.parameters.parametersType.StringParameter;
 import guineu.util.dialogs.ExitCode;
@@ -42,22 +44,20 @@ public class RansacAlignerParameters extends SimpleParameterSet {
         public static final RTToleranceParameter RTTolerance = new RTToleranceParameter(
                 "RT tolerance",
                 "Maximum allowed absolute RT difference");
-        public static final NumberParameter Iterations = new NumberParameter(
+        public static final IntegerParameter Iterations = new IntegerParameter(
                 "RANSAC Iterations",
-                "Maximum number of iterations allowed in the algorithm", null,
-                new Integer(1000));
-        public static final NumberParameter NMinPoints = new NumberParameter(
+                "Maximum number of iterations allowed in the algorithm", 1000);
+        public static final PercentParameter NMinPoints = new PercentParameter(
                 "Minimun Number of Points",
-                "Minimum number of aligned peaks required to fit the model",
-                percentFormat, new Double(0.2));
-        public static final NumberParameter Margin = new NumberParameter(
+                "Minimum number of aligned peaks required to fit the model");
+        public static final DoubleParameter Margin = new DoubleParameter(
                 "Threshold value",
                 "Threshold value for determining when a data point fits a model",
-                null, new Double(3.0));
+                3.0);
         public static final BooleanParameter Linear = new BooleanParameter(
                 "Linear model",
-                "Switch between polynomial model or lineal model", new Boolean(
-                false));
+                "Switch between polynomial model or lineal model",
+                false);
 
         public RansacAlignerParameters() {
                 super(new UserParameter[]{peakListName, MZTolerance, RTToleranceValueAbs,
@@ -65,8 +65,8 @@ public class RansacAlignerParameters extends SimpleParameterSet {
         }
 
         public ExitCode showSetupDialog() {
-		RansacAlignerSetupDialog dialog = new RansacAlignerSetupDialog(this, null);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
+                RansacAlignerSetupDialog dialog = new RansacAlignerSetupDialog(this, null);
+                dialog.setVisible(true);
+                return dialog.getExitCode();
+        }
 }

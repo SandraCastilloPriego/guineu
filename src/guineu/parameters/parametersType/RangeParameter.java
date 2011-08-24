@@ -22,6 +22,7 @@ package guineu.parameters.parametersType;
 import guineu.parameters.UserParameter;
 import guineu.util.Range;
 import java.text.NumberFormat;
+import java.util.Collection;
 
 
 import org.w3c.dom.Document;
@@ -125,5 +126,13 @@ public class RangeParameter implements UserParameter<Range, RangeComponent> {
 		newElement.setTextContent(String.valueOf(value.getMax()));
 		xmlElement.appendChild(newElement);
 	}
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+			errorMessages.add(name + " is not set");
+			return false;
+		}
+		return true;
+        }
 
 }

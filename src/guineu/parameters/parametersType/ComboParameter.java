@@ -19,6 +19,7 @@
 package guineu.parameters.parametersType;
 
 import guineu.parameters.UserParameter;
+import java.util.Collection;
 import javax.swing.JComboBox;
 
 
@@ -51,13 +52,11 @@ public class ComboParameter<ValueType> implements
                 this.value = defaultValue;
         }
 
-        
         @Override
         public String getName() {
                 return name;
         }
 
-        
         @Override
         public String getDescription() {
                 return description;
@@ -133,5 +132,13 @@ public class ComboParameter<ValueType> implements
         @Override
         public String toString() {
                 return name;
+        }
+
+        public boolean checkValue(Collection<String> errorMessages) {
+                if (value == null) {
+                        errorMessages.add(name + " is not set");
+                        return false;
+                }
+                return true;
         }
 }
