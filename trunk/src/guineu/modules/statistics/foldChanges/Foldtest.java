@@ -18,14 +18,12 @@
 package guineu.modules.statistics.foldChanges;
 
 import guineu.data.Dataset;
-import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.main.GuineuModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
-
 import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
@@ -40,17 +38,13 @@ import java.util.logging.Logger;
 public class Foldtest implements GuineuModule, TaskListener, ActionListener {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
         private Dataset dataset;
         private String[] group1, group2;
         private String parameter;
 
         public Foldtest() {
-
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.STATISTICS, "Fold changes..",
+                GuineuCore.getDesktop().addMenuItem(GuineuMenu.STATISTICS, "Fold changes..",
                         "Fold changes using the means", KeyEvent.VK_F, this, null, "icons/fold.png");
-
         }
 
         public void taskStarted(Task task) {
@@ -66,7 +60,7 @@ public class Foldtest implements GuineuModule, TaskListener, ActionListener {
 
                         String msg = "Error while Fold changes on .. " + ((FoldTestTask) task).getErrorMessage();
                         logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
+                        GuineuCore.getDesktop().displayErrorMessage(msg);
 
                 }
         }
@@ -82,7 +76,7 @@ public class Foldtest implements GuineuModule, TaskListener, ActionListener {
 
         public ExitCode setupParameters() {
                 try {
-                        Dataset[] datasets = desktop.getSelectedDataFiles();
+                        Dataset[] datasets =  GuineuCore.getDesktop().getSelectedDataFiles();
                         dataset = datasets[0];
                         FoldtestDataDialog dialog = new FoldtestDataDialog(dataset);
                         dialog.setVisible(true);
@@ -106,15 +100,9 @@ public class Foldtest implements GuineuModule, TaskListener, ActionListener {
         public Task[] runModule() {
 
                 // prepare a new group of tasks
-
                 Task tasks[] = new FoldTestTask[1];
-                tasks[0] = new FoldTestTask(group1, group2, dataset, desktop, parameter);
-
+                tasks[0] = new FoldTestTask(group1, group2, dataset, parameter);
                 GuineuCore.getTaskController().addTasks(tasks);
-
                 return tasks;
-
-
-
         }
 }
