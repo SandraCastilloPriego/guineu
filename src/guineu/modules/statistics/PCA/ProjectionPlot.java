@@ -78,11 +78,8 @@ public class ProjectionPlot implements GuineuModule, ActionListener {
                 }
 
                 logger.finest("Showing projection plot setup dialog");
-
-                if (parameters == null) {
-                        parameters = new ProjectionPlotParameters();
-                }
-
+               
+                parameters = new ProjectionPlotParameters();  
               
                 String command = event.getActionCommand();
               

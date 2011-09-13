@@ -33,7 +33,7 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
 
         public static final MultiChoiceParameter<String> dataFiles = new MultiChoiceParameter<String>(
                 "Data files", "Samples", GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]));
-        public static final ColoringTypeParameter coloringType = new ColoringTypeParameter(GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName());
+        public static final ColoringTypeParameter coloringType = new ColoringTypeParameter();
         public static final Integer[] componentPossibleValues = {1, 2, 3, 4, 5};
         public static final ComboParameter<Integer> xAxisComponent = new ComboParameter<Integer>(
                 "X-axis component", "Component on the X-axis",
