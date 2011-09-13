@@ -19,7 +19,6 @@ package guineu.modules.statistics.foldChanges;
 
 import guineu.data.PeakListRow;
 import guineu.data.Dataset;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
@@ -34,133 +33,134 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  */
 public class FoldTestTask implements Task {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress = 0.0f;
-    private String[] group1, group2;
-    private Dataset dataset;
-    private String parameter;
+        private TaskStatus status = TaskStatus.WAITING;
+        private String errorMessage;
+        private double progress = 0.0f;
+        private String[] group1, group2;
+        private Dataset dataset;
+        private String parameter;
 
-    public FoldTestTask(String[] group1, String[] group2, Dataset dataset, Desktop desktop, String parameter) {
-        this.group1 = group1;
-        this.group2 = group2;
-        this.dataset = dataset;
-        this.desktop = desktop;
-        this.parameter = parameter;
-
-    }
-
-    public String getTaskDescription() {
-        return "Fold Changes... ";
-    }
-
-    public double getFinishedPercentage() {
-        return progress;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            status = TaskStatus.PROCESSING;
-            double[] t = new double[dataset.getNumberRows()];
-            for (int i = 0; i < dataset.getNumberRows(); i++) {
-                t[i] = this.Foldtest(i);
-            }
-
-            Dataset newDataset = FileUtils.getDataset(dataset, "Fold changes - ");
-            progress = 0.3f;
-            newDataset.addColumnName("Fold changes");
-            int cont = 0;
-            for (PeakListRow row : dataset.getRows()) {
-                PeakListRow newRow = row.clone();
-                newRow.removePeaks();
-                newRow.setPeak("Fold changes", t[cont++]);
-                newDataset.addRow(newRow);
-            }
-            progress = 0.5f;
-
-            GUIUtils.showNewTable(newDataset, true);
-
-            progress = 1f;
-            status = TaskStatus.FINISHED;
-
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
+        public FoldTestTask(String[] group1, String[] group2, Dataset dataset, String parameter) {
+                this.group1 = group1;
+                this.group2 = group2;
+                this.dataset = dataset;
+                this.parameter = parameter;
         }
-    }
 
-    public double Foldtest(int mol) throws IllegalArgumentException, MathException {
-        DescriptiveStatistics stats1 = new DescriptiveStatistics();
-        DescriptiveStatistics stats2 = new DescriptiveStatistics();
+        public String getTaskDescription() {
+                return "Fold Changes... ";
+        }
 
-        String parameter1 = "";
+        public double getFinishedPercentage() {
+                return progress;
+        }
 
-        if (parameter == null) {
-            for (int i = 0; i < group1.length; i++) {
+        public TaskStatus getStatus() {
+                return status;
+        }
+
+        public String getErrorMessage() {
+                return errorMessage;
+        }
+
+        public void cancel() {
+                status = TaskStatus.CANCELED;
+        }
+
+        public void run() {
                 try {
-                    double value = (Double) this.dataset.getRow(mol).getPeak(group1[i]);
-                    // if (value > 0) {
-                    stats1.addValue(value);
-                    // }
+                        status = TaskStatus.PROCESSING;
+                        double[] t = new double[dataset.getNumberRows()];
+                        for (int i = 0; i < dataset.getNumberRows(); i++) {
+                                t[i] = this.Foldtest(i);
+                        }
+
+                        Dataset newDataset = FileUtils.getDataset(dataset, "Fold changes - ");
+                        progress = 0.3f;
+                        newDataset.addColumnName("Fold changes");
+                        int cont = 0;
+                        for (PeakListRow row : dataset.getRows()) {
+                                PeakListRow newRow = row.clone();
+                                newRow.setPeak("Fold changes", t[cont++]);
+                                newDataset.addRow(newRow);
+                        }
+                        progress = 0.5f;
+
+                        GUIUtils.showNewTable(newDataset, true);
+
+                        progress = 1f;
+                        status = TaskStatus.FINISHED;
+
                 } catch (Exception e) {
+                        status = TaskStatus.ERROR;
+                        errorMessage = e.toString();
+                        return;
                 }
-            }
-            for (int i = 0; i < group2.length; i++) {
-                try {
-                    double value = (Double) this.dataset.getRow(mol).getPeak(group2[i]);
-                    //if (value > 0) {
-                    stats2.addValue(value);
-                    // }
-                } catch (Exception e) {
-                }
-            }
-
-        } else {
-            // Determine groups for selected raw data files            
-            Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
-
-            int numberOfGroups = availableParameterValues.size();
-
-            if (numberOfGroups > 1) {
-                parameter1 = availableParameterValues.firstElement();
-                String parameter2 = availableParameterValues.elementAt(1);
-
-                for (String sampleName : dataset.getAllColumnNames()) {
-                    if (dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
-                        stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
-                    } else if (dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
-                        stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
-                    }
-                }
-            } else {
-                return -1;
-            }
-
-
         }
 
-        if (stats1.getN() > 0 && stats2.getN() > 0) {
-            /*double[] sortValues1 = stats1.getSortedValues();
-            double[] sortValues2 = stats2.getSortedValues();
+        public double Foldtest(int mol) throws IllegalArgumentException, MathException {
+                DescriptiveStatistics stats1 = new DescriptiveStatistics();
+                DescriptiveStatistics stats2 = new DescriptiveStatistics();
 
-            return sortValues1[((int) stats1.getN() / 2)] / sortValues2[((int) stats2.getN() / 2)];*/
-            return stats1.getMean() / stats2.getMean();
-        } else {
-            return 0;
+                String parameter1 = "";
+
+                if (parameter == null) {
+                        for (int i = 0; i < group1.length; i++) {
+                                try {
+                                        double value = (Double) this.dataset.getRow(mol).getPeak(group1[i]);
+                                        // if (value > 0) {
+                                        stats1.addValue(value);
+                                        // }
+                                } catch (Exception e) {
+                                        e.printStackTrace();
+                                }
+                        }
+                        for (int i = 0; i < group2.length; i++) {
+                                try {
+                                        double value = (Double) this.dataset.getRow(mol).getPeak(group2[i]);
+                                        //if (value > 0) {
+                                        stats2.addValue(value);
+                                        // }
+                                } catch (Exception e) {
+                                        e.printStackTrace();
+                                }
+                        }
+
+                } else {
+                        try {
+                                // Determine groups for selected raw data files
+                                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+
+                                int numberOfGroups = availableParameterValues.size();
+
+                                if (numberOfGroups > 1) {
+                                        parameter1 = availableParameterValues.firstElement();
+                                        String parameter2 = availableParameterValues.elementAt(1);
+
+                                        for (String sampleName : dataset.getAllColumnNames()) {
+                                                if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
+                                                        stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                } else if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
+                                                        stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                }
+                                        }
+                                } else {
+                                        return -1;
+                                }
+
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+                }
+
+                if (stats1.getN() > 0 && stats2.getN() > 0) {
+                        /*double[] sortValues1 = stats1.getSortedValues();
+                        double[] sortValues2 = stats2.getSortedValues();
+
+                        return sortValues1[((int) stats1.getN() / 2)] / sortValues2[((int) stats2.getN() / 2)];*/
+                        return stats1.getMean() / stats2.getMean();
+                } else {
+                        return 0;
+                }
         }
-    }
 }
