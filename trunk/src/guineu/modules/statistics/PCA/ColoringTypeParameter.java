@@ -18,6 +18,7 @@
  */
 package guineu.modules.statistics.PCA;
 
+import guineu.main.GuineuCore;
 import guineu.parameters.UserParameter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,13 +47,7 @@ public class ColoringTypeParameter implements
         public ColoringTypeParameter() {
                 this.name = "Coloring type";
                 this.description = "Defines how points will be colored";
-        }
-
-        public ColoringTypeParameter(List<String> metaData) {
-                this.name = "Coloring type";
-                this.description = "Defines how points will be colored";
-                this.metaData = metaData;
-        }
+        }        
 
         @Override
         public String getName() {
@@ -69,6 +64,7 @@ public class ColoringTypeParameter implements
                 ArrayList<Object> choicesList = new ArrayList<Object>();
                 choicesList.add(ColoringType.NOCOLORING);
                 choicesList.add(ColoringType.COLORBYFILE);
+                this.metaData = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
                 for (String metaD : this.metaData) {
                         choicesList.add(new ColoringType("Color by " + metaD));
                 }
@@ -92,7 +88,8 @@ public class ColoringTypeParameter implements
 
         @Override
         public ColoringTypeParameter clone() {
-                ColoringTypeParameter copy = new ColoringTypeParameter(this.metaData);
+                ColoringTypeParameter copy = new ColoringTypeParameter();
+                copy.metaData = this.metaData;
                 copy.setValue(this.getValue());
                 return copy;
         }
@@ -114,6 +111,7 @@ public class ColoringTypeParameter implements
                         return;
                 }
                 String attrValue = xmlElement.getAttribute("type");
+                this.metaData = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
                 if (attrValue.equals("parameter")) {
                         for (String data : metaData) {
                                 if (data.equals(elementString)) {
