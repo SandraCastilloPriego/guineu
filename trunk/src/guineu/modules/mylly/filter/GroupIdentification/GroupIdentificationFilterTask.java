@@ -55,7 +55,7 @@ public class GroupIdentificationFilterTask implements Task {
         private double progress = 0.0;
 
         public GroupIdentificationFilterTask(SimpleGCGCDataset dataset) {
-               this.dataset = dataset;
+                this.dataset = dataset;
         }
 
         public String getTaskDescription() {
@@ -145,11 +145,6 @@ public class GroupIdentificationFilterTask implements Task {
         }
 
         private List<String> getAnswer(String xmlFile2Send, HttpURLConnection httpConn) {
-                // Open the input file. After we copy it to a byte array, we can see
-                // how big it is so that we can set the HTTP Cotent-Length
-                // property. (See complete e-mail below for more on this.)
-
-
                 try {
 
                         InputStream fin = new ByteArrayInputStream(xmlFile2Send.getBytes("UTF-8"));
@@ -178,13 +173,12 @@ public class GroupIdentificationFilterTask implements Task {
                         while ((inputLine = in.readLine()) != null) {
                                 while (inputLine.contains("<FunctionalGroup>")) {
                                         name = inputLine.substring(inputLine.indexOf("<FunctionalGroup>") + 17, inputLine.indexOf("</FunctionalGroup>"));
-                                        if (inputLine.contains("<PredictionGroupIsPresent>true</PredictionGroupIsPresent>")) {
-                                                if (!group.contains(name)) {
-                                                        group.add(name);
-                                                }
+                                        String temporalInputLine = inputLine.substring(inputLine.indexOf("</Results>") + 10);
+                                        if (temporalInputLine.contains("<PredictionGroupIsPresent>true</PredictionGroupIsPresent>") && !group.contains(name)) {
+                                                group.add(name);
                                         }
                                         name = "";
-                                        inputLine = inputLine.substring(inputLine.indexOf("</Prediction>") + 14);
+                                        inputLine = inputLine.substring(inputLine.indexOf("</Results>") + 10);
                                 }
                         }
                         in.close();
