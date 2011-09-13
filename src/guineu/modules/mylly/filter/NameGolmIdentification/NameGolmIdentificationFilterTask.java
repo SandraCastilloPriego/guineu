@@ -59,7 +59,7 @@ public class NameGolmIdentificationFilterTask implements Task {
         }
 
         public String getTaskDescription() {
-                return "Filtering files with Name Identifiacion Filter... ";
+                return "Filtering files with Name Identificacion Filter... ";
         }
 
         public double getFinishedPercentage() {
@@ -182,14 +182,14 @@ public class NameGolmIdentificationFilterTask implements Task {
                         String inputLine;
                         List<String> group = new ArrayList<String>();
                         String name = "";
-                        while ((inputLine = in.readLine()) != null) {
+                        while ((inputLine = in.readLine()) != null) {                               
                                 while (inputLine.contains("<analyteName>")) {
                                         name = inputLine.substring(inputLine.indexOf("<analyteName>") + 13, inputLine.indexOf("</analyteName>"));
                                         if (!group.contains(name)) {
                                                 group.add(name);
                                         }
                                         name = "";
-                                        inputLine = inputLine.substring(inputLine.indexOf("</AnnotatedMatch>") + 17);
+                                        inputLine = inputLine.substring(inputLine.indexOf("</Results>") + 17);
                                 }
                         }
                         in.close();

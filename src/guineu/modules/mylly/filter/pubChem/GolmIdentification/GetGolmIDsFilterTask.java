@@ -20,26 +20,16 @@ package guineu.modules.mylly.filter.pubChem.GolmIdentification;
 import guineu.data.PeakListRow;
 import guineu.data.GCGCColumnName;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.desktop.preferences.ProxySettings;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jfree.xml.writer.AttributeList;
-import org.jfree.xml.writer.XMLWriter;
 
 /**
  *
@@ -87,7 +77,7 @@ public class GetGolmIDsFilterTask implements Task {
                 }
         }
 
-        private String PredictManyXMLFile(SimplePeakListRowGCGC newRow) throws FileNotFoundException, IOException {
+      /*  private String PredictManyXMLFile(SimplePeakListRowGCGC newRow) throws FileNotFoundException, IOException {
                 Writer w = new StringWriter();
                 XMLWriter xmlW = new XMLWriter(w);
                 xmlW.writeXmlDeclaration();
@@ -195,7 +185,7 @@ public class GetGolmIDsFilterTask implements Task {
                         return null;
                 }
 
-        }
+        }*/
 
         // copy method from From E.R. Harold's book "Java I/O"
         public static void copy(InputStream in, OutputStream out)
