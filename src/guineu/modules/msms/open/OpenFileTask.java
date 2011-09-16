@@ -27,7 +27,7 @@ import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
 import guineu.desktop.Desktop;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,166 +37,156 @@ import java.util.Collections;
  *
  * @author scsandra
  */
-public class OpenFileTask implements Task {
+public class OpenFileTask extends AbstractTask {
 
-	private OpenMSMSFileParameters parameters;
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private Desktop desktop;
-	private Parser parser;
+        private OpenMSMSFileParameters parameters;
+        private Desktop desktop;
+        private Parser parser;
 
-	public OpenFileTask(Desktop desktop, OpenMSMSFileParameters parameters) {
-		this.parameters = parameters;
-		this.desktop = desktop;
-	}
+        public OpenFileTask(Desktop desktop, OpenMSMSFileParameters parameters) {
+                this.parameters = parameters;
+                this.desktop = desktop;
+        }
 
-	public String getTaskDescription() {
-		return "Opening File... ";
-	}
+        public String getTaskDescription() {
+                return "Opening File... ";
+        }
 
-	public double getFinishedPercentage() {
-		if (parser != null) {
-			return parser.getProgress();
-		} else {
-			return 0.0f;
-		}
-	}
+        public double getFinishedPercentage() {
+                if (parser != null) {
+                        return parser.getProgress();
+                } else {
+                        return 0.0f;
+                }
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public void run() {
+                try {
+                        setStatus(TaskStatus.PROCESSING);
+                        this.openFile();
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        public void openFile() {
+                String fileDir = parameters.getParameter(OpenMSMSFileParameters.parameters).getValue().getAbsolutePath();
 
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			this.openFile();
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
+                if (fileDir.matches(".*xls")) {
+                        try {
+                                Parser parserName = new LCMSParserXLS(fileDir, null);
+                                String[] sheetsNames = ((LCMSParserXLS) parserName).getSheetNames(fileDir);
+                                for (String Name : sheetsNames) {
+                                        try {
+                                                if (getStatus() != TaskStatus.CANCELED) {
+                                                        parser = new LCMSParserXLS(fileDir, Name);
+                                                        parser.fillData();
+                                                        this.open(parser);
+                                                }
+                                        } catch (Exception exception) {
+                                                exception.printStackTrace();
+                                        }
+                                }
+                        } catch (IOException ex) {
+                                ex.printStackTrace();
+                        }
+                } else if (fileDir.matches(".*csv")) {
+                        try {
+                                if (getStatus() != TaskStatus.CANCELED) {
+                                        parser = new LCMSParserCSV(fileDir);
+                                        parser.fillData();
+                                        this.open(parser);
+                                }
+                        } catch (Exception ex) {
+                                ex.printStackTrace();
+                        }
+                }
 
-	public void openFile() {
-		String fileDir = parameters.getParameter(OpenMSMSFileParameters.parameters).getValue().getAbsolutePath();
+        }
 
-		if (fileDir.matches(".*xls")) {
-			try {
-				Parser parserName = new LCMSParserXLS(fileDir, null);
-				String[] sheetsNames = ((LCMSParserXLS) parserName).getSheetNames(fileDir);
-				for (String Name : sheetsNames) {
-					try {
-						if (status != TaskStatus.CANCELED) {
-							parser = new LCMSParserXLS(fileDir, Name);
-							parser.fillData();
-							this.open(parser);
-						}
-					} catch (Exception exception) {
-						exception.printStackTrace();
-					}
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		} else if (fileDir.matches(".*csv")) {
-			try {
-				if (status != TaskStatus.CANCELED) {
-					parser = new LCMSParserCSV(fileDir);
-					parser.fillData();
-					this.open(parser);
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+        public void open(Parser parser) {
+                try {
+                        if (getStatus() != TaskStatus.CANCELED) {
+                                SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
 
-	}
+                                SimpleBasicDataset otherDataset = modifyDataset(dataset);
 
-	public void open(Parser parser) {
-		try {
-			if (status != TaskStatus.CANCELED) {
-				SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
+                                desktop.AddNewFile(otherDataset);
 
-				SimpleBasicDataset otherDataset = modifyDataset(dataset);
+                        }
+                } catch (Exception exception) {
+                        exception.printStackTrace();
+                }
+        }
 
-				desktop.AddNewFile(otherDataset);
+        private SimpleBasicDataset modifyDataset(SimpleLCMSDataset dataset) {
+                SimpleBasicDataset datasetOther = new SimpleBasicDataset(dataset.getDatasetName());
+                datasetOther.setType(DatasetType.BASIC);
+                datasetOther.addColumnName("m/z");
+                datasetOther.addColumnName("rt");
+                double margin = parameters.getParameter(OpenMSMSFileParameters.rtTolerance).getValue().getTolerance();
+                int i = 1;
+                int maxim = 1;
+                double rtAverage = 0;
+                try {
+                        for (PeakListRow peakRow : dataset.getRows()) {
+                                SimplePeakListRowLCMS row = (SimplePeakListRowLCMS) peakRow;
+                                if (row.getID() != -2) {
+                                        PeakListRow newRow = new SimplePeakListRowOther();
+                                        newRow.setPeak("fragment" + i, String.valueOf(row.getMZ()));
+                                        i++;
+                                        row.setID(-2);
+                                        rtAverage = row.getRT();
+                                        for (PeakListRow peakRow2 : dataset.getRows()) {
+                                                SimplePeakListRowLCMS row2 = (SimplePeakListRowLCMS) peakRow2;
+                                                if (row2.getID() != -2) {
+                                                        if (row.getRT() < row2.getRT() + margin && row.getRT() > row2.getRT() - margin) {
+                                                                newRow.setPeak("fragment" + i, String.valueOf(row2.getMZ()));
+                                                                i++;
+                                                                row2.setID(-2);
+                                                                rtAverage += row2.getRT();
+                                                                rtAverage /= 2;
+                                                        }
+                                                }
+                                        }
+                                        rtAverage /= 60;
+                                        newRow = orderRow(newRow);
+                                        newRow.setPeak("rt", String.valueOf(rtAverage));
+                                        datasetOther.addRow(newRow);
+                                        if (i > maxim) {
+                                                maxim = i;
+                                        }
+                                        i = 1;
+                                }
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+                for (int e = 1; e <= maxim; e++) {
+                        datasetOther.addColumnName("fragment" + e);
+                }
 
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
+                return datasetOther;
+        }
 
-	private SimpleBasicDataset modifyDataset(SimpleLCMSDataset dataset) {
-		SimpleBasicDataset datasetOther = new SimpleBasicDataset(dataset.getDatasetName());
-		datasetOther.setType(DatasetType.BASIC);
-		datasetOther.addColumnName("m/z");
-		datasetOther.addColumnName("rt");
-		double margin = parameters.getParameter(OpenMSMSFileParameters.rtTolerance).getValue().getTolerance();
-		int i = 1;
-		int maxim = 1;
-		double rtAverage = 0;
-		try {
-			for (PeakListRow peakRow : dataset.getRows()) {
-				SimplePeakListRowLCMS row = (SimplePeakListRowLCMS) peakRow;
-				if (row.getID() != -2) {
-					PeakListRow newRow = new SimplePeakListRowOther();
-					newRow.setPeak("fragment" + i, String.valueOf(row.getMZ()));
-					i++;
-					row.setID(-2);
-					rtAverage = row.getRT();
-					for (PeakListRow peakRow2 : dataset.getRows()) {
-						SimplePeakListRowLCMS row2 = (SimplePeakListRowLCMS) peakRow2;
-						if (row2.getID() != -2) {
-							if (row.getRT() < row2.getRT() + margin && row.getRT() > row2.getRT() - margin) {
-								newRow.setPeak("fragment" + i, String.valueOf(row2.getMZ()));
-								i++;
-								row2.setID(-2);
-								rtAverage += row2.getRT();
-								rtAverage /= 2;
-							}
-						}
-					}
-					rtAverage /= 60;
-					newRow = orderRow(newRow);
-					newRow.setPeak("rt", String.valueOf(rtAverage));
-					datasetOther.addRow(newRow);
-					if (i > maxim) {
-						maxim = i;
-					}
-					i = 1;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		for (int e = 1; e <= maxim; e++) {
-			datasetOther.addColumnName("fragment" + e);
-		}
-
-		return datasetOther;
-	}
-
-	private PeakListRow orderRow(PeakListRow newRow) {
-		PeakListRow newOrderRow = new SimplePeakListRowOther();
-		Object[] peaks = newRow.getPeaks();
-		Double[] newPeaks = new Double[peaks.length];
-		for (int i = 0; i < peaks.length; i++) {
-			newPeaks[i] = Double.valueOf(peaks[i].toString());
-		}
-		Arrays.sort(newPeaks, Collections.reverseOrder());
-		for (int i = 1; i <= newPeaks.length; i++) {
-			newOrderRow.setPeak("fragment" + i, String.valueOf(newPeaks[i - 1]));
-		}
-		return newOrderRow;
-	}
+        private PeakListRow orderRow(PeakListRow newRow) {
+                PeakListRow newOrderRow = new SimplePeakListRowOther();
+                Object[] peaks = newRow.getPeaks();
+                Double[] newPeaks = new Double[peaks.length];
+                for (int i = 0; i < peaks.length; i++) {
+                        newPeaks[i] = Double.valueOf(peaks[i].toString());
+                }
+                Arrays.sort(newPeaks, Collections.reverseOrder());
+                for (int i = 1; i <= newPeaks.length; i++) {
+                        newOrderRow.setPeak("fragment" + i, String.valueOf(newPeaks[i - 1]));
+                }
+                return newOrderRow;
+        }
 }

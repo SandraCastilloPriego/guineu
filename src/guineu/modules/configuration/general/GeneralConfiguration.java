@@ -17,66 +17,17 @@
  */
 package guineu.modules.configuration.general;
 
-import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
-import guineu.desktop.preferences.ProxySettings;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
-import guineu.taskcontrol.TaskStatus;
-import guineu.util.dialogs.ExitCode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
-/**
- *
- * @author scsandra
- */
-public class GeneralConfiguration implements GuineuModule, TaskListener, ActionListener {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
-        private GeneralconfigurationParameters parameters;
+public class GeneralConfiguration implements GuineuProcessingModule {
 
-        public GeneralConfiguration() {
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuSeparator(GuineuMenu.CONFIGURATION);
-                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "General configuration..",
-                        "General configuration", KeyEvent.VK_G, this, null, null);
-                parameters = GuineuCore.getPreferences();              
-        }
-
-        public void taskStarted(Task task) {
-                logger.info("General configuration");
-        }
-
-        public void taskFinished(Task task) {
-                if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished General configuration ");
-                }
-
-                if (task.getStatus() == TaskStatus.ERROR) {
-
-                        String msg = "Error while General configuration  .. ";
-                        logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
-
-                }
-        }
-
-        public void actionPerformed(ActionEvent e) {
-
-                ExitCode exitCode = parameters.showSetupDialog();
-                if (exitCode != ExitCode.OK) {
-                        return;
-                }
-
-                GuineuCore.setPreferences(parameters);
-        }
+        public static final String MODULE_NAME = "General configuration";
+        private GeneralconfigurationParameters parameters = GuineuCore.getPreferences();
 
         public ParameterSet getParameterSet() {
                 return parameters;
@@ -84,6 +35,15 @@ public class GeneralConfiguration implements GuineuModule, TaskListener, ActionL
 
         @Override
         public String toString() {
-                return "General configuration";
+                return MODULE_NAME;
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                GuineuCore.setPreferences((GeneralconfigurationParameters) parameters);
+                return null;
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.CONFIGURATION;
         }
 }

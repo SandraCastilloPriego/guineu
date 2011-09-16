@@ -19,7 +19,9 @@ package guineu.modules.statistics.clustering;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.WekaUtils;
 import java.util.ArrayList;
@@ -39,10 +41,10 @@ import weka.core.Instances;
  *
  * @author scsandra
  */
-public class ClusteringTestTask implements Task {
+public class ClusteringTestTask extends AbstractTask {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
+    
+    
     private Dataset dataset;
     private String parameter, dataType;
     private int numberOfClusters;
@@ -51,9 +53,9 @@ public class ClusteringTestTask implements Task {
 
     public ClusteringTestTask(Dataset dataset, ClusteringParameters parameters) {
         this.dataset = dataset;
-        parameter = parameters.getParameter(ClusteringParameters.clusteringAlgorithm).getValue();
-        dataType =  parameters.getParameter(ClusteringParameters.clusteringData).getValue();
-        numberOfClusters =  parameters.getParameter(ClusteringParameters.N).getValue();
+        //parameter = parameters.getParameter(ClusteringParameters.clusteringAlgorithm).getValue();
+        //dataType =  parameters.getParameter(ClusteringParameters.clusteringData).getValue();
+       // numberOfClusters =  parameters.getParameter(ClusteringParameters.N).getValue();
 
         // Get the type algorithm from the enum.
         for (ClusteringAlgorithmsEnum e : ClusteringAlgorithmsEnum.values()) {
@@ -73,21 +75,15 @@ public class ClusteringTestTask implements Task {
         return (float) progress;
     }
 
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+    
 
     public void cancel() {
-        status = TaskStatus.CANCELED;
+        setStatus(TaskStatus.CANCELED);
     }
 
     public void run() {
         try {
-            status = TaskStatus.PROCESSING;
+            setStatus(TaskStatus.PROCESSING);
             if (dataType.equals("Samples")) {
                 Instances wekaData = WekaUtils.getWekaDataset(dataset, true);
 
@@ -118,10 +114,10 @@ public class ClusteringTestTask implements Task {
             }
 
             this.progress = 1;
-            status = TaskStatus.FINISHED;
+            setStatus(TaskStatus.FINISHED);
         } catch (Exception ex) {
             ex.printStackTrace();
-            status = TaskStatus.ERROR;
+            setStatus(TaskStatus.ERROR);
         }
     }
 
@@ -178,4 +174,6 @@ public class ClusteringTestTask implements Task {
 
 
     }
+
+        
 }

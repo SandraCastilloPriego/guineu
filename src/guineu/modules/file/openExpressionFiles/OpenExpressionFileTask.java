@@ -23,17 +23,15 @@ import guineu.data.parser.Parser;
 import guineu.data.parser.impl.ExpressionParserTSV;
 import guineu.main.GuineuCore;
 import guineu.parameters.SimpleParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  *
  * @author scsandra
  */
-public class OpenExpressionFileTask implements Task {
-
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
+public class OpenExpressionFileTask extends AbstractTask {        
+        
         private String assayPath, featurePath, phenoPath, datasetName;
         private Parser parser = null;
 
@@ -55,22 +53,15 @@ public class OpenExpressionFileTask implements Task {
                         return 0.0f;
                 }
         }
-
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
+       
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         parser = new ExpressionParserTSV(assayPath, featurePath, phenoPath, datasetName);
                         parser.fillData();
 
@@ -78,9 +69,10 @@ public class OpenExpressionFileTask implements Task {
                         System.out.println(dataset.getNumberCols() + " - " + dataset.getNumberRows());
                         GuineuCore.getDesktop().AddNewFile(dataset);
 
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
+        
 }

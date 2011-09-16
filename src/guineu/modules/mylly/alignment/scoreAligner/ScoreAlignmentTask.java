@@ -22,7 +22,7 @@ import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.mylly.alignment.scoreAligner.functions.ScoreAligner;
 import guineu.modules.mylly.datastruct.GCGCData;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.List;
@@ -33,10 +33,8 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class ScoreAlignmentTask implements Task {
+public class ScoreAlignmentTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Aligner aligner;
 
         public ScoreAlignmentTask(List<GCGCData> datasets, ScoreAlignmentParameters parameters) {
@@ -51,29 +49,21 @@ public class ScoreAlignmentTask implements Task {
                 return aligner.getProgress();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
-                try {                       
-                        SimpleGCGCDataset alignment = aligner.align();                        
+                setStatus(TaskStatus.PROCESSING);
+                try {
+                        SimpleGCGCDataset alignment = aligner.align();
                         alignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(alignment, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(ScoreAlignmentTask.class.getName()).log(Level.SEVERE, null, ex);
                         errorMessage = "There has been an error doing Score Alignment";
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

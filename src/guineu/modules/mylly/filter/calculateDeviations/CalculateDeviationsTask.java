@@ -5,7 +5,6 @@
 package guineu.modules.mylly.filter.calculateDeviations;
 
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,6 +17,7 @@ import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.modules.mylly.datastruct.Pair;
+import guineu.taskcontrol.AbstractTask;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,10 +35,8 @@ import org.xml.sax.SAXException;
  *
  * @author bicha
  */
-public class CalculateDeviationsTask implements Task {
+public class CalculateDeviationsTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
         private String fileName;
 
@@ -55,27 +53,19 @@ public class CalculateDeviationsTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         List<Pair<List<String>, Double>> representativies = this.makeRepresentativeList(new File(fileName), "\\t");
                         findRepresentavies(representativies, (SimpleGCGCDataset) dataset);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(CalculateDeviationsTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 

@@ -56,6 +56,8 @@ import guineu.desktop.numberFormat.RTFormatter;
 import guineu.desktop.numberFormat.RTFormatterType;
 import guineu.desktop.preferences.ColumnsGCGCParameters;
 import guineu.desktop.preferences.ColumnsLCMSParameters;
+import guineu.modules.GuineuModule;
+import guineu.modules.GuineuProcessingModule;
 import guineu.modules.configuration.general.GeneralconfigurationParameters;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.TaskController;
@@ -78,19 +80,17 @@ import java.util.Set;
 public class GuineuCore implements Runnable {
 
         public static final File CONFIG_FILE = new File("conf/config.xml");
-        public static final File DEFAULT_CONFIG_FILE = new File(
-                "conf/config-default.xml");
         public static final String STANDARD_RANGE = "standard_ranges";
         public static final String STANDARD_NAME = "standard_name";
         private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
-        protected static GeneralconfigurationParameters preferences;
-        protected static ColumnsLCMSParameters LCMSColumns;
-        protected static ColumnsGCGCParameters GCGCColumns;
-        protected static TaskController taskController;
-        protected static Desktop desktop;
-        protected static GuineuModule[] initializedModules;
-        protected static HelpImpl help;
-        protected static Hashtable<String, Range> standards;
+        private static GeneralconfigurationParameters preferences;
+        private static ColumnsLCMSParameters LCMSColumns;
+        private static ColumnsGCGCParameters GCGCColumns;
+        private static TaskControllerImpl taskController;
+        private static GuineuModule[] initializedModules;
+        private static HelpImpl help;
+        private static Hashtable<String, Range> standards;
+        private static MainWindow desktop;
 
         public static void setStandard(String name, Range range) {
                 standards.put(name, range);
@@ -174,40 +174,7 @@ public class GuineuCore implements Runnable {
          * @see java.lang.Runnable#run()
          */
         public void run() {
-
-                logger.info("Starting Guineu");
-                logger.fine("Loading configuration..");
-
-                File configFileToLoad = CONFIG_FILE;
-                if (!CONFIG_FILE.canRead()) {
-                        configFileToLoad = DEFAULT_CONFIG_FILE;
-                }
-                if (!configFileToLoad.canRead()) {
-                        logger.log(Level.SEVERE, "Cannot read default configuration file " + DEFAULT_CONFIG_FILE);
-                        System.exit(1);
-                }
-
-                Document configuration = null;
-                NodeList modulesItems = null;
-
-                try {
-                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                        configuration = dBuilder.parse(configFileToLoad);
-
-                        XPathFactory factory = XPathFactory.newInstance();
-                        XPath xpath = factory.newXPath();
-
-                        XPathExpression expr = xpath.compile("//modules/module");
-                        modulesItems = (NodeList) expr.evaluate(configuration,
-                                XPathConstants.NODESET);
-
-                } catch (Exception e) {
-
-                        logger.log(Level.SEVERE, "Error parsing the configuration file " + configFileToLoad + ", loading default configuration", e);
-                        System.exit(1);
-                        return;
-                }            
+                logger.info("Starting Guineu " + getGuineuVersion());
 
                 logger.fine("Loading core classes..");
 
@@ -221,8 +188,8 @@ public class GuineuCore implements Runnable {
                 // create instances of core modules
 
                 // load configuration from XML
-                GuineuCore.taskController = new TaskControllerImpl();
-                GuineuCore.desktop = new MainWindow();
+                taskController = new TaskControllerImpl();
+                desktop = new MainWindow();
                 help = new HelpImpl();
 
                 logger.fine("Initializing core classes..");
@@ -230,36 +197,37 @@ public class GuineuCore implements Runnable {
 
                 // Second, initialize desktop, because task controller needs to add
                 // TaskProgressWindow to the desktop
-                ((MainWindow) desktop).initModule();
+                desktop.initModule();
 
                 // Last, initialize task controller
-                ((TaskControllerImpl) taskController).initModule();
+                taskController.initModule();
 
                 logger.fine("Loading modules");
 
                 Vector<GuineuModule> moduleSet = new Vector<GuineuModule>();
 
-                for (int i = 0; i < modulesItems.getLength(); i++) {
-                        Element modElement = (Element) modulesItems.item(i);
-
-                        String className = modElement.getAttribute("class");
+                for (Class<?> moduleClass : GuineuModulesList.MODULES) {
 
                         try {
 
-                                logger.finest("Loading module " + className);
-
-                                // load the module class
-                                Class moduleClass = Class.forName(className);
+                                logger.finest("Loading module " + moduleClass.getName());
 
                                 // create instance and init module
-                                GuineuModule moduleInstance = (GuineuModule) moduleClass.newInstance();
+                                GuineuModule moduleInstance =  (GuineuModule) moduleClass.newInstance();
+
+                                // add desktop menu icon
+                                if (moduleInstance instanceof GuineuProcessingModule) {
+                                        desktop.getMainMenu().addMenuItemForModule(
+                                                (GuineuProcessingModule) moduleInstance);
+                                }
 
                                 // add to the module set
                                 moduleSet.add(moduleInstance);
 
                         } catch (Throwable e) {
-                                logger.log(Level.SEVERE, "Could not load module " + className,
-                                        e);
+                                logger.log(Level.SEVERE,
+                                        "Could not load module " + moduleClass, e);
+                                e.printStackTrace();
                                 continue;
                         }
 
@@ -267,10 +235,12 @@ public class GuineuCore implements Runnable {
 
                 GuineuCore.initializedModules = moduleSet.toArray(new GuineuModule[0]);
 
-                try {
-                        loadConfiguration(configFileToLoad);
-                } catch (Exception e) {
-                        e.printStackTrace();
+                if (CONFIG_FILE.canRead()) {
+                        try {
+                                loadConfiguration(CONFIG_FILE);
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
                 }
 
                 // register shutdown hook
@@ -283,7 +253,7 @@ public class GuineuCore implements Runnable {
 
                 // show the welcome message
                 desktop.setStatusBarText("Welcome to Guineu!");
-                preferences.setProxy();
+       //         preferences.setProxy();
 
         }
 
@@ -440,5 +410,4 @@ public class GuineuCore implements Runnable {
         public static ColumnsGCGCParameters getGCGCColumnsParameters() {
                 return GCGCColumns;
         }
-       
 }

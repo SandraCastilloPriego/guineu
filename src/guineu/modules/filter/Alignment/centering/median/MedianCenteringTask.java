@@ -19,88 +19,69 @@ package guineu.modules.filter.Alignment.centering.median;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
-class MedianCenteringTask implements Task {
+class MedianCenteringTask extends AbstractTask {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Dataset peakLists[];
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    // Processed rows counter
-    private int processedRows,  totalRows;
+        private Dataset peakLists[];
+        // Processed rows counter
+        private int processedRows, totalRows;
 
-    public MedianCenteringTask(Dataset[] peakLists) {
+        public MedianCenteringTask(Dataset[] peakLists) {
 
-        this.peakLists = peakLists;
-    }
-
-   
-    public String getTaskDescription() {
-        return "Median centering";
-    }
-
-   
-    public double getFinishedPercentage() {
-        if (totalRows == 0) {
-            return 0f;
+                this.peakLists = peakLists;
         }
-        return (double) processedRows / (double) totalRows;
-    }
 
-    
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    /**
-     * @see Runnable#run()
-     */
-    public void run() {
-        status = TaskStatus.PROCESSING;
-        logger.info("Running Median centering");
-
-        for (Dataset data : this.peakLists) {
-            normalize(data);
+        public String getTaskDescription() {
+                return "Median centering";
         }
-        logger.info(
-                "Finished Median centering");
-        status = TaskStatus.FINISHED;
 
-    }
-
-    private void normalize(Dataset data) {
-        for (String nameExperiment : data.getAllColumnNames()) {
-            List<Double> median = new ArrayList<Double>();
-            for (PeakListRow row : data.getRows()) {
-                Object value = row.getPeak(nameExperiment);
-                if (value != null && value instanceof Double) {
-                    median.add((Double) value);
+        public double getFinishedPercentage() {
+                if (totalRows == 0) {
+                        return 0f;
                 }
-            }
-            Collections.sort(median);
-
-            for (PeakListRow row : data.getRows()) {
-                Object value = row.getPeak(nameExperiment);
-                if (value != null && value instanceof Double) {
-                    row.setPeak(nameExperiment, Math.abs((Double) value - median.get(median.size() / 2)));
-                }
-            }
+                return (double) processedRows / (double) totalRows;
         }
-    }
+
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
+
+        /**
+         * @see Runnable#run()
+         */
+        public void run() {
+                setStatus(TaskStatus.PROCESSING);
+
+                for (Dataset data : this.peakLists) {
+                        normalize(data);
+                }
+
+                setStatus(TaskStatus.FINISHED);
+
+        }
+
+        private void normalize(Dataset data) {
+                for (String nameExperiment : data.getAllColumnNames()) {
+                        List<Double> median = new ArrayList<Double>();
+                        for (PeakListRow row : data.getRows()) {
+                                Object value = row.getPeak(nameExperiment);
+                                if (value != null && value instanceof Double) {
+                                        median.add((Double) value);
+                                }
+                        }
+                        Collections.sort(median);
+
+                        for (PeakListRow row : data.getRows()) {
+                                Object value = row.getPeak(nameExperiment);
+                                if (value != null && value instanceof Double) {
+                                        row.setPeak(nameExperiment, Math.abs((Double) value - median.get(median.size() / 2)));
+                                }
+                        }
+                }
+        }
 }

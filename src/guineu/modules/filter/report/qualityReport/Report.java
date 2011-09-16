@@ -18,36 +18,34 @@
 package guineu.modules.filter.report.qualityReport;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class Report implements GuineuModule, TaskListener, ActionListener {
+public class Report implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     private SimpleParameterSet parameters;
 
-    public Report() {
+   /* public Report() {
         this.parameters = new ReportParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.REPORT, "Summary Report..",
                 "Summary Report", KeyEvent.VK_I, this, null, null);
-    }
+    }*/
 
     public void taskStarted(Task task) {
         logger.info("Running Summary Report");
@@ -99,4 +97,16 @@ public class Report implements GuineuModule, TaskListener, ActionListener {
         return tasks;
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

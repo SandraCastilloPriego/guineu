@@ -18,19 +18,17 @@
 package guineu.modules.statistics.clustering;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import guineu.data.Dataset;
+import guineu.modules.GuineuProcessingModule;
+import guineu.modules.statistics.PCA.ProjectionPlotDataset;
 import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import java.util.logging.Logger;
@@ -39,20 +37,14 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class ClusteringTest implements GuineuModule, TaskListener, ActionListener {
+public class ClusteringTest implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
-        private ClusteringParameters parameters;
+        private ClusteringParameters parameters = new ClusteringParameters();
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public ClusteringTest() {
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.STATISTICS, "Clustering..",
-                        "Clustering data", KeyEvent.VK_U, this, null, null);
-                parameters = new ClusteringParameters();
-
-        }
+             
 
         public void taskStarted(Task task) {
                 logger.info("Clustering data");
@@ -95,20 +87,35 @@ public class ClusteringTest implements GuineuModule, TaskListener, ActionListene
                 parameters = (ClusteringParameters) parameters;
         }
 
+        @Override
         public String toString() {
                 return "Clustering data";
         }
 
         public Task[] runModule() {
 
-                Dataset[] DataFiles = desktop.getSelectedDataFiles();
+               // Dataset[] DataFiles = desktop.getSelectedDataFiles();
                 // prepare a new group of tasks
                 Task tasks[] = new ClusteringTestTask[1];
-                tasks[0] = new ClusteringTestTask(DataFiles[0], parameters);
+                ProjectionPlotDataset dataset = new ClusteringTask(parameters);
+               // tasks[0] = new ClusteringTestTask(DataFiles[0], parameters);
+                tasks[0] = dataset;
                 GuineuCore.getTaskController().addTasks(tasks);
 
                 return tasks;
 
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

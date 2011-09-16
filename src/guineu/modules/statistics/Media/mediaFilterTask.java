@@ -20,7 +20,7 @@ package guineu.modules.statistics.Media;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.internalframe.DataInternalFrame;
 import javax.swing.JInternalFrame;
@@ -31,94 +31,84 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  *
  * @author scsandra
  */
-public class mediaFilterTask implements Task {
+public class mediaFilterTask extends AbstractTask {
 
-    private Dataset[] datasets;
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress;
+        private Dataset[] datasets;
+        private Desktop desktop;
+        private double progress;
 
-    public mediaFilterTask(Dataset[] datasets, Desktop desktop) {
-        this.datasets = datasets;
-        this.desktop = desktop;
-    }
-
-    public String getTaskDescription() {
-        return "std Dev scores... ";
-    }
-
-    public double getFinishedPercentage() {
-        return progress;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            this.median();
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
+        public mediaFilterTask(Dataset[] datasets, Desktop desktop) {
+                this.datasets = datasets;
+                this.desktop = desktop;
         }
-    }
 
-    public void median() {
-        status = TaskStatus.PROCESSING;
-        try {
-            progress = 0.0f;
-            for (Dataset dataset : datasets) {
-                double[] median = this.getSTDDev(dataset);
-                dataset.addColumnName("Median");
-                int cont = 0;
-                for (PeakListRow row : dataset.getRows()) {
-                    row.setPeak("Median", median[cont++]);
-                }
-
-                JInternalFrame[] frames = desktop.getInternalFrames();
-                for (int i = 0; i < frames.length; i++) {
-                    try {
-                        JTable table = ((DataInternalFrame) frames[i]).getTable();
-                        table.createDefaultColumnsFromModel();
-                        table.revalidate();
-                    } catch (Exception e) {
-                    }
-                }
-
-            }
-            progress = 1f;
-
-        } catch (Exception ex) {
+        public String getTaskDescription() {
+                return "std Dev scores... ";
         }
-        status = TaskStatus.FINISHED;
-    }
 
-    public double[] getSTDDev(Dataset dataset) {
-        DescriptiveStatistics stats = new DescriptiveStatistics();
-        double[] median = new double[dataset.getNumberRows()];
-        int numRows = 0;
-        for (PeakListRow peak : dataset.getRows()) {
-            stats.clear();
-            for (String nameExperiment : dataset.getAllColumnNames()) {
+        public double getFinishedPercentage() {
+                return progress;
+        }
+
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
+
+        public void run() {
                 try {
-                    stats.addValue((Double) peak.getPeak(nameExperiment));
+                        this.median();
                 } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
                 }
-            }
-            double[] values = stats.getSortedValues();
-            median[numRows++] = values[values.length / 2];
         }
-        return median;
-    }
+
+        public void median() {
+                setStatus(TaskStatus.PROCESSING);
+                try {
+                        progress = 0.0f;
+                        for (Dataset dataset : datasets) {
+                                double[] median = this.getSTDDev(dataset);
+                                dataset.addColumnName("Median");
+                                int cont = 0;
+                                for (PeakListRow row : dataset.getRows()) {
+                                        row.setPeak("Median", median[cont++]);
+                                }
+
+                                JInternalFrame[] frames = desktop.getInternalFrames();
+                                for (int i = 0; i < frames.length; i++) {
+                                        try {
+                                                JTable table = ((DataInternalFrame) frames[i]).getTable();
+                                                table.createDefaultColumnsFromModel();
+                                                table.revalidate();
+                                        } catch (Exception e) {
+                                        }
+                                }
+
+                        }
+                        progress = 1f;
+
+                } catch (Exception ex) {
+                }
+                setStatus(TaskStatus.FINISHED);
+        }
+
+        public double[] getSTDDev(Dataset dataset) {
+                DescriptiveStatistics stats = new DescriptiveStatistics();
+                double[] median = new double[dataset.getNumberRows()];
+                int numRows = 0;
+                for (PeakListRow peak : dataset.getRows()) {
+                        stats.clear();
+                        for (String nameExperiment : dataset.getAllColumnNames()) {
+                                try {
+                                        stats.addValue((Double) peak.getPeak(nameExperiment));
+                                } catch (Exception e) {
+                                }
+                        }
+                        double[] values = stats.getSortedValues();
+                        median[numRows++] = values[values.length / 2];
+                }
+                return median;
+        }
 }

@@ -19,35 +19,33 @@ package guineu.modules.identification.simplelipidname;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
  
-import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class SimpleLipidNameFilter implements GuineuModule, TaskListener, ActionListener {
+public class SimpleLipidNameFilter implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
 
-    public SimpleLipidNameFilter() {
+  /*  public SimpleLipidNameFilter() {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.IDENTIFICATIONFILTERS, "Simplify Lipid Name..",
                 "Simplify the name of the lipids (not needed)", KeyEvent.VK_I, this, null, null);
 
-    }
+    }*/
 
     public void taskStarted(Task task) {
         logger.info("Running Simplify Lipid Name");
@@ -95,4 +93,16 @@ public class SimpleLipidNameFilter implements GuineuModule, TaskListener, Action
 
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

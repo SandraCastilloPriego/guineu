@@ -19,30 +19,29 @@ package guineu.modules.identification.CustomIdentification;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  * 
  */
-public class CustomDBSearch implements ActionListener, GuineuModule, TaskListener {
+public class CustomDBSearch implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         public static final String MODULE_NAME = "Custom database search";
         private Desktop desktop;
         private CustomDBSearchParameters parameters;
 
-        public CustomDBSearch() {
+     /*   public CustomDBSearch() {
 
                 this.desktop = GuineuCore.getDesktop();
 
@@ -51,7 +50,7 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
                 desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, "Identification by searching in CSV file",
                         "Custom identification using CSV file",
                         KeyEvent.VK_C, this, null, null);
-        }
+        }*/
 
         public ParameterSet getParameterSet() {
                 return parameters;
@@ -117,5 +116,17 @@ public class CustomDBSearch implements ActionListener, GuineuModule, TaskListene
                         desktop.displayErrorMessage(msg);
 
                 }
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

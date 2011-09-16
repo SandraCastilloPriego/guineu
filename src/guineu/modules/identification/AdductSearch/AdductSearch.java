@@ -19,20 +19,18 @@ package guineu.modules.identification.AdductSearch;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 /**
  * 
  */
-public class AdductSearch implements GuineuModule, ActionListener {
+public class AdductSearch implements GuineuProcessingModule {
 
     public static final String MODULE_NAME = "Adduct search";
     private Desktop desktop;
@@ -44,14 +42,14 @@ public class AdductSearch implements GuineuModule, ActionListener {
     }
 
    
-    public AdductSearch() {
+   /* public AdductSearch() {
 
         this.desktop = GuineuCore.getDesktop();
 
         parameters = new AdductSearchParameters();
         desktop.addMenuItem(GuineuMenu.LCMSIDENTIFICATIONSUBMENU, MODULE_NAME,
                 "Identification of adduct peaks by mass difference and same retention time", KeyEvent.VK_A, this, null, null);
-    }    
+    }  */
    
     
     public void actionPerformed(ActionEvent e) {
@@ -97,4 +95,12 @@ public class AdductSearch implements GuineuModule, ActionListener {
     public String toString() {
         return MODULE_NAME;
     }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

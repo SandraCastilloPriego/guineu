@@ -24,7 +24,7 @@ import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.sql.Connection;
 
@@ -32,11 +32,9 @@ import java.sql.Connection;
  *
  * @author scsandra
  */
-public class SaveFileDBTask implements Task {
+public class SaveFileDBTask extends AbstractTask {
 
         private Dataset dataset;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private String author, datasetName, parameterFileName, study;
         private InDataBase db;
 
@@ -61,23 +59,15 @@ public class SaveFileDBTask implements Task {
                 return db.getProgress();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
                         saveFile();
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
@@ -85,7 +75,7 @@ public class SaveFileDBTask implements Task {
 
         public synchronized void saveFile() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         Connection connection = db.connect();
                         String type;
                         if (dataset.getType() == DatasetType.LCMS) {
@@ -98,9 +88,9 @@ public class SaveFileDBTask implements Task {
                                 db.qualityControlFiles(connection, (SimpleBasicDataset) dataset);
                         }
 
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

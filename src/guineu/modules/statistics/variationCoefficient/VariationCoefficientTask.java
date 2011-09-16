@@ -22,7 +22,7 @@ import guineu.data.PeakListRow;
 import guineu.data.datamodels.VariationCoefficientDataModel;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.desktop.Desktop;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
@@ -36,11 +36,9 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  *
  * @author scsandra
  */
-public class VariationCoefficientTask implements Task {
+public class VariationCoefficientTask extends AbstractTask {
 
         private Dataset[] datasets;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Desktop desktop;
         private double progress;
 
@@ -58,30 +56,22 @@ public class VariationCoefficientTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
                         this.variationCoefficient();
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
         }
 
         public void variationCoefficient() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         progress = 0.0f;
                         Vector<VariationCoefficientData> data = new Vector<VariationCoefficientData>();
@@ -106,7 +96,7 @@ public class VariationCoefficientTask implements Task {
 
                 } catch (Exception ex) {
                 }
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
         }
 
         private int getNumberIdentMol(Dataset dataset) {

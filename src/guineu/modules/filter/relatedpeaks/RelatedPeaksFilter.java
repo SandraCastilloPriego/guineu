@@ -19,36 +19,34 @@ package guineu.modules.filter.relatedpeaks;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class RelatedPeaksFilter implements GuineuModule, TaskListener, ActionListener {
+public class RelatedPeaksFilter implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
 
-    public RelatedPeaksFilter() {
+ /*   public RelatedPeaksFilter() {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Related Peaks Filter..",
                 "Search for related peaks like adducts.", KeyEvent.VK_R, this, null, null);
 
     }
-
+*/
     public void taskStarted(Task task) {
         logger.info("Running Related Peaks filter");
     }
@@ -85,7 +83,7 @@ public class RelatedPeaksFilter implements GuineuModule, TaskListener, ActionLis
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new RelatedPeaksTask[datasets.length];
         for (int i = 0; i < datasets.length; i++) {
-            tasks[i] = new RelatedPeaksTask(datasets[i], desktop);
+            tasks[i] = new RelatedPeaksTask(datasets[i]);
         }
         GuineuCore.getTaskController().addTasks(tasks);
 
@@ -93,4 +91,16 @@ public class RelatedPeaksFilter implements GuineuModule, TaskListener, ActionLis
 
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

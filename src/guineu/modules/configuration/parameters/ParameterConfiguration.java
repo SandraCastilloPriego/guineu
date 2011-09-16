@@ -18,65 +18,38 @@
 package guineu.modules.configuration.parameters;
 
 import guineu.data.Dataset;
-import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
-import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class ParameterConfiguration implements GuineuModule, TaskListener, ActionListener {
+public class ParameterConfiguration implements GuineuProcessingModule {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
         final String helpID = GUIUtils.generateHelpID(this);
+        public static final String MODULE_NAME = "Sample parameters";
 
-        public ParameterConfiguration() {
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "Parameters Configuration..",
-                        "Parameters configuration", KeyEvent.VK_P, this, null, null);
+        @Override
+        public String toString() {
+                return MODULE_NAME;
         }
 
-        public void taskStarted(Task task) {
-                logger.info("Parameters configuration");
-        }
-
-        public void taskFinished(Task task) {
-                if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished Parameters configuration ");
-                }
-
-                if (task.getStatus() == TaskStatus.ERROR) {
-
-                        String msg = "Error while Parameters configuration  .. ";
-                        logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
-
-                }
-        }
-
-        public void actionPerformed(ActionEvent e) {
-                Dataset[] dataset = desktop.getSelectedDataFiles();
+        public Task[] runModule(ParameterSet parameters) {
+                Dataset[] dataset = GuineuCore.getDesktop().getSelectedDataFiles();
                 if (dataset.length > 0) {
                         ParameterDialog dialog = new ParameterDialog("Data parameters configuration", helpID, dataset[0]);
                         dialog.setVisible(true);
                 }
+                return null;
         }
-       
 
-        public String toString() {
-                return "Parameters configuration";
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.CONFIGURATION;
         }
 
         public ParameterSet getParameterSet() {

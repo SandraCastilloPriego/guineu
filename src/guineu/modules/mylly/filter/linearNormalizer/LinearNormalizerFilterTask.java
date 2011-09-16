@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.ArrayList;
@@ -33,10 +33,8 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class LinearNormalizerFilterTask implements Task {
+public class LinearNormalizerFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
 
         public LinearNormalizerFilterTask(Dataset dataset) {
@@ -51,26 +49,18 @@ public class LinearNormalizerFilterTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
 
                         List<PeakListRow> standards = new ArrayList<PeakListRow>();
                         for (PeakListRow row : dataset.getRows()) {
-                                if (row.isSelected() || (dataset.getType() == DatasetType.LCMS &&
-                                        ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
+                                if (row.isSelected() || (dataset.getType() == DatasetType.LCMS
+                                        && ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
                                         standards.add(row);
                                 }
                         }
@@ -81,10 +71,10 @@ public class LinearNormalizerFilterTask implements Task {
 
                         GUIUtils.showNewTable(newAlignment, true);
 
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(LinearNormalizerFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

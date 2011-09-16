@@ -18,20 +18,17 @@
 package guineu.modules.mylly.filter.classIdentification;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 
@@ -39,20 +36,20 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class ClassIdentificationFilter implements GuineuModule, TaskListener, ActionListener {
+public class ClassIdentificationFilter implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private ClassIdentificationParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public ClassIdentificationFilter() {
+       /* public ClassIdentificationFilter() {
                 parameters = new ClassIdentificationParameters();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.GCGCIDENTIFICATIONSUBMENU, "Class Identification Filter..",
                         "Identification of the class of the compounds based on a list of rules that the user has to provide.", KeyEvent.VK_C, this, null, null);
 
-        }
+        }*/
 
         public void taskStarted(Task task) {
                 logger.info("Class Identification Filter");
@@ -105,5 +102,17 @@ public class ClassIdentificationFilter implements GuineuModule, TaskListener, Ac
                 return tasks;
 
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

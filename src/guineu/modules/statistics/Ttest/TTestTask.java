@@ -19,7 +19,7 @@ package guineu.modules.statistics.Ttest;
 
 import guineu.data.PeakListRow;
 import guineu.data.Dataset;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
@@ -35,10 +35,8 @@ import org.apache.commons.math.stat.inference.TTestImpl;
  *
  * @author scsandra
  */
-public class TTestTask implements Task {
+public class TTestTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private double progress = 0.0f;
         private String[] group1, group2;
         private Dataset dataset;
@@ -60,21 +58,13 @@ public class TTestTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         List<double[]> t = new ArrayList<double[]>();
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
                                 t.add(this.Ttest(i));
@@ -86,7 +76,7 @@ public class TTestTask implements Task {
                         newDataset.addColumnName("Ttest");
                         Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
                         for (String group : availableParameterValues) {
-                                newDataset.addColumnName("Mean of " +group);
+                                newDataset.addColumnName("Mean of " + group);
                         }
                         int cont = 0;
 
@@ -95,16 +85,16 @@ public class TTestTask implements Task {
                                 newRow.removePeaks();
                                 newRow.setPeak("Ttest", t.get(cont)[0]);
                                 for (int i = 0; i < 2; i++) {
-                                        newRow.setPeak("Mean of "+availableParameterValues.get(i), t.get(cont)[i + 1]);
+                                        newRow.setPeak("Mean of " + availableParameterValues.get(i), t.get(cont)[i + 1]);
                                 }
                                 cont++;
                                 newDataset.addRow(newRow);
                         }
                         GUIUtils.showNewTable(newDataset, true);
                         progress = 1f;
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }

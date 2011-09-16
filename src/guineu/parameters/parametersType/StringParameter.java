@@ -50,13 +50,17 @@ public class StringParameter implements UserParameter<String, JTextField> {
 		this.value = defaultValue;
 	}
 
-	
+	/**
+	 * @see net.sf.mzmine.data.Parameter#getName()
+	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
-	
+	/**
+	 * @see net.sf.mzmine.data.Parameter#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return description;
@@ -83,6 +87,11 @@ public class StringParameter implements UserParameter<String, JTextField> {
 		return copy;
 	}
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
 	@Override
 	public void setValueFromComponent(JTextField component) {
 		value = component.getText();
@@ -105,12 +114,13 @@ public class StringParameter implements UserParameter<String, JTextField> {
 		xmlElement.setTextContent(value);
 	}
 
-        public boolean checkValue(Collection<String> errorMessages) {
-                if (value == null) {
-			errorMessages.add(name + " is not set");
+	@Override
+	public boolean checkValue(Collection<String> errorMessages) {
+		if ((value == null) || (value.trim().length() == 0)) {
+			errorMessages.add(name + " is not set properly");
 			return false;
 		}
 		return true;
-        }
+	}
 
 }

@@ -19,7 +19,7 @@
 
 package guineu.parameters.parametersType;
 
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModule;
 import guineu.parameters.ParameterSet;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

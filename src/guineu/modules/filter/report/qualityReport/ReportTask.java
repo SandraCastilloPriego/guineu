@@ -24,7 +24,7 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.parameters.SimpleParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.io.BufferedWriter;
@@ -41,10 +41,8 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  *
  * @author scsandra
  */
-public class ReportTask implements Task {
+public class ReportTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private String fileName, date, sampleSet, ionMode, sampleType, comments = "", injection, outputFile;
         private double totalRows, processedRows;
         DescriptiveStatistics Stats[], superStats[];
@@ -69,29 +67,21 @@ public class ReportTask implements Task {
                 return processedRows / totalRows;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         List<sample> samples = readFile();
                         writeDataset(samples);
                         if (this.outputFile != null) {
                                 writeHTML(samples);
                         }
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
@@ -197,28 +187,28 @@ public class ReportTask implements Task {
                                 out.write(s.getFormat());
                         }
                         out.write("<tr valign=\"top\" align=\"center\"><td1><td class=\"td1\" height=\"15\"><font size=\"2\" face=\"Calibri\"> <b>MEAN</b></font></td></td1>");
-                        String format = "<td class=\"td1\"> " + String.valueOf(formatter.format(Stats[0].getMean()).toString()) + " </td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[1].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[2].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[3].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[4].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[5].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[6].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[7].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\">" + formatter.format(Stats[8].getMean()).toString() + "</td>" +
-                                "<td class=\"td1\"></td><td class=\"td1\"></td></tr>";
+                        String format = "<td class=\"td1\"> " + String.valueOf(formatter.format(Stats[0].getMean()).toString()) + " </td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[1].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[2].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[3].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[4].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[5].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[6].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[7].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\">" + formatter.format(Stats[8].getMean()).toString() + "</td>"
+                                + "<td class=\"td1\"></td><td class=\"td1\"></td></tr>";
                         out.write(format);
                         out.write("<tr valign=\"top\" align=\"center\"><td1><td height=\"15\"><font size=\"2\" face=\"Calibri\"> <b>RSD</b></font></td></td1>");
-                        format = "<td>" + formatter.format((Stats[0].getStandardDeviation() * 100) / Stats[0].getMean()).toString() + " </td>" +
-                                "<td>" + formatter.format((Stats[1].getStandardDeviation() * 100) / Stats[1].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[2].getStandardDeviation() * 100) / Stats[2].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[3].getStandardDeviation() * 100) / Stats[3].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[4].getStandardDeviation() * 100) / Stats[4].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[5].getStandardDeviation() * 100) / Stats[5].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[6].getStandardDeviation() * 100) / Stats[6].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[7].getStandardDeviation() * 100) / Stats[7].getMean()).toString() + "</td>" +
-                                "<td>" + formatter.format((Stats[8].getStandardDeviation() * 100) / Stats[8].getMean()).toString() + "</td>" +
-                                "<td></td><td></td></tr>";
+                        format = "<td>" + formatter.format((Stats[0].getStandardDeviation() * 100) / Stats[0].getMean()).toString() + " </td>"
+                                + "<td>" + formatter.format((Stats[1].getStandardDeviation() * 100) / Stats[1].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[2].getStandardDeviation() * 100) / Stats[2].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[3].getStandardDeviation() * 100) / Stats[3].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[4].getStandardDeviation() * 100) / Stats[4].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[5].getStandardDeviation() * 100) / Stats[5].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[6].getStandardDeviation() * 100) / Stats[6].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[7].getStandardDeviation() * 100) / Stats[7].getMean()).toString() + "</td>"
+                                + "<td>" + formatter.format((Stats[8].getStandardDeviation() * 100) / Stats[8].getMean()).toString() + "</td>"
+                                + "<td></td><td></td></tr>";
                         out.write(format);
 
                         out.write("</table></td></tr></table></div>");
@@ -540,17 +530,17 @@ public class ReportTask implements Task {
                 }
 
                 public String getFormat() {
-                        String format = "<td>" + String.valueOf(LysoPC.RT) + " </td>" +
-                                "<td>" + String.valueOf(LysoPC.heightArea) + "</td>" +
-                                "<td>" + getLysoPCratio() + "</td>" +
-                                "<td>" + String.valueOf(PC_50.RT) + "</td>" +
-                                "<td>" + String.valueOf(PC_50.heightArea) + "</td>" +
-                                "<td>" + getPCratio() + "</td>" +
-                                "<td>" + String.valueOf(TG_50.RT) + "</td>" +
-                                "<td>" + String.valueOf(TG_50.heightArea) + "</td>" +
-                                "<td>" + getTGratio() + "</td>" +
-                                "<td>" + date + "</td>" +
-                                "<td>" + LysoPC.time + "</td></tr>";
+                        String format = "<td>" + String.valueOf(LysoPC.RT) + " </td>"
+                                + "<td>" + String.valueOf(LysoPC.heightArea) + "</td>"
+                                + "<td>" + getLysoPCratio() + "</td>"
+                                + "<td>" + String.valueOf(PC_50.RT) + "</td>"
+                                + "<td>" + String.valueOf(PC_50.heightArea) + "</td>"
+                                + "<td>" + getPCratio() + "</td>"
+                                + "<td>" + String.valueOf(TG_50.RT) + "</td>"
+                                + "<td>" + String.valueOf(TG_50.heightArea) + "</td>"
+                                + "<td>" + getTGratio() + "</td>"
+                                + "<td>" + date + "</td>"
+                                + "<td>" + LysoPC.time + "</td></tr>";
 
                         return format;
                 }

@@ -21,8 +21,8 @@ import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCDatum;
-import guineu.taskcontrol.Task;
 import guineu.main.GuineuCore;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +34,8 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class OpenFileTask implements Task {
+public class OpenFileTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private String separator;
         private File file;
         private boolean filterClassified;
@@ -56,30 +54,22 @@ public class OpenFileTask implements Task {
                 return 1.0f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 GCGCFileReader reader = new GCGCFileReader(separator, filterClassified);
                 try {
                         List<GCGCDatum> data = reader.readGCGCDataFile(file);
                         SimpleGCGCDataset dataset = writeDataset(data);
                         GuineuCore.getDesktop().AddNewFile(dataset);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (IOException ex) {
                         Logger.getLogger(OpenFileTask.class.getName()).log(Level.SEVERE, null, ex);
                         errorMessage = "There has been an error opening the file";
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
 
         }
@@ -104,16 +94,3 @@ public class OpenFileTask implements Task {
                 return dataset;
         }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

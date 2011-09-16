@@ -80,15 +80,10 @@ class WrappedTask {
         }
 
         public synchronized String toString() {
-                try {
-                        return task.getTaskDescription();
-                } catch (Exception e) {
-                        return "";
-                }
+                return task.getTaskDescription();
         }
 
         synchronized void removeTaskReference() {
                 task = new FinishedTask(task);
         }
 }
-

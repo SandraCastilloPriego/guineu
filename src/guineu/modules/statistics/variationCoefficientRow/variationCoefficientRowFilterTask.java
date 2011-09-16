@@ -19,7 +19,7 @@ package guineu.modules.statistics.variationCoefficientRow;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -28,11 +28,9 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  *
  * @author scsandra
  */
-public class variationCoefficientRowFilterTask implements Task {
+public class variationCoefficientRowFilterTask extends AbstractTask {
 
         private Dataset[] datasets;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private double progress;
 
         public variationCoefficientRowFilterTask(Dataset[] datasets) {
@@ -48,25 +46,17 @@ public class variationCoefficientRowFilterTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         this.variationCoefficient();
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }

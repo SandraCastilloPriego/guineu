@@ -18,39 +18,31 @@
 package guineu.modules.mylly.openGCGCDatasetFile;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class OpenFile implements GuineuModule, TaskListener, ActionListener {
+public class OpenFile implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
-    private OpenFileParameters parameters;
+    private OpenFileParameters parameters= new OpenFileParameters();
     final String helpID = GUIUtils.generateHelpID(this);
 
-    public OpenFile() {
-        parameters = new OpenFileParameters();
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuSeparator(GuineuMenu.FILE);
-        desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Multiple Samples File..",
-                "Open multiple aligned peak list in CVS or Excel format", KeyEvent.VK_D, this, null, "icons/spectrumicon.png");
-    }
+    
 
     public void taskStarted(Task task) {
         logger.info("Running Open File");
@@ -105,4 +97,16 @@ public class OpenFile implements GuineuModule, TaskListener, ActionListener {
         }
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

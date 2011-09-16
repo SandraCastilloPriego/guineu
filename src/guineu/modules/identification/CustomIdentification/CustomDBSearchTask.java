@@ -19,26 +19,22 @@ package guineu.modules.identification.CustomIdentification;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.Ostermiller.util.CSVParser;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  * 
  */
-class CustomDBSearchTask implements Task {
+class CustomDBSearchTask extends AbstractTask {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
         private Dataset peakList;
         private TaskStatus status;
-        private String errorMessage;
         private String[][] databaseValues;
         private int finishedLines = 0;
         private String dataBaseFile;
@@ -72,11 +68,7 @@ class CustomDBSearchTask implements Task {
         }
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public double getFinishedPercentage() {
@@ -84,10 +76,6 @@ class CustomDBSearchTask implements Task {
                         return 0;
                 }
                 return ((double) finishedLines) / databaseValues.length;
-        }
-
-        public TaskStatus getStatus() {
-                return status;
         }
 
         public String getTaskDescription() {
@@ -100,7 +88,7 @@ class CustomDBSearchTask implements Task {
         public void run() {
                 if (peakList.getType() == DatasetType.LCMS) {
 
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         File dbFile = new File(dataBaseFile);
 
                         try {
@@ -120,14 +108,14 @@ class CustomDBSearchTask implements Task {
                                 dbFileReader.close();
 
                         } catch (Exception e) {
-                                logger.log(Level.WARNING, "Could not read file " + dbFile, e);
-                                status = TaskStatus.ERROR;
+
+                                setStatus(TaskStatus.ERROR);
                                 errorMessage = e.toString();
                                 return;
                         }
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } else {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = "Wrong data set type. This module is for the identification of LC-MS data";
                         return;
                 }

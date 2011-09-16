@@ -18,19 +18,17 @@
 package guineu.modules.mylly.filter.SimilarityFilter;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 
@@ -38,20 +36,20 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class SimilarityFilter implements GuineuModule, TaskListener, ActionListener {
+public class SimilarityFilter implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private SimilarityParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public SimilarityFilter() {
+        /*public SimilarityFilter() {
                 parameters = new SimilarityParameters();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.MYLLY, "Similarity Filter..",
                         "Compound with low similarity are removed or renamed as unknown", KeyEvent.VK_S, this, null, null);
 
-        }
+        }*/
 
         public void taskStarted(Task task) {
                 logger.info("Similarity Filter");
@@ -104,5 +102,17 @@ public class SimilarityFilter implements GuineuModule, TaskListener, ActionListe
 
 
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

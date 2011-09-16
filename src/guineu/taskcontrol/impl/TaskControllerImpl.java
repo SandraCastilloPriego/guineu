@@ -17,11 +17,15 @@
  */
 package guineu.taskcontrol.impl;
 
+import guineu.desktop.preferences.NumOfThreadsParameter;
 import guineu.main.GuineuCore;
+import guineu.modules.configuration.general.GeneralconfigurationParameters;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskControlListener;
 import guineu.taskcontrol.TaskController;
 import guineu.taskcontrol.TaskPriority;
 import guineu.taskcontrol.TaskStatus;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -37,6 +41,7 @@ import javax.swing.SwingUtilities;
 public class TaskControllerImpl implements TaskController, Runnable {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
+        ArrayList<TaskControlListener> listeners = new ArrayList<TaskControlListener>();
         /**
          * Update the task progress window every 300 ms
          */
@@ -65,9 +70,9 @@ public class TaskControllerImpl implements TaskController, Runnable {
                 taskControllerThread = new Thread(this, "Task controller thread");
                 taskControllerThread.setPriority(Thread.MIN_PRIORITY);
                 taskControllerThread.start();
+
                 // Create the task progress window and add it to desktop
                 taskWindow = new TaskProgressWindow();
-
                 GuineuCore.getDesktop().addInternalFrame(taskWindow);
 
                 // Initially, hide the task progress window
@@ -126,7 +131,17 @@ public class TaskControllerImpl implements TaskController, Runnable {
          */
         public void run() {
 
+                int previousQueueSize = -1;
+
                 while (true) {
+
+                        int currentQueueSize = taskQueue.getNumOfWaitingTasks();
+                        if (currentQueueSize != previousQueueSize) {
+                                previousQueueSize = currentQueueSize;
+                                for (TaskControlListener listener : listeners) {
+                                        listener.numberOfWaitingTasksChanged(currentQueueSize);
+                                }
+                        }
 
                         // If the queue is empty, we can sleep. When new task is added into
                         // the queue, we will be awaken by notify()
@@ -164,26 +179,28 @@ public class TaskControllerImpl implements TaskController, Runnable {
                         // Get a snapshot of the queue
                         WrappedTask[] queueSnapshot = taskQueue.getQueueSnapshot();
 
-                        // Get the settings for maximum # of threads
-                        //GuineuPreferences preferences = GuineuCore.getPreferences();
+                        // Obtain the settings of max concurrent threads
+                        NumOfThreadsParameter parameter = GuineuCore.getPreferences().getParameter(GeneralconfigurationParameters.numOfThreads);
                         int maxRunningThreads;
-                        //if (preferences.isAutoNumberOfThreads()) {
-                        maxRunningThreads = Runtime.getRuntime().availableProcessors();
-                        //} else {
-                        //	maxRunningThreads = preferences.getManualNumberOfThreads();
-                        //}
+                        if (parameter.isAutomatic() || (parameter.getValue() == null)) {
+                                maxRunningThreads = Runtime.getRuntime().availableProcessors();
+                        } else {
+                                maxRunningThreads = parameter.getValue();
+                        }
 
                         // Check all tasks in the queue
                         for (WrappedTask task : queueSnapshot) {
 
                                 // Skip assigned and canceled tasks
-                                if (task.isAssigned() || (task.getActualTask().getStatus() == TaskStatus.CANCELED)) {
+                                if (task.isAssigned()
+                                        || (task.getActualTask().getStatus() == TaskStatus.CANCELED)) {
                                         continue;
                                 }
 
                                 // Create a new thread if the task is high-priority or if we
                                 // have less then maximum # of threads running
-                                if ((task.getPriority() == TaskPriority.HIGH) || (runningThreads.size() < maxRunningThreads)) {
+                                if ((task.getPriority() == TaskPriority.HIGH)
+                                        || (runningThreads.size() < maxRunningThreads)) {
                                         WorkerThread newThread = new WorkerThread(task);
 
                                         if (task.getPriority() == TaskPriority.NORMAL) {
@@ -217,7 +234,8 @@ public class TaskControllerImpl implements TaskController, Runnable {
                 for (WrappedTask wrappedTask : currentQueue) {
 
                         if (wrappedTask.getActualTask() == task) {
-                                logger.finest("Setting priority of task \"" + task.getTaskDescription() + "\" to " + priority);
+                                logger.finest("Setting priority of task \""
+                                        + task.getTaskDescription() + "\" to " + priority);
                                 wrappedTask.setPriority(priority);
 
                                 // Call refresh to re-sort the queue according to new priority
@@ -225,5 +243,10 @@ public class TaskControllerImpl implements TaskController, Runnable {
                                 taskQueue.refresh();
                         }
                 }
+        }
+
+        @Override
+        public void addTaskControlListener(TaskControlListener listener) {
+                listeners.add(listener);
         }
 }

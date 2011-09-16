@@ -18,14 +18,12 @@
 package guineu.desktop;
 
 import guineu.data.Dataset;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModule;
 import java.awt.Color;
-import java.awt.event.ActionListener;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JMenuItem;
 
 /**
  * This interface represents the application GUI
@@ -40,22 +38,7 @@ public interface Desktop extends GuineuModule {
          *
          * @return Main window frame
          */
-        public JFrame getMainFrame();
-
-        /**
-         * Creates a new menu item in the main application menu.
-         *
-         * @param parentMenu GuineuMenu where to create the new item
-         * @param text Item text
-         * @param toolTip Item's tooltip
-         * @param mnemonic Item's keyboard shortcut
-         * @param listener ActionListener to receive the new menu item's events
-         * @param actionCommand Action command for action listener or null
-         * @return Newly created JMenuItem
-         */
-        public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-                String toolTip, int mnemonic,
-                ActionListener listener, String actionCommand, String icon);
+        public JFrame getMainFrame();       
 
         /**
          * Adds a separator to a given Guineu menu

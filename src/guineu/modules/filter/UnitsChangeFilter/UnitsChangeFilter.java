@@ -19,36 +19,34 @@ package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionListener {
+public class UnitsChangeFilter implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
     private UnitsChangeFilterParameters parameters;
 
-    public UnitsChangeFilter() {
+   /* public UnitsChangeFilter() {
         this.parameters = new UnitsChangeFilterParameters();
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.FILTER, "Change Units Filter..",
                 "Change the units of all the dataset by multiplying of dividing each peak by the parameter", KeyEvent.VK_U, this, null, null);
         desktop.addMenuSeparator(GuineuMenu.FILTER);
-    }
+    }*/
 
     public void taskStarted(Task task) {
         logger.info("Running Change Units Filter");
@@ -91,11 +89,23 @@ public class UnitsChangeFilter implements GuineuModule, TaskListener, ActionList
         Dataset[] datasets = desktop.getSelectedDataFiles();
         Task tasks[] = new UnitsChangeFilterTask[datasets.length];
         for (int i = 0; i < datasets.length; i++) {
-            tasks[i] = new UnitsChangeFilterTask(datasets[i], desktop, parameters);
+            tasks[i] = new UnitsChangeFilterTask(datasets[i], parameters);
         }
         GuineuCore.getTaskController().addTasks(tasks);
 
         return tasks;
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

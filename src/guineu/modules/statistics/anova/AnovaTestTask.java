@@ -19,7 +19,7 @@ package guineu.modules.statistics.anova;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
@@ -35,10 +35,8 @@ import org.apache.commons.math.stat.inference.TestUtils;
  *
  * @author scsandra
  */
-public class AnovaTestTask implements Task {
+public class AnovaTestTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
         private String parameter;
         private int progress = 0;
@@ -56,20 +54,12 @@ public class AnovaTestTask implements Task {
                 return (float) progress / dataset.getNumberRows();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         Vector<String> groups = dataset.getParameterAvailableValues(parameter);
                         Dataset newDataset = FileUtils.getDataset(dataset, "Anova Test - ");
@@ -83,10 +73,10 @@ public class AnovaTestTask implements Task {
                                 progress++;
                         }
                         GUIUtils.showNewTable(newDataset, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(AnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 

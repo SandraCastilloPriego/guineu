@@ -19,17 +19,15 @@ package guineu.modules.database.deleteDataDB;
 
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListener {
+public class DeleteDatasetDB implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
@@ -45,11 +43,11 @@ public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListen
     private String DBPassword;
     List<String> datasets;
 
-    public DeleteDatasetDB() {
+ /*   public DeleteDatasetDB() {
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.DATABASE, "Delete Dataset..",
                 "Delete dataset from the internal database", KeyEvent.VK_O, this, null, null);
-    }
+    }*/
 
     public void taskStarted(Task task) {
         logger.info("Running delete dataset");
@@ -105,4 +103,16 @@ public class DeleteDatasetDB implements GuineuModule, TaskListener, ActionListen
         return tasks;
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

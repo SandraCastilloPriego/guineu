@@ -22,7 +22,7 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.main.GuineuCore;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
 import java.util.Hashtable;
@@ -31,12 +31,9 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BasicAlignerGCGCTask implements Task {
+public class BasicAlignerGCGCTask extends AbstractTask {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
         private Dataset peakLists[], alignedPeakList;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         // Processed rows counter
         private int processedRows, totalRows;
         // Parameters
@@ -57,39 +54,24 @@ public class BasicAlignerGCGCTask implements Task {
                 RT2Tolerance = parameters.getParameter(BasicAlignerGCGCParameters.RT2Tolerance).getValue().getTolerance();
         }
 
-        
         public String getTaskDescription() {
                 return "Basic aligner, " + peakListName + " (" + peakLists.length + " peak lists)";
         }
 
-        
         public double getFinishedPercentage() {
                 if (totalRows == 0) {
                         return 0f;
-                }               
+                }
                 return progress; //
         }
 
-       
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
-        
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
-       
         public void run() {
 
-                status = TaskStatus.PROCESSING;
-                logger.info("Running basic aligner");
+                setStatus(TaskStatus.PROCESSING);
 
                 // Remember how many rows we need to process. Each row will be processed
                 // twice, first for score calculation, second for actual alignment.
@@ -127,7 +109,7 @@ public class BasicAlignerGCGCTask implements Task {
                         // Calculate scores for all possible alignments of this row
                         for (PeakListRow row : allRows) {
 
-                                if (status == TaskStatus.CANCELED) {
+                                if (getStatus() == TaskStatus.CANCELED) {
                                         return;
                                 }
 
@@ -207,10 +189,7 @@ public class BasicAlignerGCGCTask implements Task {
                 // Add new aligned peak list to the project
                 GuineuCore.getDesktop().AddNewFile(alignedPeakList);
 
-
-
-                logger.info("Finished Basic aligner");
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
 
         }
 

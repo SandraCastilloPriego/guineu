@@ -19,11 +19,11 @@ package guineu.modules.mylly.filter.pubChem;
 
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.taskcontrol.Task;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 
@@ -31,10 +31,8 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class PubChemFilterTask implements Task {
+public class PubChemFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
         private PubChemParameters parameters;
 
@@ -51,20 +49,12 @@ public class PubChemFilterTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         String name = parameters.getParameter(PubChemParameters.fileNames).getValue().getAbsolutePath();
                         PubChem filter = new PubChem();
@@ -73,10 +63,10 @@ public class PubChemFilterTask implements Task {
                         alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(PubChemParameters.suffix).getValue());
                         alignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(alignment, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(PubChemFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

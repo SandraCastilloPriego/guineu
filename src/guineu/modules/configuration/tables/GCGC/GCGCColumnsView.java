@@ -18,74 +18,26 @@
 package guineu.modules.configuration.tables.GCGC;
 
 import guineu.data.datamodels.DatasetGCGCDataModel;
-import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
-import guineu.taskcontrol.TaskStatus;
 import guineu.util.Tables.DataTableModel;
-import guineu.util.Tables.impl.PushableTable;
-import guineu.util.dialogs.ExitCode;
 import guineu.util.internalframe.DataInternalFrame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
 import javax.swing.ToolTipManager;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 /**
  *
  * @author scsandra
  */
-public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListener {
+public class GCGCColumnsView implements GuineuProcessingModule {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
-        private SimpleParameterSet parameters;
-
-        public GCGCColumnsView() {
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "GCGC Table View..",
-                        "Configuration of view of the GCxGC-MS table columns", KeyEvent.VK_G, this, null, "icons/conf2.png");
-                parameters = GuineuCore.getGCGCColumnsParameters();
-        }
-
-        public void taskStarted(Task task) {
-                logger.info("Running GCGC Table View");
-        }
-
-        public void taskFinished(Task task) {
-                if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished GCGC Table View ");
-                }
-
-                if (task.getStatus() == TaskStatus.ERROR) {
-
-                        String msg = "Error while GCGC Table View  .. ";
-                        logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
-
-                }
-        }
-
-        public void actionPerformed(ActionEvent e) {
-
-                ExitCode exitCode = parameters.showSetupDialog();
-                if (exitCode != ExitCode.OK) {
-                        return;
-                }
-                runModule();
-        }
+        public static final String MODULE_NAME = "GCGC Table View";
+        private SimpleParameterSet parameters = GuineuCore.getGCGCColumnsParameters();
 
         public ParameterSet getParameterSet() {
                 return parameters;
@@ -93,11 +45,11 @@ public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListen
 
         @Override
         public String toString() {
-                return "GCGC Table View";
+                return MODULE_NAME;
         }
 
-        public Task[] runModule() {
-                JInternalFrame[] frames = desktop.getInternalFrames();
+        public Task[] runModule(ParameterSet parameters) {
+                JInternalFrame[] frames = GuineuCore.getDesktop().getInternalFrames();
                 for (int i = 0; i < frames.length; i++) {
                         try {
 
@@ -118,5 +70,9 @@ public class GCGCColumnsView implements GuineuModule, TaskListener, ActionListen
                         }
                 }
                 return null;
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.CONFIGURATION;
         }
 }

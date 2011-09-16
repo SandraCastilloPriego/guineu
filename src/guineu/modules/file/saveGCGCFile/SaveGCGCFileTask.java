@@ -22,64 +22,54 @@ import guineu.data.DatasetType;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
 import guineu.parameters.SimpleParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  *
  * @author scsandra
  */
-public class SaveGCGCFileTask implements Task {
+public class SaveGCGCFileTask extends AbstractTask {
 
-    private Dataset dataset;
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private String path;
-    private InDataBase db;
-    private SimpleParameterSet parameters;
+        private Dataset dataset;
+        private String path;
+        private InDataBase db;
+        private SimpleParameterSet parameters;
 
-    public SaveGCGCFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
-        this.dataset = dataset;
-        this.path = path;
-        this.parameters = parameters;
-        db = new InOracle();
-    }
-
-    public String getTaskDescription() {
-        return "Saving Dataset... ";
-    }
-
-    public double getFinishedPercentage() {
-        return db.getProgress();
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            status = TaskStatus.PROCESSING;
-            if (dataset.getType() == DatasetType.GCGCTOF) {
-                if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*Excel.*")) {
-                    db.WriteExcelFile(dataset, path, parameters);
-                } else if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*csv.*")) {
-                    db.WriteCommaSeparatedFile(dataset, path, parameters);
-                } else {
-                    db.WriteExpressionData(dataset, path, parameters);
-                }
-            }
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
+        public SaveGCGCFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
+                this.dataset = dataset;
+                this.path = path;
+                this.parameters = parameters;
+                db = new InOracle();
         }
-    }
+
+        public String getTaskDescription() {
+                return "Saving Dataset... ";
+        }
+
+        public double getFinishedPercentage() {
+                return db.getProgress();
+        }
+
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
+
+        public void run() {
+                try {
+                        setStatus(TaskStatus.PROCESSING);
+                        if (dataset.getType() == DatasetType.GCGCTOF) {
+                                if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*Excel.*")) {
+                                        db.WriteExcelFile(dataset, path, parameters);
+                                } else if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*csv.*")) {
+                                        db.WriteCommaSeparatedFile(dataset, path, parameters);
+                                } else {
+                                        db.WriteExpressionData(dataset, path, parameters);
+                                }
+                        }
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                }
+        }
 }

@@ -16,35 +16,30 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package guineu.main;
+package guineu.modules;
 
 import guineu.parameters.ParameterSet;
-
+import guineu.taskcontrol.Task;
 
 
 
 /**
- * This interface represents Guineu module.
- *
- * @author Taken from MZmine2
- * http://mzmine.sourceforge.net/
+ * Interface representing a data processing method which can be executed in a
+ * batch
  */
-public interface GuineuModule {
+public interface GuineuProcessingModule extends GuineuModule {
 
-   
-    /**
-     * Returns module name 
-     * 
-     * @return Module name
-     */
-    public String toString();
-    
-    /**
-     * Returns module's current parameters and their values
-     * @return Parameter values as ParameterSet or null if module has no parameters
-     */
-    public ParameterSet getParameterSet();    
-    
-   
+	/**
+	 * Runs this method on a given items, and calls another task listener after
+	 * task is complete and results have been processed.
+	 * 
+	 */
+	public Task[] runModule(ParameterSet parameters);
+
+	/**
+	 * Returns the category of the module (e.g. raw data processing, peak
+	 * picking etc.). Menu item will be created according to the category.
+	 */
+	public GuineuModuleCategory getModuleCategory();
 
 }

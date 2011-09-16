@@ -18,19 +18,16 @@
 package guineu.modules.statistics.anova;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import guineu.data.Dataset;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import java.util.logging.Logger;
@@ -39,19 +36,14 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class AnovaTest implements GuineuModule, TaskListener, ActionListener {
+public class AnovaTest implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private AnovaParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public AnovaTest() {
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.STATISTICS, "Anova Test..",
-                        "Anova statistical test", KeyEvent.VK_U, this, null, null);
-
-        }
+      
 
         public void taskStarted(Task task) {
                 logger.info("Anova Test");
@@ -107,5 +99,17 @@ public class AnovaTest implements GuineuModule, TaskListener, ActionListener {
                 return tasks;
 
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

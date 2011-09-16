@@ -20,7 +20,7 @@ package guineu.modules.mylly.filter.GroupIdentification;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -47,10 +47,8 @@ import org.jfree.xml.writer.XMLWriter;
  *
  * @author scsandra
  */
-public class GroupIdentificationFilterTask implements Task {
+public class GroupIdentificationFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
 
@@ -66,26 +64,18 @@ public class GroupIdentificationFilterTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         actualMap(dataset);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(GroupIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 
@@ -219,7 +209,7 @@ public class GroupIdentificationFilterTask implements Task {
                 int numRows = input.getNumberRows();
                 int count = 0;
                 for (PeakListRow row : input.getAlignment()) {
-                        if (status == TaskStatus.CANCELED) {
+                        if (getStatus() == TaskStatus.CANCELED) {
                                 break;
                         }
 

@@ -21,78 +21,68 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  *
  * @author scsandra
  */
-public class SimpleLipidNameFilterTask implements Task {
+public class SimpleLipidNameFilterTask extends AbstractTask {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress = 0.0f;
-    private SimpleLCMSDataset dataset;
+        private Desktop desktop;
+        private double progress = 0.0f;
+        private SimpleLCMSDataset dataset;
 
-    public SimpleLipidNameFilterTask(Dataset dataset, Desktop desktop) {
-        this.dataset = (SimpleLCMSDataset) dataset;
-        this.desktop = desktop;
+        public SimpleLipidNameFilterTask(Dataset dataset, Desktop desktop) {
+                this.dataset = (SimpleLCMSDataset) dataset;
+                this.desktop = desktop;
 
-    }
-
-    public String getTaskDescription() {
-        return "Simplify LipidName filter... ";
-    }
-
-    public double getFinishedPercentage() {
-        return progress;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            status = TaskStatus.PROCESSING;
-            for (PeakListRow lipid : dataset.getRows()) {
-                String lipidn = (String) lipid.getVar("getName");
-                lipidn = lipidn.replaceFirst("^GPCho", "PC");
-                lipidn = lipidn.replaceFirst("^LysoGPCho", "LysoPC");
-                lipidn = lipidn.replaceFirst("^LysoGPEtn", "LysoPE");
-                lipidn = lipidn.replaceFirst("^LysoGPA", "LysoPA");
-                lipidn = lipidn.replaceFirst("^LysoGPSer", "LysoPS");
-                lipidn = lipidn.replaceFirst("^LysoGPIns", "LysoPI");
-                lipidn = lipidn.replaceFirst("^LysoGPGro", "LysoPG");
-                lipidn = lipidn.replaceFirst("^GPEtn", "PE");
-                lipidn = lipidn.replaceFirst("^GPIns", "PI");
-                lipidn = lipidn.replaceFirst("^GPGro", "PG");
-                lipidn = lipidn.replaceFirst("^GPA", "PA");
-                lipidn = lipidn.replaceFirst("^GPSer", "PS");
-                lipidn = lipidn.replaceFirst("^MAG", "MG");
-                lipidn = lipidn.replaceFirst("^DAG", "DG");
-                lipidn = lipidn.replaceFirst("^TAG", "TG");
-                lipidn = lipidn.split(" ")[0];
-                if (lipidn.indexOf(" - ") > 0) {
-                    lipidn = lipidn.substring(0, lipidn.indexOf(" - "));
-                }
-                lipid.setVar("setName", lipidn);
-            }
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
         }
-    }
+
+        public String getTaskDescription() {
+                return "Simplify LipidName filter... ";
+        }
+
+        public double getFinishedPercentage() {
+                return progress;
+        }
+
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
+
+        public void run() {
+                try {
+                        setStatus(TaskStatus.PROCESSING);
+                        for (PeakListRow lipid : dataset.getRows()) {
+                                String lipidn = (String) lipid.getVar("getName");
+                                lipidn = lipidn.replaceFirst("^GPCho", "PC");
+                                lipidn = lipidn.replaceFirst("^LysoGPCho", "LysoPC");
+                                lipidn = lipidn.replaceFirst("^LysoGPEtn", "LysoPE");
+                                lipidn = lipidn.replaceFirst("^LysoGPA", "LysoPA");
+                                lipidn = lipidn.replaceFirst("^LysoGPSer", "LysoPS");
+                                lipidn = lipidn.replaceFirst("^LysoGPIns", "LysoPI");
+                                lipidn = lipidn.replaceFirst("^LysoGPGro", "LysoPG");
+                                lipidn = lipidn.replaceFirst("^GPEtn", "PE");
+                                lipidn = lipidn.replaceFirst("^GPIns", "PI");
+                                lipidn = lipidn.replaceFirst("^GPGro", "PG");
+                                lipidn = lipidn.replaceFirst("^GPA", "PA");
+                                lipidn = lipidn.replaceFirst("^GPSer", "PS");
+                                lipidn = lipidn.replaceFirst("^MAG", "MG");
+                                lipidn = lipidn.replaceFirst("^DAG", "DG");
+                                lipidn = lipidn.replaceFirst("^TAG", "TG");
+                                lipidn = lipidn.split(" ")[0];
+                                if (lipidn.indexOf(" - ") > 0) {
+                                        lipidn = lipidn.substring(0, lipidn.indexOf(" - "));
+                                }
+                                lipid.setVar("setName", lipidn);
+                        }
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
 }

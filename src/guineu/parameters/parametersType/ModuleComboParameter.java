@@ -16,10 +16,9 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.parameters.parametersType;
 
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModule;
 import guineu.parameters.ParameterSet;
 import guineu.parameters.Parameter;
 import guineu.parameters.UserParameter;
@@ -38,127 +37,138 @@ import org.w3c.dom.NodeList;
  * http://mzmine.sourceforge.net/
  */
 public class ModuleComboParameter<ModuleType extends GuineuModule> implements
-		UserParameter<ModuleType, ModuleComboComponent> {
+        UserParameter<ModuleType, ModuleComboComponent> {
 
-	private String name, description;
-	private ModuleType modules[];
-	private ModuleType value;
+        private String name, description;
+        private ModuleType modules[];
+        private ModuleType value;
 
-	public ModuleComboParameter(String name, String description,
-			ModuleType modules[]) {
-		this.name = name;
-		this.description = description;
-		this.modules = modules;
-	}
+        public ModuleComboParameter(String name, String description,
+                ModuleType modules[]) {
+                this.name = name;
+                this.description = description;
+                this.modules = modules;
+        }
 
-	
-	@Override
-	public String getName() {
-		return name;
-	}
+        /**
+         * @see net.sf.mzmine.data.Parameter#getName()
+         */
+        @Override
+        public String getName() {
+                return name;
+        }
 
-	
-	@Override
-	public String getDescription() {
-		return description;
-	}
+        /**
+         * @see net.sf.mzmine.data.Parameter#getDescription()
+         */
+        @Override
+        public String getDescription() {
+                return description;
+        }
 
-	@Override
-	public ModuleComboComponent createEditingComponent() {
-		return new ModuleComboComponent(modules);
-	}
+        @Override
+        public ModuleComboComponent createEditingComponent() {
+                return new ModuleComboComponent(modules);
+        }
 
-	public ModuleType getValue() {
-		if (value == null)
-			return null;
-		// First check that the module has all parameters set
-		ParameterSet embeddedParameters = value.getParameterSet();
-		if (embeddedParameters == null)
-			return value;
-		for (Parameter p : embeddedParameters.getParameters()) {
-			if (p instanceof UserParameter) {
-				UserParameter up = (UserParameter) p;
-				Object upValue = up.getValue();
-				if (upValue == null)
-					return null;
-			}
-		}
-		return value;
-	}
+        public ModuleType getValue() {
+                if (value == null) {
+                        return null;
+                }
+                // First check that the module has all parameters set
+                ParameterSet embeddedParameters = value.getParameterSet();
+                if (embeddedParameters == null) {
+                        return value;
+                }
+                for (Parameter p : embeddedParameters.getParameters()) {
+                        if (p instanceof UserParameter) {
+                                UserParameter up = (UserParameter) p;
+                                Object upValue = up.getValue();
+                                if (upValue == null) {
+                                        return null;
+                                }
+                        }
+                }
+                return value;
+        }
 
-	@Override
-	public void setValue(ModuleType value) {
-		this.value = value;
-	}
+        @Override
+        public void setValue(ModuleType value) {
+                this.value = value;
+        }
 
-	@Override
-	public ModuleComboParameter<ModuleType> clone() {
-		ModuleComboParameter<ModuleType> copy = new ModuleComboParameter<ModuleType>(
-				name, description, modules);
-		copy.setValue(this.getValue());
-		return copy;
-	}
+        @Override
+        public ModuleComboParameter<ModuleType> clone() {
+                ModuleComboParameter<ModuleType> copy = new ModuleComboParameter<ModuleType>(
+                        name, description, modules);
+                copy.setValue(this.getValue());
+                return copy;
+        }
 
-	@Override
-	public void setValueFromComponent(ModuleComboComponent component) {
-		int index = component.getSelectedIndex();
-		if (index < 0)
-			return;
-		this.value = modules[index];
-	}
+        @Override
+        public void setValueFromComponent(ModuleComboComponent component) {
+                int index = component.getSelectedIndex();
+                if (index < 0) {
+                        return;
+                }
+                this.value = modules[index];
+        }
 
-	@Override
-	public void setValueToComponent(ModuleComboComponent component,
-			ModuleType newValue) {
-		component.setSelectedItem(newValue);
-	}
+        @Override
+        public void setValueToComponent(ModuleComboComponent component,
+                ModuleType newValue) {
+                component.setSelectedItem(newValue);
+        }
 
-	@Override
-	public void loadValueFromXML(Element xmlElement) {
-		NodeList items = xmlElement.getElementsByTagName("module");
+        @Override
+        public void loadValueFromXML(Element xmlElement) {
+                NodeList items = xmlElement.getElementsByTagName("module");
 
-		for (int i = 0; i < items.getLength(); i++) {
-			Element moduleElement = (Element) items.item(i);
-			String name = moduleElement.getAttribute("name");
-			for (int j = 0; j < modules.length; j++) {
-				if (modules[j].toString().equals(name)) {
-					ParameterSet moduleParameters = modules[j]
-							.getParameterSet();
-					if (moduleParameters == null)
-						continue;
-					moduleParameters.loadValuesFromXML((Element) items.item(i));
-				}
-			}
-		}
-		String selectedAttr = xmlElement.getAttribute("selected");
-		for (int j = 0; j < modules.length; j++) {
-			if (modules[j].toString().equals(selectedAttr)) {
-				value = modules[j];
-			}
-		}
-	}
+                for (int i = 0; i < items.getLength(); i++) {
+                        Element moduleElement = (Element) items.item(i);
+                        String name = moduleElement.getAttribute("name");
+                        for (int j = 0; j < modules.length; j++) {
+                                if (modules[j].toString().equals(name)) {
+                                        ParameterSet moduleParameters = modules[j].getParameterSet();
+                                        if (moduleParameters == null) {
+                                                continue;
+                                        }
+                                        moduleParameters.loadValuesFromXML((Element) items.item(i));
+                                }
+                        }
+                }
+                String selectedAttr = xmlElement.getAttribute("selected");
+                for (int j = 0; j < modules.length; j++) {
+                        if (modules[j].toString().equals(selectedAttr)) {
+                                value = modules[j];
+                        }
+                }
+        }
 
-	@Override
-	public void saveValueToXML(Element xmlElement) {
-		if (value != null)
-			xmlElement.setAttribute("selected", value.toString());
-		Document parentDocument = xmlElement.getOwnerDocument();
-		for (ModuleType item : modules) {
-			Element newElement = parentDocument.createElement("module");
-			newElement.setAttribute("name", item.toString());
-			ParameterSet moduleParameters = item.getParameterSet();
-			if (moduleParameters != null)
-				moduleParameters.saveValuesToXML(newElement);
-			xmlElement.appendChild(newElement);
-		}
-	}
+        @Override
+        public void saveValueToXML(Element xmlElement) {
+                if (value != null) {
+                        xmlElement.setAttribute("selected", value.toString());
+                }
+                Document parentDocument = xmlElement.getOwnerDocument();
+                for (ModuleType item : modules) {
+                        Element newElement = parentDocument.createElement("module");
+                        newElement.setAttribute("name", item.toString());
+                        ParameterSet moduleParameters = item.getParameterSet();
+                        if (moduleParameters != null) {
+                                moduleParameters.saveValuesToXML(newElement);
+                        }
+                        xmlElement.appendChild(newElement);
+                }
+        }
 
+        @Override
         public boolean checkValue(Collection<String> errorMessages) {
                 if (value == null) {
-			errorMessages.add(name + " is not set");
-			return false;
-		}
-		ParameterSet moduleParameters = value.getParameterSet();
-		return moduleParameters.checkUserParameterValues(errorMessages);
+                        errorMessages.add(name + " is not set properly");
+                        return false;
+                }
+                ParameterSet moduleParameters = value.getParameterSet();
+                return moduleParameters.checkUserParameterValues(errorMessages);
         }
 }

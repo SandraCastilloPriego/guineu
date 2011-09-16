@@ -19,7 +19,7 @@ package guineu.modules.statistics.standardVariation;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
@@ -29,81 +29,71 @@ import java.util.Vector;
  *
  * @author scsandra
  */
-public class standarVariationTask implements Task {
+public class standarVariationTask extends AbstractTask {
 
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	private double progress = 0.0f;
-	private String[] group1,  group2;
-	private Dataset dataset;
+        private double progress = 0.0f;
+        private String[] group1, group2;
+        private Dataset dataset;
 
-	public standarVariationTask(String[] group1, String[] group2, Dataset dataset) {
-		this.group1 = group1;
-		this.group2 = group2;
-		this.dataset = dataset;	
-	}
+        public standarVariationTask(String[] group1, String[] group2, Dataset dataset) {
+                this.group1 = group1;
+                this.group2 = group2;
+                this.dataset = dataset;
+        }
 
-	public String getTaskDescription() {
-		return "Standard Variation... ";
-	}
+        public String getTaskDescription() {
+                return "Standard Variation... ";
+        }
 
-	public double getFinishedPercentage() {
-		return progress;
-	}
+        public double getFinishedPercentage() {
+                return progress;
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
-
-	public void run() {
-		try {
-			status = TaskStatus.PROCESSING;
-			Dataset newDataset = this.StandardVariation(group1);			
-			GUIUtils.showNewTable(newDataset, true);
-
-			/*for(int i = 0; i < newDataset.getNumberMolecules(); i++){
-			RegressionChart chart = new RegressionChart(newDataset.getConcentrationsID(i), newDataset.getDatasetName(), newDataset.getMolecule(i).getMolName());
-			desktop.addInternalFrame(chart);
-			chart.setVisible(true);
-			}*/
-		
-			progress = 0.5f;
-			newDataset = this.StandardVariation(group2);
+        public void run() {
+                try {
+                        setStatus(TaskStatus.PROCESSING);
+                        Dataset newDataset = this.StandardVariation(group1);
                         GUIUtils.showNewTable(newDataset, true);
-			progress = 1f;
-			status = TaskStatus.FINISHED;
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
-	}
 
-	public Dataset StandardVariation(String[] group) {
-		Dataset newDataset = FileUtils.getDataset(dataset, "Standard Variation -");
-		for (String experimentName : group) {
-			newDataset.addColumnName(experimentName);
-		}
+                        /*for(int i = 0; i < newDataset.getNumberMolecules(); i++){
+                        RegressionChart chart = new RegressionChart(newDataset.getConcentrationsID(i), newDataset.getDatasetName(), newDataset.getMolecule(i).getMolName());
+                        desktop.addInternalFrame(chart);
+                        chart.setVisible(true);
+                        }*/
 
-		StandardUmol std = new StandardUmol(group);
-		for (PeakListRow peakRow : this.dataset.getRows()) {
-			if ((Integer)peakRow.getVar("getStandard") == 1) {
-				std.setStandard(peakRow, (String)peakRow.getVar("getName"));
-			}
-		}
-		std.run();
-		Vector<PeakListRow> mols = std.getMols();
-		for (PeakListRow mol : mols) {
-			newDataset.addRow(mol);
-		}
-		return newDataset;
-	}
+                        progress = 0.5f;
+                        newDataset = this.StandardVariation(group2);
+                        GUIUtils.showNewTable(newDataset, true);
+                        progress = 1f;
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
+
+        public Dataset StandardVariation(String[] group) {
+                Dataset newDataset = FileUtils.getDataset(dataset, "Standard Variation -");
+                for (String experimentName : group) {
+                        newDataset.addColumnName(experimentName);
+                }
+
+                StandardUmol std = new StandardUmol(group);
+                for (PeakListRow peakRow : this.dataset.getRows()) {
+                        if ((Integer) peakRow.getVar("getStandard") == 1) {
+                                std.setStandard(peakRow, (String) peakRow.getVar("getName"));
+                        }
+                }
+                std.run();
+                Vector<PeakListRow> mols = std.getMols();
+                for (PeakListRow mol : mols) {
+                        newDataset.addRow(mol);
+                }
+                return newDataset;
+        }
 }

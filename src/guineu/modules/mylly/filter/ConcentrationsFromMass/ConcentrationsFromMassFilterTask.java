@@ -22,7 +22,7 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.Spectrum;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.io.FileReader;
@@ -37,10 +37,8 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class ConcentrationsFromMassFilterTask implements Task {
+public class ConcentrationsFromMassFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
         private String fileName;
@@ -64,20 +62,12 @@ public class ConcentrationsFromMassFilterTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 SimpleGCGCDataset newDataset = null;
                 if (!direction) {
                         newDataset = this.concentrationFromMass();
@@ -89,7 +79,7 @@ public class ConcentrationsFromMassFilterTask implements Task {
                 if (newDataset != null) {
                         GUIUtils.showNewTable(newDataset, true);
                 }
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
         }
 
         private SimpleGCGCDataset concentrationFromMass() {
@@ -174,7 +164,7 @@ public class ConcentrationsFromMassFilterTask implements Task {
                         return newDataset;
                 } catch (Exception ex) {
                         Logger.getLogger(ConcentrationsFromMassFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         return null;
                 }
 

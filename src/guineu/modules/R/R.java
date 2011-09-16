@@ -18,57 +18,43 @@
 package guineu.modules.R;
 
 import guineu.data.Dataset;
-import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class R implements ActionListener, GuineuModule, TaskListener {
+public class R implements GuineuProcessingModule {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private Desktop desktop;
+        public static final String MODULE_NAME = "R";
 
-    public R() {
-
-        this.desktop = GuineuCore.getDesktop();
-        desktop.addMenuItem(GuineuMenu.STATISTICS, "R",
-                "TODO write description",
-                KeyEvent.VK_R, this, null, null);
-    }
-
-    public void taskStarted(Task task) {
-        logger.info("R");
-    }
-
-    public void taskFinished(Task task) {
-    }
-
-    public ParameterSet getParameterSet() {
-        return null;
-    }
-   
-
-    @Override
-    public String toString() {
-        return "R";
-    }
-
-    public void actionPerformed(ActionEvent arg0) {        
-        Dataset dataset = GuineuCore.getDesktop().getSelectedDataFiles()[0];
-        if (dataset != null) {
-            RConsole console = new RConsole(GuineuCore.getDesktop().getMainFrame(), false, dataset);
-            console.setVisible(true);
+        public ParameterSet getParameterSet() {
+                return null;
         }
-    }
+
+        @Override
+        public String toString() {
+                return MODULE_NAME;
+        }
+
+        public void actionPerformed(ActionEvent arg0) {
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                Dataset dataset = GuineuCore.getDesktop().getSelectedDataFiles()[0];
+                if (dataset != null) {
+                        RConsole console = new RConsole(GuineuCore.getDesktop().getMainFrame(), false, dataset);
+                        console.setVisible(true);
+                }
+                return null;
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.R;
+        }
 }

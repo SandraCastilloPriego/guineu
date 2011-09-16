@@ -19,74 +19,61 @@ package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.desktop.Desktop;
 import guineu.parameters.SimpleParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  *
  * @author scsandra
  */
-public class UnitsChangeFilterTask implements Task {
+public class UnitsChangeFilterTask extends AbstractTask {
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    private Desktop desktop;
-    private double progress = 0.0f;
-    private Dataset dataset;
-    private UnitsChangeFilterParameters parameters;
+        private double progress = 0.0f;
+        private Dataset dataset;
+        private UnitsChangeFilterParameters parameters;
 
-    public UnitsChangeFilterTask(Dataset simpleDataset, Desktop desktop, SimpleParameterSet parameters) {
-        this.dataset = simpleDataset;
-        this.desktop = desktop;
-        this.parameters = (UnitsChangeFilterParameters) parameters;
-    }
-
-    public String getTaskDescription() {
-        return "Change Units Filter... ";
-    }
-
-    public double getFinishedPercentage() {
-        return progress;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            status = TaskStatus.PROCESSING;
-            for (PeakListRow row : dataset.getRows()) {
-                for (String experimentName : dataset.getAllColumnNames()) {
-                    try {
-                        Double peak = (Double) row.getPeak(experimentName);
-                        double divide =  parameters.getParameter(UnitsChangeFilterParameters.divide).getValue();
-                        double multiply = parameters.getParameter(UnitsChangeFilterParameters.multiply).getValue();
-                        if (divide != 0) {
-                            row.setPeak(experimentName, peak / divide);
-                        }
-                        if (multiply != 0) {
-                            row.setPeak(experimentName, peak * multiply);
-                        }
-                    } catch (Exception e) {
-                    }
-                }
-            }
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
+        public UnitsChangeFilterTask(Dataset simpleDataset, SimpleParameterSet parameters) {
+                this.dataset = simpleDataset;
+                this.parameters = (UnitsChangeFilterParameters) parameters;
         }
-    }
+
+        public String getTaskDescription() {
+                return "Change Units Filter... ";
+        }
+
+        public double getFinishedPercentage() {
+                return progress;
+        }
+
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
+
+        public void run() {
+                try {
+                        setStatus(TaskStatus.PROCESSING);
+                        for (PeakListRow row : dataset.getRows()) {
+                                for (String experimentName : dataset.getAllColumnNames()) {
+                                        try {
+                                                Double peak = (Double) row.getPeak(experimentName);
+                                                double divide = parameters.getParameter(UnitsChangeFilterParameters.divide).getValue();
+                                                double multiply = parameters.getParameter(UnitsChangeFilterParameters.multiply).getValue();
+                                                if (divide != 0) {
+                                                        row.setPeak(experimentName, peak / divide);
+                                                }
+                                                if (multiply != 0) {
+                                                        row.setPeak(experimentName, peak * multiply);
+                                                }
+                                        } catch (Exception e) {
+                                        }
+                                }
+                        }
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
 }

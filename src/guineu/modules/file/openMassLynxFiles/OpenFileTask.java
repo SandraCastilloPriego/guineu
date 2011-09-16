@@ -19,7 +19,7 @@ package guineu.modules.file.openMassLynxFiles;
 
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 
@@ -27,11 +27,11 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class OpenFileTask implements Task {
+public class OpenFileTask extends AbstractTask {
 
         private String fileDir;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
+        
+        
         private double progress;
 
         public OpenFileTask(String fileDir) {
@@ -47,33 +47,25 @@ public class OpenFileTask implements Task {
         public double getFinishedPercentage() {
                 return progress;
         }
-
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
+       
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
                         this.openFile();
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
         }
 
         public void openFile() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
-                        if (status == TaskStatus.PROCESSING) {
+                        if (getStatus() == TaskStatus.PROCESSING) {
                                 LCMSParserMassLynx parser = new LCMSParserMassLynx(fileDir);
                                 progress = parser.getProgress();
                                 Dataset dataset = (SimpleBasicDataset) parser.getDataset();
@@ -84,6 +76,7 @@ public class OpenFileTask implements Task {
                 }
 
                 progress = 1f;
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
         }
+       
 }

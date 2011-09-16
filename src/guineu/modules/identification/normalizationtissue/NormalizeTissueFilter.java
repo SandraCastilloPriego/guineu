@@ -20,20 +20,18 @@ package guineu.modules.identification.normalizationtissue;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.GUIUtils;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -42,7 +40,7 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class NormalizeTissueFilter implements GuineuModule, TaskListener, ActionListener {
+public class NormalizeTissueFilter implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
@@ -50,14 +48,14 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
         private Hashtable<String, Double> weights;
         final String helpID = GUIUtils.generateHelpID(this);      
 
-        public NormalizeTissueFilter() {        
+      /*  public NormalizeTissueFilter() {
                 this.standards = new Vector<StandardUmol>();
                 this.weights = new Hashtable<String, Double>();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.NORMALIZATION, "Tissue Normalization Filter..",
                         "Normalization of tissue samples based on internal standards", KeyEvent.VK_S, this, null, null);
 
-        }
+        }*/
 
         public void taskStarted(Task task) {
                 logger.info("Running Tissue Normalization Filter");
@@ -161,5 +159,17 @@ public class NormalizeTissueFilter implements GuineuModule, TaskListener, Action
                         this.standards.remove(std);
                 }
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

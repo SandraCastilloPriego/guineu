@@ -26,23 +26,34 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import ca.guydavis.swing.desktop.CascadingWindowPositioner;
 import ca.guydavis.swing.desktop.JWindowsMenu;
+import guineu.data.Dataset;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import javax.swing.ImageIcon;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
+import guineu.parameters.Parameter;
+import guineu.parameters.ParameterSet;
+import guineu.util.dialogs.ExitCode;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * @author Taken from MZmine2
  * http://mzmine.sourceforge.net/
  */
-class MainMenu extends JMenuBar implements ActionListener {
+public class MainMenu extends JMenuBar implements ActionListener {
 
+        private Logger logger = Logger.getLogger(this.getClass().getName());
         private JMenu fileMenu, /*msmsMenu, */ myllyMenu, myllyToolsMenu,
                 lcmsIdentificationSubMenu, gcgcIdentificationSubMenu, normalizationMenu,
                 identificationFilterMenu, databaseMenu, filterMenu, alignmentMenu,
                 identificationMenu, helpMenu, statisticsMenu, configurationMenu,
                 reportMenu;
         private JWindowsMenu windowsMenu;
-        private JMenuItem hlpAbout;
+        private JMenuItem hlpAbout, showAbout;
+        private Map<JMenuItem, GuineuProcessingModule> moduleMenuItems = new Hashtable<JMenuItem, GuineuProcessingModule>();
 
         MainMenu() {
 
@@ -116,16 +127,21 @@ class MainMenu extends JMenuBar implements ActionListener {
                 windowsMenu.setMnemonic(KeyEvent.VK_W);
                 this.add(windowsMenu);
 
+                /*
+                 * Help menu
+                 */
+
                 helpMenu = new JMenu("Help");
                 helpMenu.setMnemonic(KeyEvent.VK_H);
                 this.add(helpMenu);
 
-                hlpAbout = addMenuItem(GuineuMenu.HELPSYSTEM, "About Guineu..",
-                        "About Guineu..", KeyEvent.VK_A, this,
-                        null, null);
+                showAbout = new JMenuItem("About Guineu ...");
+                showAbout.addActionListener(this);
+                addMenuItem(GuineuModuleCategory.HELPSYSTEM, showAbout);
         }
 
-        public void addMenuItem(GuineuMenu parentMenu, JMenuItem newItem) {
+        public synchronized void addMenuItem(GuineuModuleCategory parentMenu,
+                JMenuItem newItem) {
                 switch (parentMenu) {
                         case FILE:
                                 fileMenu.add(newItem);
@@ -136,7 +152,7 @@ class MainMenu extends JMenuBar implements ActionListener {
                         case DATABASE:
                                 databaseMenu.add(newItem);
                                 break;
-                        case FILTER:
+                        case FILTERING:
                                 filterMenu.add(newItem);
                                 break;
                         case ALIGNMENT:
@@ -157,7 +173,7 @@ class MainMenu extends JMenuBar implements ActionListener {
                         case NORMALIZATION:
                                 normalizationMenu.add(newItem);
                                 break;
-                        case STATISTICS:
+                        case DATAANALYSIS:
                                 statisticsMenu.add(newItem);
                                 break;
                         case REPORT:
@@ -178,32 +194,31 @@ class MainMenu extends JMenuBar implements ActionListener {
                 }
         }
 
-        public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-                String toolTip, int mnemonic,
-                ActionListener listener, String actionCommand, String icon) {
+        /*public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
+        String toolTip, int mnemonic,
+        ActionListener listener, String actionCommand, String icon) {
 
-                JMenuItem newItem = new JMenuItem(text);
-                if (listener != null) {
-                        newItem.addActionListener(listener);
-                }
-                if (actionCommand != null) {
-                        newItem.setActionCommand(actionCommand);
-                }
-                if (toolTip != null) {
-                        newItem.setToolTipText(toolTip);
-                }
-                if (mnemonic > 0) {
-                        newItem.setMnemonic(mnemonic);
-                }
-
-                if (icon != null) {
-                        newItem.setIcon(new ImageIcon(icon));
-                }
-                addMenuItem(parentMenu, newItem);
-                return newItem;
-
+        JMenuItem newItem = new JMenuItem(text);
+        if (listener != null) {
+        newItem.addActionListener(listener);
+        }
+        if (actionCommand != null) {
+        newItem.setActionCommand(actionCommand);
+        }
+        if (toolTip != null) {
+        newItem.setToolTipText(toolTip);
+        }
+        if (mnemonic > 0) {
+        newItem.setMnemonic(mnemonic);
         }
 
+        if (icon != null) {
+        newItem.setIcon(new ImageIcon(icon));
+        }
+        addMenuItem(parentMenu, newItem);
+        return newItem;
+
+        }*/
         public void addMenuSeparator(GuineuMenu parentMenu) {
                 switch (parentMenu) {
                         case FILE:
@@ -263,9 +278,104 @@ class MainMenu extends JMenuBar implements ActionListener {
          */
         public void actionPerformed(ActionEvent e) {
                 Object src = e.getSource();
-                if (src == hlpAbout) {
+
+                GuineuProcessingModule module = moduleMenuItems.get(src);
+                if (module != null) {
+                       // Dataset selectedFiles[] = GuineuCore.getDesktop().getSelectedDataFiles();
+
+                        ParameterSet moduleParameters = module.getParameterSet();
+
+                        if (moduleParameters == null) {
+                                logger.finest("Starting module " + module
+                                        + " with no parameters");
+                                module.runModule(null);
+                                return;
+                        }
+
+                        boolean allParametersOK = true;
+                        LinkedList<String> errorMessages = new LinkedList<String>();
+                        for (Parameter p : moduleParameters.getParameters()) {
+
+                                //p.setValue(selectedFiles);
+                               /* boolean checkOK = p.checkValue(errorMessages);
+                                if (!checkOK) {
+                                        allParametersOK = false;
+                                }*/
+
+                        }
+
+                        if (!allParametersOK) {
+                                StringBuilder message = new StringBuilder();
+                                for (String m : errorMessages) {
+                                        message.append(m);
+                                        message.append("\n");
+                                }
+                                GuineuCore.getDesktop().displayMessage(message.toString());
+                                return;
+                        }
+
+                        logger.finest("Setting parameters for module " + module);
+                        ExitCode exitCode = moduleParameters.showSetupDialog();
+                        if (exitCode == ExitCode.OK) {
+                                ParameterSet parametersCopy = moduleParameters.clone();
+                                logger.finest("Starting module " + module + " with parameters "
+                                        + parametersCopy);
+                                module.runModule(parametersCopy);
+                        }
+                        return;
+                }
+
+
+                /*if (src == projectSaveParameters) {
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showSaveDialog(MZmineCore.getDesktop()
+                .getMainFrame());
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File configFile = chooser.getSelectedFile();
+                try {
+                MZmineCore.saveConfiguration(configFile);
+                } catch (Exception ex) {
+                MZmineCore.getDesktop().displayException(ex);
+                }
+                }
+                }
+
+                if (src == projectLoadParameters) {
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showOpenDialog(MZmineCore.getDesktop()
+                .getMainFrame());
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File configFile = chooser.getSelectedFile();
+                try {
+                MZmineCore.loadConfiguration(configFile);
+                } catch (Exception ex) {
+                MZmineCore.getDesktop().displayException(ex);
+                }
+                }
+                }
+
+                if (src == projectPreferences) {
+                GuineuPreferences preferences = GuineuCore.getPreferences();
+                preferences.showSetupDialog();
+                }*/
+
+                if (src == showAbout) {
                         MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
                         mainWindow.showAboutDialog();
                 }
+        }
+
+        public void addMenuItemForModule(GuineuProcessingModule module) {
+
+                GuineuModuleCategory parentMenu = module.getModuleCategory();
+                String menuItemText = module.toString();
+
+                JMenuItem newItem = new JMenuItem(menuItemText);
+                newItem.addActionListener(this);
+
+                moduleMenuItems.put(newItem, module);
+
+                addMenuItem(parentMenu, newItem);
+
         }
 }

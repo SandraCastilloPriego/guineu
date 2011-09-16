@@ -15,40 +15,37 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.file.exit;
 
-
-import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import guineu.taskcontrol.Task;
 
 /**
  * @author Taken from MZmine2
  * http://mzmine.sourceforge.net/
  */
-public class ExitProgram implements GuineuModule, ActionListener {
-    private Desktop desktop;
-    
-        
-    public ExitProgram() {
-        this.desktop = GuineuCore.getDesktop(); 
-        desktop.addMenuSeparator(GuineuMenu.FILE);
-        desktop.addMenuItem(GuineuMenu.FILE, "Exit..",
-                "Exit Guineu", KeyEvent.VK_E, this, null, null);
-    }
+public class ExitProgram implements GuineuProcessingModule {
 
-    public ParameterSet getParameterSet() {
-        return null;
-    }  
+        public static final String MODULE_NAME = "Exit";
 
-    public void actionPerformed(ActionEvent e) {      
-        GuineuCore.exitGuineu();
-    }
-    
+        @Override
+        public String toString() {
+                return MODULE_NAME;
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                GuineuCore.exitGuineu();
+                return null;
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.FILE;
+        }
 }

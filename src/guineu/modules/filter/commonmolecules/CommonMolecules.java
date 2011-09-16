@@ -19,28 +19,27 @@ package guineu.modules.filter.commonmolecules;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  * 
  */
-public class CommonMolecules implements ActionListener, GuineuModule, TaskListener {
+public class CommonMolecules implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     public static final String MODULE_NAME = "Search Common Peaks";
     private Desktop desktop;
 
-    public CommonMolecules() {
+   /* public CommonMolecules() {
 
         this.desktop = GuineuCore.getDesktop();
 
@@ -48,7 +47,7 @@ public class CommonMolecules implements ActionListener, GuineuModule, TaskListen
         desktop.addMenuItem(GuineuMenu.FILTER, "Search for common peaks between datasets",
                 "Search for common peaks between datasets",
                 KeyEvent.VK_C, this, null, null);
-    }
+    }*/
 
     public ParameterSet getParameterSet() {
         return null;
@@ -109,4 +108,16 @@ public class CommonMolecules implements ActionListener, GuineuModule, TaskListen
 
         }
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

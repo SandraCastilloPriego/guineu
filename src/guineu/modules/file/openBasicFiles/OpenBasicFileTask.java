@@ -21,27 +21,23 @@ import guineu.data.parser.impl.BasicFilesParserCSV;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.parser.Parser;
-import guineu.desktop.Desktop;
-import guineu.taskcontrol.Task;
+import guineu.main.GuineuCore;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  *
  * @author scsandra
  */
-public class OpenBasicFileTask implements Task {
+public class OpenBasicFileTask extends AbstractTask {
 
-        private String fileDir;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
-        private Desktop desktop;
+        private String fileDir; 
         private Parser parser;
 
-        public OpenBasicFileTask(String fileDir, Desktop desktop) {
+        public OpenBasicFileTask(String fileDir) {
                 if (fileDir != null) {
                         this.fileDir = fileDir;
                 }
-                this.desktop = desktop;
         }
 
         public String getTaskDescription() {
@@ -54,42 +50,34 @@ public class OpenBasicFileTask implements Task {
                 } else {
                         return 0.0f;
                 }
-        }
-
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
+        }        
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
                         this.openFile();
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
         }
 
         public void openFile() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
-                        if (status == TaskStatus.PROCESSING) {
+                        if (getStatus() == TaskStatus.PROCESSING) {
                                 parser = new BasicFilesParserCSV(fileDir);
                                 parser.fillData();
                                 Dataset dataset = (SimpleBasicDataset) parser.getDataset();
-                                desktop.AddNewFile(dataset);
+                                GuineuCore.getDesktop().AddNewFile(dataset);
                         }
                 } catch (Exception ex) {
                 }
 
-                status = TaskStatus.FINISHED;
-        }
+                setStatus(TaskStatus.FINISHED);
+        }        
 }

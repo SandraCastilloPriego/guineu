@@ -19,7 +19,7 @@ package guineu.modules.filter.splitdatasets;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
@@ -29,10 +29,8 @@ import java.util.Vector;
  *
  * @author scsandra
  */
-public class SplitTask implements Task {
+public class SplitTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private double progress = 0.0f;
         private String[] group1, group2;
         private Dataset dataset;
@@ -53,21 +51,13 @@ public class SplitTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         progress = 0.5f;
 
                         Split(group1, "1");
@@ -77,9 +67,9 @@ public class SplitTask implements Task {
                                 SplitFromParameter();
                         }
                         progress = 1f;
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }

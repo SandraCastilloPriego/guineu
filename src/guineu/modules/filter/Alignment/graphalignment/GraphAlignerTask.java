@@ -23,7 +23,9 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.main.GuineuCore;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
 import java.util.ArrayList;
@@ -31,12 +33,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class GraphAlignerTask implements Task {
+public class GraphAlignerTask extends AbstractTask {
 
-        private final Logger logger = Logger.getLogger(this.getClass().getName());
+        
         private Dataset peakLists[], alignedPeakList;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
+        
+        
         // Processed rows counter
         private int processedRows, totalRows;
         // Parameters
@@ -71,16 +73,10 @@ public class GraphAlignerTask implements Task {
                 return progress; 
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
+      
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         /**
@@ -101,8 +97,8 @@ public class GraphAlignerTask implements Task {
                         }
                 };
 
-                status = TaskStatus.PROCESSING;
-                logger.info("Running Graph aligner");
+                setStatus(TaskStatus.PROCESSING);
+               
 
                 // Remember how many rows we need to process.
                 for (int i = 0; i < peakLists.length; i++) {
@@ -187,8 +183,8 @@ public class GraphAlignerTask implements Task {
                 GuineuCore.getDesktop().AddNewFile(alignedPeakList);
 
                 // Add task description to peakList
-                logger.info("Finished Graph aligner");
-                status = TaskStatus.FINISHED;
+               
+                setStatus(TaskStatus.FINISHED);
 
 
         }
@@ -295,6 +291,7 @@ public class GraphAlignerTask implements Task {
                 return new Object[]{alignedPeakList};
         }
 
+      
         class Graph {
 
                 List<Double[]> coordinates = new ArrayList<Double[]>();

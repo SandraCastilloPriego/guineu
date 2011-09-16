@@ -19,11 +19,11 @@ package guineu.modules.mylly.filter.classIdentification;
 
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.taskcontrol.Task;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 
@@ -31,10 +31,8 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class ClassIdentificationFilterTask implements Task {
+public class ClassIdentificationFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
         private ClassIdentificationParameters parameters;
         private ClassIdentification filter;
@@ -53,20 +51,12 @@ public class ClassIdentificationFilterTask implements Task {
                 return filter.getProgress();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
 
                         String name = parameters.getParameter(ClassIdentificationParameters.fileNames).getValue().getAbsolutePath();
@@ -75,10 +65,10 @@ public class ClassIdentificationFilterTask implements Task {
                         alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(ClassIdentificationParameters.suffix).getValue());
                         alignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(alignment, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(ClassIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

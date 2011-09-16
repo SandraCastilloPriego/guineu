@@ -19,85 +19,67 @@ package guineu.modules.filter.Alignment.normalizationSTD;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.util.logging.Logger;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
-class STDNormalizationTask implements Task {
+class STDNormalizationTask extends AbstractTask {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
-	private Dataset peakLists[];
-	private TaskStatus status = TaskStatus.WAITING;
-	private String errorMessage;
-	// Processed rows counter
-	private int processedRows,  totalRows;
+        private Dataset peakLists[];
+        // Processed rows counter
+        private int processedRows, totalRows;
 
-	public STDNormalizationTask(Dataset[] peakLists) {
+        public STDNormalizationTask(Dataset[] peakLists) {
 
-		this.peakLists = peakLists;
-	}
+                this.peakLists = peakLists;
+        }
 
-	
-	public String getTaskDescription() {
-		return "Normalization";
-	}
+        public String getTaskDescription() {
+                return "Normalization";
+        }
 
-	
-	public double getFinishedPercentage() {
-		if (totalRows == 0) {
-			return 0f;
-		}
-		return (double) processedRows / (double) totalRows;
-	}
+        public double getFinishedPercentage() {
+                if (totalRows == 0) {
+                        return 0f;
+                }
+                return (double) processedRows / (double) totalRows;
+        }
 
-	
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
 
-	
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        /**
+         * @see Runnable#run()
+         */
+        public void run() {
+                setStatus(TaskStatus.PROCESSING);
 
-	
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
 
-	/**
-	 * @see Runnable#run()
-	 */
-	public void run() {
-		status = TaskStatus.PROCESSING;
-		logger.info("Running Normalization");
+                for (Dataset data : this.peakLists) {
+                        normalize(data);
+                }
 
-		for (Dataset data : this.peakLists) {
-			normalize(data);
-		}
-		logger.info(
-				"Finished Normalization");
-		status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
 
-	}
+        }
 
-	private void normalize(Dataset data) {
-		DescriptiveStatistics stats = new DescriptiveStatistics();
-		for (String nameExperiment : data.getAllColumnNames()) {
-			for (PeakListRow row : data.getRows()) {
-				Object value = row.getPeak(nameExperiment);
-				if (value != null && value instanceof Double) {
-					stats.addValue((Double) value);
-				}
-			}
-			for (PeakListRow row : data.getRows()) {
-				Object value = row.getPeak(nameExperiment);
-				if (value != null && value instanceof Double) {
-					row.setPeak(nameExperiment, (Double) value / stats.getStandardDeviation());
-				}
-			}
-			stats.clear();
-		}
-	}
+        private void normalize(Dataset data) {
+                DescriptiveStatistics stats = new DescriptiveStatistics();
+                for (String nameExperiment : data.getAllColumnNames()) {
+                        for (PeakListRow row : data.getRows()) {
+                                Object value = row.getPeak(nameExperiment);
+                                if (value != null && value instanceof Double) {
+                                        stats.addValue((Double) value);
+                                }
+                        }
+                        for (PeakListRow row : data.getRows()) {
+                                Object value = row.getPeak(nameExperiment);
+                                if (value != null && value instanceof Double) {
+                                        row.setPeak(nameExperiment, (Double) value / stats.getStandardDeviation());
+                                }
+                        }
+                        stats.clear();
+                }
+        }
 }

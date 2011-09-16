@@ -19,7 +19,6 @@ package guineu.modules.mylly.filter.NameFilter;
 
 import guineu.main.GuineuCore;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,16 +34,15 @@ import guineu.data.DatasetType;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.datastruct.GCGCData;
 import guineu.modules.mylly.datastruct.GCGCDatum;
+import guineu.taskcontrol.AbstractTask;
 import guineu.util.GUIUtils;
 
 /**
  *
  * @author bicha
  */
-public class NameFilterTask implements Task {
+public class NameFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset[] datasets;
         private NameFilterParameters parameters;
 
@@ -61,20 +59,12 @@ public class NameFilterTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         for (Dataset alignment : datasets) {
 
@@ -104,10 +94,10 @@ public class NameFilterTask implements Task {
                                 }
                         }
 
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(NameFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 
