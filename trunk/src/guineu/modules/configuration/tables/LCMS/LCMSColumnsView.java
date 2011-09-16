@@ -18,21 +18,13 @@
 package guineu.modules.configuration.tables.LCMS;
 
 import guineu.data.datamodels.DatasetLCMSDataModel;
-import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
-import guineu.taskcontrol.TaskStatus;
-import guineu.util.dialogs.ExitCode;
 import guineu.util.internalframe.DataInternalFrame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
 import javax.swing.ToolTipManager;
@@ -42,45 +34,10 @@ import javax.swing.table.TableModel;
  *
  * @author scsandra
  */
-public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListener {
+public class LCMSColumnsView implements GuineuProcessingModule {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
+        public static final String MODULE_NAME = "LCMS Table View";
         private SimpleParameterSet parameters;
-
-        public LCMSColumnsView() {
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.CONFIGURATION, "LCMS Table View..",
-                        "Configuration of view of the LC-MS table columns", KeyEvent.VK_L, this, null, "icons/conf1.png");
-                parameters = GuineuCore.getLCMSColumnsParameters();
-        }
-
-        public void taskStarted(Task task) {
-                logger.info("Running LCMS Table View");
-        }
-
-        public void taskFinished(Task task) {
-                if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished LCMS Table View ");
-                }
-
-                if (task.getStatus() == TaskStatus.ERROR) {
-
-                        String msg = "Error while LCMS Table View  .. ";
-                        logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
-
-                }
-        }
-
-        public void actionPerformed(ActionEvent e) {
-
-                ExitCode exitCode = parameters.showSetupDialog();
-                if (exitCode != ExitCode.OK) {
-                        return;
-                }
-                runModule();
-        }
 
         public ParameterSet getParameterSet() {
                 return parameters;
@@ -90,8 +47,8 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
                 return "LCMS Table View";
         }
 
-        public Task[] runModule() {
-                JInternalFrame[] frames = desktop.getInternalFrames();
+        public Task[] runModule(ParameterSet parameters) {
+                JInternalFrame[] frames = GuineuCore.getDesktop().getInternalFrames();
                 for (int i = 0; i < frames.length; i++) {
                         try {
                                 JTable table = ((DataInternalFrame) frames[i]).getTable();
@@ -108,5 +65,9 @@ public class LCMSColumnsView implements GuineuModule, TaskListener, ActionListen
                         }
                 }
                 return null;
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.CONFIGURATION;
         }
 }

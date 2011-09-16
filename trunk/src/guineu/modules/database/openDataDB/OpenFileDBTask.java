@@ -22,7 +22,7 @@ import guineu.data.DatasetType;
 import guineu.data.parser.Parser;
 import guineu.data.parser.impl.database.LCMSParserDataBase;
 import guineu.data.parser.impl.database.GCGCParserDataBase;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 
@@ -30,10 +30,8 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class OpenFileDBTask implements Task {
+public class OpenFileDBTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Parser parser;
 
         public OpenFileDBTask(Dataset dataset) {
@@ -53,39 +51,31 @@ public class OpenFileDBTask implements Task {
                 return parser.getProgress();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
                         this.openFile();
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
         }
 
         public void openFile() {
-                try {                     
-                        status = TaskStatus.PROCESSING;
+                try {
+                        setStatus(TaskStatus.PROCESSING);
                         parser.fillData();
-                        Dataset dataset =  parser.getDataset();
-                        
+                        Dataset dataset = parser.getDataset();
+
                         //creates internal frame with the table
                         GUIUtils.showNewTable(dataset, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

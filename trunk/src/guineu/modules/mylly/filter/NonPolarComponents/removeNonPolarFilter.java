@@ -20,35 +20,33 @@ package guineu.modules.mylly.filter.NonPolarComponents;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class removeNonPolarFilter implements GuineuModule, TaskListener, ActionListener {
+public class removeNonPolarFilter implements GuineuProcessingModule {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Desktop desktop;
 
-    public removeNonPolarFilter() {
+ /*   public removeNonPolarFilter() {
 
         this.desktop = GuineuCore.getDesktop();
         desktop.addMenuItem(GuineuMenu.MYLLY, "Remove Non-Polar Compounds..",
                 "Filtering of all compounds in which spectra the peak with mass 73 doesn't exist or is lower than 250.", KeyEvent.VK_N, this, null, null);
 
-    }
+    }*/
 
     public void taskStarted(Task task) {
         logger.info("Running Remove Non-Polar Compounds");
@@ -95,4 +93,16 @@ public class removeNonPolarFilter implements GuineuModule, TaskListener, ActionL
 
 
     }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

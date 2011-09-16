@@ -21,7 +21,7 @@ import guineu.data.parser.impl.LCMSParserCSV;
 import guineu.data.parser.impl.LCMSParserXLS;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.parser.Parser;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.io.IOException;
@@ -30,11 +30,9 @@ import java.io.IOException;
  *
  * @author scsandra
  */
-public class OpenFileTask implements Task {
+public class OpenFileTask extends AbstractTask {
 
-        private String fileDir;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
+        private String fileDir;        
         private Parser parser;
 
         public OpenFileTask(String fileDir) {
@@ -54,26 +52,18 @@ public class OpenFileTask implements Task {
                         return 0.0f;
                 }
         }
-
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
+       
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         this.openFile();
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
@@ -86,7 +76,7 @@ public class OpenFileTask implements Task {
                                 String[] sheetsNames = ((LCMSParserXLS) parserName).getSheetNames(fileDir);
                                 for (String Name : sheetsNames) {
                                         try {
-                                                if (status != TaskStatus.CANCELED) {
+                                                if (getStatus() != TaskStatus.CANCELED) {
                                                         parser = new LCMSParserXLS(fileDir, Name);
                                                         parser.fillData();
                                                         this.open(parser);
@@ -100,7 +90,7 @@ public class OpenFileTask implements Task {
                         }
                 } else if (fileDir.matches(".*csv")) {
                         try {
-                                if (status != TaskStatus.CANCELED) {
+                                if (getStatus() != TaskStatus.CANCELED) {
                                         parser = new LCMSParserCSV(fileDir);
                                         parser.fillData();
                                         this.open(parser);
@@ -114,7 +104,7 @@ public class OpenFileTask implements Task {
 
         public void open(Parser parser) {
                 try {
-                        if (status != TaskStatus.CANCELED) {
+                        if (getStatus() != TaskStatus.CANCELED) {
                                 SimpleLCMSDataset dataset = (SimpleLCMSDataset) parser.getDataset();
 
                                 //creates internal frame with the table
@@ -124,4 +114,6 @@ public class OpenFileTask implements Task {
                         // exception.printStackTrace();
                 }
         }
+        
+        
 }

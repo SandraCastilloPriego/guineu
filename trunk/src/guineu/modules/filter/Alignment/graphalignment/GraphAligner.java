@@ -19,29 +19,28 @@ package guineu.modules.filter.Alignment.graphalignment;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  * 
  */
-public class GraphAligner implements GuineuModule, TaskListener, ActionListener {
+public class GraphAligner implements GuineuProcessingModule {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private GraphAlignerParameters parameters;
 	private Desktop desktop;
 
-	public GraphAligner() {
+	/*public GraphAligner() {
 
 		this.desktop = GuineuCore.getDesktop();
 
@@ -50,7 +49,7 @@ public class GraphAligner implements GuineuModule, TaskListener, ActionListener 
 		desktop.addMenuItem(GuineuMenu.ALIGNMENT, "Graph alignment..",
 				"Alignment of two or more data sets using dynamic programming.", KeyEvent.VK_A, this, null,  "icons/alignment.png");
 		desktop.addMenuSeparator(GuineuMenu.ALIGNMENT);
-	}
+	}*/
 
         @Override
 	public String toString() {
@@ -121,4 +120,16 @@ public class GraphAligner implements GuineuModule, TaskListener, ActionListener 
 
 		}
 	}
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

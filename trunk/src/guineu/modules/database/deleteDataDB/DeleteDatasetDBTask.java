@@ -19,7 +19,7 @@ package guineu.modules.database.deleteDataDB;
 
 import guineu.database.retrieve.DataBase;
 import guineu.database.retrieve.impl.OracleRetrievement;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.util.List;
 
@@ -27,62 +27,52 @@ import java.util.List;
  *
  * @author scsandra
  */
-public class DeleteDatasetDBTask implements Task {
+public class DeleteDatasetDBTask extends AbstractTask {
+        
+        List<String> datasets;
+        DataBase db;
+        String DBPassword;
 
-    private TaskStatus status = TaskStatus.WAITING;
-    private String errorMessage;
-    List<String> datasets;
-    DataBase db;
-    String DBPassword;
-
-    public DeleteDatasetDBTask(List<String> datasets, String DBPassword) {
-        this.datasets = datasets;
-        this.DBPassword = DBPassword;
-        db = new OracleRetrievement();
-    }
-
-    public String getTaskDescription() {
-        return "Deleting Dataset... ";
-    }
-
-    public double getFinishedPercentage() {
-        return 0;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void cancel() {
-        status = TaskStatus.CANCELED;
-    }
-
-    public void run() {
-        try {
-            this.deleteFile();
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
-            errorMessage = e.toString();
-            return;
+        public DeleteDatasetDBTask(List<String> datasets, String DBPassword) {
+                this.datasets = datasets;
+                this.DBPassword = DBPassword;
+                db = new OracleRetrievement();
         }
-    }
 
-    public void deleteFile() {
-        try {
-            status = TaskStatus.PROCESSING;
-
-            for(String dataset : datasets){
-                //System.out.println(dataset);
-                db.deleteDataset(dataset, DBPassword);
-            }
-
-            status = TaskStatus.FINISHED;
-        } catch (Exception e) {
-            status = TaskStatus.ERROR;
+        public String getTaskDescription() {
+                return "Deleting Dataset... ";
         }
-    }
+
+        public double getFinishedPercentage() {
+                return 0;
+        }
+
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
+
+        public void run() {
+                try {
+                        this.deleteFile();
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
+                }
+        }
+
+        public void deleteFile() {
+                try {
+                        setStatus(TaskStatus.PROCESSING);
+
+                        for (String dataset : datasets) {
+                                //System.out.println(dataset);
+                                db.deleteDataset(dataset, DBPassword);
+                        }
+
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                }
+        }
 }

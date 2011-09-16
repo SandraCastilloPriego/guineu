@@ -17,30 +17,62 @@
  */
 package guineu.modules.statistics.clustering;
 
+import guineu.modules.statistics.PCA.ProjectionPlotParameters;
+import guineu.modules.statistics.clustering.em.EMClusterer;
+import guineu.modules.statistics.clustering.farthestfirst.FarthestFirstClusterer;
+import guineu.modules.statistics.clustering.hierarchical.HierarClusterer;
+import guineu.modules.statistics.clustering.simplekmeans.SimpleKMeansClusterer;
+import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
-import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
-import guineu.parameters.parametersType.IntegerParameter;
+import guineu.parameters.parametersType.ModuleComboParameter;
 
-/**
- *
- * @author scsandra
- */
 public class ClusteringParameters extends SimpleParameterSet {
 
-        private static String[] parameters = {"Cobweb", "DensityBasedClusterer", "FarthestFirst", "SimpleKMeans"};
-        private static String[] dataType = {"Samples", "Variables"};     
-        public static final ComboParameter<String> clusteringAlgorithm = new ComboParameter<String>(
-                "Select the algorithm",
-                "Select the algorithm you want to use for clustering", parameters);
-        public static final ComboParameter<String> clusteringData = new ComboParameter<String>(
-                "Select the algorithm",
-                "Select the algorithm you want to use for clustering", dataType);
-        public static final IntegerParameter N = new IntegerParameter(
-                "Number of clusters to generate",
-                "Specify the number of clusters to generate.",3);
+       private static ClusteringAlgorithm algorithms[] = new ClusteringAlgorithm[] {
+			new EMClusterer(), new FarthestFirstClusterer(),
+			new SimpleKMeansClusterer(), new HierarClusterer() };
+
+	public static final ModuleComboParameter<ClusteringAlgorithm> clusteringAlgorithm = new ModuleComboParameter<ClusteringAlgorithm>(
+			"Clustering algorithm",
+			"Select the algorithm you want to use for clustering", algorithms);
+        public static final ComboParameter<ClusteringDataType> typeOfData = new ComboParameter<ClusteringDataType>(
+                "Type of data",
+                "Specify the type of data used for the clustering: samples or variables",
+                ClusteringDataType.values());
 
         public ClusteringParameters() {
-                super(new UserParameter[]{clusteringAlgorithm, clusteringData, N});
+                super(
+                        new Parameter[]{ProjectionPlotParameters.dataFiles,
+                                ProjectionPlotParameters.rows, clusteringAlgorithm,
+                                typeOfData});
         }
+
+      //  @Override
+       /* public ExitCode showSetupDialog() {
+
+
+
+                PeakList selectedPeakList[] = getParameter(peakLists).getValue();
+
+                RawDataFile dataFileChoices[];
+                if (selectedPeakList.length == 1) {
+                        dataFileChoices = selectedPeakList[0].getRawDataFiles();
+                } else {
+                        dataFileChoices = new RawDataFile[0];
+                }
+
+                PeakListRow rowChoices[];
+                if (selectedPeakList.length == 1) {
+                        rowChoices = selectedPeakList[0].getRows();
+                } else {
+                        rowChoices = new PeakListRow[0];
+                }
+
+                getParameter(ProjectionPlotParameters.dataFiles).setChoices(
+                        dataFileChoices);
+                getParameter(ProjectionPlotParameters.rows).setChoices(rowChoices);
+
+                return super.showSetupDialog();
+        }*/
 }

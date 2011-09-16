@@ -20,7 +20,7 @@ package guineu.modules.mylly.filter.NameGolmIdentification;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -47,14 +47,12 @@ import org.jfree.xml.writer.XMLWriter;
  *
  * @author scsandra
  */
-public class NameGolmIdentificationFilterTask implements Task {
+public class NameGolmIdentificationFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
 
-        public NameGolmIdentificationFilterTask(SimpleGCGCDataset dataset) {                
+        public NameGolmIdentificationFilterTask(SimpleGCGCDataset dataset) {
                 this.dataset = dataset;
         }
 
@@ -66,26 +64,18 @@ public class NameGolmIdentificationFilterTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         actualMap(dataset);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(NameGolmIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 
@@ -182,7 +172,7 @@ public class NameGolmIdentificationFilterTask implements Task {
                         String inputLine;
                         List<String> group = new ArrayList<String>();
                         String name = "";
-                        while ((inputLine = in.readLine()) != null) {                               
+                        while ((inputLine = in.readLine()) != null) {
                                 while (inputLine.contains("<analyteName>")) {
                                         name = inputLine.substring(inputLine.indexOf("<analyteName>") + 13, inputLine.indexOf("</analyteName>"));
                                         if (!group.contains(name)) {
@@ -231,14 +221,14 @@ public class NameGolmIdentificationFilterTask implements Task {
                 int numRows = input.getNumberRows();
                 int count = 0;
                 for (PeakListRow row : input.getAlignment()) {
-                        if (status == TaskStatus.CANCELED) {
+                        if (getStatus() == TaskStatus.CANCELED) {
                                 break;
                         }
 
-                        if (((SimplePeakListRowGCGC) row).getMolClass() != null &&
-                                ((SimplePeakListRowGCGC) row).getMolClass().length() != 0 &&
-                                !((SimplePeakListRowGCGC) row).getMolClass().contains("NA") &&
-                                !((SimplePeakListRowGCGC) row).getMolClass().contains("null")) {
+                        if (((SimplePeakListRowGCGC) row).getMolClass() != null
+                                && ((SimplePeakListRowGCGC) row).getMolClass().length() != 0
+                                && !((SimplePeakListRowGCGC) row).getMolClass().contains("NA")
+                                && !((SimplePeakListRowGCGC) row).getMolClass().contains("null")) {
                                 count++;
                                 continue;
                         }

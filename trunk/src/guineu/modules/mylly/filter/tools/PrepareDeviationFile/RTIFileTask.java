@@ -17,10 +17,9 @@
  */
 package guineu.modules.mylly.filter.tools.PrepareDeviationFile;
 
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -30,20 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.StringWriter;
-import java.io.Writer;
 import org.jfree.xml.writer.AttributeList;
 import org.jfree.xml.writer.XMLWriter;
-import org.xml.sax.SAXException;
 
 /**
  *
  * @author bicha
  */
-public class RTIFileTask implements Task {
+public class RTIFileTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private String fileName;
         private String outputFileName;
 
@@ -60,26 +54,18 @@ public class RTIFileTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
                         createNewFile();
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(RTIFileTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 
@@ -172,7 +158,7 @@ public class RTIFileTask implements Task {
                         xmlW.startBlock();
                         xmlW.writeTag("Column", attributes, false);
                         xmlW.writeText(String.valueOf(list.RI));
-                        xmlW.writeCloseTag("Column");                        
+                        xmlW.writeCloseTag("Column");
                         xmlW.endBlock();
                         xmlW.writeCloseTag("Metabolite");
                         xmlW.endBlock();

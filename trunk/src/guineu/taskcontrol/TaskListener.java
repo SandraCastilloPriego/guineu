@@ -23,7 +23,11 @@ package guineu.taskcontrol;
  */
 public interface TaskListener {
 
-        public void taskStarted(Task task);
-
-        public void taskFinished(Task task);
+       /**
+	 * Called when the status of a Task is changed.
+	 *
+	 * @param e
+	 *            The TaskEvent which occurred
+	 */
+	public void statusChanged(TaskEvent e);
 }

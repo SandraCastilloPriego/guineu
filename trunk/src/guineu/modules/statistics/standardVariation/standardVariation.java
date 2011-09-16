@@ -19,39 +19,30 @@ package guineu.modules.statistics.standardVariation;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class standardVariation implements GuineuModule, TaskListener, ActionListener {
+public class standardVariation implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private Dataset dataset;
         private String[] group1, group2;
 
-        public standardVariation() {
-
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.STATISTICS, "Standard Variation..",
-                        "Standard Variation", KeyEvent.VK_V, this, null, null);
-
-        }
-
+       
         public void taskStarted(Task task) {
                 logger.info("Running Standard Variation");
         }
@@ -114,5 +105,17 @@ public class standardVariation implements GuineuModule, TaskListener, ActionList
 
 
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

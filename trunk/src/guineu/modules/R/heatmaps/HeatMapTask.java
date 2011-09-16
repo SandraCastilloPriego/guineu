@@ -21,12 +21,11 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.modules.R.RUtilities;
 import guineu.parameters.ParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math.stat.inference.TTestImpl;
@@ -36,15 +35,10 @@ import org.rosuda.JRI.Rengine;
  *
  * @author scsandra
  */
-public class HeatMapTask implements Task {
-
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
+public class HeatMapTask extends AbstractTask {
         private String outputType;
         private boolean log, rcontrol, scale, plegend;
         private int height, width, columnMargin, rowMargin, starSize;
-        private int maxLength = 0;
         private File outputFile;
         private String[] rowNames, colNames;
         private String[][] pValueMatrix;
@@ -82,24 +76,13 @@ public class HeatMapTask implements Task {
                 return finishedPercentage;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
-        public void cancel() {
-                status = TaskStatus.CANCELED;
-        }
+       
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
-                        logger.info("Heat map plot");
+                        setStatus(TaskStatus.PROCESSING);                       
                         double[][] newDataset;
-                        System.out.println("1");
+                       
                         if (!parameterName.isEmpty() && !referenceGroup.isEmpty()) {
                                 if (plegend) {
                                         newDataset = this.GroupingDataset(dataset);
@@ -107,7 +90,7 @@ public class HeatMapTask implements Task {
                                         newDataset = this.modifyDataset(dataset);
                                 }
                         } else {
-                                status = TaskStatus.ERROR;
+                                setStatus(TaskStatus.ERROR);
                                 if (parameterName.isEmpty()) {
                                         errorMessage = "Sample parameters have to be defined.";
                                 } else if (referenceGroup.isEmpty()) {
@@ -116,13 +99,13 @@ public class HeatMapTask implements Task {
                                 return;
                         }
 
-                        System.out.println("2");
+                       
                         if (newDataset == null || newDataset.length == 0 || newDataset[0].length == 0) {
-                                status = TaskStatus.ERROR;
+                                setStatus(TaskStatus.ERROR);
                                 errorMessage = "The data for heat map is empty.";
                                 return;
                         }
-                        System.out.println("3");
+                       
                         final Rengine rEngine;
                         try {
                                 rEngine = RUtilities.getREngine();
@@ -131,14 +114,14 @@ public class HeatMapTask implements Task {
                                 throw new IllegalStateException(
                                         "Heat map requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
-                        System.out.println("4");
+                        
                         finishedPercentage = 0.3f;
 
                         synchronized (RUtilities.R_SEMAPHORE) {
 
                                 // Load gplots library
                                 if (rEngine.eval("require(gplots)").asBool().isFALSE()) {
-                                        status = TaskStatus.ERROR;
+                                        setStatus(TaskStatus.ERROR);
                                         errorMessage = "The \"gplots\" R package couldn't be loaded - is it installed in R?";
                                 }
 
@@ -147,7 +130,7 @@ public class HeatMapTask implements Task {
                                         if (outputType.contains("png")) {
                                                 if (height < 500 || width < 500) {
 
-                                                        status = TaskStatus.ERROR;
+                                                        setStatus(TaskStatus.ERROR);
                                                         errorMessage = "Figure height or width is too small. Minimun height and width is 500.";
                                                         return;
                                                 }
@@ -184,7 +167,7 @@ public class HeatMapTask implements Task {
                                                 }
                                         }
                                         finishedPercentage = 0.4f;
-                                        System.out.println("5");
+                                        
                                         rEngine.eval("dataset <- apply(dataset, 2, as.numeric)");
 
                                         // Assign row names to the data set
@@ -248,11 +231,11 @@ public class HeatMapTask implements Task {
                                 }
                         }
 
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
 
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
-                        errorMessage = "hola" + e.toString();
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
                         return;
                 }
         }
@@ -383,7 +366,6 @@ public class HeatMapTask implements Task {
                 List<String> nonReferenceDataFiles = new ArrayList<String>();
 
                 List<String> groups = new ArrayList<String>();
-                System.out.println("1.1");
                 for (String rawDataFile : dataset.getAllColumnNames()) {
 
                         String paramValue = dataset.getParametersValue(rawDataFile, parameterName);
@@ -399,7 +381,6 @@ public class HeatMapTask implements Task {
                                 nonReferenceDataFiles.add(rawDataFile);
                         }
                 }
-                System.out.println("1.2");
                 int numRows = 0;
                 for (int row = 0; row < dataset.getNumberRows(); row++) {
 
@@ -407,7 +388,7 @@ public class HeatMapTask implements Task {
                                 numRows++;
                         }
                 }
-                System.out.println("1.3");
+               
                 boolean useCompleteDataset = false;
                 if (numRows == 0) {
                         numRows = dataset.getNumberRows();
@@ -423,8 +404,7 @@ public class HeatMapTask implements Task {
                         pValueMatrix = new String[groups.size() - 1][numRows];
                 } else {
                         return null;
-                }
-                System.out.println("1.4");                             
+                }                                
 
                 for (int row = 0, rowIndex = 0; row < dataset.getNumberRows(); row++) {
                         PeakListRow rowPeak = dataset.getRow(row);
@@ -476,13 +456,13 @@ public class HeatMapTask implements Task {
                                 rowIndex++;
                         }
                 }
-                System.out.println("1.5");
+                
                 // Scale the data dividing the peak area/height by the standard
                 // deviation of each column
                 if (scale) {
                         scale(dataMatrix);
                 }
-                System.out.println("1.6");
+              
                 // Create two arrays: row and column names
                 rowNames = new String[dataMatrix[0].length];
                 colNames = new String[groups.size() - 1];
@@ -500,7 +480,7 @@ public class HeatMapTask implements Task {
                                 rowNames[rowIndex++] = dataset.getRow(row).getName();
                         }
                 }
-                System.out.println("1.7");
+                
                 return dataMatrix;
         }
 
@@ -549,4 +529,5 @@ public class HeatMapTask implements Task {
                         }
                 }
         }
+
 }

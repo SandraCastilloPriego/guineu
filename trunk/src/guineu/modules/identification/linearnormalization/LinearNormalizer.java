@@ -19,26 +19,23 @@ package guineu.modules.identification.linearnormalization;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  * @author Taken from MZmine2
  * http://mzmine.sourceforge.net/
  */
-public class LinearNormalizer implements GuineuModule, TaskListener,
-        ActionListener {
+public class LinearNormalizer implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         final String helpID = GUIUtils.generateHelpID(this);
@@ -46,7 +43,7 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
         private LinearNormalizerParameters parameters;
         private Desktop desktop;
 
-        public LinearNormalizer() {
+     /*   public LinearNormalizer() {
 
                 this.desktop = GuineuCore.getDesktop();
 
@@ -56,7 +53,7 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
                         "Peak list normalization using linear coefficients", KeyEvent.VK_S, this, null, null);
 
 
-        }
+        }*/
 
         public String toString() {
                 return MODULE_NAME;
@@ -122,5 +119,17 @@ public class LinearNormalizer implements GuineuModule, TaskListener,
                         desktop.displayErrorMessage(msg);
 
                 }
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

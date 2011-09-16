@@ -19,13 +19,13 @@ package guineu.modules.statistics.PCA;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
+import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.Task;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
@@ -33,29 +33,13 @@ import java.util.logging.Logger;
  * http://mzmine.sourceforge.net/
  *
  */
-public class ProjectionPlot implements GuineuModule, ActionListener {
+public class ProjectionPlot implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private ProjectionPlotParameters parameters;
 
-        public ProjectionPlot() {
-
-                this.desktop = GuineuCore.getDesktop();
-
-                desktop.addMenuItem(GuineuMenu.STATISTICS,
-                        "Principal component analysis (PCA)",
-                        "Principal component analysis", KeyEvent.VK_P, this, "PCA_PLOT", null);
-
-                desktop.addMenuItem(GuineuMenu.STATISTICS,
-                        "Curvilinear distance analysis (CDA)",
-                        "Curvilinear distance analysis", KeyEvent.VK_C, this, "CDA_PLOT", null);
-
-                desktop.addMenuItem(GuineuMenu.STATISTICS, "Sammon's projection",
-                        "Sammon's projection", KeyEvent.VK_S, this, "SAMMON_PLOT", null);
-
-        }
-
+        
         public String toString() {
                 return "Projection plot analyzer";
         }
@@ -106,5 +90,13 @@ public class ProjectionPlot implements GuineuModule, ActionListener {
 
                 }
 
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

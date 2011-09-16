@@ -22,18 +22,16 @@ import guineu.data.DatasetType;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
 import guineu.parameters.SimpleParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
 /**
  *
  * @author scsandra
  */
-public class SaveExpressionFileTask implements Task {
+public class SaveExpressionFileTask extends AbstractTask {
 
         private Dataset dataset;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private String path;
         private InDataBase db;
         private SimpleParameterSet parameters;
@@ -53,21 +51,13 @@ public class SaveExpressionFileTask implements Task {
                 return db.getProgress();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         if (dataset.getType() == DatasetType.EXPRESSION) {
                                 String type = parameters.getParameter(SaveExpressionParameters.type).getValue();
                                 if (type.matches(".*Excel.*")) {
@@ -78,9 +68,9 @@ public class SaveExpressionFileTask implements Task {
                                         db.WriteExpressionData(dataset, path, null);
                                 }
                         }
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

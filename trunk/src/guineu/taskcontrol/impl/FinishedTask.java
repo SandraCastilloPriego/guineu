@@ -17,6 +17,7 @@
  */
 package guineu.taskcontrol.impl;
 
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskStatus;
 
@@ -29,43 +30,31 @@ import guineu.taskcontrol.TaskStatus;
  * memory occupied by the actual Task while keeping the task description in the
  * Tasks in progress window, until all tasks are finished.
  */
-public class FinishedTask implements Task {
+public class FinishedTask extends AbstractTask {
 
-        private String description, errorMessage;
-        private TaskStatus status;
-        private double finishedPercentage;
+        private String description;
+	private double finishedPercentage;
 
-        public FinishedTask(Task task) {
-                description = task.getTaskDescription();
-                errorMessage = task.getErrorMessage();
-                status = task.getStatus();
-                finishedPercentage = task.getFinishedPercentage();
-        }
+	public FinishedTask(Task task) {
+		setStatus(task.getStatus());
+		description = task.getTaskDescription();
+		errorMessage = task.getErrorMessage();
+		finishedPercentage = task.getFinishedPercentage();
+	}
 
-        public void cancel() {
-        }
+	public String getTaskDescription() {
+		return description;
+	}
 
-        public String getErrorMessage() {
-                return errorMessage;
-        }
+	public void run() {
+		// ignore any attempt to run this task, because it is finished
+	}
 
-        public double getFinishedPercentage() {
-                return finishedPercentage;
-        }
+	public void cancel() {
+		// ignore any attempt to cancel this task, because it is finished
+	}
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getTaskDescription() {
-                return description;
-        }
-
-        public void run() {
-                throw new IllegalStateException();
-        }
-
-        public Object[] getCreatedObjects() {
-                return null;
-        }
+	public double getFinishedPercentage() {
+		return finishedPercentage;
+	}
 }

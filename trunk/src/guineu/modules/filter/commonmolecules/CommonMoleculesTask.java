@@ -17,15 +17,12 @@
  */
 package guineu.modules.filter.commonmolecules;
 
-
-
-
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.Vector;
@@ -33,131 +30,121 @@ import java.util.Vector;
 /**
  * 
  */
-class CommonMoleculesTask implements Task {
-	
-	private Dataset[] peakLists;
-	private TaskStatus status;
-	private String errorMessage;
-	private String[][] databaseValues;
-	private int finishedLines = 0;
-	private String dataBaseFile;	
-	Vector<lipid> commonNames;
+class CommonMoleculesTask extends AbstractTask {
 
-	CommonMoleculesTask(Dataset[] peakList) {
-		status = TaskStatus.WAITING;
-		this.peakLists = peakList;		
-		commonNames = new Vector<lipid>();
-	}
+        private Dataset[] peakLists;
+        private String[][] databaseValues;
+        private int finishedLines = 0;
+        private String dataBaseFile;
+        Vector<lipid> commonNames;
 
-	public void cancel() {
-		status = TaskStatus.CANCELED;
-	}
+        CommonMoleculesTask(Dataset[] peakList) {
+                this.peakLists = peakList;
+                commonNames = new Vector<lipid>();
+        }
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+        public void cancel() {
+                setStatus(TaskStatus.CANCELED);
+        }
 
-	public double getFinishedPercentage() {
-		if (databaseValues == null) {
-			return 0;
-		}
-		return ((double) finishedLines) / databaseValues.length;
-	}
+        public double getFinishedPercentage() {
+                if (databaseValues == null) {
+                        return 0;
+                }
+                return ((double) finishedLines) / databaseValues.length;
+        }
 
-	public TaskStatus getStatus() {
-		return status;
-	}
+        public String getTaskDescription() {
+                return "Peak identification of " + peakLists + " using database " + dataBaseFile;
+        }
 
-	public String getTaskDescription() {
-		return "Peak identification of " + peakLists + " using database " + dataBaseFile;
-	}
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
 
-	/**
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
+                setStatus(TaskStatus.PROCESSING);
 
-		status = TaskStatus.PROCESSING;
+                try {
 
-		try {
+                        for (Dataset dataset : peakLists) {
+                                for (PeakListRow row : dataset.getRows()) {
+                                        SimplePeakListRowLCMS Row = (SimplePeakListRowLCMS) row;
+                                        lipid mol = new lipid(Row.getName(), Row.getMZ(), Row.getRT());
+                                        lipid mol2 = isRepeat(mol);
+                                        if (mol2 != null) {
+                                                mol2.addDatasetName(dataset.getDatasetName());
+                                                mol2.sumApears();
+                                        } else {
+                                                mol.sumApears();
+                                                mol.addDatasetName(dataset.getDatasetName());
+                                                commonNames.addElement(mol);
+                                        }
+                                }
+                        }
 
-			for (Dataset dataset : peakLists) {
-				for (PeakListRow row : dataset.getRows()) {
-					SimplePeakListRowLCMS Row = (SimplePeakListRowLCMS)row;
-					lipid mol = new lipid(Row.getName(), Row.getMZ(), Row.getRT());
-					lipid mol2 = isRepeat(mol);
-					if (mol2 != null) {
-						mol2.addDatasetName(dataset.getDatasetName());
-						mol2.sumApears();
-					} else {
-						mol.sumApears();
-						mol.addDatasetName(dataset.getDatasetName());
-						commonNames.addElement(mol);						
-					}
-				}
-			}
+                        SimpleBasicDataset dataset = new SimpleBasicDataset("Common peaks");
+                        dataset.addColumnName("m/z");
+                        dataset.addColumnName("rt");
+                        dataset.addColumnName("Molecule Name");
+                        dataset.addColumnName("Number of datasets");
+                        dataset.addColumnName("Dataset names");
 
-			SimpleBasicDataset dataset = new SimpleBasicDataset("Common peaks");
-			dataset.addColumnName("m/z");
-			dataset.addColumnName("rt");
-			dataset.addColumnName("Molecule Name");
-			dataset.addColumnName("Number of datasets");
-			dataset.addColumnName("Dataset names");
-			
-			for (lipid mol : commonNames) {
-				SimplePeakListRowOther row = new SimplePeakListRowOther();
-				row.setPeak("m/z", String.valueOf(mol.mz));
-				row.setPeak("rt", String.valueOf(mol.rt));
-				row.setPeak("Molecule Name", mol.Name);
-				row.setPeak("Number of datasets", String.valueOf(mol.apears));
-				row.setPeak("Dataset names", String.valueOf(mol.DatasetNames));
+                        for (lipid mol : commonNames) {
+                                SimplePeakListRowOther row = new SimplePeakListRowOther();
+                                row.setPeak("m/z", String.valueOf(mol.mz));
+                                row.setPeak("rt", String.valueOf(mol.rt));
+                                row.setPeak("Molecule Name", mol.Name);
+                                row.setPeak("Number of datasets", String.valueOf(mol.apears));
+                                row.setPeak("Dataset names", String.valueOf(mol.DatasetNames));
 
-				dataset.addRow(row);
-			}
+                                dataset.addRow(row);
+                        }
                         GUIUtils.showNewTable(dataset, true);
 
-		} catch (Exception e) {
-			status = TaskStatus.ERROR;
-			errorMessage = e.toString();
-			return;
-		}
+                } catch (Exception e) {
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = e.toString();
+                        return;
+                }
 
 
-		status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
 
-	}
+        }
 
-	private lipid isRepeat(lipid mol) {
-		for (lipid mol2 : commonNames) {
-			double mzdiff = Math.abs(mol2.mz - mol.mz);
-			double rtdiff = Math.abs(mol2.rt - mol.rt);
-			if (mol2.Name.equals(mol.Name) && mzdiff < 0.05 && rtdiff < 4) {
-				return mol2;
-			}
-		}
-		return null;
-	}
+        private lipid isRepeat(lipid mol) {
+                for (lipid mol2 : commonNames) {
+                        double mzdiff = Math.abs(mol2.mz - mol.mz);
+                        double rtdiff = Math.abs(mol2.rt - mol.rt);
+                        if (mol2.Name.equals(mol.Name) && mzdiff < 0.05 && rtdiff < 4) {
+                                return mol2;
+                        }
+                }
+                return null;
+        }
 
-	class lipid {
+        class lipid {
 
-		String Name;
-		double mz;
-		double rt;
-		int apears;
-		String DatasetNames = "";
+                String Name;
+                double mz;
+                double rt;
+                int apears;
+                String DatasetNames = "";
 
-		public lipid(String name, double mz, double rt) {
-			this.Name = name;
-			this.mz = mz;
-			this.rt = rt;
-			apears = 0;
-		}
+                public lipid(String name, double mz, double rt) {
+                        this.Name = name;
+                        this.mz = mz;
+                        this.rt = rt;
+                        apears = 0;
+                }
 
-		public void sumApears() {
-			apears++;
-		}
-		public void addDatasetName(String name){
-			DatasetNames += " / " + name;
-		}
-	}
+                public void sumApears() {
+                        apears++;
+                }
+
+                public void addDatasetName(String name) {
+                        DatasetNames += " / " + name;
+                }
+        }
 }

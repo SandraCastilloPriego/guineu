@@ -22,7 +22,8 @@ import guineu.desktop.Desktop;
 import guineu.desktop.GuineuMenu;
 import guineu.desktop.impl.helpsystem.GuineuHelpSet;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.impl.TaskProgressWindow;
 import guineu.util.ExceptionUtils;
@@ -30,7 +31,6 @@ import guineu.util.TextUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -55,7 +55,7 @@ import javax.swing.border.EtchedBorder;
  * 
  */
 public class MainWindow extends JFrame implements GuineuModule, Desktop,
-        WindowListener {
+		WindowListener {
 
         static final String aboutHelpID = "guineu/desktop/help/AboutGuineu.html";
         private JDesktopPane desktopPane;
@@ -143,9 +143,9 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 JOptionPane.showMessageDialog(this, wrappedMsg, title, type);
         }
 
-        public void addMenuItem(GuineuMenu parentMenu, JMenuItem newItem) {
-                menuBar.addMenuItem(parentMenu, newItem);
-        }
+        public void addMenuItem(GuineuModuleCategory parentMenu, JMenuItem newItem) {
+		menuBar.addMenuItem(parentMenu, newItem);
+	}
 
         /**
          */
@@ -199,10 +199,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 updateTitle();
 
                 setTitle("Guineu");
-
-//        taskList = new TaskProgressWindow();
-                //  desktopPane.add(taskList, JLayeredPane.DEFAULT_LAYER);
-
         }
 
         void updateTitle() {
@@ -212,13 +208,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         public JFrame getMainFrame() {
                 return this;
         }
-
-        public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
-                String toolTip, int mnemonic, ActionListener listener,
-                String actionCommand, String icon) {
-                return menuBar.addMenuItem(parentMenu, text, toolTip, mnemonic,
-                        listener, actionCommand, icon);
-        }
+       
 
         public void addMenuSeparator(GuineuMenu parentMenu) {
                 menuBar.addMenuSeparator(parentMenu);
@@ -280,4 +270,5 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
                 hb.setDisplayed(true);
         }
+
 }

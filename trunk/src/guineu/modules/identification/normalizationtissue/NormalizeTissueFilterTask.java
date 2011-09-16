@@ -18,7 +18,7 @@
 package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.Hashtable;
@@ -28,10 +28,8 @@ import java.util.Vector;
  *
  * @author scsandra
  */
-public class NormalizeTissueFilterTask implements Task {
+public class NormalizeTissueFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
         private NormalizeTissue serum;
 
@@ -48,30 +46,22 @@ public class NormalizeTissueFilterTask implements Task {
                 return (double) serum.getProgress();
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
-                        serum.normalize(status);
-                        if (status == TaskStatus.CANCELED || status == TaskStatus.ERROR) {
+                        setStatus(TaskStatus.PROCESSING);
+                        serum.normalize(getStatus());
+                        if (getStatus() == TaskStatus.CANCELED || getStatus() == TaskStatus.ERROR) {
                                 return;
                         }
                         dataset = serum.getDataset();
                         GUIUtils.showNewTable(dataset, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }

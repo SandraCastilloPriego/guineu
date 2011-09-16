@@ -19,24 +19,22 @@ package guineu.modules.database.openDataDB;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
+public class OpenFileDB implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
@@ -44,11 +42,11 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
         boolean combine = false;
         Dataset[] datasets;
 
-        public OpenFileDB() {
+     /*   public OpenFileDB() {
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.DATABASE, "Open database..",
                         "Visualize the content of the internal database", KeyEvent.VK_O, this, null, null);
-        }
+        }*/
 
         public void taskStarted(Task task) {
                 logger.info("Running Open Database");
@@ -115,5 +113,17 @@ public class OpenFileDB implements GuineuModule, TaskListener, ActionListener {
                 GuineuCore.getTaskController().addTasks(tasks);
                 return tasks;
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

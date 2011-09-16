@@ -25,7 +25,7 @@ import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.main.GuineuCore;
 import guineu.parameters.parametersType.MZTolerance;
 import guineu.parameters.parametersType.RTTolerance;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
 import java.util.ArrayList;
@@ -35,18 +35,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
-import java.util.logging.Logger;
 import org.apache.commons.math.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math.optimization.fitting.PolynomialFitter;
 import org.apache.commons.math.optimization.general.GaussNewtonOptimizer;
 import org.apache.commons.math.stat.regression.SimpleRegression;
 
-public class RansacAlignerTask implements Task {
+public class RansacAlignerTask extends AbstractTask {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
         private Dataset peakLists[], alignedPeakList;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         // Processed rows counter
         private int processedRows, totalRows;
         // Parameters
@@ -87,24 +83,15 @@ public class RansacAlignerTask implements Task {
                 return progress; //
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         /**
          * @see Runnable#run()
          */
         public void run() {
-                status = TaskStatus.PROCESSING;
-                logger.info("Running RANSAC aligner");
+                setStatus(TaskStatus.PROCESSING);
 
                 // Remember how many rows we need to process.
                 for (int i = 0; i < peakLists.length; i++) {
@@ -170,8 +157,7 @@ public class RansacAlignerTask implements Task {
 
                 // Add task description to peakList
 
-                logger.info("Finished RANSAC aligner");
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
 
 
         }
@@ -255,7 +241,7 @@ public class RansacAlignerTask implements Task {
 
                                 } catch (Exception e) {
                                         e.printStackTrace();
-                                        status = TaskStatus.ERROR;
+                                        setStatus(TaskStatus.ERROR);
                                         return null;
                                 }
                         }
@@ -394,7 +380,7 @@ public class RansacAlignerTask implements Task {
                 Vector<AlignStructMol> alignMol = new Vector<AlignStructMol>();
                 for (PeakListRow row : peakListX.getRows()) {
 
-                        if (status == TaskStatus.CANCELED) {
+                        if (getStatus() == TaskStatus.CANCELED) {
                                 return null;
                         }
                         // Calculate limits for a row with which the row can be aligned 
@@ -410,9 +396,5 @@ public class RansacAlignerTask implements Task {
                 }
 
                 return alignMol;
-        }
-
-        public Object[] getCreatedObjects() {
-                return new Object[]{alignedPeakList};
         }
 }

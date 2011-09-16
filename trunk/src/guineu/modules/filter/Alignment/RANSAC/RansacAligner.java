@@ -19,29 +19,28 @@ package guineu.modules.filter.Alignment.RANSAC;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  * 
  */
-public class RansacAligner implements GuineuModule, TaskListener, ActionListener {
+public class RansacAligner implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private RansacAlignerParameters parameters;
         private Desktop desktop;
 
-        public RansacAligner() {
+    /*    public RansacAligner() {
 
                 this.desktop = GuineuCore.getDesktop();
                 parameters = new RansacAlignerParameters();
@@ -49,7 +48,7 @@ public class RansacAligner implements GuineuModule, TaskListener, ActionListener
                         "Combine LC-MS datasets", KeyEvent.VK_A, this, null, "icons/alignment.png");
 
         }
-
+*/
         public String toString() {
                 return "Ransac aligner";
         }
@@ -114,5 +113,17 @@ public class RansacAligner implements GuineuModule, TaskListener, ActionListener
                         desktop.displayErrorMessage(msg);
 
                 }
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

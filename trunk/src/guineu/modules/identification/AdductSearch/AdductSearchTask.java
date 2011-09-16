@@ -22,7 +22,7 @@ import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.main.GuineuCore;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.PeakListRowSorter;
 import guineu.util.SortingDirection;
@@ -30,13 +30,9 @@ import guineu.util.SortingProperty;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class AdductSearchTask implements Task {
+public class AdductSearchTask extends AbstractTask {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private int finishedRows, totalRows;
         private Dataset peakList;
         private double rtTolerance, mzTolerance, maxAdductHeight,
@@ -59,11 +55,7 @@ public class AdductSearchTask implements Task {
         }
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public double getFinishedPercentage() {
@@ -71,10 +63,6 @@ public class AdductSearchTask implements Task {
                         return 0;
                 }
                 return ((double) finishedRows) / totalRows;
-        }
-
-        public TaskStatus getStatus() {
-                return status;
         }
 
         public String getTaskDescription() {
@@ -86,15 +74,15 @@ public class AdductSearchTask implements Task {
          */
         public void run() {
 
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
 
-                if(peakList.getType() != DatasetType.LCMS){
-                        status = TaskStatus.ERROR;
+                if (peakList.getType() != DatasetType.LCMS) {
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = "Wrong data set type. This module is for the adduct search in LC-MS data";
                         return;
                 }
 
-                logger.info("Starting adducts search in " + peakList);
+
 
                 List<PeakListRow> rows = peakList.getRows();
                 totalRows = rows.size();
@@ -113,7 +101,7 @@ public class AdductSearchTask implements Task {
                         for (int j = i + 1; j < arrayRows.length; j++) {
 
                                 // Task canceled?
-                                if (status == TaskStatus.CANCELED) {
+                                if (getStatus() == TaskStatus.CANCELED) {
                                         return;
                                 }
                                 SimplePeakListRowLCMS peak2 = (SimplePeakListRowLCMS) arrayRows[j];
@@ -134,9 +122,8 @@ public class AdductSearchTask implements Task {
                 }
 
 
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
 
-                logger.info("Finished adducts search in " + peakList);
 
         }
 
@@ -221,9 +208,5 @@ public class AdductSearchTask implements Task {
                 String adductName = adduct.getName() + " adduct of " + mzFormat.format(mainRow.getMZ()) + " m/z" + " - " + mainRow.getName();
 
                 adductRow.setName(adductName);
-        }
-
-        public Object[] getCreatedObjects() {
-                return null;
         }
 }

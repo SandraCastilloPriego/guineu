@@ -18,38 +18,30 @@
 package guineu.modules.mylly.filter.tools.PrepareDeviationFile;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class RTIFile implements GuineuModule, TaskListener, ActionListener {
+public class RTIFile implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
-        private RTIFileParameters parameters;
+        private RTIFileParameters parameters = new RTIFileParameters();
+
+        ;
         final String helpID = GUIUtils.generateHelpID(this);
-
-        public RTIFile() {
-                parameters = new RTIFileParameters();
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.MYLLYTOOLS, "Prepare RTI File ..",
-                        "Change of the format of the RTI file (which contains RTI information about some compounds) to XML format.", KeyEvent.VK_D, this, null, null);
-
-        }
 
         public void taskStarted(Task task) {
                 logger.info("Running Prepare RTI File");
@@ -79,8 +71,6 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
                 }
         }
 
-
-
         public ParameterSet getParameterSet() {
                 return this.parameters;
         }
@@ -98,5 +88,17 @@ public class RTIFile implements GuineuModule, TaskListener, ActionListener {
 
                 return tasks;
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

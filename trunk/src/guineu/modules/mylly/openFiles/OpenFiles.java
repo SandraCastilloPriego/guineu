@@ -18,19 +18,17 @@
 package guineu.modules.mylly.openFiles;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 
-import guineu.taskcontrol.TaskListener;
 import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -38,21 +36,14 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
+public class OpenFiles implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
-        private OpenGCGCFileParameters parameters;
+        private OpenGCGCFileParameters parameters = new OpenGCGCFileParameters();;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public OpenFiles() {
-
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuItem(GuineuMenu.FILE, "Open GCGC Files..",
-                        "Open single peak list in CVS format", KeyEvent.VK_G, this, null, "icons/pickedpeakicon.png");
-                desktop.addMenuSeparator(GuineuMenu.FILE);
-                parameters = new OpenGCGCFileParameters();
-        }
+       
 
         public void taskStarted(Task task) {
                 logger.info("Running Open GCGC Files");
@@ -111,5 +102,17 @@ public class OpenFiles implements GuineuModule, TaskListener, ActionListener {
                         return null;
                 }
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

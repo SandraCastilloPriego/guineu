@@ -21,7 +21,7 @@ import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.logging.Level;
@@ -31,10 +31,8 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class PeakCountFilterTask implements Task {
+public class PeakCountFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private SimpleGCGCDataset dataset;
         private PeakCountParameters parameters;
 
@@ -51,20 +49,12 @@ public class PeakCountFilterTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
 
                         int peakCount = parameters.getParameter(PeakCountParameters.numFound).getValue();
@@ -74,10 +64,10 @@ public class PeakCountFilterTask implements Task {
                         newAlignment.setDatasetName(newAlignment.toString() + parameters.getParameter(PeakCountParameters.suffix).getValue());
                         newAlignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(newAlignment, true);
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(PeakCountFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 

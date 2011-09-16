@@ -23,6 +23,7 @@ import dr.PrincipleComponent;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
+import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -200,7 +201,7 @@ public class PCADataset extends AbstractXYDataset implements
 
         public void run() {
 
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
 
                 logger.info("Computing projection plot");
 
@@ -252,13 +253,13 @@ public class PCADataset extends AbstractXYDataset implements
                         desktop.addInternalFrame(newFrame);
                 }
                 this.progress = 1.0f;
-                status = TaskStatus.FINISHED;
+                setStatus(TaskStatus.FINISHED);
                 logger.info("Finished computing projection plot.");
 
         }
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public String getErrorMessage() {
@@ -282,5 +283,16 @@ public class PCADataset extends AbstractXYDataset implements
 
         public Object[] getCreatedObjects() {
                 return null;
+        }
+
+        public void addTaskListener(TaskListener t) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public TaskListener[] getTaskListeners() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+        private void setStatus(TaskStatus taskStatus) {
+                status = taskStatus;
         }
 }

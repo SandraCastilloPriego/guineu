@@ -19,7 +19,7 @@ package guineu.modules.statistics.foldChanges;
 
 import guineu.data.PeakListRow;
 import guineu.data.Dataset;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
@@ -31,10 +31,8 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
  *
  * @author scsandra
  */
-public class FoldTestTask implements Task {
+public class FoldTestTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private double progress = 0.0f;
         private String[] group1, group2;
         private Dataset dataset;
@@ -55,21 +53,13 @@ public class FoldTestTask implements Task {
                 return progress;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         double[] t = new double[dataset.getNumberRows()];
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
                                 t[i] = this.Foldtest(i);
@@ -89,10 +79,10 @@ public class FoldTestTask implements Task {
                         GUIUtils.showNewTable(newDataset, true);
 
                         progress = 1f;
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
 
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }

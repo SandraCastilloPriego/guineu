@@ -22,7 +22,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.LCMSColumnName;
 import guineu.parameters.SimpleParameterSet;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.io.File;
 import java.io.FileReader;
@@ -45,10 +45,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
  *
  * @author scsandra
  */
-public class ReportTask implements Task {
+public class ReportTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private Dataset dataset;
         private String fileName;
         private String reportFileName;
@@ -74,26 +72,18 @@ public class ReportTask implements Task {
                 return processedRows / totalRows;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
                 try {
-                        status = TaskStatus.PROCESSING;
+                        setStatus(TaskStatus.PROCESSING);
                         readFile();
                         saveRTCharts();
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
                         return;
                 }
@@ -125,10 +115,10 @@ public class ReportTask implements Task {
          */
         private void saveRTCharts() {
                 for (PeakListRow row : dataset.getRows()) {
-                        if (row.isSelected() && status == TaskStatus.PROCESSING) {
+                        if (row.isSelected() && getStatus() == TaskStatus.PROCESSING) {
                                 CategoryDataset data = createSampleDataset(row);
-                                String lipidName = "MZ: " + String.valueOf(row.getVar(LCMSColumnName.MZ.getGetFunctionName())) +
-                                        "RT: " + String.valueOf(row.getVar(LCMSColumnName.RT.getGetFunctionName()));
+                                String lipidName = "MZ: " + String.valueOf(row.getVar(LCMSColumnName.MZ.getGetFunctionName()))
+                                        + "RT: " + String.valueOf(row.getVar(LCMSColumnName.RT.getGetFunctionName()));
                                 createChart(data, lipidName);
                         }
                         this.processedRows++;

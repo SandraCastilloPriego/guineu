@@ -18,18 +18,16 @@
 package guineu.modules.mylly.filter.singlingFilter;
 
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
-import guineu.taskcontrol.TaskListener;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import guineu.data.Dataset;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import java.util.logging.Logger;
@@ -38,20 +36,20 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class SinglingFilter implements GuineuModule, TaskListener, ActionListener {
+public class SinglingFilter implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
         private SinglingParameters parameters;
         final String helpID = GUIUtils.generateHelpID(this);
 
-        public SinglingFilter() {
+       /* public SinglingFilter() {
                 parameters = new SinglingParameters();
                 this.desktop = GuineuCore.getDesktop();
                 desktop.addMenuItem(GuineuMenu.MYLLY, "Leave Only Uniques Filter..",
                         "Certain compounds are removed from the peak list depending its similarity or if they are identified as unknown.", KeyEvent.VK_U, this, null, null);
 
-        }
+        }*/
 
         public void taskStarted(Task task) {
                 logger.info("Leave Only Uniques Filter");
@@ -103,5 +101,17 @@ public class SinglingFilter implements GuineuModule, TaskListener, ActionListene
                 return tasks;
 
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

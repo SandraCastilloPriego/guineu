@@ -20,20 +20,20 @@ package guineu.modules.file.saveDatasetDB;
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
-import guineu.main.GuineuModule;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskListener;
+import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class SaveFileDB implements GuineuModule, TaskListener {
+public class SaveFileDB implements GuineuProcessingModule {
 
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private Desktop desktop;
@@ -93,5 +93,17 @@ public class SaveFileDB implements GuineuModule, TaskListener {
 
                 return tasks;
 
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                throw new UnsupportedOperationException("Not supported yet.");
         }
 }

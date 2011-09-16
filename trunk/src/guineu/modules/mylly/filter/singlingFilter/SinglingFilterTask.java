@@ -19,7 +19,7 @@ package guineu.modules.mylly.filter.singlingFilter;
 
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.logging.Level;
@@ -29,10 +29,8 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class SinglingFilterTask implements Task {
+public class SinglingFilterTask extends AbstractTask {
 
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private SimpleGCGCDataset dataset;
         private double minSimilarity;
         private boolean unknownPeaks;
@@ -53,20 +51,12 @@ public class SinglingFilterTask implements Task {
                 return 1f;
         }
 
-        public TaskStatus getStatus() {
-                return status;
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
-        }
-
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
         }
 
         public void run() {
-                status = TaskStatus.PROCESSING;
+                setStatus(TaskStatus.PROCESSING);
                 try {
 
                         Singling filter = new Singling(minSimilarity, unknownPeaks);
@@ -79,10 +69,10 @@ public class SinglingFilterTask implements Task {
                                 System.out.println("The result is null");
                         }
 
-                        status = TaskStatus.FINISHED;
+                        setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(SinglingFilterTask.class.getName()).log(Level.SEVERE, null, ex);
-                        status = TaskStatus.ERROR;
+                        setStatus(TaskStatus.ERROR);
                 }
         }
 }

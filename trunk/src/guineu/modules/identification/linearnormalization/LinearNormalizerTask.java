@@ -22,25 +22,21 @@ import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
-import guineu.taskcontrol.Task;
+import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author Taken from MZmine2
  * http://mzmine.sourceforge.net/
  */
-class LinearNormalizerTask implements Task {
+class LinearNormalizerTask extends AbstractTask {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
         static final double maximumOverallPeakHeightAfterNormalization = 100000.0;
         private Dataset originalPeakList, normalizedPeakList;
-        private TaskStatus status = TaskStatus.WAITING;
-        private String errorMessage;
         private int processedDataFiles, totalDataFiles;
         private String normalizationType;
         private List<PeakListRow> standards;
@@ -60,20 +56,12 @@ class LinearNormalizerTask implements Task {
         }
 
         public void cancel() {
-                status = TaskStatus.CANCELED;
+                setStatus(TaskStatus.CANCELED);
 
-        }
-
-        public String getErrorMessage() {
-                return errorMessage;
         }
 
         public double getFinishedPercentage() {
                 return (double) processedDataFiles / (double) totalDataFiles;
-        }
-
-        public TaskStatus getStatus() {
-                return status;
         }
 
         public String getTaskDescription() {
@@ -82,14 +70,14 @@ class LinearNormalizerTask implements Task {
 
         public void run() {
 
-                status = TaskStatus.PROCESSING;
-                logger.info("Running linear normalizer");
+                setStatus(TaskStatus.PROCESSING);
+
 
                 if (normalizationType.equals(LinearNormalizerParameters.NormalizationTypeStandards)) {
                         standards = new ArrayList<PeakListRow>();
                         for (PeakListRow row : originalPeakList.getRows()) {
-                                if (row.isSelected() || (originalPeakList.getType() == DatasetType.LCMS &&
-                                        ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
+                                if (row.isSelected() || (originalPeakList.getType() == DatasetType.LCMS
+                                        && ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
                                         standards.add(row);
                                 }
                         }
@@ -122,7 +110,7 @@ class LinearNormalizerTask implements Task {
                 for (String file : originalPeakList.getAllColumnNames()) {
 
                         // Cancel?
-                        if (status == TaskStatus.CANCELED) {
+                        if (getStatus() == TaskStatus.CANCELED) {
                                 return;
                         }
 
@@ -181,7 +169,7 @@ class LinearNormalizerTask implements Task {
                                 for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
 
                                         // Cancel?
-                                        if (status == TaskStatus.CANCELED) {
+                                        if (getStatus() == TaskStatus.CANCELED) {
                                                 return;
                                         }
 
@@ -221,7 +209,7 @@ class LinearNormalizerTask implements Task {
                                 for (PeakListRow originalpeakListRow : originalPeakList.getRows()) {
 
                                         // Cancel?
-                                        if (status == TaskStatus.CANCELED) {
+                                        if (getStatus() == TaskStatus.CANCELED) {
                                                 return;
                                         }
 
@@ -258,8 +246,8 @@ class LinearNormalizerTask implements Task {
 
                 GUIUtils.showNewTable(normalizedPeakList, true);
 
-                logger.info("Finished linear normalizer");
-                status = TaskStatus.FINISHED;
+
+                setStatus(TaskStatus.FINISHED);
 
         }
 
@@ -291,9 +279,5 @@ class LinearNormalizerTask implements Task {
                 }
                 return nearestStandardRow;
 
-        }
-
-        public Object[] getCreatedObjects() {
-                return new Object[]{normalizedPeakList};
         }
 }
