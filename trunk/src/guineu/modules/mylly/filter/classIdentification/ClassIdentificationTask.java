@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.pubChem;
+package guineu.modules.mylly.filter.classIdentification;
 
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
@@ -31,22 +31,24 @@ import guineu.util.GUIUtils;
  *
  * @author scsandra
  */
-public class PubChemFilterTask extends AbstractTask {
+public class ClassIdentificationTask extends AbstractTask {
 
         private Dataset dataset;
-        private PubChemParameters parameters;
+        private ClassIdentificationParameters parameters;
+        private ClassIdentification filter;
 
-        public PubChemFilterTask(Dataset dataset, PubChemParameters parameters) {
+        public ClassIdentificationTask(Dataset dataset, ClassIdentificationParameters parameters) {
                 this.dataset = dataset;
                 this.parameters = parameters;
+                filter = new ClassIdentification();
         }
 
         public String getTaskDescription() {
-                return "Filtering files with PubChem ID Filter... ";
+                return "Filtering files with Class Identification Filter... ";
         }
 
         public double getFinishedPercentage() {
-                return 1f;
+                return filter.getProgress();
         }
 
         public void cancel() {
@@ -56,16 +58,16 @@ public class PubChemFilterTask extends AbstractTask {
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
-                        String name = parameters.getParameter(PubChemParameters.fileNames).getValue().getAbsolutePath();
-                        PubChem filter = new PubChem();
+
+                        String name = parameters.getParameter(ClassIdentificationParameters.fileNames).getValue().getAbsolutePath();
                         filter.createCorrector(new File(name));
                         SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(PubChemParameters.suffix).getValue());
+                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(ClassIdentificationParameters.suffix).getValue());
                         alignment.setType(DatasetType.GCGCTOF);
                         GUIUtils.showNewTable(alignment, true);
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
-                        Logger.getLogger(PubChemFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ClassIdentificationTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                 }
         }

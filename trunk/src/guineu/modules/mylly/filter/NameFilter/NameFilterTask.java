@@ -70,7 +70,7 @@ public class NameFilterTask extends AbstractTask {
 
                                 SimpleGCGCDataset dataset = null;
                                 if (alignment.getNumberCols() == 1) {
-                                        NameFilterModule filter = new NameFilterModule();
+                                        NameFilter filter = new NameFilter();
                                         String name = parameters.getParameter(NameFilterParameters.fileNames).getValue().getAbsolutePath();
                                         filter.generateNewFilter(this.askParameters(name));
                                         GCGCDatum[][] datum = ((SimpleGCGCDataset) alignment).toArray();

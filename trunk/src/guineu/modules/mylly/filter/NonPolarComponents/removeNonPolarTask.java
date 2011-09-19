@@ -29,12 +29,12 @@ import java.util.List;
  *
  * @author scsandra
  */
-public class removeNonPolarFilterTask extends AbstractTask {
+public class removeNonPolarTask extends AbstractTask {
 
         private double progress = 0.0f;
         private SimpleGCGCDataset dataset;
 
-        public removeNonPolarFilterTask(SimpleGCGCDataset dataset) {
+        public removeNonPolarTask(SimpleGCGCDataset dataset) {
                 this.dataset = dataset;
         }
 

@@ -15,34 +15,34 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.linearNormalizer;
+package guineu.modules.mylly.filter.pubChem;
 
-import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.PeakListRow;
-import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import guineu.data.Dataset;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class LinearNormalizerFilterTask extends AbstractTask {
+public class PubChemTask extends AbstractTask {
 
         private Dataset dataset;
+        private PubChemParameters parameters;
 
-        public LinearNormalizerFilterTask(Dataset dataset) {
+        public PubChemTask(Dataset dataset, PubChemParameters parameters) {
                 this.dataset = dataset;
+                this.parameters = parameters;
         }
 
         public String getTaskDescription() {
-                return "Filtering file with Linear Normalizer... ";
+                return "Filtering files with PubChem ID Filter... ";
         }
 
         public double getFinishedPercentage() {
@@ -56,24 +56,16 @@ public class LinearNormalizerFilterTask extends AbstractTask {
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
-
-                        List<PeakListRow> standards = new ArrayList<PeakListRow>();
-                        for (PeakListRow row : dataset.getRows()) {
-                                if (row.isSelected() || (dataset.getType() == DatasetType.LCMS
-                                        && ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
-                                        standards.add(row);
-                                }
-                        }
-                        LinearNormalizer filter = new LinearNormalizer(standards);
-                        Dataset newAlignment = filter.actualMap(dataset);
-                        newAlignment.setDatasetName(newAlignment.toString() + "-Normalized");
-                        newAlignment.setType(dataset.getType());
-
-                        GUIUtils.showNewTable(newAlignment, true);
-
+                        String name = parameters.getParameter(PubChemParameters.fileNames).getValue().getAbsolutePath();
+                        PubChem filter = new PubChem();
+                        filter.createCorrector(new File(name));
+                        SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
+                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(PubChemParameters.suffix).getValue());
+                        alignment.setType(DatasetType.GCGCTOF);
+                        GUIUtils.showNewTable(alignment, true);
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
-                        Logger.getLogger(LinearNormalizerFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(PubChemTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                 }
         }
