@@ -15,13 +15,12 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.pubChem.GolmIdentification;
+package guineu.modules.mylly.filter.linearNormalizer;
 
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
 import guineu.data.Dataset;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 
@@ -29,9 +28,9 @@ import guineu.parameters.ParameterSet;
  *
  * @author scsandra
  */
-public class GetGolmIDsFilter implements GuineuProcessingModule {
+public class LinearNormalizerModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "IDs Identification Filter";
+        public static final String MODULE_NAME = "Linear Normalizer";
 
         public ParameterSet getParameterSet() {
                 return null;
@@ -42,13 +41,12 @@ public class GetGolmIDsFilter implements GuineuProcessingModule {
         }
 
         public Task[] runModule(ParameterSet parameters) {
-
                 Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
 
                 // prepare a new group of tasks
-                Task tasks[] = new GetGolmIDsFilterTask[DataFiles.length];
+                Task tasks[] = new LinearNormalizerTask[DataFiles.length];
                 for (int cont = 0; cont < DataFiles.length; cont++) {
-                        tasks[cont] = new GetGolmIDsFilterTask((SimpleGCGCDataset) DataFiles[cont]);
+                        tasks[cont] = new LinearNormalizerTask(DataFiles[cont]);
                 }
                 GuineuCore.getTaskController().addTasks(tasks);
 
@@ -56,6 +54,6 @@ public class GetGolmIDsFilter implements GuineuProcessingModule {
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.GCGCIDENTIFICATIONSUBMENU;
+                return GuineuModuleCategory.MYLLY;
         }
 }

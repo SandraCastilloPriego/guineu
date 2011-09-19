@@ -15,9 +15,11 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.SimilarityFilter;
+package guineu.modules.mylly.filter.peakCounter;
 
+import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
@@ -29,19 +31,18 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class SimilarityFilterTask extends AbstractTask {
+public class PeakCountTask extends AbstractTask {
 
         private SimpleGCGCDataset dataset;
-        private SimilarityParameters parameters;
+        private PeakCountParameters parameters;
 
-        public SimilarityFilterTask(SimpleGCGCDataset dataset, SimilarityParameters parameters) {
+        public PeakCountTask(SimpleGCGCDataset dataset, PeakCountParameters parameters) {
                 this.dataset = dataset;
-                System.out.println(dataset.toString());
                 this.parameters = parameters;
         }
 
         public String getTaskDescription() {
-                return "Filtering files with Similarity Filter... ";
+                return "Filtering files with Peak Count Filter... ";
         }
 
         public double getFinishedPercentage() {
@@ -55,28 +56,36 @@ public class SimilarityFilterTask extends AbstractTask {
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
-                        double minValue = parameters.getParameter(SimilarityParameters.minSimilarity).getValue();
-                        String typeSimilarity = parameters.getParameter(SimilarityParameters.type).getValue();
-                        String mode = Similarity.MEAN_SIMILARITY;
-                        if (typeSimilarity.matches("maximum similarity")) {
-                                mode = Similarity.MAX_SIMILARITY;
-                        }
 
-                        String typeAction = parameters.getParameter(SimilarityParameters.action).getValue();
-                        String action = Similarity.REMOVE;
-                        if (typeAction.matches("Rename")) {
-                                action = Similarity.RENAME;
-                        }
-                        Similarity filter = new Similarity(minValue, action, mode);
-                        SimpleGCGCDataset newAlignment = filter.actualMap(dataset);
-                        newAlignment.setDatasetName(newAlignment.toString() + parameters.getParameter(SimilarityParameters.suffix).getValue());
+                        int peakCount = parameters.getParameter(PeakCountParameters.numFound).getValue();
+                        peakCount--;
+                        PeakCount filter = new PeakCount(peakCount);
+                        SimpleGCGCDataset newAlignment = this.actualMap(dataset, filter);
+                        newAlignment.setDatasetName(newAlignment.toString() + parameters.getParameter(PeakCountParameters.suffix).getValue());
                         newAlignment.setType(DatasetType.GCGCTOF);
-                        // Shows the new data set
                         GUIUtils.showNewTable(newAlignment, true);
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
-                        Logger.getLogger(SimilarityFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(PeakCountTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                 }
+        }
+
+        private SimpleGCGCDataset actualMap(SimpleGCGCDataset input, PeakCount filter) {
+                if (input == null) {
+                        return null;
+                }
+
+                SimpleGCGCDataset filteredAlignment = new SimpleGCGCDataset(input.getColumnNames(),
+                        input.getParameters(),
+                        input.getAligner());
+
+                for (PeakListRow row : input.getAlignment()) {
+                        if (filter.include(row)) {
+                                filteredAlignment.addAlignmentRow((SimplePeakListRowGCGC) row.clone());
+                        }
+                }
+
+                return filteredAlignment;
         }
 }

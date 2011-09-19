@@ -17,49 +17,46 @@
  */
 package guineu.modules.mylly.filter.NameFilter;
 
-import guineu.modules.mylly.datastruct.GCGCData;
-import guineu.modules.mylly.datastruct.GCGCDatum;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import guineu.main.GuineuCore;
+import guineu.modules.GuineuModuleCategory;
+import guineu.taskcontrol.Task;
+import guineu.data.Dataset;
+import guineu.modules.GuineuProcessingModule;
+import guineu.parameters.ParameterSet;
 
-public class NameFilterModule {
+/**
+ *
+ * @author scsandra
+ */
+public class NameFilterModule implements GuineuProcessingModule {
 
-	private NameFilterTool curNameFilter;
+        public static final String MODULE_NAME = "Name Filter";
+        private NameFilterParameters parameters = new NameFilterParameters();
 
-	public NameFilterModule() {
-		curNameFilter = new NameFilterTool(new ArrayList<String>());
-	}
+        public ParameterSet getParameterSet() {
+                return this.parameters;
+        }
 
-	public void generateNewFilter(Collection<String> names) {
-		Set<String> filteredNames = curNameFilter.filteredNames();
-		filteredNames.addAll(names);
-		curNameFilter = new NameFilterTool(filteredNames);
-	}
+        public String toString() {
+                return MODULE_NAME;
+        }
 
-	public String getName() {
-		return curNameFilter.getName();
-	}
+        public Task[] runModule(ParameterSet parameters) {
+                Dataset[] AlignmentFiles = GuineuCore.getDesktop().getSelectedDataFiles();
 
-	public GCGCData actualMap(GCGCData obj) {
 
-		int done = 0;
+                // prepare a new group of tasks
+                Task tasks[] = new NameFilterTask[1];
 
-		GCGCData gcgcdata = obj;
+                tasks[0] = new NameFilterTask(AlignmentFiles, (NameFilterParameters) parameters);
 
-		GCGCData filtered = null;
+                GuineuCore.getTaskController().addTasks(tasks);
 
-		List<GCGCDatum> filteredFile = new ArrayList<GCGCDatum>();
-		for (GCGCDatum d : gcgcdata) {
+                return tasks;
 
-			if (curNameFilter.include(d)) {
-				filteredFile.add(d);
-			}
-			done++;
-		}
-		filtered = new GCGCData(filteredFile, gcgcdata.getName());
+        }
 
-		return filtered;
-	}
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.MYLLY;
+        }
 }

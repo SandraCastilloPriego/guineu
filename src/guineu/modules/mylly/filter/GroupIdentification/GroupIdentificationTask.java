@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.NameGolmIdentification;
+package guineu.modules.mylly.filter.GroupIdentification;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
@@ -47,17 +47,17 @@ import org.jfree.xml.writer.XMLWriter;
  *
  * @author scsandra
  */
-public class NameGolmIdentificationFilterTask extends AbstractTask {
+public class GroupIdentificationTask extends AbstractTask {
 
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
 
-        public NameGolmIdentificationFilterTask(SimpleGCGCDataset dataset) {
+        public GroupIdentificationTask(SimpleGCGCDataset dataset) {
                 this.dataset = dataset;
         }
 
         public String getTaskDescription() {
-                return "Filtering files with Name Identificacion Filter... ";
+                return "Filtering files with Group Identifiacion Filter... ";
         }
 
         public double getFinishedPercentage() {
@@ -74,12 +74,13 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
                         actualMap(dataset);
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
-                        Logger.getLogger(NameGolmIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(GroupIdentificationTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                 }
         }
 
         private String PredictManyXMLFile(SimplePeakListRowGCGC newRow) throws FileNotFoundException, IOException {
+
                 Writer w = new StringWriter();
                 XMLWriter xmlW = new XMLWriter(w);
                 xmlW.writeXmlDeclaration();
@@ -96,57 +97,44 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
 
                 xmlW.startBlock();
                 attributes = new AttributeList();
-                attributes.setAttribute("xmlns", "http://gmd.mpimp-golm.mpg.de/LibrarySearch/");
-                xmlW.writeTag("LibrarySearch", attributes, false);
+                attributes.setAttribute("xmlns", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/");
+                xmlW.writeTag("PredictAll4AlkaneRiColumnTypeComposition", attributes, false);
                 xmlW.startBlock();
 
-                xmlW.writeTag("ri", false);
+                xmlW.writeTag("Ri", false);
                 String RTI = String.valueOf(newRow.getRTI());
                 xmlW.writeText(RTI);
-                xmlW.writeText("</ri>");
+                xmlW.writeText("</Ri>");
                 xmlW.endBlock();
 
-
-                xmlW.writeTag("riWindow", false);
-                RTI = "25.0";
-                xmlW.writeText(RTI);
-                xmlW.writeText("</riWindow>");
-                xmlW.endBlock();
-
-                xmlW.writeTag("AlkaneRetentionIndexGcColumnComposition", false);
-                xmlW.writeText("VAR5");
-                xmlW.writeText("</AlkaneRetentionIndexGcColumnComposition>");
-                xmlW.endBlock();
-
-
-                xmlW.writeTag("spectrum", false);
+                xmlW.writeTag("Spectrum", false);
                 String spectrum = newRow.getSpectrumString();
                 spectrum = spectrum.replace(":", " ");
                 spectrum = spectrum.replace(", ", "");
                 spectrum = spectrum.replace("[", "");
                 spectrum = spectrum.replace("]", "");
                 xmlW.writeText(spectrum);
-                xmlW.writeText("</spectrum>");
+                xmlW.writeText("</Spectrum>");
+                xmlW.endBlock();
+
+                xmlW.writeTag("ColumnType", false);
+                xmlW.writeText("MDN35");
+                xmlW.writeText("</ColumnType>");
                 xmlW.endBlock();
 
                 xmlW.endBlock();
-                xmlW.writeCloseTag("LibrarySearch");
+                xmlW.writeCloseTag("PredictAll4AlkaneRiColumnTypeComposition");
                 xmlW.endBlock();
                 xmlW.writeCloseTag("soap:Body");
                 xmlW.endBlock();
                 xmlW.writeCloseTag("soap:Envelope");
 
-
                 xmlW.close();
 
                 return w.toString();
-
         }
 
         private List<String> getAnswer(String xmlFile2Send, HttpURLConnection httpConn) {
-                // Open the input file. After we copy it to a byte array, we can see
-                // how big it is so that we can set the HTTP Cotent-Length
-                // property. (See complete e-mail below for more on this.)
                 try {
 
                         InputStream fin = new ByteArrayInputStream(xmlFile2Send.getBytes("UTF-8"));
@@ -158,7 +146,7 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
                         // Set the appropriate HTTP parameters.
                         httpConn.setRequestProperty("Content-Length", String.valueOf(b.length));
                         httpConn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
-                        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/LibrarySearch/LibrarySearch");
+                        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/PredictAll4AlkaneRiColumnTypeComposition");
                         httpConn.setRequestMethod("POST");
                         httpConn.setDoOutput(true);
                         httpConn.setDoInput(true);
@@ -173,13 +161,14 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
                         List<String> group = new ArrayList<String>();
                         String name = "";
                         while ((inputLine = in.readLine()) != null) {
-                                while (inputLine.contains("<analyteName>")) {
-                                        name = inputLine.substring(inputLine.indexOf("<analyteName>") + 13, inputLine.indexOf("</analyteName>"));
-                                        if (!group.contains(name)) {
+                                while (inputLine.contains("<FunctionalGroup>")) {
+                                        name = inputLine.substring(inputLine.indexOf("<FunctionalGroup>") + 17, inputLine.indexOf("</FunctionalGroup>"));
+                                        String temporalInputLine = inputLine.substring(inputLine.indexOf("</Results>") + 10);
+                                        if (temporalInputLine.contains("<PredictionGroupIsPresent>true</PredictionGroupIsPresent>") && !group.contains(name)) {
                                                 group.add(name);
                                         }
                                         name = "";
-                                        inputLine = inputLine.substring(inputLine.indexOf("</Results>") + 17);
+                                        inputLine = inputLine.substring(inputLine.indexOf("</Results>") + 10);
                                 }
                         }
                         in.close();
@@ -188,7 +177,6 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
                         return group;
 
                 } catch (Exception ex) {
-                        ex.printStackTrace();
                         return null;
                 }
 
@@ -225,34 +213,26 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
                                 break;
                         }
 
-                        if (((SimplePeakListRowGCGC) row).getMolClass() != null
-                                && ((SimplePeakListRowGCGC) row).getMolClass().length() != 0
-                                && !((SimplePeakListRowGCGC) row).getMolClass().contains("NA")
-                                && !((SimplePeakListRowGCGC) row).getMolClass().contains("null")) {
-                                count++;
-                                continue;
-                        }
-                        URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx");
+                        /* if (((SimplePeakListRowGCGC) row).getMolClass() != null &&
+                        ((SimplePeakListRowGCGC) row).getMolClass().length() != 0 &&
+                        !((SimplePeakListRowGCGC) row).getMolClass().contains("NA")) {
+                        count++;
+                        continue;
+                        }*/
+                        URL url = new URL("http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx");
                         URLConnection connection = url.openConnection();
-
                         HttpURLConnection httpConn = (HttpURLConnection) connection;
                         String xmlFile = this.PredictManyXMLFile((SimplePeakListRowGCGC) row);
                         List<String> group = this.getAnswer(xmlFile, httpConn);
                         if (group != null) {
                                 String finalGroup = "";
-                                // Prints only the 3 first results
-                                for (int i = 0; i < group.size(); i++) {
-                                        finalGroup += group.get(i) + ",";
-                                        if (i == 2) {
-                                                break;
-                                        }
+                                for (String name : group) {
+                                        finalGroup += name + ",";
                                 }
 
-                                ((SimplePeakListRowGCGC) row).setMolClass(finalGroup);
+                                ((SimplePeakListRowGCGC) row).setGolmGroup(finalGroup);
                                 count++;
                                 progress = (double) count / numRows;
-                        } else {
-                                break;
                         }
                 }
                 File file = new File("temporalFile.xml");
@@ -260,6 +240,6 @@ public class NameGolmIdentificationFilterTask extends AbstractTask {
         }
 
         public String getName() {
-                return "Filter Name Identification";
+                return "Filter Group Identification";
         }
 }

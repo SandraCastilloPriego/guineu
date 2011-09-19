@@ -15,40 +15,38 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.classIdentification;
+package guineu.modules.mylly.filter.linearNormalizer;
 
-import guineu.data.DatasetType;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
+import guineu.data.PeakListRow;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author scsandra
  */
-public class ClassIdentificationFilterTask extends AbstractTask {
+public class LinearNormalizerTask extends AbstractTask {
 
         private Dataset dataset;
-        private ClassIdentificationParameters parameters;
-        private ClassIdentification filter;
 
-        public ClassIdentificationFilterTask(Dataset dataset, ClassIdentificationParameters parameters) {
+        public LinearNormalizerTask(Dataset dataset) {
                 this.dataset = dataset;
-                this.parameters = parameters;
-                filter = new ClassIdentification();
         }
 
         public String getTaskDescription() {
-                return "Filtering files with Class Identification Filter... ";
+                return "Filtering file with Linear Normalizer... ";
         }
 
         public double getFinishedPercentage() {
-                return filter.getProgress();
+                return 1f;
         }
 
         public void cancel() {
@@ -59,15 +57,23 @@ public class ClassIdentificationFilterTask extends AbstractTask {
                 setStatus(TaskStatus.PROCESSING);
                 try {
 
-                        String name = parameters.getParameter(ClassIdentificationParameters.fileNames).getValue().getAbsolutePath();
-                        filter.createCorrector(new File(name));
-                        SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(ClassIdentificationParameters.suffix).getValue());
-                        alignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(alignment, true);
+                        List<PeakListRow> standards = new ArrayList<PeakListRow>();
+                        for (PeakListRow row : dataset.getRows()) {
+                                if (row.isSelected() || (dataset.getType() == DatasetType.LCMS
+                                        && ((SimplePeakListRowLCMS) row).getStandard() == 1)) {
+                                        standards.add(row);
+                                }
+                        }
+                        LinearNormalizer filter = new LinearNormalizer(standards);
+                        Dataset newAlignment = filter.actualMap(dataset);
+                        newAlignment.setDatasetName(newAlignment.toString() + "-Normalized");
+                        newAlignment.setType(dataset.getType());
+
+                        GUIUtils.showNewTable(newAlignment, true);
+
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
-                        Logger.getLogger(ClassIdentificationFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LinearNormalizerTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                 }
         }

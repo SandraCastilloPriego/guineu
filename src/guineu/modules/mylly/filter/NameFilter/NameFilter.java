@@ -17,102 +17,49 @@
  */
 package guineu.modules.mylly.filter.NameFilter;
 
-import guineu.desktop.Desktop;
-import guineu.main.GuineuCore;
-import guineu.modules.GuineuModuleCategory;
-import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskEvent;
-import guineu.taskcontrol.TaskStatus;
-import guineu.util.dialogs.ExitCode;
-import java.awt.event.ActionEvent;
-import java.util.logging.Logger;
-import guineu.data.Dataset;
-import guineu.modules.GuineuProcessingModule;
-import guineu.parameters.ParameterSet;
-import guineu.util.GUIUtils;
+import guineu.modules.mylly.datastruct.GCGCData;
+import guineu.modules.mylly.datastruct.GCGCDatum;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
-/**
- *
- * @author scsandra
- */
-public class NameFilter implements GuineuProcessingModule {
+public class NameFilter {
 
-        private Logger logger = Logger.getLogger(this.getClass().getName());
-        private Desktop desktop;
-        private NameFilterParameters parameters;
-        final String helpID = GUIUtils.generateHelpID(this);
+	private NameFilterTool curNameFilter;
 
-     /*   public NameFilter() {
-                parameters = new NameFilterParameters();
-                this.desktop = GuineuCore.getDesktop();
-                desktop.addMenuSeparator(GuineuMenu.MYLLY);
-                desktop.addMenuItem(GuineuMenu.MYLLY, "Name Filter..",
-                        "Filter basen on compound names", KeyEvent.VK_O, this, null, null);
+	public NameFilter() {
+		curNameFilter = new NameFilterTool(new ArrayList<String>());
+	}
 
-        }*/
+	public void generateNewFilter(Collection<String> names) {
+		Set<String> filteredNames = curNameFilter.filteredNames();
+		filteredNames.addAll(names);
+		curNameFilter = new NameFilterTool(filteredNames);
+	}
 
-        public void taskStarted(Task task) {
-                logger.info("Running Name Filter");
-        }
+	public String getName() {
+		return curNameFilter.getName();
+	}
 
-        public void taskFinished(Task task) {
-                if (task.getStatus() == TaskStatus.FINISHED) {
-                        logger.info("Finished Name Filter ");
-                }
+	public GCGCData actualMap(GCGCData obj) {
 
-                if (task.getStatus() == TaskStatus.ERROR) {
+		int done = 0;
 
-                        String msg = "Error while Name Filtering .. ";
-                        logger.severe(msg);
-                        desktop.displayErrorMessage(msg);
+		GCGCData gcgcdata = obj;
 
-                }
-        }
+		GCGCData filtered = null;
 
-        public void actionPerformed(ActionEvent e) {
-                try {
-                        ExitCode exitCode = parameters.showSetupDialog();
-                        if (exitCode == ExitCode.OK) {
-                                runModule();
-                        }
-                } catch (Exception exception) {
-                }
-        }
+		List<GCGCDatum> filteredFile = new ArrayList<GCGCDatum>();
+		for (GCGCDatum d : gcgcdata) {
 
-        public ParameterSet getParameterSet() {
-                return this.parameters;
-        }
+			if (curNameFilter.include(d)) {
+				filteredFile.add(d);
+			}
+			done++;
+		}
+		filtered = new GCGCData(filteredFile, gcgcdata.getName());
 
-        public String toString() {
-                return "Name Filter";
-        }
-
-        public Task[] runModule() {
-
-                Dataset[] AlignmentFiles = desktop.getSelectedDataFiles();
-
-
-                // prepare a new group of tasks
-                Task tasks[] = new NameFilterTask[1];
-
-                tasks[0] = new NameFilterTask(AlignmentFiles, parameters);
-
-                GuineuCore.getTaskController().addTasks(tasks);
-
-                return tasks;
-
-
-        }
-
-        public void statusChanged(TaskEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        public Task[] runModule(ParameterSet parameters) {
-                throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        public GuineuModuleCategory getModuleCategory() {
-                throw new UnsupportedOperationException("Not supported yet.");
-        }
+		return filtered;
+	}
 }

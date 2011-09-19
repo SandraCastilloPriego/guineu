@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  *
  * @author scsandra
  */
-public class ConcentrationsFromMassFilterTask extends AbstractTask {
+public class ConcentrationsFromMassTask extends AbstractTask {
 
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
@@ -46,7 +46,7 @@ public class ConcentrationsFromMassFilterTask extends AbstractTask {
         private boolean direction;
         private double spectrumPeak;
 
-        public ConcentrationsFromMassFilterTask(SimpleGCGCDataset dataset, ConcentrationsFromMassParameters parameters) {
+        public ConcentrationsFromMassTask(SimpleGCGCDataset dataset, ConcentrationsFromMassParameters parameters) {
                 this.dataset = dataset;
                 this.fileName = parameters.getParameter(ConcentrationsFromMassParameters.fileNames).getValue().getAbsolutePath();
                 this.direction = parameters.getParameter(ConcentrationsFromMassParameters.direction).getValue();
@@ -163,7 +163,7 @@ public class ConcentrationsFromMassFilterTask extends AbstractTask {
 
                         return newDataset;
                 } catch (Exception ex) {
-                        Logger.getLogger(ConcentrationsFromMassFilterTask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(ConcentrationsFromMassTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                         return null;
                 }

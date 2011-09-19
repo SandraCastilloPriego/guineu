@@ -15,23 +15,24 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.pubChem.GolmIdentification;
+package guineu.modules.mylly.filter.NonPolarComponents;
 
-import guineu.main.GuineuCore;
-import guineu.modules.GuineuModuleCategory;
-import guineu.taskcontrol.Task;
 import guineu.data.Dataset;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.main.GuineuCore;
+import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.Task;
+
 
 /**
  *
  * @author scsandra
  */
-public class GetGolmIDsFilter implements GuineuProcessingModule {
+public class removeNonPolarModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "IDs Identification Filter";
+        public static final String MODULE_NAME = "Remove Non-Polar Compounds";
 
         public ParameterSet getParameterSet() {
                 return null;
@@ -42,13 +43,11 @@ public class GetGolmIDsFilter implements GuineuProcessingModule {
         }
 
         public Task[] runModule(ParameterSet parameters) {
-
-                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
-
                 // prepare a new group of tasks
-                Task tasks[] = new GetGolmIDsFilterTask[DataFiles.length];
+                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
+                Task tasks[] = new removeNonPolarTask[DataFiles.length];
                 for (int cont = 0; cont < DataFiles.length; cont++) {
-                        tasks[cont] = new GetGolmIDsFilterTask((SimpleGCGCDataset) DataFiles[cont]);
+                        tasks[cont] = new removeNonPolarTask((SimpleGCGCDataset) DataFiles[cont]);
                 }
                 GuineuCore.getTaskController().addTasks(tasks);
 
@@ -56,6 +55,6 @@ public class GetGolmIDsFilter implements GuineuProcessingModule {
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.GCGCIDENTIFICATIONSUBMENU;
+                return GuineuModuleCategory.MYLLY;
         }
 }

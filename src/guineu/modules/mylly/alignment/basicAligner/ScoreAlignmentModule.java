@@ -15,13 +15,12 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.pubChem.GolmIdentification;
+package guineu.modules.mylly.alignment.basicAligner;
 
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
 import guineu.data.Dataset;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 
@@ -29,33 +28,33 @@ import guineu.parameters.ParameterSet;
  *
  * @author scsandra
  */
-public class GetGolmIDsFilter implements GuineuProcessingModule {
+public class ScoreAlignmentModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "IDs Identification Filter";
+        public static final String MODULE_NAME = "Score Alignment";
+        private BasicAlignerGCGCParameters parameters = new BasicAlignerGCGCParameters();
 
         public ParameterSet getParameterSet() {
-                return null;
+                return this.parameters;
         }
 
+        @Override
         public String toString() {
                 return MODULE_NAME;
         }
 
         public Task[] runModule(ParameterSet parameters) {
-
-                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
-
                 // prepare a new group of tasks
-                Task tasks[] = new GetGolmIDsFilterTask[DataFiles.length];
-                for (int cont = 0; cont < DataFiles.length; cont++) {
-                        tasks[cont] = new GetGolmIDsFilterTask((SimpleGCGCDataset) DataFiles[cont]);
-                }
+                Task tasks[] = new BasicAlignerGCGCTask[1];
+                Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
+
+                tasks[0] = new BasicAlignerGCGCTask(datasets, (BasicAlignerGCGCParameters) parameters);
+
                 GuineuCore.getTaskController().addTasks(tasks);
 
                 return tasks;
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.GCGCIDENTIFICATIONSUBMENU;
+                return GuineuModuleCategory.MYLLY;
         }
 }
