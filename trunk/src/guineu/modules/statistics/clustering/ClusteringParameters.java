@@ -17,6 +17,8 @@
  */
 package guineu.modules.statistics.clustering;
 
+import guineu.data.PeakListRow;
+import guineu.main.GuineuCore;
 import guineu.modules.statistics.PCA.ProjectionPlotParameters;
 import guineu.modules.statistics.clustering.em.EMClusterer;
 import guineu.modules.statistics.clustering.farthestfirst.FarthestFirstClusterer;
@@ -26,6 +28,7 @@ import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.parametersType.ComboParameter;
 import guineu.parameters.parametersType.ModuleComboParameter;
+import guineu.util.dialogs.ExitCode;
 
 public class ClusteringParameters extends SimpleParameterSet {
 
@@ -48,23 +51,19 @@ public class ClusteringParameters extends SimpleParameterSet {
                                 typeOfData});
         }
 
-      //  @Override
-       /* public ExitCode showSetupDialog() {
+    @Override
+        public ExitCode showSetupDialog() {
 
-
-
-                PeakList selectedPeakList[] = getParameter(peakLists).getValue();
-
-                RawDataFile dataFileChoices[];
-                if (selectedPeakList.length == 1) {
-                        dataFileChoices = selectedPeakList[0].getRawDataFiles();
+                String dataFileChoices[];
+                if (GuineuCore.getDesktop().getSelectedDataFiles().length >= 1) {
+                        dataFileChoices = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
                 } else {
-                        dataFileChoices = new RawDataFile[0];
+                        dataFileChoices = new String[0];
                 }
 
                 PeakListRow rowChoices[];
-                if (selectedPeakList.length == 1) {
-                        rowChoices = selectedPeakList[0].getRows();
+                if (GuineuCore.getDesktop().getSelectedDataFiles().length >= 1) {
+                        rowChoices = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
                 } else {
                         rowChoices = new PeakListRow[0];
                 }
@@ -74,5 +73,5 @@ public class ClusteringParameters extends SimpleParameterSet {
                 getParameter(ProjectionPlotParameters.rows).setChoices(rowChoices);
 
                 return super.showSetupDialog();
-        }*/
+        }
 }
