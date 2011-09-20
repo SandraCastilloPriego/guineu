@@ -48,4 +48,12 @@ public class ExitProgram implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.FILE;
         }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }

@@ -57,4 +57,12 @@ public class R implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.R;
         }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }

@@ -24,6 +24,6 @@ package guineu.main;
  */
 public class GuineuVersion {
 
-	public static final String GUINEU = "1.82";
+	public static final String GUINEU = "0.9";
 
 }

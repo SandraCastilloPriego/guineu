@@ -37,7 +37,7 @@ import javax.swing.table.TableModel;
 public class LCMSColumnsView implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "LCMS Table View";
-        private SimpleParameterSet parameters;
+        private SimpleParameterSet parameters = GuineuCore.getLCMSColumnsParameters();
 
         public ParameterSet getParameterSet() {
                 return parameters;
@@ -69,5 +69,13 @@ public class LCMSColumnsView implements GuineuProcessingModule {
 
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.CONFIGURATION;
+        }
+
+        public String getIcon() {
+                return "icons/conf1.png";
+        }
+
+        public boolean setSeparator() {
+                return false;
         }
 }

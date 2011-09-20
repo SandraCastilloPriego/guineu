@@ -75,4 +75,12 @@ public class GCGCColumnsView implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.CONFIGURATION;
         }
+
+        public String getIcon() {
+                return "icons/conf2.png";
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }

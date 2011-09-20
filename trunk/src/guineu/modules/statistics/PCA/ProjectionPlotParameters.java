@@ -23,6 +23,7 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
 import guineu.parameters.parametersType.MultiChoiceParameter;
+import guineu.util.dialogs.ExitCode;
 
 /**
  * @author Taken from MZmine2
@@ -32,7 +33,7 @@ import guineu.parameters.parametersType.MultiChoiceParameter;
 public class ProjectionPlotParameters extends SimpleParameterSet {
 
         public static final MultiChoiceParameter<String> dataFiles = new MultiChoiceParameter<String>(
-                "Data files", "Samples", GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]));
+                "Data files", "Samples", new String[0]);
         public static final ColoringTypeParameter coloringType = new ColoringTypeParameter();
         public static final Integer[] componentPossibleValues = {1, 2, 3, 4, 5};
         public static final ComboParameter<Integer> xAxisComponent = new ComboParameter<Integer>(
@@ -42,11 +43,34 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
                 "Y-axis component", "Component on the Y-axis",
                 componentPossibleValues, componentPossibleValues[1]);
         public static final MultiChoiceParameter<PeakListRow> rows = new MultiChoiceParameter<PeakListRow>(
-                "Peak list rows", "Peak list rows to include in calculation",
-                GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]));
+                "Peak list rows", "Peak list rows to include in calculation", new PeakListRow[0]);
 
         public ProjectionPlotParameters() {
-                super(new UserParameter[]{coloringType, xAxisComponent,
+                super(new UserParameter[]{dataFiles, rows, coloringType, xAxisComponent,
                                 yAxisComponent});
+        }
+
+        @Override
+        public ExitCode showSetupDialog() {
+
+                String dataFileChoices[];
+                if (GuineuCore.getDesktop().getSelectedDataFiles().length >= 1) {
+                        dataFileChoices = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
+                } else {
+                        dataFileChoices = new String[0];
+                }
+
+                PeakListRow rowChoices[];
+                if (GuineuCore.getDesktop().getSelectedDataFiles().length >= 1) {
+                        rowChoices = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
+                } else {
+                        rowChoices = new PeakListRow[0];
+                }
+
+                getParameter(ProjectionPlotParameters.dataFiles).setChoices(
+                        dataFileChoices);
+                getParameter(ProjectionPlotParameters.rows).setChoices(rowChoices);
+
+                return super.showSetupDialog();
         }
 }

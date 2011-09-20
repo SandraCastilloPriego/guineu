@@ -21,6 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
+import guineu.parameters.ParameterSet;
 import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
@@ -34,9 +35,9 @@ public class SaveGCGCFileTask extends AbstractTask {
         private Dataset dataset;
         private String path;
         private InDataBase db;
-        private SimpleParameterSet parameters;
+        private ParameterSet parameters;
 
-        public SaveGCGCFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
+        public SaveGCGCFileTask(Dataset dataset, ParameterSet parameters, String path) {
                 this.dataset = dataset;
                 this.path = path;
                 this.parameters = parameters;
@@ -60,11 +61,11 @@ public class SaveGCGCFileTask extends AbstractTask {
                         setStatus(TaskStatus.PROCESSING);
                         if (dataset.getType() == DatasetType.GCGCTOF) {
                                 if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*Excel.*")) {
-                                        db.WriteExcelFile(dataset, path, parameters);
+                                        db.WriteExcelFile(dataset, path, (SimpleParameterSet) parameters);
                                 } else if (parameters.getParameter(SaveGCGCParameters.type).getValue().matches(".*csv.*")) {
-                                        db.WriteCommaSeparatedFile(dataset, path, parameters);
+                                        db.WriteCommaSeparatedFile(dataset, path, (SimpleParameterSet) parameters);
                                 } else {
-                                        db.WriteExpressionData(dataset, path, parameters);
+                                        db.WriteExpressionData(dataset, path, (SimpleParameterSet) parameters);
                                 }
                         }
                         setStatus(TaskStatus.FINISHED);

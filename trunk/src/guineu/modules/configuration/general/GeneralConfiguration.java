@@ -23,7 +23,6 @@ import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 
-
 public class GeneralConfiguration implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "General configuration";
@@ -45,5 +44,13 @@ public class GeneralConfiguration implements GuineuProcessingModule {
 
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.CONFIGURATION;
+        }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
         }
 }

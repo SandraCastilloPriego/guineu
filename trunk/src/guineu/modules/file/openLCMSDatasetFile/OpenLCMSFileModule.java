@@ -39,7 +39,6 @@ public class OpenLCMSFileModule implements GuineuProcessingModule {
 
         public Task[] runModule(ParameterSet parameters) {
                 File[] FilePath = parameters.getParameter(OpenFileParameters.fileNames).getValue();
-                System.out.println(FilePath[0].getName());
                 // prepare a new group of tasks
                 if (FilePath != null) {
                         Task tasks[] = new OpenFileTask[FilePath.length];
@@ -56,5 +55,13 @@ public class OpenLCMSFileModule implements GuineuProcessingModule {
 
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.FILE;
+        }
+
+        public String getIcon() {
+                return "icons/spectrumicon.png";
+        }
+
+        public boolean setSeparator() {
+                return true;
         }
 }

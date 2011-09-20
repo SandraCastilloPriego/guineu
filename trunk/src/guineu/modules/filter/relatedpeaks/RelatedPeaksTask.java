@@ -19,7 +19,6 @@ package guineu.modules.filter.relatedpeaks;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 

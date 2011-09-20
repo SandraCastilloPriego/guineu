@@ -19,7 +19,7 @@ package guineu.modules.statistics.Media;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.desktop.Desktop;
+import guineu.main.GuineuCore;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.internalframe.DataInternalFrame;
@@ -34,12 +34,10 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 public class mediaFilterTask extends AbstractTask {
 
         private Dataset[] datasets;
-        private Desktop desktop;
         private double progress;
 
-        public mediaFilterTask(Dataset[] datasets, Desktop desktop) {
+        public mediaFilterTask(Dataset[] datasets) {
                 this.datasets = datasets;
-                this.desktop = desktop;
         }
 
         public String getTaskDescription() {
@@ -76,7 +74,7 @@ public class mediaFilterTask extends AbstractTask {
                                         row.setPeak("Median", median[cont++]);
                                 }
 
-                                JInternalFrame[] frames = desktop.getInternalFrames();
+                                JInternalFrame[] frames = GuineuCore.getDesktop().getInternalFrames();
                                 for (int i = 0; i < frames.length; i++) {
                                         try {
                                                 JTable table = ((DataInternalFrame) frames[i]).getTable();

@@ -27,9 +27,9 @@ import guineu.modules.GuineuModule;
 import guineu.modules.database.saveQualityControFileDB.SaveQualityControlFileDB;
 import guineu.modules.file.saveDatasetDB.SaveFileDB;
 import guineu.modules.file.saveExpressionFile.SaveExpressionFile;
-import guineu.modules.file.saveGCGCFile.SaveGCGCFile;
-import guineu.modules.file.saveLCMSFile.SaveLCMSFile;
-import guineu.modules.file.saveOtherFile.SaveOtherFile;
+import guineu.modules.file.saveGCGCFile.SaveGCGCFileModule;
+import guineu.modules.file.saveLCMSFile.SaveLCMSFileModule;
+import guineu.modules.file.saveOtherFile.SaveOtherFileModule;
 import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import guineu.util.components.DragOrderedJList;
@@ -100,7 +100,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Show Dataset", this, "SHOW_DATASET");
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Add Comments", this, "ADD_COMMENT");
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset in a File", this, "SAVE_DATASET");
-                GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
+              //  GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Remove", this, "REMOVE_FILE");
 
                 this.parameterName = new NameChangeParameter();
@@ -110,17 +110,7 @@ public class ItemSelector extends JPanel implements ActionListener,
         void addSelectionListener(ListSelectionListener listener) {
                 DatasetFiles.addListSelectionListener(listener);
         }
-
-        /*public ExitCode setupParameters() {
-                try {
-                        ParameterSetupDialog nameDialog = new ParameterSetupDialog(parameterName);
-                        nameDialog.setVisible(true);
-                        return nameDialog.getExitCode();
-                } catch (Exception exception) {
-                        return ExitCode.CANCEL;
-                }
-        }*/
-
+        
         public void setupInfoDialog(Dataset data) {
                 try {
                         InfoDataIF dialog = new InfoDataIF();
@@ -197,8 +187,8 @@ public class ItemSelector extends JPanel implements ActionListener,
                                                 break;
                                         }
                                 }
-                                SaveLCMSFile save = new SaveLCMSFile(selectedFiles, parameters);
-                                save.initModule();
+                                SaveLCMSFileModule save = new SaveLCMSFileModule();
+                                save.initModule(selectedFiles, parameters);
                         } else if (selectedFiles[0].getType() == DatasetType.GCGCTOF) {
                                 ParameterSet parameters = null;
                                 for (GuineuModule module : GuineuCore.getAllModules()) {
@@ -207,8 +197,8 @@ public class ItemSelector extends JPanel implements ActionListener,
                                                 break;
                                         }
                                 }
-                                SaveGCGCFile save = new SaveGCGCFile(selectedFiles, parameters);
-                                save.initModule();
+                                SaveGCGCFileModule save = new SaveGCGCFileModule();
+                                save.initModule(selectedFiles, parameters);
                         } else if (selectedFiles[0].getType() == DatasetType.EXPRESSION) {
                                ParameterSet parameters = null;
                                 for (GuineuModule module : GuineuCore.getAllModules()) {
@@ -227,8 +217,8 @@ public class ItemSelector extends JPanel implements ActionListener,
                                                 break;
                                         }
                                 }
-                                SaveOtherFile save = new SaveOtherFile(selectedFiles, parameters);
-                                save.initModule();
+                                SaveOtherFileModule save = new SaveOtherFileModule();
+                                save.initModule(selectedFiles, parameters);
                         }
                 }
 
@@ -342,7 +332,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                         if (dataset.getDatasetName().matches(DatasetNamesModel.getElementAt(i).toString())) {
                                 dataset.setDatasetName(dataset.getDatasetName() + "_" + ++copies);
                         }
-                }
+                }              
                 this.DatasetFilesModel.add(dataset);
                 DatasetNamesModel.addElement(dataset.getDatasetName());
                 this.DatasetFiles.revalidate();

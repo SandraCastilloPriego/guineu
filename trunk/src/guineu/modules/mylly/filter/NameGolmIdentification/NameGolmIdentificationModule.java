@@ -57,4 +57,12 @@ public class NameGolmIdentificationModule implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.GCGCIDENTIFICATIONSUBMENU;
         }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }

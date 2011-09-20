@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.datamodels.VariationCoefficientDataModel;
 import guineu.data.impl.VariationCoefficientData;
-import guineu.desktop.Desktop;
+import guineu.main.GuineuCore;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Tables.DataTable;
@@ -39,13 +39,10 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 public class VariationCoefficientTask extends AbstractTask {
 
         private Dataset[] datasets;
-        private Desktop desktop;
         private double progress;
 
-        public VariationCoefficientTask(Dataset[] datasets, Desktop desktop) {
+        public VariationCoefficientTask(Dataset[] datasets) {
                 this.datasets = datasets;
-                this.desktop = desktop;
-
         }
 
         public String getTaskDescription() {
@@ -89,7 +86,7 @@ public class VariationCoefficientTask extends AbstractTask {
                         DataTable table = new PushableTable(model);
                         table.formatNumbers(1);
                         DataInternalFrame frame = new DataInternalFrame("Coefficient of variation", table.getTable(), new Dimension(450, 450));
-                        desktop.addInternalFrame(frame);
+                        GuineuCore.getDesktop().addInternalFrame(frame);
                         frame.setVisible(true);
 
                         progress = 1f;

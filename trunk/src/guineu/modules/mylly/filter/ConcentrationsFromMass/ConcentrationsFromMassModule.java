@@ -59,4 +59,12 @@ public class ConcentrationsFromMassModule implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.MYLLY;
         }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }

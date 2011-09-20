@@ -114,4 +114,12 @@ public class SaveExpressionFile implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 throw new UnsupportedOperationException("Not supported yet.");
         }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }

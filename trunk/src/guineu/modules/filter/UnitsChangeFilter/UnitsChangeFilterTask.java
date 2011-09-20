@@ -19,7 +19,7 @@ package guineu.modules.filter.UnitsChangeFilter;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 
@@ -33,7 +33,7 @@ public class UnitsChangeFilterTask extends AbstractTask {
         private Dataset dataset;
         private UnitsChangeFilterParameters parameters;
 
-        public UnitsChangeFilterTask(Dataset simpleDataset, SimpleParameterSet parameters) {
+        public UnitsChangeFilterTask(Dataset simpleDataset, ParameterSet parameters) {
                 this.dataset = simpleDataset;
                 this.parameters = (UnitsChangeFilterParameters) parameters;
         }

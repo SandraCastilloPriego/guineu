@@ -207,14 +207,8 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
         public JFrame getMainFrame() {
                 return this;
-        }
+        } 
        
-
-        public void addMenuSeparator(GuineuMenu parentMenu) {
-                menuBar.addMenuSeparator(parentMenu);
-
-        }
-
         public JInternalFrame getSelectedFrame() {
                 return desktopPane.getSelectedFrame();
         }
@@ -247,7 +241,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         /*public Vector[] getSelectedExperiments() {
         return this.itemSelector.getSelectedExperiments();
         }*/
-        public void AddNewFile(Dataset dataset) {
+        public void AddNewFile(Dataset dataset) {               
                 this.itemSelector.addNewFile(dataset);
         }
 
