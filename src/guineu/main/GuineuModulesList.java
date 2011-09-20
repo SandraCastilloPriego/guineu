@@ -24,10 +24,53 @@ import guineu.modules.configuration.parameters.ParameterConfiguration;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsView;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsView;
 import guineu.modules.file.exit.ExitProgram;
-import guineu.modules.file.openBasicFiles.OpenBasicFile;
+import guineu.modules.file.openBasicFiles.OpenBasicFileModule;
 import guineu.modules.file.openExpressionFiles.OpenExpressionFile;
 import guineu.modules.file.openLCMSDatasetFile.OpenLCMSFileModule;
-import guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRowFilter;
+import guineu.modules.file.saveGCGCFile.SaveGCGCFileModule;
+import guineu.modules.file.saveLCMSFile.SaveLCMSFileModule;
+import guineu.modules.file.saveOtherFile.SaveOtherFileModule;
+import guineu.modules.filter.Alignment.RANSAC.RansacAlignerModule;
+import guineu.modules.filter.Alignment.centering.mean.MeanCenteringModule;
+import guineu.modules.filter.Alignment.centering.median.MedianCenteringModule;
+import guineu.modules.filter.Alignment.normalizationSTD.STDNormalizationModule;
+import guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilterModule;
+import guineu.modules.filter.dataselection.DataSelectionModule;
+import guineu.modules.filter.relatedpeaks.RelatedPeaksFilterModule;
+import guineu.modules.filter.splitdatasets.SplitModule;
+import guineu.modules.filter.transpose.TransposeFilterModule;
+import guineu.modules.identification.AdductSearch.AdductSearchModule;
+import guineu.modules.identification.CustomIdentification.CustomDBSearchModule;
+import guineu.modules.identification.linearnormalization.LinearNormalizerModule;
+import guineu.modules.identification.normalizationserum.NormalizeSerumModule;
+import guineu.modules.identification.normalizationtissue.NormalizeTissueModule;
+import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentModule;
+import guineu.modules.mylly.filter.ConcentrationsFromMass.ConcentrationsFromMassModule;
+import guineu.modules.mylly.filter.GroupIdentification.GroupIdentificationModule;
+import guineu.modules.mylly.filter.NameFilter.NameFilterModule;
+import guineu.modules.mylly.filter.NameGolmIdentification.NameGolmIdentificationModule;
+import guineu.modules.mylly.filter.NonPolarComponents.removeNonPolarModule;
+import guineu.modules.mylly.filter.SimilarityFilter.SimilarityModule;
+import guineu.modules.mylly.filter.calculateDeviations.CalculateDeviationsModule;
+import guineu.modules.mylly.filter.classIdentification.ClassIdentificationModule;
+import guineu.modules.mylly.filter.linearNormalizer.LinearGCGCNormalizerModule;
+import guineu.modules.mylly.filter.peakCounter.PeakCountModule;
+import guineu.modules.mylly.filter.pubChem.GolmIdentification.GetGolmIDsModule;
+import guineu.modules.mylly.filter.pubChem.PubChemModule;
+import guineu.modules.mylly.filter.tools.PrepareDeviationFile.RTIFileModule;
+import guineu.modules.mylly.openFiles.OpenGCGCFilesModule;
+import guineu.modules.mylly.openGCGCDatasetFile.OpenGCGCDatasetModule;
+import guineu.modules.statistics.Media.mediaFilterModule;
+import guineu.modules.statistics.PCA.CDAPlotModule;
+import guineu.modules.statistics.PCA.PCAPlotModule;
+import guineu.modules.statistics.PCA.SammonsPlotModule;
+import guineu.modules.statistics.Ttest.TtestModule;
+import guineu.modules.statistics.anova.AnovaTestModule;
+import guineu.modules.statistics.clustering.ClusteringTest;
+import guineu.modules.statistics.foldChanges.FoldtestModule;
+import guineu.modules.statistics.standardVariation.StandardVariationModule;
+import guineu.modules.statistics.variationCoefficient.VariationCoefficientModule;
+import guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRowModule;
 
 /**
  * List of modules included in Guineu
@@ -35,16 +78,59 @@ import guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRow
 public class GuineuModulesList {
 
         public static final Class<?> MODULES[] = new Class<?>[]{
-                OpenLCMSFileModule.class,
+                OpenLCMSFileModule.class, 
+                OpenGCGCFilesModule.class,
+                OpenGCGCDatasetModule.class,
+                OpenBasicFileModule.class,
                 OpenExpressionFile.class,
-                OpenBasicFile.class,
-                ExitProgram.class,
-                HeatMapModule.class,
+                SaveLCMSFileModule.class,
+                SaveGCGCFileModule.class,
+                SaveOtherFileModule.class,
+                ExitProgram.class,                
                 GeneralConfiguration.class,
                 ParameterConfiguration.class,
                 GCGCColumnsView.class,
                 LCMSColumnsView.class,
-                ParameterConfiguration.class
+                RansacAlignerModule.class,
+                MeanCenteringModule.class,
+                MedianCenteringModule.class,
+                STDNormalizationModule.class,
+                UnitsChangeFilterModule.class,
+                SplitModule.class,
+                TransposeFilterModule.class,
+                DataSelectionModule.class,
+                CustomDBSearchModule.class,
+                RelatedPeaksFilterModule.class,
+                AdductSearchModule.class,
+                LinearNormalizerModule.class,
+                NormalizeSerumModule.class,
+                NormalizeTissueModule.class,
+                ScoreAlignmentModule.class,
+                ConcentrationsFromMassModule.class,
+                GroupIdentificationModule.class,
+                NameGolmIdentificationModule.class,
+                ClassIdentificationModule.class,
+                NameFilterModule.class,
+                GetGolmIDsModule.class,
+                removeNonPolarModule.class,
+                SimilarityModule.class,
+                CalculateDeviationsModule.class,
+                PeakCountModule.class,
+                PubChemModule.class,
+                LinearGCGCNormalizerModule.class,
+                RTIFileModule.class,
+                VariationCoefficientModule.class,
+                VariationCoefficientRowModule.class,                
+                mediaFilterModule.class,
+                TtestModule.class,
+                AnovaTestModule.class,
+                FoldtestModule.class,                
+                StandardVariationModule.class,
+                PCAPlotModule.class,
+                CDAPlotModule.class,
+                SammonsPlotModule.class,
+                ClusteringTest.class,
+                HeatMapModule.class,
 
         };
 }

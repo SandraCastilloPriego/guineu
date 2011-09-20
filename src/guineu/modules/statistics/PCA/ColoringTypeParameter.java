@@ -47,7 +47,7 @@ public class ColoringTypeParameter implements
         public ColoringTypeParameter() {
                 this.name = "Coloring type";
                 this.description = "Defines how points will be colored";
-        }        
+        }
 
         @Override
         public String getName() {
@@ -111,13 +111,17 @@ public class ColoringTypeParameter implements
                         return;
                 }
                 String attrValue = xmlElement.getAttribute("type");
-                this.metaData = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
+                if (GuineuCore.getDesktop().getSelectedDataFiles().length >= 1) {
+                        this.metaData = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
+                }
                 if (attrValue.equals("parameter")) {
                         for (String data : metaData) {
+
                                 if (data.equals(elementString)) {
                                         value = new ColoringType(data);
                                         break;
                                 }
+
                         }
                 } else {
                         value = new ColoringType(elementString);
@@ -140,9 +144,9 @@ public class ColoringTypeParameter implements
 
         public boolean checkValue(Collection<String> errorMessages) {
                 if (value == null) {
-			errorMessages.add(name + " is not set");
-			return false;
-		}
-		return true;
+                        errorMessages.add(name + " is not set");
+                        return false;
+                }
+                return true;
         }
 }

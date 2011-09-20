@@ -20,6 +20,7 @@ package guineu.modules.file.saveOtherFile;
 import guineu.data.Dataset;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
+import guineu.parameters.ParameterSet;
 import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
@@ -33,9 +34,9 @@ public class SaveOtherFileTask extends AbstractTask {
         private Dataset dataset;
         private String path;
         private InDataBase db;
-        private SimpleParameterSet parameters;
+        private ParameterSet parameters;
 
-        public SaveOtherFileTask(Dataset dataset, SimpleParameterSet parameters, String path) {
+        public SaveOtherFileTask(Dataset dataset, ParameterSet parameters, String path) {
                 this.dataset = dataset;
                 this.path = path;
                 this.parameters = parameters;
@@ -58,9 +59,9 @@ public class SaveOtherFileTask extends AbstractTask {
                 try {
                         setStatus(TaskStatus.PROCESSING);
                         if (parameters.getParameter(SaveOtherParameters.type).getValue().matches(".*Excel.*")) {
-                                db.WriteExcelFile(dataset, path, parameters);
+                                db.WriteExcelFile(dataset, path, (SimpleParameterSet) parameters);
                         } else {
-                                db.WriteCommaSeparatedFile(dataset, path, parameters);
+                                db.WriteCommaSeparatedFile(dataset, path, (SimpleParameterSet) parameters);
                         }
 
                         setStatus(TaskStatus.FINISHED);

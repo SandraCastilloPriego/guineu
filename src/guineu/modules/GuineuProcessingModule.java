@@ -20,6 +20,7 @@ package guineu.modules;
 
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import javax.swing.Icon;
 
 
 
@@ -41,5 +42,14 @@ public interface GuineuProcessingModule extends GuineuModule {
 	 * picking etc.). Menu item will be created according to the category.
 	 */
 	public GuineuModuleCategory getModuleCategory();
+
+        /**
+         * Returns the path of the icon
+         * @return
+         */
+
+        public String getIcon();
+
+        public boolean setSeparator();
 
 }

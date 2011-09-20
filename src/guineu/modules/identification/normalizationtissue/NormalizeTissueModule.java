@@ -1,0 +1,144 @@
+/*
+ * Copyright 2007-2011 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
+ */
+package guineu.modules.identification.normalizationtissue;
+
+import guineu.data.Dataset;
+import guineu.data.PeakListRow;
+import guineu.main.GuineuCore;
+import guineu.modules.GuineuModuleCategory;
+import guineu.modules.GuineuProcessingModule;
+import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.Task;
+import guineu.taskcontrol.TaskEvent;
+
+import guineu.util.GUIUtils;
+import guineu.util.Range;
+import guineu.util.dialogs.ExitCode;
+import java.util.Hashtable;
+import java.util.Vector;
+
+/**
+ *
+ * @author scsandra
+ */
+public class NormalizeTissueModule implements GuineuProcessingModule {
+
+        public static final String MODULE_NAME = "Tissue Normalization Filter";
+        private Vector<StandardUmol> standards;
+        private Hashtable<String, Double> weights;
+        final String helpID = GUIUtils.generateHelpID(this);
+
+        public ExitCode setupParameters() {
+                this.standards = new Vector<StandardUmol>();
+                this.weights = new Hashtable<String, Double>();
+                Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
+                if (datasets.length > 0) {
+                        Hashtable<String, Range> stdRanges = GuineuCore.getStandards();
+                        for (PeakListRow row : datasets[0].getRows()) {
+                                if (row.isSelected() || (Integer) row.getVar("getStandard") == 1) {
+                                        StandardUmol std = new StandardUmol(row);
+                                        if (stdRanges != null && stdRanges.containsKey(std.getName())) {
+                                                std.setRange(stdRanges.get(std.getName()));
+                                        }
+                                        if (!this.isThere(std)) {
+                                                this.standards.add(std);
+                                        }
+                                }
+                        }
+
+                        purge();
+                        try {
+
+                                NormalizationDialog dialog = new NormalizationDialog(standards, datasets[0], weights, helpID);
+                                dialog.setVisible(true);
+                                return dialog.getExitCode();
+                        } catch (Exception exception) {
+                                exception.printStackTrace();
+                                return ExitCode.CANCEL;
+                        }
+                } else {
+                        return ExitCode.CANCEL;
+                }
+        }
+
+        public ParameterSet getParameterSet() {
+                return null;
+        }
+
+        public String toString() {
+                return MODULE_NAME;
+        }
+
+        private boolean isThere(StandardUmol std2) {
+                for (StandardUmol std : this.standards) {
+                        if (std.getName().equals(std2.getName())) {
+                                return true;
+                        }
+                }
+                return false;
+        }
+
+        private void purge() {
+                Vector<StandardUmol> remove = new Vector<StandardUmol>();
+                for (StandardUmol std : this.standards) {
+                        if (!std.isSelect()) {
+                                remove.addElement(std);
+                        }
+                }
+
+                for (StandardUmol std : remove) {
+                        this.standards.remove(std);
+                }
+
+        }
+
+        public void statusChanged(TaskEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Task[] runModule(ParameterSet parameters) {
+                ExitCode exitCode = setupParameters();
+                if (exitCode != ExitCode.OK) {
+                        return null;
+                }
+
+                for (StandardUmol std : this.standards) {
+                        GuineuCore.setStandard(std.getName(), std.getRange());
+                }
+                // prepare a new group of tasks
+                Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
+                Task tasks[] = new NormalizeTissueTask[datasets.length];
+                for (int i = 0; i < datasets.length; i++) {
+                        tasks[i] = new NormalizeTissueTask(datasets[i], standards, weights);
+                }
+                GuineuCore.getTaskController().addTasks(tasks);
+                return tasks;
+        }
+
+        public GuineuModuleCategory getModuleCategory() {
+                return GuineuModuleCategory.NORMALIZATION;
+        }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
+}

@@ -55,4 +55,12 @@ public class ParameterConfiguration implements GuineuProcessingModule {
         public ParameterSet getParameterSet() {
                 return null;
         }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return true;
+        }
 }

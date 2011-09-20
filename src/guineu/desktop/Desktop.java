@@ -38,15 +38,8 @@ public interface Desktop extends GuineuModule {
          *
          * @return Main window frame
          */
-        public JFrame getMainFrame();       
-
-        /**
-         * Adds a separator to a given Guineu menu
-         *
-         * @param parentMenu Menu where to add a separator
-         */
-        public void addMenuSeparator(GuineuMenu parentMenu);
-
+        public JFrame getMainFrame(); 
+       
         /**
          * Adds a new internal frame (JInternalFrame) to the desktop pane
          *

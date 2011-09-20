@@ -26,18 +26,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import ca.guydavis.swing.desktop.CascadingWindowPositioner;
 import ca.guydavis.swing.desktop.JWindowsMenu;
-import guineu.data.Dataset;
 import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
-import guineu.parameters.Parameter;
 import guineu.parameters.ParameterSet;
 import guineu.util.dialogs.ExitCode;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 
 /**
  * @author Taken from MZmine2
@@ -48,11 +47,11 @@ public class MainMenu extends JMenuBar implements ActionListener {
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private JMenu fileMenu, /*msmsMenu, */ myllyMenu, myllyToolsMenu,
                 lcmsIdentificationSubMenu, gcgcIdentificationSubMenu, normalizationMenu,
-                identificationFilterMenu, databaseMenu, filterMenu, alignmentMenu,
-                identificationMenu, helpMenu, statisticsMenu, configurationMenu,
-                reportMenu;
+                identificationFilterMenu, /*databaseMenu,*/ filterMenu, alignmentMenu,
+                identificationMenu, helpMenu, statisticsMenu, configurationMenu/*,
+                reportMenu*/;
         private JWindowsMenu windowsMenu;
-        private JMenuItem hlpAbout, showAbout;
+        private JMenuItem showAbout;
         private Map<JMenuItem, GuineuProcessingModule> moduleMenuItems = new Hashtable<JMenuItem, GuineuProcessingModule>();
 
         MainMenu() {
@@ -65,9 +64,9 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 configurationMenu.setMnemonic(KeyEvent.VK_C);
                 add(configurationMenu);
 
-                databaseMenu = new JMenu("Database");
+             /*   databaseMenu = new JMenu("Database");
                 databaseMenu.setMnemonic(KeyEvent.VK_D);
-                add(databaseMenu);
+                add(databaseMenu);*/
 
                 filterMenu = new JMenu("Filter");
                 filterMenu.setMnemonic(KeyEvent.VK_L);
@@ -102,7 +101,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 statisticsMenu.setMnemonic(KeyEvent.VK_S);
                 this.add(statisticsMenu);
 
-                reportMenu = new JMenu("LC-MS Reports");
+                /*reportMenu = new JMenu("LC-MS Reports");
                 reportMenu.setMnemonic(KeyEvent.VK_R);
                 this.add(reportMenu);
 
@@ -150,7 +149,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 configurationMenu.add(newItem);
                                 break;
                         case DATABASE:
-                                databaseMenu.add(newItem);
+                               // databaseMenu.add(newItem);
                                 break;
                         case FILTERING:
                                 filterMenu.add(newItem);
@@ -177,7 +176,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 statisticsMenu.add(newItem);
                                 break;
                         case REPORT:
-                                reportMenu.add(newItem);
+                             //   reportMenu.add(newItem);
                                 break;
                         /* case MSMS:
                         msmsMenu.add(newItem);
@@ -219,7 +218,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
         return newItem;
 
         }*/
-        public void addMenuSeparator(GuineuMenu parentMenu) {
+        public void addMenuSeparator(GuineuModuleCategory parentMenu) {
                 switch (parentMenu) {
                         case FILE:
                                 fileMenu.addSeparator();
@@ -228,9 +227,9 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 configurationMenu.addSeparator();
                                 break;
                         case DATABASE:
-                                databaseMenu.addSeparator();
+                            //    databaseMenu.addSeparator();
                                 break;
-                        case FILTER:
+                        case FILTERING:
                                 filterMenu.addSeparator();
                                 break;
                         case ALIGNMENT:
@@ -251,11 +250,11 @@ public class MainMenu extends JMenuBar implements ActionListener {
                         case NORMALIZATION:
                                 normalizationMenu.addSeparator();
                                 break;
-                        case STATISTICS:
+                        case DATAANALYSIS:
                                 statisticsMenu.addSeparator();
                                 break;
                         case REPORT:
-                                reportMenu.addSeparator();
+                             //   reportMenu.addSeparator();
                                 break;
                         /*  case MSMS:
                         msmsMenu.addSeparator();
@@ -281,8 +280,6 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                 GuineuProcessingModule module = moduleMenuItems.get(src);
                 if (module != null) {
-                       // Dataset selectedFiles[] = GuineuCore.getDesktop().getSelectedDataFiles();
-
                         ParameterSet moduleParameters = module.getParameterSet();
 
                         if (moduleParameters == null) {
@@ -294,15 +291,6 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                         boolean allParametersOK = true;
                         LinkedList<String> errorMessages = new LinkedList<String>();
-                        for (Parameter p : moduleParameters.getParameters()) {
-
-                                //p.setValue(selectedFiles);
-                               /* boolean checkOK = p.checkValue(errorMessages);
-                                if (!checkOK) {
-                                        allParametersOK = false;
-                                }*/
-
-                        }
 
                         if (!allParametersOK) {
                                 StringBuilder message = new StringBuilder();
@@ -325,40 +313,6 @@ public class MainMenu extends JMenuBar implements ActionListener {
                         return;
                 }
 
-
-                /*if (src == projectSaveParameters) {
-                JFileChooser chooser = new JFileChooser();
-                int returnVal = chooser.showSaveDialog(MZmineCore.getDesktop()
-                .getMainFrame());
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File configFile = chooser.getSelectedFile();
-                try {
-                MZmineCore.saveConfiguration(configFile);
-                } catch (Exception ex) {
-                MZmineCore.getDesktop().displayException(ex);
-                }
-                }
-                }
-
-                if (src == projectLoadParameters) {
-                JFileChooser chooser = new JFileChooser();
-                int returnVal = chooser.showOpenDialog(MZmineCore.getDesktop()
-                .getMainFrame());
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File configFile = chooser.getSelectedFile();
-                try {
-                MZmineCore.loadConfiguration(configFile);
-                } catch (Exception ex) {
-                MZmineCore.getDesktop().displayException(ex);
-                }
-                }
-                }
-
-                if (src == projectPreferences) {
-                GuineuPreferences preferences = GuineuCore.getPreferences();
-                preferences.showSetupDialog();
-                }*/
-
                 if (src == showAbout) {
                         MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
                         mainWindow.showAboutDialog();
@@ -369,13 +323,22 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                 GuineuModuleCategory parentMenu = module.getModuleCategory();
                 String menuItemText = module.toString();
+                String menuItemIcon = module.getIcon();
+                boolean separator = module.setSeparator();
 
                 JMenuItem newItem = new JMenuItem(menuItemText);
+                if (menuItemIcon != null) {
+                        newItem.setIcon(new ImageIcon(menuItemIcon));
+                }
                 newItem.addActionListener(this);
 
                 moduleMenuItems.put(newItem, module);
 
                 addMenuItem(parentMenu, newItem);
+
+                if(separator){
+                        this.addMenuSeparator(parentMenu);
+                }
 
         }
 }

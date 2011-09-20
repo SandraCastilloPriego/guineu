@@ -59,4 +59,12 @@ public class OpenMassLynxFileModule implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.FILE;
         }
+
+        public String getIcon() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public boolean setSeparator() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

@@ -55,9 +55,16 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
                 fixNumberColumns = 0;
                 parameters = GuineuCore.getLCMSColumnsParameters();
                 elements = parameters.getParameter(ColumnsLCMSParameters.LCMSdata).getValue();
-                for (LCMSColumnName column : elements) {
-                        columns.add(column);
-                        fixNumberColumns++;
+                if (elements != null) {
+                        for (LCMSColumnName column : elements) {
+                                columns.add(column);
+                                fixNumberColumns++;
+                        }
+                } else {
+                        for (LCMSColumnName column : LCMSColumnName.values()) {
+                                columns.add(column);
+                                fixNumberColumns++;
+                        }
                 }
         }
 

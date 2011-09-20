@@ -23,6 +23,7 @@ import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.desktop.Desktop;
+import guineu.main.GuineuCore;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.util.ArrayList;
@@ -33,14 +34,12 @@ import java.util.List;
  * @author scsandra
  */
 public class TransposeFilterTask extends AbstractTask {
-
-        private Desktop desktop;
+       
         private double progress = 0.0f;
         private Dataset dataset;
 
-        public TransposeFilterTask(Dataset dataset, Desktop desktop) {
-                this.dataset = dataset;
-                this.desktop = desktop;
+        public TransposeFilterTask(Dataset dataset) {
+                this.dataset = dataset;               
         }
 
         public String getTaskDescription() {
@@ -98,7 +97,7 @@ public class TransposeFilterTask extends AbstractTask {
                                 cont++;
                         }
                         newDataset.setType(DatasetType.BASIC);
-                        desktop.AddNewFile(newDataset);
+                        GuineuCore.getDesktop().AddNewFile(newDataset);
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
                         setStatus(TaskStatus.ERROR);

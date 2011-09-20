@@ -17,18 +17,12 @@
  */
 package guineu.modules.file.openExpressionFiles;
 
-import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.parameters.SimpleParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskEvent;
-import guineu.taskcontrol.TaskStatus;
-import guineu.util.dialogs.ExitCode;
-import java.awt.event.ActionEvent;
-import java.util.logging.Logger;
 
 /**
  *
@@ -57,5 +51,13 @@ public class OpenExpressionFile implements GuineuProcessingModule {
 
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.FILE;
+        }
+
+        public String getIcon() {
+                return null;
+        }
+
+        public boolean setSeparator() {
+                return true;
         }
 }

@@ -120,4 +120,12 @@ public class CommonMolecules implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 throw new UnsupportedOperationException("Not supported yet.");
         }
+
+        public String getIcon() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public boolean setSeparator() {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 }

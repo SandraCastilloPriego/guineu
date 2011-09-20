@@ -511,7 +511,7 @@ public class GUIUtils {
                 table.formatNumbers(dataset.getType());
                 DataInternalFrame frame = new DataInternalFrame(dataset.getDatasetName(), table.getTable(), new Dimension(450, 450));
                 GuineuCore.getDesktop().addInternalFrame(frame);
-                if (addDataset) {
+                if (addDataset) {                       
                         GuineuCore.getDesktop().AddNewFile(dataset);
                 }
                 frame.setVisible(true);

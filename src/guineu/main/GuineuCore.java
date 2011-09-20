@@ -392,7 +392,7 @@ public class GuineuCore implements Runnable {
         }
 
         public static String getGuineuVersion() {
-                return "1.4";
+                return GuineuVersion.GUINEU;
         }
 
         public static GeneralconfigurationParameters getPreferences() {

@@ -67,8 +67,10 @@ public class PCADataset extends AbstractXYDataset implements
                 this.xAxisPC = parameters.getParameter(ProjectionPlotParameters.xAxisComponent).getValue();
                 this.yAxisPC = parameters.getParameter(ProjectionPlotParameters.yAxisComponent).getValue();
 
-                selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
-                selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
+                selectedSamples = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
+                selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
+               // selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
+              //  selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
 
                 coloringType = parameters.getParameter(
                         ProjectionPlotParameters.coloringType).getValue();

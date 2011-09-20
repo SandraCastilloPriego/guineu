@@ -59,4 +59,12 @@ public class HeatMapModule implements GuineuProcessingModule {
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.DATAANALYSIS;
         }
+
+        public String getIcon() {
+                return "icons/others.png";
+        }
+
+        public boolean setSeparator() {
+                return false;
+        }
 }
