@@ -43,7 +43,7 @@ public class TtestModule implements GuineuProcessingModule {
                         TtestDataDialog dialog = new TtestDataDialog(dataset);
                         dialog.setVisible(true);
                         group1 = dialog.getGroup1();
-                        group2 = dialog.getGroup2();
+                        group2 = dialog.getGroup2();                       
                         parameter = dialog.getParameter();
                         return dialog.getExitCode();
                 } catch (Exception exception) {
