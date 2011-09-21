@@ -84,8 +84,10 @@ public class TTestTask extends AbstractTask {
                                 PeakListRow newRow = row.clone();
                                 newRow.removePeaks();
                                 newRow.setPeak("Ttest", t.get(cont)[0]);
-                                for (int i = 0; i < 2; i++) {
-                                        newRow.setPeak("Mean of " + availableParameterValues.get(i), t.get(cont)[i + 1]);
+                                if (parameter != null) {
+                                        for (int i = 0; i < 2; i++) {
+                                                newRow.setPeak("Mean of " + availableParameterValues.get(i), t.get(cont)[i + 1]);
+                                        }
                                 }
                                 cont++;
                                 newDataset.addRow(newRow);
@@ -96,6 +98,7 @@ public class TTestTask extends AbstractTask {
                 } catch (Exception e) {
                         setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
+                        e.printStackTrace();
                         return;
                 }
         }
@@ -111,34 +114,39 @@ public class TTestTask extends AbstractTask {
                                 try {
                                         stats1.addValue((Double) this.dataset.getRow(mol).getPeak(group1[i]));
                                 } catch (Exception e) {
+                                        e.printStackTrace();
                                 }
                         }
                         for (int i = 0; i < group2.length; i++) {
                                 try {
                                         stats2.addValue((Double) this.dataset.getRow(mol).getPeak(group2[i]));
                                 } catch (Exception e) {
+                                        e.printStackTrace();
                                 }
                         }
                 } else {
+                        try {
+                                // Determine groups for selected raw data files
+                                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
 
-                        // Determine groups for selected raw data files
-                        Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                                int numberOfGroups = availableParameterValues.size();
 
-                        int numberOfGroups = availableParameterValues.size();
+                                if (numberOfGroups > 1) {
+                                        parameter1 = availableParameterValues.firstElement();
+                                        String parameter2 = availableParameterValues.elementAt(1);
 
-                        if (numberOfGroups > 1) {
-                                parameter1 = availableParameterValues.firstElement();
-                                String parameter2 = availableParameterValues.elementAt(1);
-
-                                for (String sampleName : dataset.getAllColumnNames()) {
-                                        if (dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
-                                                stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
-                                        } else if (dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
-                                                stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                        for (String sampleName : dataset.getAllColumnNames()) {
+                                                if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
+                                                        stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                } else if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
+                                                        stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                }
                                         }
+                                } else {
+                                        return null;
                                 }
-                        } else {
-                                return null;
+                        } catch (Exception e) {
+                                e.printStackTrace();
                         }
                 }
                 TTestImpl ttest = new TTestImpl();
