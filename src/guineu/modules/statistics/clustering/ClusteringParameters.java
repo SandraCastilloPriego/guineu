@@ -32,13 +32,12 @@ import guineu.util.dialogs.ExitCode;
 
 public class ClusteringParameters extends SimpleParameterSet {
 
-       private static ClusteringAlgorithm algorithms[] = new ClusteringAlgorithm[] {
-			new EMClusterer(), new FarthestFirstClusterer(),
-			new SimpleKMeansClusterer(), new HierarClusterer() };
-
-	public static final ModuleComboParameter<ClusteringAlgorithm> clusteringAlgorithm = new ModuleComboParameter<ClusteringAlgorithm>(
-			"Clustering algorithm",
-			"Select the algorithm you want to use for clustering", algorithms);
+        private static ClusteringAlgorithm algorithms[] = new ClusteringAlgorithm[]{
+                new EMClusterer(), new FarthestFirstClusterer(),
+                new SimpleKMeansClusterer(), new HierarClusterer()};
+        public static final ModuleComboParameter<ClusteringAlgorithm> clusteringAlgorithm = new ModuleComboParameter<ClusteringAlgorithm>(
+                "Clustering algorithm",
+                "Select the algorithm you want to use for clustering", algorithms);
         public static final ComboParameter<ClusteringDataType> typeOfData = new ComboParameter<ClusteringDataType>(
                 "Type of data",
                 "Specify the type of data used for the clustering: samples or variables",
@@ -46,12 +45,11 @@ public class ClusteringParameters extends SimpleParameterSet {
 
         public ClusteringParameters() {
                 super(
-                        new Parameter[]{ProjectionPlotParameters.dataFiles,
-                                ProjectionPlotParameters.rows, clusteringAlgorithm,
+                        new Parameter[]{ProjectionPlotParameters.dataFiles, clusteringAlgorithm,
                                 typeOfData});
         }
 
-    @Override
+        @Override
         public ExitCode showSetupDialog() {
 
                 String dataFileChoices[];
@@ -61,16 +59,8 @@ public class ClusteringParameters extends SimpleParameterSet {
                         dataFileChoices = new String[0];
                 }
 
-                PeakListRow rowChoices[];
-                if (GuineuCore.getDesktop().getSelectedDataFiles().length >= 1) {
-                        rowChoices = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
-                } else {
-                        rowChoices = new PeakListRow[0];
-                }
-
                 getParameter(ProjectionPlotParameters.dataFiles).setChoices(
                         dataFileChoices);
-                getParameter(ProjectionPlotParameters.rows).setChoices(rowChoices);
 
                 return super.showSetupDialog();
         }

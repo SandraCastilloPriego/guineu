@@ -69,8 +69,8 @@ public class PCADataset extends AbstractXYDataset implements
 
                 selectedSamples = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
                 selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
-               // selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
-              //  selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
+                // selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
+                //  selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
 
                 coloringType = parameters.getParameter(
                         ProjectionPlotParameters.coloringType).getValue();
@@ -231,8 +231,8 @@ public class PCADataset extends AbstractXYDataset implements
 
                 PCA pca = new PCA(selectedSamples.length, selectedRows.length);
                 Matrix X = new Matrix(rawData, selectedSamples.length, selectedRows.length);
-               // X = pca.center(X);
-             //   X = pca.scale(X);
+                // X = pca.center(X);
+                //   X = pca.scale(X);
                 pca.nipals(X);
                 mainComponents = pca.getPCs();
                 Collections.sort(mainComponents);
@@ -250,8 +250,8 @@ public class PCADataset extends AbstractXYDataset implements
                         component2Coords = mainComponents.get(yAxisPC - 1).eigenVector;
 
                         Desktop desktop = GuineuCore.getDesktop();
-                        ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
-                                parameters, this.datasetTitle);
+                        ProjectionPlotWindow newFrame = new ProjectionPlotWindow(this.datasetTitle, this,
+                                parameters);
                         desktop.addInternalFrame(newFrame);
                 }
                 this.progress = 1.0f;
@@ -294,6 +294,7 @@ public class PCADataset extends AbstractXYDataset implements
         public TaskListener[] getTaskListeners() {
                 throw new UnsupportedOperationException("Not supported yet.");
         }
+
         private void setStatus(TaskStatus taskStatus) {
                 status = taskStatus;
         }

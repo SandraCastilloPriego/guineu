@@ -234,8 +234,8 @@ public class CDADataset extends AbstractXYDataset implements
                 component2Coords = result[yAxisDimension - 1];
 
                 Desktop desktop = GuineuCore.getDesktop();
-                ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop, this,
-                        parameters, this.datasetTitle);
+                ProjectionPlotWindow newFrame = new ProjectionPlotWindow(this.datasetTitle, this,
+                        parameters);
                 desktop.addInternalFrame(newFrame);
 
                 setStatus(TaskStatus.FINISHED);

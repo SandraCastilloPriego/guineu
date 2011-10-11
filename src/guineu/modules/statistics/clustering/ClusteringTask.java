@@ -17,7 +17,7 @@
  */
 package guineu.modules.statistics.clustering;
 
-
+import figs.treeVisualization.TreeViewJ;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,12 +36,12 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SparseInstance;
-import figs.treeVisualization.TreeViewJ;
 import guineu.data.PeakListRow;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.modules.statistics.PCA.ProjectionPlotDataset;
 import guineu.modules.statistics.PCA.ProjectionPlotParameters;
+import guineu.modules.statistics.PCA.ProjectionPlotWindow;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskListener;
@@ -63,29 +63,33 @@ public class ClusteringTask extends AbstractXYDataset implements
         private String datasetTitle;
         private int xAxisDimension = 1;
         private int yAxisDimension = 2;
-        
-        
         private ProjectionStatus projectionStatus;
         private ClusteringAlgorithm clusteringAlgorithm;
         private ClusteringDataType typeOfData;
         private Instances dataset;
         private int progress;
-        private TaskStatus status;
+        private String errorMessage;
+        private TaskStatus status = TaskStatus.WAITING;
 
         public ClusteringTask(ParameterSet parameters) {
 
                 this.parameters = parameters;
 
                 this.selectedRawDataFiles = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
-                this.selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
                 clusteringAlgorithm = parameters.getParameter(ClusteringParameters.clusteringAlgorithm).getValue();
                 typeOfData = parameters.getParameter(ClusteringParameters.typeOfData).getValue();
+
+                this.selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getSelectedRows().toArray(new PeakListRow[0]);
+                if (selectedRows.length == 0) {
+                        this.selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
+                }
 
                 datasetTitle = "Clustering";
 
                 // Determine groups for selected raw data files
                 groupsForSelectedRawDataFiles = new int[selectedRawDataFiles.length];
                 groupsForSelectedVariables = new int[selectedRows.length];
+
         }
 
         @Override
@@ -186,6 +190,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                                 Desktop desktop = GuineuCore.getDesktop();
                                 TreeViewJ visualizer = new TreeViewJ(640, 480);
                                 cluster += ";";
+                                System.out.println(cluster);
                                 visualizer.openMenuAction(cluster);
                                 desktop.addInternalFrame(visualizer);
                         }
@@ -269,12 +274,11 @@ public class ClusteringTask extends AbstractXYDataset implements
                                 component1Coords = result[xAxisDimension - 1];
                                 component2Coords = result[yAxisDimension - 1];
                         }
-
-                        // ProjectionPlotWindow newFrame = new ProjectionPlotWindow(desktop.getSelectedDataFiles()[0], this,
-                        //         parameters);
-                        //   desktop.addInternalFrame(newFrame);
+                        ProjectionPlotWindow newFrame = new ProjectionPlotWindow("Visualization", this, parameters);
+                        desktop.addInternalFrame(newFrame);
                 }
-                setStatus(TaskStatus.FINISHED);
+                progress = 99;
+                status = TaskStatus.FINISHED;
                 logger.info("Finished computing Clustering visualization.");
         }
 
@@ -372,7 +376,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                         double[] values = new double[data.numAttributes()];
                         System.arraycopy(rawData[i], 0, values, 0, rawData[0].length);
 
-                        if (clusteringAlgorithm.toString().equals("Hierarchical Clusterer")) {                                
+                        if (clusteringAlgorithm.toString().equals("Hierarchical Clusterer")) {
                                 String rowName = selectedRows[i].getName();
                                 values[data.numAttributes() - 1] = data.attribute("name").addStringValue(rowName);
                         }
@@ -387,15 +391,11 @@ public class ClusteringTask extends AbstractXYDataset implements
                         projectionStatus.cancel();
                 }
 
-                setStatus(TaskStatus.CANCELED);
+                status = TaskStatus.CANCELED;
         }
 
         public String getErrorMessage() {
-                return "Error";
-        }
-
-        public TaskStatus getStatus() {
-                return getStatus();
+                return errorMessage;
         }
 
         public Object[] getCreatedObjects() {
@@ -431,7 +431,7 @@ public class ClusteringTask extends AbstractXYDataset implements
         /**
          * @see net.sf.mzmine.taskcontrol.Task#setStatus()
          */
-        public void setStatus(TaskStatus newStatus) {                
+        public void setStatus(TaskStatus newStatus) {
                 this.fireTaskEvent();
         }
 
@@ -450,6 +450,7 @@ public class ClusteringTask extends AbstractXYDataset implements
          * @return String with the cluster result after adding the missing samples in Newick format.
          */
         private String addMissingSamples(String cluster) {
+                System.out.println(cluster);
                 String[] data = cluster.split(":");
                 double max = 0;
                 for (String d : data) {
@@ -458,6 +459,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                         Matcher m = p.matcher(d);
                         if (m.find()) {
                                 value = Double.parseDouble(d.substring(m.start(), m.end()));
+                                System.out.println(value);
                         }
                         if (value > max) {
                                 max = value;
@@ -486,9 +488,13 @@ public class ClusteringTask extends AbstractXYDataset implements
                 return "Clustering visualization " + datasetTitle;
         }
 
+        public TaskStatus getStatus() {
+                return status;
+        }
+
         @Override
         public double getFinishedPercentage() {
-                if (this.projectionStatus != null) {
+                if (this.projectionStatus != null && progress < 99) {
                         if (projectionStatus.getFinishedPercentage() > 1.0) {
                                 return 1.0;
                         }

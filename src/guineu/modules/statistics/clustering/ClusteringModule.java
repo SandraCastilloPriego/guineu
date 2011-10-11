@@ -28,9 +28,9 @@ import guineu.parameters.ParameterSet;
  *
  * @author scsandra
  */
-public class ClusteringTest implements GuineuProcessingModule {
+public class ClusteringModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Clustering data";
+        public static final String MODULE_NAME = "Clustering algorithms";
         private ClusteringParameters parameters = new ClusteringParameters();
 
         public ParameterSet getParameterSet() {
@@ -43,15 +43,9 @@ public class ClusteringTest implements GuineuProcessingModule {
         }
 
         public Task[] runModule(ParameterSet parameters) {
-                // Dataset[] DataFiles = desktop.getSelectedDataFiles();
-                // prepare a new group of tasks
-                Task tasks[] = new ClusteringTestTask[1];
                 ProjectionPlotDataset dataset = new ClusteringTask(parameters);
-                // tasks[0] = new ClusteringTestTask(DataFiles[0], parameters);
-                tasks[0] = dataset;
-                GuineuCore.getTaskController().addTasks(tasks);
-
-                return tasks;
+		GuineuCore.getTaskController().addTask(dataset);
+		return new Task[] { dataset };
         }
 
         public GuineuModuleCategory getModuleCategory() {

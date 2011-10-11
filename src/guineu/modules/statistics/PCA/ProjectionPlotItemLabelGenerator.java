@@ -17,6 +17,7 @@
  */
 package guineu.modules.statistics.PCA;
 
+import guineu.parameters.ParameterSet;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYZDataset;
@@ -35,21 +36,25 @@ public class ProjectionPlotItemLabelGenerator extends StandardXYItemLabelGenerat
         private LabelMode[] labelModes;
         private int labelModeIndex = 0;
 
-        ProjectionPlotItemLabelGenerator(ProjectionPlotParameters parameters) {
+        ProjectionPlotItemLabelGenerator(ParameterSet parameters) {
 
                 labelModes = new LabelMode[]{LabelMode.None};
+                try {
+                        if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+                                labelModes = new LabelMode[]{LabelMode.None, LabelMode.FileName};
+                        }
 
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+                        if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
+                                labelModes = new LabelMode[]{LabelMode.None, LabelMode.FileName};
+                        }
+
+                        if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER) {
+                                labelModes = new LabelMode[]{LabelMode.None, LabelMode.FileName, LabelMode.ParameterValue};
+                        }
+                } catch (Exception e) {
                         labelModes = new LabelMode[]{LabelMode.None, LabelMode.FileName};
                 }
 
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
-                        labelModes = new LabelMode[]{LabelMode.None, LabelMode.FileName};
-                }
-
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYPARAMETER) {
-                        labelModes = new LabelMode[]{LabelMode.None, LabelMode.FileName, LabelMode.ParameterValue};
-                }
 
         }
 

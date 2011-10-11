@@ -17,6 +17,7 @@
  */
 package guineu.modules.statistics.PCA;
 
+import guineu.parameters.ParameterSet;
 import org.jfree.chart.labels.XYZToolTipGenerator;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYZDataset;
@@ -28,7 +29,7 @@ import org.jfree.data.xy.XYZDataset;
  */
 public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
 
-        private ProjectionPlotParameters parameters;
+        private ParameterSet parameters;
 
         private enum LabelMode {
 
@@ -36,16 +37,19 @@ public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
         };
         private LabelMode labelMode;
 
-        ProjectionPlotToolTipGenerator(ProjectionPlotParameters parameters) {
+        ProjectionPlotToolTipGenerator(ParameterSet parameters) {
 
                 this.parameters = parameters;
-
-                if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+                try {
+                        if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
+                                labelMode = LabelMode.FileName;
+                        } else if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
+                                labelMode = LabelMode.FileName;
+                        } else {
+                                labelMode = LabelMode.FileNameAndParameterValue;
+                        }
+                } catch (Exception e) {
                         labelMode = LabelMode.FileName;
-                } else if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.COLORBYFILE) {
-                        labelMode = LabelMode.FileName;
-                } else {
-                        labelMode = LabelMode.FileNameAndParameterValue;
                 }
 
         }

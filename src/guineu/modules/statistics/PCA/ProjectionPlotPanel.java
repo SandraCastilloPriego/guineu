@@ -19,6 +19,7 @@
 
 package guineu.modules.statistics.PCA;
 
+import guineu.parameters.ParameterSet;
 import java.awt.Color;
 import java.awt.Font;
 import java.text.NumberFormat;
@@ -54,7 +55,7 @@ public class ProjectionPlotPanel extends ChartPanel {
 	private ProjectionPlotRenderer spotRenderer;
 
 	public ProjectionPlotPanel(ProjectionPlotWindow masterFrame,
-			ProjectionPlotDataset dataset, ProjectionPlotParameters parameters) {
+			ProjectionPlotDataset dataset, ParameterSet parameters) {
 		super(null);
 
 		boolean createLegend = false;

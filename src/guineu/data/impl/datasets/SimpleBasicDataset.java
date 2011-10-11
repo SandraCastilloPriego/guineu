@@ -21,7 +21,9 @@ import guineu.data.impl.*;
 import guineu.data.DatasetType;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -204,7 +206,7 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         public void removeRow(PeakListRow row) {
-                try {                 
+                try {
                         this.peakList.removeElement(row);
 
                 } catch (Exception e) {
@@ -236,6 +238,14 @@ public class SimpleBasicDataset implements Dataset {
                 newDataset.setType(this.type);
                 return newDataset;
         }
-}
 
-       
+        public List<PeakListRow> getSelectedRows() {
+                List<PeakListRow> selectedRows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : this.getRows()) {
+                        if (row.isSelected()) {
+                                selectedRows.add(row);
+                        }
+                }
+                return selectedRows;
+        }
+}
