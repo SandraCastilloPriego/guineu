@@ -228,4 +228,13 @@ public class SimpleExpressionDataset implements Dataset {
         public void setMetaDataNames(String name) {
                 this.metaDataNames.add(name);
         }
+        public List<PeakListRow> getSelectedRows() {
+                List<PeakListRow> selectedRows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : this.getRows()) {
+                        if (row.isSelected()) {
+                                selectedRows.add(row);
+                        }
+                }
+                return selectedRows;
+        }
 }

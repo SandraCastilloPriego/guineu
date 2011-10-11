@@ -19,7 +19,7 @@
 
 package guineu.modules.statistics.PCA;
 
-import guineu.desktop.Desktop;
+import guineu.parameters.ParameterSet;
 import guineu.util.dialogs.AxesSetupDialog;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -38,8 +38,8 @@ public class ProjectionPlotWindow extends JInternalFrame implements
 	private ProjectionPlotToolbar toolbar;
 	private ProjectionPlotPanel plot;
 
-	public ProjectionPlotWindow(Desktop desktop, ProjectionPlotDataset dataset,
-			ProjectionPlotParameters parameters, String title) {
+	public ProjectionPlotWindow(String peakList,
+			ProjectionPlotDataset dataset, ParameterSet parameters) {
 		super(null, true, true, true, true);
 
 		toolbar = new ProjectionPlotToolbar(this);
@@ -47,10 +47,11 @@ public class ProjectionPlotWindow extends JInternalFrame implements
 
 		plot = new ProjectionPlotPanel(this, dataset, parameters);
 		add(plot, BorderLayout.CENTER);
-                
+
+		String title = peakList;
 		title = title.concat(" : ");
-		title = title.concat(dataset.toString());		
-		this.setTitle(title);
+		title = title.concat(dataset.toString());
+                this.setTitle(title);
 
 		pack();
 
@@ -68,9 +69,9 @@ public class ProjectionPlotWindow extends JInternalFrame implements
 
 		if (command.equals("TOGGLE_LABELS")) {
 			/*
-			XYItemRenderer rend = plot.getChart().getXYPlot().getRenderer();
-			rend.setBaseItemLabelsVisible(!rend.getBaseItemLabelsVisible());
-			*/
+			 * XYItemRenderer rend = plot.getChart().getXYPlot().getRenderer();
+			 * rend.setBaseItemLabelsVisible(!rend.getBaseItemLabelsVisible());
+			 */
 			plot.cycleItemLabelMode();
 		}
 

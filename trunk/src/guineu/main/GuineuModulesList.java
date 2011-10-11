@@ -66,7 +66,7 @@ import guineu.modules.statistics.PCA.PCAPlotModule;
 import guineu.modules.statistics.PCA.SammonsPlotModule;
 import guineu.modules.statistics.Ttest.TtestModule;
 import guineu.modules.statistics.anova.AnovaTestModule;
-import guineu.modules.statistics.clustering.ClusteringTest;
+import guineu.modules.statistics.clustering.ClusteringModule;
 import guineu.modules.statistics.foldChanges.FoldtestModule;
 import guineu.modules.statistics.standardVariation.StandardVariationModule;
 import guineu.modules.statistics.variationCoefficient.VariationCoefficientModule;
@@ -125,12 +125,12 @@ public class GuineuModulesList {
                 TtestModule.class,
                 AnovaTestModule.class,
                 FoldtestModule.class,                
-                StandardVariationModule.class,
+               // StandardVariationModule.class,
                 PCAPlotModule.class,
                 CDAPlotModule.class,
                 SammonsPlotModule.class,
-                ClusteringTest.class,
-                HeatMapModule.class,
+                ClusteringModule.class,
+               // HeatMapModule.class,
 
         };
 }

@@ -507,4 +507,14 @@ public class SimpleGCGCDataset implements Dataset {
                 }
                 return new Range(min, max);
         }
+
+        public List<PeakListRow> getSelectedRows() {
+                List<PeakListRow> selectedRows = new ArrayList<PeakListRow>();
+                for (PeakListRow row : this.getRows()) {
+                        if (row.isSelected()) {
+                                selectedRows.add(row);
+                        }
+                }
+                return selectedRows;
+        }
 }

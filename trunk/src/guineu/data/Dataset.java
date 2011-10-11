@@ -150,6 +150,13 @@ public interface Dataset {
         public List<PeakListRow> getRows();
 
         /**
+         * Returns all the rows in the data set.
+         *
+         * @return List with all the rows
+         */
+        public List<PeakListRow> getSelectedRows();
+
+        /**
          * Adds a new row into the data set.
          *
          * @param peakListRow Row
