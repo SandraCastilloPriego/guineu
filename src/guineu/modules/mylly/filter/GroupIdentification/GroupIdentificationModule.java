@@ -55,7 +55,7 @@ public class GroupIdentificationModule implements GuineuProcessingModule {
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.MYLLY;
+                return GuineuModuleCategory.GCGCIDENTIFICATIONSUBMENU;
         }
 
         public String getIcon() {
