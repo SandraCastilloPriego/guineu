@@ -26,7 +26,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import ca.guydavis.swing.desktop.CascadingWindowPositioner;
 import ca.guydavis.swing.desktop.JWindowsMenu;
-import guineu.desktop.GuineuMenu;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
@@ -49,7 +48,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 lcmsIdentificationSubMenu, gcgcIdentificationSubMenu, normalizationMenu,
                 identificationFilterMenu, /*databaseMenu,*/ filterMenu, alignmentMenu,
                 identificationMenu, helpMenu, statisticsMenu, configurationMenu/*,
-                reportMenu*/;
+                reportMenu*/, visualizationMenu;
         private JWindowsMenu windowsMenu;
         private JMenuItem showAbout;
         private Map<JMenuItem, GuineuProcessingModule> moduleMenuItems = new Hashtable<JMenuItem, GuineuProcessingModule>();
@@ -64,7 +63,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 configurationMenu.setMnemonic(KeyEvent.VK_C);
                 add(configurationMenu);
 
-             /*   databaseMenu = new JMenu("Database");
+                /*   databaseMenu = new JMenu("Database");
                 databaseMenu.setMnemonic(KeyEvent.VK_D);
                 add(databaseMenu);*/
 
@@ -100,6 +99,10 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 statisticsMenu = new JMenu("Data analysis");
                 statisticsMenu.setMnemonic(KeyEvent.VK_S);
                 this.add(statisticsMenu);
+
+                visualizationMenu = new JMenu("Visualization");
+                visualizationMenu.setMnemonic(KeyEvent.VK_V);
+                this.add(visualizationMenu);
 
                 /*reportMenu = new JMenu("LC-MS Reports");
                 reportMenu.setMnemonic(KeyEvent.VK_R);
@@ -149,7 +152,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 configurationMenu.add(newItem);
                                 break;
                         case DATABASE:
-                               // databaseMenu.add(newItem);
+                                // databaseMenu.add(newItem);
                                 break;
                         case FILTERING:
                                 filterMenu.add(newItem);
@@ -175,8 +178,11 @@ public class MainMenu extends JMenuBar implements ActionListener {
                         case DATAANALYSIS:
                                 statisticsMenu.add(newItem);
                                 break;
+                        case VISUALIZATION:
+                                visualizationMenu.add(newItem);
+                                break;
                         case REPORT:
-                             //   reportMenu.add(newItem);
+                                //   reportMenu.add(newItem);
                                 break;
                         /* case MSMS:
                         msmsMenu.add(newItem);
@@ -227,7 +233,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 configurationMenu.addSeparator();
                                 break;
                         case DATABASE:
-                            //    databaseMenu.addSeparator();
+                                //    databaseMenu.addSeparator();
                                 break;
                         case FILTERING:
                                 filterMenu.addSeparator();
@@ -253,8 +259,11 @@ public class MainMenu extends JMenuBar implements ActionListener {
                         case DATAANALYSIS:
                                 statisticsMenu.addSeparator();
                                 break;
+                        case VISUALIZATION:
+                                visualizationMenu.addSeparator();
+                                break;
                         case REPORT:
-                             //   reportMenu.addSeparator();
+                                //   reportMenu.addSeparator();
                                 break;
                         /*  case MSMS:
                         msmsMenu.addSeparator();
@@ -336,7 +345,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                 addMenuItem(parentMenu, newItem);
 
-                if(separator){
+                if (separator) {
                         this.addMenuSeparator(parentMenu);
                 }
 

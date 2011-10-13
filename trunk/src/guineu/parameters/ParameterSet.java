@@ -27,6 +27,10 @@ import java.util.Collection;
 import org.w3c.dom.Element;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ */
+/**
  * This class represents a general parameter set of a module. Typical module
  * will use a SimpleParameterSet instance.
  *
