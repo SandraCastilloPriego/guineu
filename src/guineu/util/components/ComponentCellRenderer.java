@@ -30,8 +30,9 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
-
 import org.jfree.ui.OverlayLayout;
+
+
 
 /**
  * @author Taken from MZmine2

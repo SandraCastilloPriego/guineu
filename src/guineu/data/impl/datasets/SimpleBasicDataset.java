@@ -248,4 +248,8 @@ public class SimpleBasicDataset implements Dataset {
                 }
                 return selectedRows;
         }
+
+        public void removeSampleNames() {
+                this.columnNames.clear();
+        }
 }

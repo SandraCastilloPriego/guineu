@@ -17,6 +17,8 @@
  */
 package guineu.modules.statistics.clustering;
 
+
+
 import figs.treeVisualization.TreeViewJ;
 import java.util.LinkedList;
 import java.util.List;
@@ -183,7 +185,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                         progress = 50;
                         cluster = cluster.replaceAll("Newick:", "");
                         if (typeOfData == ClusteringDataType.SAMPLES) {
-                                cluster = addMissingSamples(cluster);
+                              //  cluster = addMissingSamples(cluster);
                         }
                         progress = 85;
                         if (cluster != null) {
@@ -344,7 +346,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                         double[] values = new double[data.numAttributes()];
                         System.arraycopy(rawData[i], 0, values, 0, rawData[0].length);
                         if (clusteringAlgorithm.toString().equals("Hierarchical Clusterer")) {
-                                values[data.numAttributes() - 1] = data.attribute("name").addStringValue(this.selectedRawDataFiles[i]);
+                                values[data.numAttributes() - 1] = data.attribute("name").addStringValue("\""+this.selectedRawDataFiles[i]+"\"");
                         }
                         Instance inst = new SparseInstance(1.0, values);
                         data.add(inst);
@@ -449,8 +451,7 @@ public class ClusteringTask extends AbstractXYDataset implements
          * @param cluster String with the cluster result in Newick format.
          * @return String with the cluster result after adding the missing samples in Newick format.
          */
-        private String addMissingSamples(String cluster) {
-                System.out.println(cluster);
+        private String addMissingSamples(String cluster) {              
                 String[] data = cluster.split(":");
                 double max = 0;
                 for (String d : data) {
@@ -459,7 +460,6 @@ public class ClusteringTask extends AbstractXYDataset implements
                         Matcher m = p.matcher(d);
                         if (m.find()) {
                                 value = Double.parseDouble(d.substring(m.start(), m.end()));
-                                System.out.println(value);
                         }
                         if (value > max) {
                                 max = value;

@@ -37,6 +37,7 @@ import guineu.modules.filter.Alignment.normalizationSTD.STDNormalizationModule;
 import guineu.modules.filter.UnitsChangeFilter.UnitsChangeFilterModule;
 import guineu.modules.filter.dataselection.DataSelectionModule;
 import guineu.modules.filter.relatedpeaks.RelatedPeaksFilterModule;
+import guineu.modules.filter.sortingSamples.SortingModule;
 import guineu.modules.filter.splitdatasets.SplitModule;
 import guineu.modules.filter.transpose.TransposeFilterModule;
 import guineu.modules.identification.AdductSearch.AdductSearchModule;
@@ -98,6 +99,7 @@ public class GuineuModulesList {
                 UnitsChangeFilterModule.class,
                 SplitModule.class,
                 TransposeFilterModule.class,
+                SortingModule.class,
                 DataSelectionModule.class,
                 CustomDBSearchModule.class,
                 RelatedPeaksFilterModule.class,

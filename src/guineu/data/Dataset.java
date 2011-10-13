@@ -218,4 +218,9 @@ public interface Dataset {
          * @return Vector of All possible values of this parameter
          */
         public Vector<String> getParameterAvailableValues(String parameter);
+
+        /**
+         * Remove the sample names.
+         */
+        public void removeSampleNames();
 }
