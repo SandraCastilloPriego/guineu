@@ -271,4 +271,8 @@ public class SimpleLCMSDataset implements Dataset {
                 }
                 return selectedRows;
         }
+
+        public void removeSampleNames() {
+                this.sampleNames.clear();
+        }
 }

@@ -517,4 +517,8 @@ public class SimpleGCGCDataset implements Dataset {
                 }
                 return selectedRows;
         }
+
+        public void removeSampleNames() {
+                this.nameExperiments.clear();
+        }
 }
