@@ -22,6 +22,10 @@ package guineu.parameters;
 import javax.swing.JComponent;
 
 /**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ */
+/**
  * Parameter interface, represents parameters or variables used in the project
  */
 public interface UserParameter<ValueType, EditorComponent extends JComponent>

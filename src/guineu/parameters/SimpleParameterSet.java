@@ -20,7 +20,6 @@
 package guineu.parameters;
 
 import guineu.main.GuineuCore;
-import guineu.util.GUIUtils;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.util.Arrays;
@@ -33,6 +32,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * @author Taken from MZmine2
+ * http://mzmine.sourceforge.net/
+ */
 /**
  * Simple storage for the parameters. A typical MZmine module will inherit this
  * class and define the parameters for the constructor.

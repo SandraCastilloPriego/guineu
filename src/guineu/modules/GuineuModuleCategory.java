@@ -28,6 +28,7 @@ public enum GuineuModuleCategory {
         LCMSIDENTIFICATIONSUBMENU("LC-MS"),
         GCGCIDENTIFICATIONSUBMENU("GCxGC-MS"),
         IDENTIFICATIONFILTERS("Identification Filters"),
+        VISUALIZATION("Visualization"),
 	MSMS("MSMS"),
 	MYLLY("Mylly"),
         MYLLYTOOLS("Tools"),
