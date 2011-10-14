@@ -43,14 +43,11 @@ public class IntensityPlotParameters extends SimpleParameterSet {
                 "Samples", "Samples to display", new String[0]);
         public static final ComboParameter<Object> xAxisValueSource = new ComboParameter<Object>(
                 "X axis value", "X axis value", new Object[]{rawDataFilesOption});
-        public static final ComboParameter<YAxisValueSource> yAxisValueSource = new ComboParameter<YAxisValueSource>(
-                "Y axis value", "Y axis value", YAxisValueSource.values());
         public static final MultiChoiceParameter<PeakListRow> selectedRows = new MultiChoiceParameter<PeakListRow>(
                 "Peak list rows", "Select peaks to display", new PeakListRow[0]);
 
         public IntensityPlotParameters() {
-                super(new Parameter[]{dataFiles, xAxisValueSource,
-                                yAxisValueSource, selectedRows});
+                super(new Parameter[]{dataFiles, xAxisValueSource, selectedRows});
         }
 
         @Override
