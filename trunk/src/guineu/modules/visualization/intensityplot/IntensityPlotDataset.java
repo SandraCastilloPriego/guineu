@@ -24,8 +24,6 @@ package guineu.modules.visualization.intensityplot;
 import guineu.data.PeakListRow;
 import guineu.main.GuineuCore;
 import guineu.parameters.ParameterSet;
-import guineu.parameters.UserParameter;
-import guineu.parameters.parametersType.DoubleParameter;
 import guineu.util.CollectionUtils;
 import guineu.util.MathUtils;
 import java.util.Arrays;
@@ -66,11 +64,8 @@ class IntensityPlotDataset extends AbstractDataset implements
 
                 if (!xAxisValueSource.equals("Sample")) {
                         String xAxisParameter = (String) xAxisValueSource;
-                        LinkedHashSet<Comparable> parameterValues = new LinkedHashSet<Comparable>();
-                        System.out.println(selectedFiles.length + " - " + xAxisParameter);
-
+                        LinkedHashSet<Comparable> parameterValues = new LinkedHashSet<Comparable>();                      
                         for (String file : selectedFiles) {
-                                System.out.println(file + " - " + xAxisParameter);
                                 Object value = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersValue(file, (String) xAxisParameter);
 
                                 parameterValues.add((Comparable) value);

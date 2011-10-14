@@ -24,7 +24,6 @@ package guineu.modules.visualization.intensityplot;
 
 import guineu.main.GuineuCore;
 import guineu.parameters.ParameterSet;
-import guineu.parameters.parametersType.ComboParameter;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,13 +42,11 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.CategoryToolTipGenerator;
-import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.StatisticalLineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYErrorRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 
@@ -83,8 +80,8 @@ public class IntensityPlotFrame extends JInternalFrame {
 
 		// create new JFreeChart
 		logger.finest("Creating new chart instance");
-		Object xAxisValueSource = parameters.getParameter(
-				IntensityPlotParameters.xAxisValueSource).getValue();
+		//Object xAxisValueSource = parameters.getParameter(
+		//		IntensityPlotParameters.xAxisValueSource).getValue();
 
 		//if ((xAxisValueSource == IntensityPlotParameters.rawDataFilesOption)
 		//		|| (xAxisValueSource instanceof ComboParameter)) {

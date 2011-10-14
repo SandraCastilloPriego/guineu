@@ -30,7 +30,6 @@ import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 import guineu.util.dialogs.ExitCode;
-import java.util.List;
 
 
 
