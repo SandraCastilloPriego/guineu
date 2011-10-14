@@ -45,7 +45,6 @@ class IntensityPlotDataset extends AbstractDataset implements
         StatisticalCategoryDataset, IntervalXYDataset {
 
         private Object xAxisValueSource;
-        private YAxisValueSource yAxisValueSource;
         private Comparable xValues[];
         private String selectedFiles[];
         private PeakListRow selectedRows[];
@@ -54,8 +53,6 @@ class IntensityPlotDataset extends AbstractDataset implements
 
                 this.xAxisValueSource = parameters.getParameter(
                         IntensityPlotParameters.xAxisValueSource).getValue();
-                this.yAxisValueSource = parameters.getParameter(
-                        IntensityPlotParameters.yAxisValueSource).getValue();
                 this.selectedFiles = parameters.getParameter(
                         IntensityPlotParameters.dataFiles).getValue();
 
@@ -64,7 +61,7 @@ class IntensityPlotDataset extends AbstractDataset implements
 
                 if (!xAxisValueSource.equals("Sample")) {
                         String xAxisParameter = (String) xAxisValueSource;
-                        LinkedHashSet<Comparable> parameterValues = new LinkedHashSet<Comparable>();                      
+                        LinkedHashSet<Comparable> parameterValues = new LinkedHashSet<Comparable>();
                         for (String file : selectedFiles) {
                                 Object value = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersValue(file, (String) xAxisParameter);
 
@@ -124,9 +121,9 @@ class IntensityPlotDataset extends AbstractDataset implements
                         if (peaks[i] == null) {
                                 continue;
                         }
-                        if (yAxisValueSource == YAxisValueSource.HEIGHT) {
-                                values.add(peaks[i]);
-                        }
+
+                        values.add(peaks[i]);
+
                 }
                 double doubleValues[] = CollectionUtils.toDoubleArray(values);
                 if (doubleValues.length == 0) {
@@ -154,9 +151,9 @@ class IntensityPlotDataset extends AbstractDataset implements
                         if (peaks[i] == null) {
                                 continue;
                         }
-                        if (yAxisValueSource == YAxisValueSource.HEIGHT) {
-                                values.add(peaks[i]);
-                        }
+
+                        values.add(peaks[i]);
+
                 }
                 double doubleValues[] = CollectionUtils.toDoubleArray(values);
                 double std = MathUtils.calcStd(doubleValues);

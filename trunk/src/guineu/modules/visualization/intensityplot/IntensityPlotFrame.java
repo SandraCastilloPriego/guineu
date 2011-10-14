@@ -70,10 +70,7 @@ public class IntensityPlotFrame extends JInternalFrame {
 		String title = "Intensity plot [" + GuineuCore.getDesktop().getSelectedDataFiles()[0].getDatasetName() + "]";
 		String xAxisLabel = parameters
 				.getParameter(IntensityPlotParameters.xAxisValueSource)
-				.getValue().toString();
-		String yAxisLabel = parameters
-				.getParameter(IntensityPlotParameters.yAxisValueSource)
-				.getValue().toString();
+				.getValue().toString();		
 
 		// create dataset
 		dataset = new IntensityPlotDataset(parameters);
@@ -86,7 +83,7 @@ public class IntensityPlotFrame extends JInternalFrame {
 		//if ((xAxisValueSource == IntensityPlotParameters.rawDataFilesOption)
 		//		|| (xAxisValueSource instanceof ComboParameter)) {
 
-			chart = ChartFactory.createLineChart(title, xAxisLabel, yAxisLabel,
+			chart = ChartFactory.createLineChart(title, xAxisLabel, "Height",
 					dataset, PlotOrientation.VERTICAL, true, true, false);
 
 			CategoryPlot plot = (CategoryPlot) chart.getPlot();
