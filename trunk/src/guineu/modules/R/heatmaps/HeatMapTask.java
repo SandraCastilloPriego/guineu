@@ -369,7 +369,7 @@ public class HeatMapTask extends AbstractTask {
                 for (String rawDataFile : dataset.getAllColumnNames()) {
 
                         String paramValue = dataset.getParametersValue(rawDataFile, parameterName);
-                        System.out.println(paramValue);
+                       
                         if (!groups.contains(paramValue)) {
                                 groups.add(paramValue);
                         }

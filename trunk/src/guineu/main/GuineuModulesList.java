@@ -72,6 +72,7 @@ import guineu.modules.statistics.foldChanges.FoldtestModule;
 import guineu.modules.statistics.standardVariation.StandardVariationModule;
 import guineu.modules.statistics.variationCoefficient.VariationCoefficientModule;
 import guineu.modules.statistics.variationCoefficientRow.VariationCoefficientRowModule;
+import guineu.modules.visualization.intensityboxplot.IntensityBoxPlotModule;
 import guineu.modules.visualization.intensityplot.IntensityPlotModule;
 
 /**
@@ -133,8 +134,9 @@ public class GuineuModulesList {
                 CDAPlotModule.class,
                 SammonsPlotModule.class,
                 ClusteringModule.class,
-               // HeatMapModule.class,
-                IntensityPlotModule.class
+                HeatMapModule.class,
+                IntensityPlotModule.class,
+                IntensityBoxPlotModule.class
 
         };
 }
