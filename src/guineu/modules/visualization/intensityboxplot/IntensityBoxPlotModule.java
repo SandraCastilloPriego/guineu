@@ -22,14 +22,11 @@
 
 package guineu.modules.visualization.intensityboxplot;
 
-import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.util.dialogs.ExitCode;
 
 
 
@@ -39,22 +36,12 @@ import guineu.util.dialogs.ExitCode;
 public class IntensityBoxPlotModule implements GuineuProcessingModule {
 
 	private IntensityBoxPlotParameters parameters = new IntensityBoxPlotParameters();
-        public static final String MODULE_NAME = "Peak intensity box plot";
-
-	private static IntensityBoxPlotModule myInstance;
-
-	public IntensityBoxPlotModule() {
-		myInstance = this;
-	}
-
+        public static final String MODULE_NAME = "Peak intensity box plot";	
 	
 	public String toString() {
 		return MODULE_NAME;
 	}
-
-	/**
-	 * @see net.sf.mzmine.modules.MZmineModule#getParameterSet()
-	 */
+	
 	public ParameterSet getParameterSet() {
 		return parameters;
 	}
