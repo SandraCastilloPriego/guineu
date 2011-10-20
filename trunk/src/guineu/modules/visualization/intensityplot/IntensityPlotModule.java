@@ -22,15 +22,11 @@
 
 package guineu.modules.visualization.intensityplot;
 
-import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import guineu.util.dialogs.ExitCode;
-
 
 
 /**
@@ -39,49 +35,15 @@ import guineu.util.dialogs.ExitCode;
 public class IntensityPlotModule implements GuineuProcessingModule {
 
 	private IntensityPlotParameters parameters = new IntensityPlotParameters();
-        public static final String MODULE_NAME = "Peak intensity plot";
-
-	private static IntensityPlotModule myInstance;
-
-	public IntensityPlotModule() {
-		myInstance = this;
-	}
-
+        public static final String MODULE_NAME = "Peak intensity plot";	
 	
 	public String toString() {
 		return MODULE_NAME;
 	}
 
-	/**
-	 * @see net.sf.mzmine.modules.MZmineModule#getParameterSet()
-	 */
 	public ParameterSet getParameterSet() {
 		return parameters;
-	}
-
-	public static void showIntensityPlot(Dataset peakList, PeakListRow rows[]) {
-
-		myInstance.parameters.getParameter(IntensityPlotParameters.dataFiles)
-				.setChoices(peakList.getAllColumnNames().toArray(new String[0]));
-
-		myInstance.parameters.getParameter(IntensityPlotParameters.dataFiles)
-				.setValue(peakList.getAllColumnNames().toArray(new String[0]));
-
-		myInstance.parameters
-				.getParameter(IntensityPlotParameters.selectedRows).setChoices(
-						rows);
-		myInstance.parameters
-				.getParameter(IntensityPlotParameters.selectedRows).setValue(
-						rows);
-
-
-                
-		ExitCode exitCode = myInstance.parameters.showSetupDialog();
-
-		if (exitCode == ExitCode.OK)
-			myInstance.runModule(myInstance.parameters.clone());
-
-	}
+	}	
 
 	@Override
 	public Task[] runModule(ParameterSet parameters) {
