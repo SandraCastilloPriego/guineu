@@ -18,8 +18,8 @@
 package guineu.modules.file.saveDatasetDB;
 
 import guineu.database.retrieve.impl.OracleRetrievement;
-import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
+import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
 import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.StringParameter;
@@ -44,6 +44,6 @@ public class SaveFileParameters extends SimpleParameterSet {
                 "Parameter file of the dataset");
 
         public SaveFileParameters() {
-                super(new Parameter[]{name, author, studyId, units, parameters});
+                super(new UserParameter[]{name, author, studyId, units, parameters});
         }
 }
