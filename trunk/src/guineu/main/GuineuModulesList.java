@@ -27,6 +27,7 @@ import guineu.modules.file.exit.ExitProgram;
 import guineu.modules.file.openBasicFiles.OpenBasicFileModule;
 import guineu.modules.file.openExpressionFiles.OpenExpressionFile;
 import guineu.modules.file.openLCMSDatasetFile.OpenLCMSFileModule;
+import guineu.modules.file.saveDatasetDB.SaveFileDBModule;
 import guineu.modules.file.saveGCGCFile.SaveGCGCFileModule;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFileModule;
 import guineu.modules.file.saveOtherFile.SaveOtherFileModule;
@@ -136,7 +137,8 @@ public class GuineuModulesList {
                 ClusteringModule.class,
                 HeatMapModule.class,
                 IntensityPlotModule.class,
-                IntensityBoxPlotModule.class
+                IntensityBoxPlotModule.class,
+                SaveFileDBModule.class
 
         };
 }
