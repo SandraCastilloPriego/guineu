@@ -25,7 +25,7 @@ import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModule;
 import guineu.modules.database.saveQualityControFileDB.SaveQualityControlFileDB;
-import guineu.modules.file.saveDatasetDB.SaveFileDB;
+import guineu.modules.file.saveDatasetDB.SaveFileDBModule;
 import guineu.modules.file.saveExpressionFile.SaveExpressionFile;
 import guineu.modules.file.saveGCGCFile.SaveGCGCFileModule;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFileModule;
@@ -100,7 +100,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Show Dataset", this, "SHOW_DATASET");
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Add Comments", this, "ADD_COMMENT");
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset in a File", this, "SAVE_DATASET");
-              //  GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
+                GUIUtils.addMenuItem(dataFilePopupMenu, "Save Dataset into the Database", this, "SAVE_DATASET_DB");
                 GUIUtils.addMenuItem(dataFilePopupMenu, "Remove", this, "REMOVE_FILE");
 
                 this.parameterName = new NameChangeParameter();
@@ -166,9 +166,8 @@ public class ItemSelector extends JPanel implements ActionListener,
                         Dataset[] selectedFiles = getSelectedDatasets();
                         for (Dataset dataset : selectedFiles) {
                                 if (dataset != null && (dataset.getType() == DatasetType.LCMS || selectedFiles[0].getType() == DatasetType.GCGCTOF)) {
-                                        SaveFileDB save = new SaveFileDB(dataset);
-                                        save.initModule();
-
+                                        SaveFileDBModule save = new SaveFileDBModule();
+                                        save.runModule(save.getParameterSet());
                                 } else if (dataset != null && dataset.getType() == DatasetType.QUALITYCONTROL) {
                                         SaveQualityControlFileDB save = new SaveQualityControlFileDB(dataset);
                                         save.initModule();
