@@ -24,6 +24,7 @@ import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModule;
+import guineu.modules.database.saveDatasetDB.SaveFileParameters;
 import guineu.modules.database.saveQualityControFileDB.SaveQualityControlFileDB;
 import guineu.modules.file.saveDatasetDB.SaveFileDBModule;
 import guineu.modules.file.saveExpressionFile.SaveExpressionFile;
@@ -167,6 +168,7 @@ public class ItemSelector extends JPanel implements ActionListener,
                         for (Dataset dataset : selectedFiles) {
                                 if (dataset != null && (dataset.getType() == DatasetType.LCMS || selectedFiles[0].getType() == DatasetType.GCGCTOF)) {
                                         SaveFileDBModule save = new SaveFileDBModule();
+                                        save.showDialog();
                                         save.runModule(save.getParameterSet());
                                 } else if (dataset != null && dataset.getType() == DatasetType.QUALITYCONTROL) {
                                         SaveQualityControlFileDB save = new SaveQualityControlFileDB(dataset);

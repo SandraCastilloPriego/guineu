@@ -16,6 +16,7 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 package guineu.modules.file.saveDatasetDB;
+
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
@@ -29,16 +30,20 @@ import guineu.taskcontrol.Task;
 public class SaveFileDBModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "Save data set in DB";
-        private SaveFileParameters parameters = new SaveFileParameters();      
-        
+        private SaveFileParameters parameters = new SaveFileParameters();
+
+        public void showDialog() {                
+                parameters.getParameter(SaveFileParameters.name).setValue(GuineuCore.getDesktop().getSelectedDataFiles()[0].getDatasetName());
+                parameters.showSetupDialog();
+        }
+
         @Override
         public String toString() {
                 return MODULE_NAME;
-        }       
+        }
 
         public Task[] runModule(ParameterSet parameters) {
                 parameters.getParameter(SaveFileParameters.name).setValue(GuineuCore.getDesktop().getSelectedDataFiles()[0].getDatasetName());
-                parameters.showSetupDialog();
                 // prepare a new group of tasks
                 Task tasks[] = new SaveFileDBTask[1];
 

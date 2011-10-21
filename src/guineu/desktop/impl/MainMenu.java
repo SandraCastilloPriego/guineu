@@ -46,7 +46,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
         private Logger logger = Logger.getLogger(this.getClass().getName());
         private JMenu fileMenu, /*msmsMenu, */ myllyMenu, myllyToolsMenu,
                 lcmsIdentificationSubMenu, gcgcIdentificationSubMenu, normalizationMenu,
-                identificationFilterMenu, /*databaseMenu,*/ filterMenu, alignmentMenu,
+                identificationFilterMenu, databaseMenu, filterMenu, alignmentMenu,
                 identificationMenu, helpMenu, statisticsMenu, configurationMenu/*,
                 reportMenu*/, visualizationMenu;
         private JWindowsMenu windowsMenu;
@@ -63,9 +63,9 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 configurationMenu.setMnemonic(KeyEvent.VK_C);
                 add(configurationMenu);
 
-                /*   databaseMenu = new JMenu("Database");
+                databaseMenu = new JMenu("Database");
                 databaseMenu.setMnemonic(KeyEvent.VK_D);
-                add(databaseMenu);*/
+                add(databaseMenu);
 
                 filterMenu = new JMenu("Filter");
                 filterMenu.setMnemonic(KeyEvent.VK_L);
@@ -107,7 +107,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 /*reportMenu = new JMenu("LC-MS Reports");
                 reportMenu.setMnemonic(KeyEvent.VK_R);
                 this.add(reportMenu);
-
+                
                 /* msmsMenu = new JMenu("MS/MS Filters");
                 msmsMenu.setMnemonic(KeyEvent.VK_M);
                 add(msmsMenu);*/
@@ -152,7 +152,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 configurationMenu.add(newItem);
                                 break;
                         case DATABASE:
-                                // databaseMenu.add(newItem);
+                                databaseMenu.add(newItem);
                                 break;
                         case FILTERING:
                                 filterMenu.add(newItem);
@@ -202,7 +202,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
         /*public JMenuItem addMenuItem(GuineuMenu parentMenu, String text,
         String toolTip, int mnemonic,
         ActionListener listener, String actionCommand, String icon) {
-
+        
         JMenuItem newItem = new JMenuItem(text);
         if (listener != null) {
         newItem.addActionListener(listener);
@@ -216,13 +216,13 @@ public class MainMenu extends JMenuBar implements ActionListener {
         if (mnemonic > 0) {
         newItem.setMnemonic(mnemonic);
         }
-
+        
         if (icon != null) {
         newItem.setIcon(new ImageIcon(icon));
         }
         addMenuItem(parentMenu, newItem);
         return newItem;
-
+        
         }*/
         public void addMenuSeparator(GuineuModuleCategory parentMenu) {
                 switch (parentMenu) {
@@ -233,7 +233,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 configurationMenu.addSeparator();
                                 break;
                         case DATABASE:
-                                //    databaseMenu.addSeparator();
+                                databaseMenu.addSeparator();
                                 break;
                         case FILTERING:
                                 filterMenu.addSeparator();
