@@ -23,6 +23,8 @@ import guineu.modules.configuration.general.GeneralConfiguration;
 import guineu.modules.configuration.parameters.ParameterConfiguration;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsView;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsView;
+import guineu.modules.database.deleteDataDB.DeleteDatasetDBModule;
+import guineu.modules.database.openDataDB.OpenFileDBModule;
 import guineu.modules.database.saveDatasetDB.SaveFileDBModule;
 import guineu.modules.file.exit.ExitProgram;
 import guineu.modules.file.openBasicFiles.OpenBasicFileModule;
@@ -138,7 +140,9 @@ public class GuineuModulesList {
                 HeatMapModule.class,
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,
-                SaveFileDBModule.class
+                SaveFileDBModule.class,                
+                OpenFileDBModule.class,
+                DeleteDatasetDBModule.class
 
         };
 }

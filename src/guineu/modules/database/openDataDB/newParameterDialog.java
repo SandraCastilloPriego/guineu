@@ -132,7 +132,7 @@ public class newParameterDialog extends javax.swing.JPanel {
             this.valueParameterCB.setModel(organismModel);
         } else if (this.typeParameterCB.getSelectedItem().toString().equals("Subtype")) {
             this.valueParameterCB.setModel(subtypeModel);
-        } else if (this.typeParameterCB.getSelectedItem().toString().equals("Method")) {
+        } else if (this.typeParameterCB.getSelectedItem().toString().equals("Platform")) {
             this.valueParameterCB.setModel(methodModel);
         }
 }//GEN-LAST:event_typeParameterCBActionPerformed
