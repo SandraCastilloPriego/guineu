@@ -87,10 +87,13 @@ public class OpenCombineDBTask extends AbstractTask {
 
                                         ParameterSet ransacParameters = null;
                                         for (GuineuModule module : GuineuCore.getAllModules()) {
-                                                if (module.toString().matches("Running RANSAC alignment")) {
+                                                if (module.toString().matches("Ransac aligner")) {
                                                         ransacParameters = module.getParameterSet();
                                                         break;
                                                 }
+                                        }
+                                        if(ransacParameters == null){
+                                                ransacParameters = new RansacAlignerParameters();                                                
                                         }
                                         combineLCMSDatasets = new RansacAlignerTask(datasets, (RansacAlignerParameters) ransacParameters);
                                         combineLCMSDatasets.run();
