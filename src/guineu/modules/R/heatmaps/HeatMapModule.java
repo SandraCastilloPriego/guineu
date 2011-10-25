@@ -61,7 +61,7 @@ public class HeatMapModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/others.png";
+                return "icons/heatmaps.png";
         }
 
         public boolean setSeparator() {

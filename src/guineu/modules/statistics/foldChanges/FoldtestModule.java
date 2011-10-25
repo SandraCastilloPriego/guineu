@@ -81,6 +81,6 @@ public class FoldtestModule implements GuineuProcessingModule {
         }
 
         public boolean setSeparator() {
-                return false;
+                return true;
         }
 }

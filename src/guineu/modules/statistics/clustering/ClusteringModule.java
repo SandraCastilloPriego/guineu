@@ -53,7 +53,7 @@ public class ClusteringModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/clustering.png";
         }
 
         public boolean setSeparator() {

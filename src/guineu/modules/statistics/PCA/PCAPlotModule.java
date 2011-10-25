@@ -51,7 +51,7 @@ public class PCAPlotModule implements GuineuProcessingModule {
 	}
 
         public String getIcon() {
-                return null;
+                return "icons/pca.png";
         }
 
         public boolean setSeparator() {
