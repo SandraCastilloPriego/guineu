@@ -48,7 +48,7 @@ public class CDAPlotModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/cda.png";
         }
 
         public boolean setSeparator() {

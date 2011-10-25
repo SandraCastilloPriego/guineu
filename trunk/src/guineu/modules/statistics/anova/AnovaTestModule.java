@@ -66,7 +66,7 @@ public class AnovaTestModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/anova.png";
         }
 
         public boolean setSeparator() {

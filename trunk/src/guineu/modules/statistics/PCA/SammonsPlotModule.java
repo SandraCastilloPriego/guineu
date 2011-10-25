@@ -51,7 +51,7 @@ public class SammonsPlotModule implements GuineuProcessingModule {
 	}
 
         public String getIcon() {
-                return null;
+                return "icons/samons.png";
         }
 
         public boolean setSeparator() {

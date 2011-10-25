@@ -60,7 +60,7 @@ public class IntensityBoxPlotModule implements GuineuProcessingModule {
 	}
 
         public String getIcon() {
-                return null;
+                return "icons/boxplot.png";
         }
 
         public boolean setSeparator() {
