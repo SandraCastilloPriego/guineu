@@ -44,7 +44,7 @@ public class DeleteDatasetDBTask extends AbstractTask {
         }
 
         public double getFinishedPercentage() {
-                return 0;
+                return 0.5;
         }
 
         public void cancel() {
