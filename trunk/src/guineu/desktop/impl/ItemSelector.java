@@ -209,16 +209,9 @@ public class ItemSelector extends JPanel implements ActionListener,
                                 }
                                 SaveExpressionFile save = new SaveExpressionFile(selectedFiles, parameters);
                                 save.initModule();
-                        } else {
-                                ParameterSet parameters = null;
-                                for (GuineuModule module : GuineuCore.getAllModules()) {
-                                        if (module.toString().matches("Save Other Data set")) {
-                                                parameters = module.getParameterSet();
-                                                break;
-                                        }
-                                }
+                        } else {                               
                                 SaveOtherFileModule save = new SaveOtherFileModule();
-                                save.initModule(selectedFiles, parameters);
+                                save.initModule(selectedFiles);
                         }
                 }
 

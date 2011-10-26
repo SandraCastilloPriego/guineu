@@ -23,17 +23,30 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
 import guineu.util.Tables.DataTableModel;
+import java.awt.Color;
 import javax.swing.table.AbstractTableModel;
 
 public class OtherDataModel extends AbstractTableModel implements DataTableModel {
 
         private int numColumns;
         private SimpleBasicDataset dataset;
+        private Color[] rowColor;
 
         public OtherDataModel(Dataset dataset) {
                 this.dataset = (SimpleBasicDataset) dataset;
                 numColumns = this.dataset.getNumberCols() + 1;
+                rowColor = new Color[dataset.getNumberRows()];
         }
+        
+        
+        public Color getRowColor(int row) {
+                if (row < rowColor.length) {
+                        return rowColor[row];
+                } else {
+                        return null;
+                }
+        }
+
 
         /**
          * @see guineu.util.Tables.DataTableModel
@@ -121,5 +134,9 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
          */
         public void addColumn(String ColumnName) {
                 this.dataset.addColumnName(ColumnName);
+        }
+
+        public void addColor(Color[] color) {
+                this.rowColor = color;
         }
 }

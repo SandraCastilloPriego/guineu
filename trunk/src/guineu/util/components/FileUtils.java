@@ -90,6 +90,9 @@ public class FileUtils {
             case QUALITYCONTROL:
             case BASIC:
                 model = new OtherDataModel(dataset);
+                if(dataset.getRowColor() != null){
+                        model.addColor(dataset.getRowColor());
+                }
                 break;
             case EXPRESSION:
                 model = new DatasetExpressionDataModel(dataset);

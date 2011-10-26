@@ -32,6 +32,7 @@ import guineu.data.Dataset;
 import guineu.data.GCGCColumnName;
 import guineu.data.PeakListRow;
 import guineu.util.Range;
+import java.awt.Color;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -54,6 +55,7 @@ public class SimpleGCGCDataset implements Dataset {
         private Vector<String> parameterNames;
         private int ID;
         private int numberRows = 0;
+        private List<Color> rowColor;
 
         /**
          *     
@@ -67,6 +69,7 @@ public class SimpleGCGCDataset implements Dataset {
                 for (String experimentName : names) {
                         this.nameExperiments.addElement(experimentName);
                 }
+                this.rowColor = new ArrayList<Color>(); 
 
                 this.params = parameters;
 
@@ -520,5 +523,13 @@ public class SimpleGCGCDataset implements Dataset {
 
         public void removeSampleNames() {
                 this.nameExperiments.clear();
+        }
+
+        public Color[] getRowColor() {
+                return this.rowColor.toArray(new Color[0]);
+        }
+        
+        public void addRowColor(Color rowColor) {
+                this.rowColor.add(rowColor);
         }
 }

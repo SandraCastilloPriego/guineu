@@ -17,13 +17,13 @@
  */
 package guineu.data.datamodels;
 
-
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleExpressionDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowExpression;
 import guineu.util.Tables.DataTableModel;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -31,132 +31,145 @@ import javax.swing.table.AbstractTableModel;
 
 public class DatasetExpressionDataModel extends AbstractTableModel implements DataTableModel {
 
-    private SimpleExpressionDataset dataset;
-    private int fixNumberColumns;
-    private List<String> columns;
+        private SimpleExpressionDataset dataset;
+        private int fixNumberColumns;
+        private List<String> columns;
+        private Color[] rowColor;
 
-    public DatasetExpressionDataModel(Dataset dataset) {
-        this.dataset = (SimpleExpressionDataset) dataset;
-        this.columns = new ArrayList<String>();
-        this.setParameters();
-        this.writeData();
-    }
-
-    
-    public void setParameters() {
-        fixNumberColumns = 0;
-        Vector<String> metadata = ((SimpleExpressionDataset) dataset).getMetaDataNames();
-        for (String column : metadata) {
-            columns.add(column);
-            fixNumberColumns++;
-        }
-    }
-
-    /**
-     * Sets the rest of the data from the dataset object, which contains the all the rows.
-     *
-     */
-    private void writeData() {
-        PeakListRow peakListRow;
-        for (int i = 0; i < dataset.getNumberRows(); i++) {
-            peakListRow = this.dataset.getRow(i);
-            if (peakListRow.getID() == -1) {
-                peakListRow.setID(i);
-            }
+        public DatasetExpressionDataModel(Dataset dataset) {
+                this.dataset = (SimpleExpressionDataset) dataset;
+                this.columns = new ArrayList<String>();
+                rowColor = new Color[dataset.getNumberRows()];
+                this.setParameters();
+                this.writeData();
         }
 
-    }
-
-    /**
-     * @see guineu.util.Tables.DataTableModel
-     */
-    public void removeRows() {
-        for (int i = 0; i < this.dataset.getNumberRows(); i++) {
-            PeakListRow row = this.dataset.getRow(i);
-            if (row.isSelected()) {
-                this.dataset.removeRow(row);
-                this.fireTableDataChanged();
-                this.removeRows();
-                break;
-            }
+        public Color getRowColor(int row) {
+                if (row < rowColor.length) {
+                        return rowColor[row];
+                } else {
+                        return null;
+                }
         }
-    }
-
-    public int getColumnCount() {
-        return this.dataset.getNumberCols() + this.fixNumberColumns;
-    }
-
-    public int getRowCount() {
-        return this.dataset.getNumberRows();
-    }
-
-    public Object getValueAt(final int row, final int column) {
-        try {
-            SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) this.dataset.getRow(row);
-
-            if (column < this.fixNumberColumns) {
-                Object value = peakRow.getMetaData(this.dataset.getMetaDataNames().elementAt(column));
-                return value;
-            }
-            return peakRow.getPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns));
-        } catch (Exception e) {
-            return null;
+        
+        public void addColor(Color[] color) {
+                this.rowColor = color;
         }
-    }
 
-    @Override
-    public String getColumnName(int columnIndex) {
-        if (columnIndex < this.fixNumberColumns) {
-            return (String) this.columns.get(columnIndex).toString();
-        } else {
-            return this.dataset.getAllColumnNames().elementAt(columnIndex - this.fixNumberColumns);
+        public void setParameters() {
+                fixNumberColumns = 0;
+                Vector<String> metadata = ((SimpleExpressionDataset) dataset).getMetaDataNames();
+                for (String column : metadata) {
+                        columns.add(column);
+                        fixNumberColumns++;
+                }
         }
-    }
 
-    @Override
-    public Class<?> getColumnClass(int c) {
-        if (getValueAt(0, c) != null) {
-            return getValueAt(0, c).getClass();
-        } else {
-            return Object.class;
+        /**
+         * Sets the rest of the data from the dataset object, which contains the all the rows.
+         *
+         */
+        private void writeData() {
+                PeakListRow peakListRow;
+                for (int i = 0; i < dataset.getNumberRows(); i++) {
+                        peakListRow = this.dataset.getRow(i);
+                        if (peakListRow.getID() == -1) {
+                                peakListRow.setID(i);
+                        }
+                }
+
         }
-    }
 
-    @Override
-    @SuppressWarnings("fallthrough")
-    public void setValueAt(Object aValue, int row, int column) {
-        SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) this.dataset.getRow(row);
-        if (column < this.fixNumberColumns) {
-            peakRow.setMetaData(this.columns.get(column), aValue);
-        } else {
-            peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns), (Double) aValue);
+        /**
+         * @see guineu.util.Tables.DataTableModel
+         */
+        public void removeRows() {
+                for (int i = 0; i < this.dataset.getNumberRows(); i++) {
+                        PeakListRow row = this.dataset.getRow(i);
+                        if (row.isSelected()) {
+                                this.dataset.removeRow(row);
+                                this.fireTableDataChanged();
+                                this.removeRows();
+                                break;
+                        }
+                }
         }
-        fireTableCellUpdated(row, column);
-    }
 
-    @Override
-    public boolean isCellEditable(int row, int column) {
-        return true;
-    }
+        public int getColumnCount() {
+                return this.dataset.getNumberCols() + this.fixNumberColumns;
+        }
 
-    /**
-     * @see elmar.util.Tables.DataTableModel
-     */
-    public DatasetType getType() {
-        return this.dataset.getType();
-    }
+        public int getRowCount() {
+                return this.dataset.getNumberRows();
+        }
 
-    /**
-     * @see elmar.util.Tables.DataTableModel
-     */
-    public int getFixColumns() {
-        return this.fixNumberColumns;
-    }
+        public Object getValueAt(final int row, final int column) {
+                try {
+                        SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) this.dataset.getRow(row);
 
-    /**
-     * @see elmar.util.Tables.DataTableModel
-     */
-    public void addColumn(String columnName) {
-        this.dataset.addColumnName(columnName);
-    }
+                        if (column < this.fixNumberColumns) {
+                                Object value = peakRow.getMetaData(this.dataset.getMetaDataNames().elementAt(column));
+                                return value;
+                        }
+                        return peakRow.getPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns));
+                } catch (Exception e) {
+                        return null;
+                }
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+                if (columnIndex < this.fixNumberColumns) {
+                        return (String) this.columns.get(columnIndex).toString();
+                } else {
+                        return this.dataset.getAllColumnNames().elementAt(columnIndex - this.fixNumberColumns);
+                }
+        }
+
+        @Override
+        public Class<?> getColumnClass(int c) {
+                if (getValueAt(0, c) != null) {
+                        return getValueAt(0, c).getClass();
+                } else {
+                        return Object.class;
+                }
+        }
+
+        @Override
+        @SuppressWarnings("fallthrough")
+        public void setValueAt(Object aValue, int row, int column) {
+                SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) this.dataset.getRow(row);
+                if (column < this.fixNumberColumns) {
+                        peakRow.setMetaData(this.columns.get(column), aValue);
+                } else {
+                        peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns), (Double) aValue);
+                }
+                fireTableCellUpdated(row, column);
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+                return true;
+        }
+
+        /**
+         * @see elmar.util.Tables.DataTableModel
+         */
+        public DatasetType getType() {
+                return this.dataset.getType();
+        }
+
+        /**
+         * @see elmar.util.Tables.DataTableModel
+         */
+        public int getFixColumns() {
+                return this.fixNumberColumns;
+        }
+
+        /**
+         * @see elmar.util.Tables.DataTableModel
+         */
+        public void addColumn(String columnName) {
+                this.dataset.addColumnName(columnName);
+        }
 }

@@ -36,11 +36,10 @@ public class SaveOtherFileModule implements GuineuModule {
 
         public static final String MODULE_NAME = "Save text file";
         private Dataset[] datasets;
-        private SaveOtherParameters parameters;
+        private SaveOtherParameters parameters = new SaveOtherParameters();
 
-        public void initModule(Dataset[] datasets, ParameterSet parameters) {
+        public void initModule(Dataset[] datasets) {
                 this.datasets = datasets;
-                this.parameters = (SaveOtherParameters) parameters;
                 ExitCode code = parameters.showSetupDialog();
                 if (code == ExitCode.OK) {
                         runModule(parameters);

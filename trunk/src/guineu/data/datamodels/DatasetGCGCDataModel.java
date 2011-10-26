@@ -27,6 +27,7 @@ import javax.swing.table.AbstractTableModel;
 import guineu.data.Dataset;
 import guineu.desktop.preferences.ColumnsGCGCParameters;
 import guineu.main.GuineuCore;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +42,25 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
         private int fixNumberColumns = 0;
         private List<GCGCColumnName> columns;
         private GCGCColumnName[] elements;
+        private Color[] rowColor;
 
         public DatasetGCGCDataModel(Dataset dataset) {
                 this.dataset = (SimpleGCGCDataset) dataset;
+                rowColor = new Color[dataset.getNumberRows()];
                 this.setParameters();
                 this.writeData();
+        }
+
+        public Color getRowColor(int row) {
+                if (row < rowColor.length) {
+                        return rowColor[row];
+                } else {
+                        return null;
+                }
+        }
+        
+        public void addColor(Color[] color) {
+                this.rowColor = color;
         }
 
         /**

@@ -3,6 +3,7 @@ package guineu.data.datamodels;
 import guineu.data.DatasetType;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.util.Tables.DataTableModel;
+import java.awt.Color;
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
 
@@ -14,14 +15,28 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
         private int numColumns;
         private int numRows;
         private Vector<String> columns_mol = new Vector<String>();
+        private Color[] rowColor;
 
         public VariationCoefficientDataModel(Vector<VariationCoefficientData> data) {
+                rowColor = new Color[data.size()];
                 columns_mol.add("DatasetName");
                 columns_mol.add("Coefficient variation");
                 columns_mol.add("N Molecules");
                 columns_mol.add("N Molecules known");
                 columns_mol.add("N Experiments");
                 set_samples(data);
+        }
+
+        public Color getRowColor(int row) {
+                if (row < rowColor.length) {
+                        return rowColor[row];
+                } else {
+                        return null;
+                }
+        }
+
+        public void addColor(Color[] color) {
+                this.rowColor = color;
         }
 
         /**
