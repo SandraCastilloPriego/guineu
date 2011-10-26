@@ -121,13 +121,15 @@ public class PushableTable implements DataTable, ActionListener {
                                                 if (comp.getBackground().getRGB() != new Color(173, 205, 203).getRGB()) {
                                                         this.repaint();
                                                 }
-                                        } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)) {
+                                        } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)&& getColor(Index_row) == null) {
                                                 comp.setBackground(new Color(234, 235, 243));
                                         } else if (isCellSelected(Index_row, Index_col)) {
                                                 comp.setBackground(new Color(173, 205, 203));
                                                 if (comp.getBackground().getRGB() != new Color(173, 205, 203).getRGB()) {
                                                         this.repaint();
                                                 }
+                                        }else if(getColor(Index_row) != null){
+                                                comp.setBackground(getColor(Index_row));
                                         } else {
                                                 comp.setBackground(Color.white);
                                         }
@@ -143,6 +145,10 @@ public class PushableTable implements DataTable, ActionListener {
                                 } catch (Exception e) {
                                         return false;
                                 }
+                        }
+                        
+                        private Color getColor(int row){
+                                return tableModel.getRowColor(row);
                         }
                 };
 

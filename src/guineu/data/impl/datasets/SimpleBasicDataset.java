@@ -21,6 +21,7 @@ import guineu.data.impl.*;
 import guineu.data.DatasetType;
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -42,6 +43,7 @@ public class SimpleBasicDataset implements Dataset {
         private Vector<String> parameterNames;
         private int ID;
         private int numberRows = 0;
+        private List<Color> rowColor;
 
         /**
          *
@@ -53,6 +55,7 @@ public class SimpleBasicDataset implements Dataset {
                 this.columnNames = new Vector<String>();
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
+                this.rowColor = new ArrayList<Color>();
                 type = DatasetType.BASIC;
         }
 
@@ -251,5 +254,13 @@ public class SimpleBasicDataset implements Dataset {
 
         public void removeSampleNames() {
                 this.columnNames.clear();
+        }
+
+        public Color[] getRowColor() {
+                return this.rowColor.toArray(new Color[0]);
+        }
+
+        public void addRowColor(Color rowColor) {
+                this.rowColor.add(rowColor);
         }
 }

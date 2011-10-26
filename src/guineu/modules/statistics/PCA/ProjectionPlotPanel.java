@@ -15,16 +15,27 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.modules.statistics.PCA;
 
+import guineu.data.Dataset;
+import guineu.data.PeakListRow;
+import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.peaklists.SimplePeakListRowOther;
+import guineu.main.GuineuCore;
 import guineu.parameters.ParameterSet;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.text.NumberFormat;
 
 
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -43,116 +54,149 @@ import org.jfree.ui.RectangleInsets;
  */
 public class ProjectionPlotPanel extends ChartPanel {
 
-	private static final Color gridColor = Color.lightGray;
-	private static final Font titleFont = new Font("SansSerif", Font.PLAIN, 11);
+        private static final Color gridColor = Color.lightGray;
+        private static final Font titleFont = new Font("SansSerif", Font.PLAIN, 11);
+        private static final float dataPointAlpha = 0.8f;
+        private JFreeChart chart;
+        private XYPlot plot;
+        private ProjectionPlotItemLabelGenerator itemLabelGenerator;
+        private ProjectionPlotRenderer spotRenderer;
+        private JPanel legendPanel;
 
-	private static final float dataPointAlpha = 0.8f;
-	
-	private JFreeChart chart;
-	private XYPlot plot;
+        public ProjectionPlotPanel(ProjectionPlotWindow masterFrame,
+                ProjectionPlotDataset dataset, ParameterSet parameters) {
+                super(null);
 
-	private ProjectionPlotItemLabelGenerator itemLabelGenerator;
-	private ProjectionPlotRenderer spotRenderer;
+                boolean createLegend = false;
+                if ((dataset.getNumberOfGroups() > 1)
+                        && (dataset.getNumberOfGroups() < 20)) {
+                        createLegend = true;
+                }
 
-	public ProjectionPlotPanel(ProjectionPlotWindow masterFrame,
-			ProjectionPlotDataset dataset, ParameterSet parameters) {
-		super(null);
+                legendPanel = new JPanel();
 
-		boolean createLegend = false;
-		if ((dataset.getNumberOfGroups() > 1)
-				&& (dataset.getNumberOfGroups() < 20))
-			createLegend = true;
+                chart = ChartFactory.createXYAreaChart("", dataset.getXLabel(), dataset.getYLabel(), dataset, PlotOrientation.VERTICAL, false,
+                        false, false);
+                chart.setBackgroundPaint(Color.white);
 
-		chart = ChartFactory.createXYAreaChart("", dataset.getXLabel(), dataset
-				.getYLabel(), dataset, PlotOrientation.VERTICAL, createLegend,
-				false, false);
-		chart.setBackgroundPaint(Color.white);
-		
 
-		setChart(chart);
+                setChart(chart);
 
-		// title
+                // title
 
-		TextTitle chartTitle = chart.getTitle();
-		chartTitle.setMargin(5, 0, 0, 0);
-		chartTitle.setFont(titleFont);
-		chart.removeSubtitle(chartTitle);
+                TextTitle chartTitle = chart.getTitle();
+                chartTitle.setMargin(5, 0, 0, 0);
+                chartTitle.setFont(titleFont);
+                chart.removeSubtitle(chartTitle);
 
-		// disable maximum size (we don't want scaling)
-		setMaximumDrawWidth(Integer.MAX_VALUE);
-		setMaximumDrawHeight(Integer.MAX_VALUE);
+                // disable maximum size (we don't want scaling)
+                setMaximumDrawWidth(Integer.MAX_VALUE);
+                setMaximumDrawHeight(Integer.MAX_VALUE);
 
-		// set the plot properties
-		plot = chart.getXYPlot();
-		plot.setBackgroundPaint(Color.white);
-		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+                // set the plot properties
+                plot = chart.getXYPlot();
+                plot.setBackgroundPaint(Color.white);
+                plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 
-		// set grid properties
-		plot.setDomainGridlinePaint(gridColor);
-		plot.setRangeGridlinePaint(gridColor);
+                // set grid properties
+                plot.setDomainGridlinePaint(gridColor);
+                plot.setRangeGridlinePaint(gridColor);
 
-		// set crosshair (selection) properties
-		plot.setDomainCrosshairVisible(false);
-		plot.setRangeCrosshairVisible(false);
-		
-		plot.setForegroundAlpha(dataPointAlpha);
-		
-		NumberFormat numberFormat = NumberFormat.getNumberInstance();
+                // set crosshair (selection) properties
+                plot.setDomainCrosshairVisible(false);
+                plot.setRangeCrosshairVisible(false);
 
-		// set the X axis (component 1) properties
-		NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
-		xAxis.setNumberFormatOverride(numberFormat);
+                plot.setForegroundAlpha(dataPointAlpha);
 
-		// set the Y axis (component 2) properties
-		NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
-		yAxis.setNumberFormatOverride(numberFormat);
+                NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
-		plot.setDataset(dataset);
+                // set the X axis (component 1) properties
+                NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+                xAxis.setNumberFormatOverride(numberFormat);
 
-		spotRenderer = new ProjectionPlotRenderer(plot, dataset);
-		itemLabelGenerator = new ProjectionPlotItemLabelGenerator(parameters);
-		spotRenderer.setBaseItemLabelGenerator(itemLabelGenerator);
-		spotRenderer.setBaseItemLabelsVisible(true);
-		spotRenderer
-				.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
-						parameters));
-		plot.setRenderer(spotRenderer);
+                // set the Y axis (component 2) properties
+                NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+                yAxis.setNumberFormatOverride(numberFormat);
 
-		// Setup legend
-		if (createLegend) {
-			LegendItemCollection legendItemsCollection = new LegendItemCollection();
-			for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
-				Object paramValue = dataset.getGroupParameterValue(groupNumber);
-				if (paramValue == null) {
-					// No parameter value available: search for raw data files
-					// within this group, and use their names as group's name
-					String fileNames = new String();
-					for (int itemNumber = 0; itemNumber < dataset
-							.getItemCount(0); itemNumber++) {
-						String rawDataFile = dataset
-								.getRawDataFile(itemNumber);
-						if (dataset.getGroupNumber(itemNumber) == groupNumber)
-							fileNames = fileNames
-									.concat(rawDataFile.toString());
-					}
-					if (fileNames.length() == 0)
-						fileNames = "Empty group";
+                plot.setDataset(dataset);
 
-					paramValue = fileNames;
-				}
-				Color nextColor = (Color)spotRenderer.getGroupPaint(groupNumber);
-				Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int)Math.round(255*dataPointAlpha));
-				legendItemsCollection.add(new LegendItem(paramValue.toString(),
-						"-", null, null, spotRenderer.getDataPointsShape(),
-						groupColor));
-			}
-			plot.setFixedLegendItems(legendItemsCollection);
-		}
+                spotRenderer = new ProjectionPlotRenderer(plot, dataset);
+                itemLabelGenerator = new ProjectionPlotItemLabelGenerator(parameters);
+                spotRenderer.setBaseItemLabelGenerator(itemLabelGenerator);
+                spotRenderer.setBaseItemLabelsVisible(true);
+                spotRenderer.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
+                        parameters));
+                plot.setRenderer(spotRenderer);
 
-	}
+                // Setup legend
+                if (createLegend) {
+                        LegendItemCollection legendItemsCollection = new LegendItemCollection();
+                        for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
+                                Object paramValue = dataset.getGroupParameterValue(groupNumber);
+                                if (paramValue == null) {
+                                        // No parameter value available: search for raw data files
+                                        // within this group, and use their names as group's name
+                                        String fileNames = new String();
+                                        for (int itemNumber = 0; itemNumber < dataset.getItemCount(0); itemNumber++) {
+                                                String rawDataFile = dataset.getRawDataFile(itemNumber);
+                                                if (dataset.getGroupNumber(itemNumber) == groupNumber) {
+                                                        fileNames = fileNames.concat(rawDataFile.toString());
+                                                }
+                                        }
+                                        if (fileNames.length() == 0) {
+                                                fileNames = "Empty group";
+                                        }
 
-	protected void cycleItemLabelMode() {
-		itemLabelGenerator.cycleLabelMode();
-		spotRenderer.setBaseItemLabelsVisible(true);
-	}
+                                        paramValue = fileNames;
+                                }
+                                Color nextColor = (Color) spotRenderer.getGroupPaint(groupNumber);
+                                Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int) Math.round(255 * dataPointAlpha));
+                                legendItemsCollection.add(new LegendItem(paramValue.toString(),
+                                        "-", null, null, spotRenderer.getDataPointsShape(),
+                                        groupColor));
+                        }
+                        plot.setFixedLegendItems(legendItemsCollection);
+                } else {
+
+                        Dataset legends = new SimpleBasicDataset("Legends");
+                        legends.addColumnName("Samples");
+
+                        for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
+                                Object paramValue = dataset.getGroupParameterValue(groupNumber);
+                                if (paramValue == null) {
+                                        // No parameter value available: search for raw data files
+                                        // within this group, and use their names as group's name
+                                        String fileNames = new String();
+                                        for (int itemNumber = 0; itemNumber < dataset.getItemCount(0); itemNumber++) {
+                                                String rawDataFile = dataset.getRawDataFile(itemNumber);
+                                                if (dataset.getGroupNumber(itemNumber) == groupNumber) {
+                                                        fileNames = fileNames.concat(rawDataFile.toString());
+                                                }
+                                        }
+                                        if (fileNames.length() == 0) {
+                                                fileNames = "Empty group";
+                                        }
+
+                                        paramValue = fileNames;
+                                }
+
+                                Color nextColor = (Color) spotRenderer.getGroupPaint(groupNumber);
+                                Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int) Math.round(255 * dataPointAlpha));
+
+                                PeakListRow row = new SimplePeakListRowOther();
+                                row.setPeak("Samples", paramValue.toString());
+                                legends.addRow(row);
+                                legends.addRowColor(groupColor);
+
+                        }
+
+                        GuineuCore.getDesktop().AddNewFile(legends);
+                }
+
+        }
+
+        protected void cycleItemLabelMode() {
+                itemLabelGenerator.cycleLabelMode();
+                spotRenderer.setBaseItemLabelsVisible(true);
+        }
 }

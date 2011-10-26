@@ -17,6 +17,7 @@
  */
 package guineu.data;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Vector;
 
@@ -222,5 +223,9 @@ public interface Dataset {
         /**
          * Remove the sample names.
          */
-        public void removeSampleNames();
+        public void removeSampleNames();       
+
+        public Color[] getRowColor();
+        
+        public void addRowColor(Color rowColor);
 }

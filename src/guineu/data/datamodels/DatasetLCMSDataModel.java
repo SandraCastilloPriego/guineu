@@ -27,6 +27,7 @@ import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.desktop.preferences.ColumnsLCMSParameters;
 import guineu.main.GuineuCore;
 import guineu.util.Tables.DataTableModel;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -38,11 +39,25 @@ public class DatasetLCMSDataModel extends AbstractTableModel implements DataTabl
         private List<LCMSColumnName> columns;
         private LCMSColumnName[] elements;
         private ColumnsLCMSParameters parameters;
+        private Color[] rowColor;
 
         public DatasetLCMSDataModel(Dataset dataset) {
                 this.dataset = (SimpleLCMSDataset) dataset;
+                rowColor = new Color[dataset.getNumberRows()];
                 this.setParameters();
                 this.writeData();
+        }
+
+        public Color getRowColor(int row) {
+                if (row < rowColor.length) {
+                        return rowColor[row];
+                } else {
+                        return null;
+                }
+        }
+        
+        public void addColor(Color[] color) {
+                this.rowColor = color;
         }
 
         /**

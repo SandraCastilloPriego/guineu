@@ -21,6 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.SampleDescription;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -44,6 +45,7 @@ public class SimpleExpressionDataset implements Dataset {
         private int ID;
         private int numberRows = 0;
         Hashtable<String, String> sampleType;
+        private List<Color> rowColor; 
 
         /**
          *
@@ -57,6 +59,7 @@ public class SimpleExpressionDataset implements Dataset {
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
                 this.sampleType = new Hashtable<String, String>();
+                this.rowColor = new ArrayList<Color>(); 
                 type = DatasetType.EXPRESSION;
         }
 
@@ -241,5 +244,13 @@ public class SimpleExpressionDataset implements Dataset {
 
         public void removeSampleNames() {
                 this.sampleNames.clear();
+        }
+
+        public Color[] getRowColor() {
+                return this.rowColor.toArray(new Color[0]);
+        }
+        
+        public void addRowColor(Color rowColor) {
+                this.rowColor.add(rowColor);
         }
 }

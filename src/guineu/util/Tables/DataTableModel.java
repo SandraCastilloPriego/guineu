@@ -18,6 +18,7 @@
 package guineu.util.Tables;
 
 import guineu.data.DatasetType;
+import java.awt.Color;
 import javax.swing.table.TableModel;
 
 /**
@@ -27,34 +28,37 @@ import javax.swing.table.TableModel;
  */
 public interface DataTableModel extends TableModel {
 
-    /**
-     * Returns the number of columns corresponding to the fix parameters of
-     * each kind of dataset. For example, in LC-MS data sets they would be
-     * "retention time", "name", .., and in GCxGX-tof data sets "RT1", "RT2",...
-     *
-     * @return Number of parameter columns
-     */
-    public int getFixColumns();
+        /**
+         * Returns the number of columns corresponding to the fix parameters of
+         * each kind of dataset. For example, in LC-MS data sets they would be
+         * "retention time", "name", .., and in GCxGX-tof data sets "RT1", "RT2",...
+         *
+         * @return Number of parameter columns
+         */
+        public int getFixColumns();
 
-    /**
-     * Removes selected rows from the table. It only removes the rows which are
-     * selected in the "Selection" column.
-     *
-     */
-    public void removeRows();
+        /**
+         * Removes selected rows from the table. It only removes the rows which are
+         * selected in the "Selection" column.
+         *
+         */
+        public void removeRows();
 
-    /**
-     * Returns the type of data set which correspons to this data model
-     *
-     * @return Data set type
-     */
-    public DatasetType getType(); 
+        /**
+         * Returns the type of data set which correspons to this data model
+         *
+         * @return Data set type
+         */
+        public DatasetType getType();
 
+        /**
+         * Adds a new column in the table.
+         *
+         * @param columnName Name of the new column
+         */
+        public void addColumn(String columnName);
 
-    /**
-     * Adds a new column in the table.
-     *
-     * @param columnName Name of the new column
-     */
-    public void addColumn(String columnName);
+        public void addColor(Color[] color);
+
+        public Color getRowColor(int row);
 }

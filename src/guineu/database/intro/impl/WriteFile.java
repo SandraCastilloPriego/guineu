@@ -31,6 +31,7 @@ import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
 import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.parameters.SimpleParameterSet;
+import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,9 +42,11 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
@@ -64,7 +67,7 @@ public class WriteFile {
                 try {
                         LCMSColumnName elementsObjects[] = null;
                         if (parameters == null) {
-                                elementsObjects = LCMSColumnName.values();   
+                                elementsObjects = LCMSColumnName.values();
                         } else {
                                 elementsObjects = parameters.getParameter(SaveLCMSParameters.exportLCMS).getValue();
                         }
@@ -143,11 +146,11 @@ public class WriteFile {
                         int fieldsNumber = elementsObjects.length;
                         int cont = 0;
                         for (LCMSColumnName p : elementsObjects) {
-                                this.setCell(row, cont++, p.getColumnName());
+                                this.setCell(row, cont++, p.getColumnName(), null);
                         }
                         int c = fieldsNumber;
                         for (String experimentName : dataset.getAllColumnNames()) {
-                                this.setCell(row, c++, experimentName);
+                                this.setCell(row, c++, experimentName, null);
                         }
 
                         // Writes content
@@ -161,14 +164,14 @@ public class WriteFile {
                                 cont = 0;
                                 for (LCMSColumnName p : elementsObjects) {
                                         try {
-                                                this.setCell(row, cont++, lipid.getVar(p.getGetFunctionName()));
+                                                this.setCell(row, cont++, lipid.getVar(p.getGetFunctionName()), null);
                                         } catch (Exception ee) {
                                         }
 
                                 }
                                 c = fieldsNumber;
                                 for (String experimentName : dataset.getAllColumnNames()) {
-                                        this.setCell(row, c++, lipid.getPeak(experimentName));
+                                        this.setCell(row, c++, lipid.getPeak(experimentName), null);
                                 }
                         }
                         //Writes the output to a file
@@ -277,7 +280,7 @@ public class WriteFile {
                                 sheet = wb.createSheet(String.valueOf(NumberOfSheets));
                         } catch (Exception exception) {
                                 wb = new HSSFWorkbook();
-                                sheet = wb.createSheet("Mass Lynx");
+                                sheet = wb.createSheet("Page 1");
                         }
                         HSSFRow row = sheet.getRow(0);
                         if (row == null) {
@@ -285,10 +288,15 @@ public class WriteFile {
                         }
                         int cont = 0;
                         for (String experimentName : dataset.getAllColumnNames()) {
-                                this.setCell(row, cont++, experimentName);
+                                this.setCell(row, cont++, experimentName, null);
 
                         }
+
+                        HSSFPalette palette = wb.getCustomPalette();
+                        Color[] colors = dataset.getRowColor();
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
+                                palette.setColorAtIndex((short) 0x12, (byte) colors[i].getRed(), (byte) colors[i].getGreen(), (byte) colors[i].getBlue());
+                                HSSFColor mycolor = palette.getColor((short) 0x12);  //unmodified
                                 SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 
                                 row = sheet.getRow(i + 1);
@@ -298,11 +306,12 @@ public class WriteFile {
                                 int c = 0;
                                 for (String experimentName : dataset.getAllColumnNames()) {
                                         if (lipid.getPeak(experimentName) == null) {
-                                                this.setCell(row, c++, "");
+                                                this.setCell(row, c++, "", mycolor);
                                         } else {
-                                                this.setCell(row, c++, lipid.getPeak(experimentName));
+                                                this.setCell(row, c++, lipid.getPeak(experimentName), mycolor);
                                         }
                                 }
+
                         }
                         //Write the output to a file
                         fileOut = new FileOutputStream(path);
@@ -320,26 +329,21 @@ public class WriteFile {
          * @param Index Cell column
          * @param data data to be writen into the cell
          */
-        private void setCell(HSSFRow row, int Index, Object data) {
+        private void setCell(HSSFRow row, int Index, Object data, HSSFColor color) {
+                HSSFCell cell = row.getCell((short) Index);
+                if (cell == null) {
+                        cell = row.createCell((short) Index);
+                }
                 if (data.getClass().toString().contains("String")) {
-                        HSSFCell cell = row.getCell((short) Index);
-                        if (cell == null) {
-                                cell = row.createCell((short) Index);
-                        }
                         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
                         cell.setCellValue((String) data);
                 } else if (data.getClass().toString().contains("Double")) {
-                        HSSFCell cell = row.getCell((short) Index);
-                        if (cell == null) {
-                                cell = row.createCell((short) Index);
-                        }
                         cell.setCellValue((Double) data);
                 } else if (data.getClass().toString().contains("Integer")) {
-                        HSSFCell cell = row.getCell((short) Index);
-                        if (cell == null) {
-                                cell = row.createCell((short) Index);
-                        }
                         cell.setCellValue((Integer) data);
+                }
+                if (color != null) {
+                        cell.getCellStyle().setFillBackgroundColor(color.getIndex());
                 }
         }
 
@@ -376,11 +380,11 @@ public class WriteFile {
                         int fieldsNumber = elementsObjects.length;
                         int cont = 0;
                         for (GCGCColumnName p : elementsObjects) {
-                                this.setCell(row, cont++, p.getColumnName());
+                                this.setCell(row, cont++, p.getColumnName(), null);
                         }
                         int c = fieldsNumber;
                         for (String experimentName : dataset.getAllColumnNames()) {
-                                this.setCell(row, c++, experimentName);
+                                this.setCell(row, c++, experimentName, null);
                         }
 
                         // Write content
@@ -394,7 +398,7 @@ public class WriteFile {
 
                                 for (GCGCColumnName p : elementsObjects) {
                                         try {
-                                                this.setCell(row, cont++, metabolite.getVar(p.getGetFunctionName()));
+                                                this.setCell(row, cont++, metabolite.getVar(p.getGetFunctionName()), null);
                                         } catch (Exception ee) {
                                         }
 
@@ -402,9 +406,9 @@ public class WriteFile {
                                 c = fieldsNumber;
                                 for (String experimentName : dataset.getAllColumnNames()) {
                                         try {
-                                                this.setCell(row, c++, metabolite.getPeak(experimentName));
+                                                this.setCell(row, c++, metabolite.getPeak(experimentName), null);
                                         } catch (Exception e) {
-                                                this.setCell(row, c, "NA");
+                                                this.setCell(row, c, "NA", null);
                                         }
                                 }
                         }
