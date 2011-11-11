@@ -57,7 +57,7 @@ public class ParameterConfiguration implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/samples.png";
         }
 
         public boolean setSeparator() {

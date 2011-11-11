@@ -64,7 +64,7 @@ public class AdductSearchModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/adductsearch.png";
         }
 
         public boolean setSeparator() {

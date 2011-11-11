@@ -77,7 +77,7 @@ public class GCGCColumnsView implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/conf2.png";
+                return "icons/tablesconfgcgc.png";
         }
 
         public boolean setSeparator() {

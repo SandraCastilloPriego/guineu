@@ -135,7 +135,7 @@ public class NormalizeTissueModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/tissuenorm.png";
         }
 
         public boolean setSeparator() {

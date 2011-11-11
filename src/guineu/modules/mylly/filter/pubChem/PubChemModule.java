@@ -60,7 +60,7 @@ public class PubChemModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/pubChem.png";
         }
 
         public boolean setSeparator() {

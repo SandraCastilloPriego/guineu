@@ -62,7 +62,7 @@ public class OpenGCGCDatasetModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/spectrumicon.png";
+                return "icons/gcgc.png";
         }
 
         public boolean setSeparator() {

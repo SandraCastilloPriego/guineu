@@ -26,7 +26,7 @@ import java.io.File;
 
 public class OpenLCMSFileModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Open LC-MS files";
+        public static final String MODULE_NAME = "Open LC-MS data set";
         private OpenFileParameters parameters = new OpenFileParameters();
 
         public ParameterSet getParameterSet() {
@@ -58,7 +58,7 @@ public class OpenLCMSFileModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/spectrumicon.png";
+                return "icons/lcms.png";
         }
 
         public boolean setSeparator() {

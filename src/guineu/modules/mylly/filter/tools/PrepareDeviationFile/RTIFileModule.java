@@ -55,7 +55,7 @@ public class RTIFileModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/preparerti.png";
         }
 
         public boolean setSeparator() {

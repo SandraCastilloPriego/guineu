@@ -78,7 +78,7 @@ public class SplitModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/split.png";
         }
 
         public boolean setSeparator() {

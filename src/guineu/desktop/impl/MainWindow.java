@@ -19,7 +19,6 @@ package guineu.desktop.impl;
 
 import guineu.data.Dataset;
 import guineu.desktop.Desktop;
-import guineu.desktop.GuineuMenu;
 import guineu.desktop.impl.helpsystem.GuineuHelpSet;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModule;
@@ -163,6 +162,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
                 // Initialize item selector
                 itemSelector = new ItemSelector(this);
+               
 
                 // Place objects on main window
                 desktopPane = new JDesktopPane();
@@ -173,7 +173,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 
                 desktopPane.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-                // desktopPane.setBackground(new Color(237, 249, 255));
+                //desktopPane.setBackground(new Color(251, 161, 82));
                 Container c = getContentPane();
                 c.setLayout(new BorderLayout());
                 c.add(split, BorderLayout.CENTER);

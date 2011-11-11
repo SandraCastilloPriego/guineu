@@ -60,7 +60,7 @@ public class ClassIdentificationModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/classident.png";
         }
 
         public boolean setSeparator() {

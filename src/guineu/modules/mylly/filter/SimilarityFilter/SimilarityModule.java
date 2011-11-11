@@ -60,7 +60,7 @@ public class SimilarityModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/similarity.png";
         }
 
         public boolean setSeparator() {

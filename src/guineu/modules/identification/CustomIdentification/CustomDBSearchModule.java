@@ -63,7 +63,7 @@ public class CustomDBSearchModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-               return null;
+               return "icons/identdb.png";
         }
 
         public boolean setSeparator() {

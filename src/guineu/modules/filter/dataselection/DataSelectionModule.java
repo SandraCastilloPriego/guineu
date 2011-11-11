@@ -55,7 +55,7 @@ public class DataSelectionModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/selection.png";
         }
 
         public boolean setSeparator() {

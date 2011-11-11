@@ -50,7 +50,7 @@ public class ExitProgram implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/exit.png";
         }
 
         public boolean setSeparator() {

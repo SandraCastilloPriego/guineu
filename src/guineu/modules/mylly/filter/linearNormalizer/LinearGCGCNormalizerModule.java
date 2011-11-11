@@ -58,7 +58,7 @@ public class LinearGCGCNormalizerModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/linearnorm.png";
         }
 
         public boolean setSeparator() {

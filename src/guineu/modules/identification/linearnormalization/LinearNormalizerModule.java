@@ -72,7 +72,7 @@ public class LinearNormalizerModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/linearnormalization.png";
         }
 
         public boolean setSeparator() {

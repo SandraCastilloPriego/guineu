@@ -128,7 +128,7 @@ public class NormalizeSerumModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/serumnorm.png";
         }
 
         public boolean setSeparator() {

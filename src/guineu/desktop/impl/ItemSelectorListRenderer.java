@@ -22,6 +22,8 @@ import java.awt.Dimension;
 
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JList;
 
 class ItemSelectorListRenderer extends DefaultListCellRenderer {
@@ -43,7 +45,18 @@ class ItemSelectorListRenderer extends DefaultListCellRenderer {
                 // If we don't set the preferred size here, the JList occasionally
                 // becomes blank when the ListModel is updated
                 component.setPreferredSize(new Dimension(100, 15));
-
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+                if (value.toString().contains("LC-MS")) {
+                        label.setIcon(new ImageIcon("icons/lcms.png"));
+                } else if (value.toString().contains("Text File")) {
+                        label.setIcon(new ImageIcon("icons/others.png"));
+                } else if (value.toString().contains("GCxGC-MS File")) {
+                        label.setIcon(new ImageIcon("icons/gcgcfiles.png"));
+                } else if (value.toString().contains("GCxGC")) {
+                        label.setIcon(new ImageIcon("icons/gcgc.png"));
+                }else{
+                         label.setIcon(new ImageIcon("icons/openfile.png"));
+                }
 
                 return component;
         }

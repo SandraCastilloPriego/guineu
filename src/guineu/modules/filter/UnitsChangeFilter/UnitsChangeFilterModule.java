@@ -58,7 +58,7 @@ public class UnitsChangeFilterModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/changeunits.png";
         }
 
         public boolean setSeparator() {

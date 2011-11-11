@@ -57,7 +57,7 @@ public class GCGCParserCSV implements Parser {
                 while (matcher.find()) {
                         index = matcher.start();
                 }
-                String n = "GCGC - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
+                String n = "GCxGC - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
                 return n;
         }
 

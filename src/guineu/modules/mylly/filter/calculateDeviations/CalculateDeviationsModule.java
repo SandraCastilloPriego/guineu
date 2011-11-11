@@ -60,7 +60,7 @@ public class CalculateDeviationsModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/deviations.png";
         }
 
         public boolean setSeparator() {

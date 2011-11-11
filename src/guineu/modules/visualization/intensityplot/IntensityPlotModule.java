@@ -59,7 +59,7 @@ public class IntensityPlotModule implements GuineuProcessingModule {
 	}
 
         public String getIcon() {
-                return "icons/fold.png";
+                return "icons/intensitypeak.png";
         }
 
         public boolean setSeparator() {

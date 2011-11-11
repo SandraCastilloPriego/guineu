@@ -60,7 +60,7 @@ public class PeakCountModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/peakcount.png";
         }
 
         public boolean setSeparator() {

@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import org.jfree.data.xy.AbstractXYDataset;
+import weka.attributeSelection.PrincipalComponents;
 
 /**
  * @author Taken from MZmine2
@@ -59,6 +60,7 @@ public class PCADataset extends AbstractXYDataset implements
         private float progress = 0.0f;
         private List<PrincipleComponent> mainComponents;
         private double totalVariation = 0;
+        private boolean showLoadings;
 
         public PCADataset(ProjectionPlotParameters parameters) {
 
@@ -67,12 +69,12 @@ public class PCADataset extends AbstractXYDataset implements
                 this.xAxisPC = parameters.getParameter(ProjectionPlotParameters.xAxisComponent).getValue();
                 this.yAxisPC = parameters.getParameter(ProjectionPlotParameters.yAxisComponent).getValue();
 
-                selectedSamples = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
-                selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
-                // selectedSamples = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
-                //  selectedRows = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
-
-                coloringType = parameters.getParameter(
+                this.selectedSamples = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
+                this.selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
+                
+                this.showLoadings = parameters.getParameter(ProjectionPlotParameters.showLoadings).getValue();
+                
+                this.coloringType = parameters.getParameter(
                         ProjectionPlotParameters.coloringType).getValue();
 
                 datasetTitle = "Principal component analysis";
@@ -229,7 +231,9 @@ public class PCADataset extends AbstractXYDataset implements
                 }
 
 
-                PCA pca = new PCA(selectedSamples.length, selectedRows.length);
+                PCA pca = new PCA(selectedSamples.length, selectedRows.length);               
+   
+              
                 Matrix X = new Matrix(rawData, selectedSamples.length, selectedRows.length);
                 // X = pca.center(X);
                 //   X = pca.scale(X);
@@ -242,7 +246,7 @@ public class PCADataset extends AbstractXYDataset implements
                 this.progress = 0.75f;
 
                 for (PrincipleComponent components : mainComponents) {
-                        this.totalVariation += components.eigenValue;
+                        this.totalVariation += components.eigenValue;                        
                 }
 
                 if (mainComponents.size() > yAxisPC - 1) {

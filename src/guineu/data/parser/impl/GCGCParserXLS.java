@@ -193,7 +193,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
     }
 
     public String getDatasetName() {
-        return "GCGC - " + this.getDatasetName(DatasetName) + " - " + sheetName;
+        return "GCxGC - " + this.getDatasetName(DatasetName) + " - " + sheetName;
     }
 
     public String[] getSheetNames(String fileName) throws IOException {

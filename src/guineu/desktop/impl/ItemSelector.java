@@ -34,6 +34,7 @@ import guineu.parameters.ParameterSet;
 import guineu.util.GUIUtils;
 import guineu.util.components.DragOrderedJList;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,7 +60,7 @@ import javax.swing.event.ListSelectionListener;
 public class ItemSelector extends JPanel implements ActionListener,
         MouseListener, ListSelectionListener {
 
-        public static final String DATA_FILES_LABEL = "Dataset Files";
+        public static final String DATA_FILES_LABEL = "Data set Files";
         private DragOrderedJList DatasetFiles;
         private List<Dataset> DatasetFilesModel = new ArrayList<Dataset>();
         private DefaultListModel DatasetNamesModel = new DefaultListModel();
@@ -75,6 +76,7 @@ public class ItemSelector extends JPanel implements ActionListener,
 
                 // Create panel for raw data objects
                 JPanel rawDataPanel = new JPanel();
+                rawDataPanel.setBackground(new Color(251, 161, 82));
                 JLabel rawDataTitle = new JLabel(DATA_FILES_LABEL);
 
                 DatasetFiles = new DragOrderedJList(DatasetNamesModel);
@@ -82,7 +84,6 @@ public class ItemSelector extends JPanel implements ActionListener,
                 DatasetFiles.addMouseListener(this);
                 DatasetFiles.addListSelectionListener(this);
                 JScrollPane rawDataScroll = new JScrollPane(DatasetFiles);
-
                 rawDataPanel.setLayout(new BorderLayout());
                 rawDataPanel.add(rawDataTitle, BorderLayout.NORTH);
                 rawDataPanel.add(rawDataScroll, BorderLayout.CENTER);
