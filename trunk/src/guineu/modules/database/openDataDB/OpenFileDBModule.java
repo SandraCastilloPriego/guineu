@@ -81,7 +81,7 @@ public class OpenFileDBModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/database.png";
         }
 
         public boolean setSeparator() {

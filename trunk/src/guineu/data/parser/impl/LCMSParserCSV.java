@@ -58,7 +58,7 @@ public class LCMSParserCSV implements Parser {
         while (matcher.find()) {
             index = matcher.start();
         }
-        String n = "LCMS - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
+        String n = "LC-MS - " + datasetPath.substring(index + 1, datasetPath.length() - 4);
         return n;
     }
 

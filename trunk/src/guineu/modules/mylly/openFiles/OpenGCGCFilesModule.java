@@ -66,7 +66,7 @@ public class OpenGCGCFilesModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/pickedpeakicon.png";
+                return "icons/gcgcfiles.png";
         }
 
         public boolean setSeparator() {

@@ -54,7 +54,7 @@ public class OpenExpressionFile implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/geneexp.png";
         }
 
         public boolean setSeparator() {

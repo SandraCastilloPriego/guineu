@@ -47,7 +47,7 @@ public class GeneralConfiguration implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/configuration.png";
         }
 
         public boolean setSeparator() {

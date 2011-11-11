@@ -59,7 +59,7 @@ public class NameGolmIdentificationModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                 return "icons/golm.png";
         }
 
         public boolean setSeparator() {

@@ -59,7 +59,7 @@ public class SortingModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/sortingsamples.png";
         }
 
         public boolean setSeparator() {

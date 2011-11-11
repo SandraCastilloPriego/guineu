@@ -64,6 +64,7 @@ public class OpenGCGCFileTask extends AbstractTask {
                 try {
                         List<GCGCDatum> data = reader.readGCGCDataFile(file);
                         SimpleGCGCDataset dataset = writeDataset(data);
+                        dataset.setDatasetName("GCxGC-MS File - "+ dataset.getDatasetName());
                         GuineuCore.getDesktop().AddNewFile(dataset);
                         setStatus(TaskStatus.FINISHED);
                 } catch (IOException ex) {

@@ -61,7 +61,7 @@ public class ConcentrationsFromMassModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/IntensityRecalc.png";
         }
 
         public boolean setSeparator() {

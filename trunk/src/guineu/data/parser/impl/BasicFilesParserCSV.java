@@ -57,7 +57,7 @@ public class BasicFilesParserCSV implements Parser {
         while (matcher.find()) {
             index = matcher.start();
         }
-        String n = datasetPath.substring(index + 1, datasetPath.length() - 4);
+        String n = "Text File - " +datasetPath.substring(index + 1, datasetPath.length() - 4);
         return n;
     }
 

@@ -23,19 +23,9 @@ import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.main.GuineuCore;
 import guineu.parameters.ParameterSet;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.text.NumberFormat;
-
-
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -60,8 +50,7 @@ public class ProjectionPlotPanel extends ChartPanel {
         private JFreeChart chart;
         private XYPlot plot;
         private ProjectionPlotItemLabelGenerator itemLabelGenerator;
-        private ProjectionPlotRenderer spotRenderer;
-        private JPanel legendPanel;
+        private ProjectionPlotRenderer spotRenderer;        
 
         public ProjectionPlotPanel(ProjectionPlotWindow masterFrame,
                 ProjectionPlotDataset dataset, ParameterSet parameters) {
@@ -71,9 +60,7 @@ public class ProjectionPlotPanel extends ChartPanel {
                 if ((dataset.getNumberOfGroups() > 1)
                         && (dataset.getNumberOfGroups() < 20)) {
                         createLegend = true;
-                }
-
-                legendPanel = new JPanel();
+                }              
 
                 chart = ChartFactory.createXYAreaChart("", dataset.getXLabel(), dataset.getYLabel(), dataset, PlotOrientation.VERTICAL, false,
                         false, false);
@@ -126,6 +113,7 @@ public class ProjectionPlotPanel extends ChartPanel {
                 spotRenderer.setBaseItemLabelsVisible(true);
                 spotRenderer.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
                         parameters));
+               
                 plot.setRenderer(spotRenderer);
 
                 // Setup legend

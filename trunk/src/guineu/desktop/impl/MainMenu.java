@@ -20,6 +20,7 @@ package guineu.desktop.impl;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 import javax.swing.JDesktopPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -72,6 +73,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 this.add(filterMenu);
 
                 alignmentMenu = new JMenu("LC-MS Alignment");
+                alignmentMenu.setIcon(new ImageIcon("icons/alignment.png"));
                 alignmentMenu.setMnemonic(KeyEvent.VK_A);
                 filterMenu.add(alignmentMenu);
 
@@ -81,10 +83,12 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                 lcmsIdentificationSubMenu = new JMenu("LC-MS");
                 lcmsIdentificationSubMenu.setMnemonic(KeyEvent.VK_L);
+                lcmsIdentificationSubMenu.setIcon(new ImageIcon("icons/lcmsident.png"));
                 identificationMenu.add(lcmsIdentificationSubMenu);
 
                 gcgcIdentificationSubMenu = new JMenu("GCxGC-MS");
                 gcgcIdentificationSubMenu.setMnemonic(KeyEvent.VK_G);
+                gcgcIdentificationSubMenu.setIcon(new ImageIcon("icons/gcgcident.png"));
                 identificationMenu.add(gcgcIdentificationSubMenu);
 
                 identificationFilterMenu = new JMenu("Identification Filters");
@@ -94,6 +98,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                 normalizationMenu = new JMenu("Normalization");
                 normalizationMenu.setMnemonic(KeyEvent.VK_N);
+                normalizationMenu.setIcon(new ImageIcon("icons/linearnorm.png"));
                 identificationMenu.add(normalizationMenu);
 
                 statisticsMenu = new JMenu("Data analysis");
@@ -118,8 +123,10 @@ public class MainMenu extends JMenuBar implements ActionListener {
 
                 myllyToolsMenu = new JMenu("Tools");
                 myllyToolsMenu.setMnemonic(KeyEvent.VK_G);
+                myllyToolsMenu.setIcon(new ImageIcon("icons/tools.png"));
                 myllyMenu.add(myllyToolsMenu);
                 myllyMenu.addSeparator();
+
 
                 JDesktopPane mainDesktopPane = ((MainWindow) GuineuCore.getDesktop()).getDesktopPane();
                 windowsMenu = new JWindowsMenu(mainDesktopPane);
@@ -128,18 +135,21 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 windowsMenu.setWindowPositioner(positioner);
                 windowsMenu.setMnemonic(KeyEvent.VK_W);
                 this.add(windowsMenu);
+                
 
                 /*
                  * Help menu
                  */
-
                 helpMenu = new JMenu("Help");
-                helpMenu.setMnemonic(KeyEvent.VK_H);
+                helpMenu.setMnemonic(KeyEvent.VK_H);               
                 this.add(helpMenu);
 
                 showAbout = new JMenuItem("About Guineu ...");
                 showAbout.addActionListener(this);
+                showAbout.setIcon(new ImageIcon("icons/help.png"));
                 addMenuItem(GuineuModuleCategory.HELPSYSTEM, showAbout);
+
+               
         }
 
         public synchronized void addMenuItem(GuineuModuleCategory parentMenu,
@@ -292,8 +302,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                         ParameterSet moduleParameters = module.getParameterSet();
 
                         if (moduleParameters == null) {
-                                logger.finest("Starting module " + module
-                                        + " with no parameters");
+                                logger.log(Level.FINEST, "Starting module {0} with no parameters", module);
                                 module.runModule(null);
                                 return;
                         }
@@ -311,12 +320,11 @@ public class MainMenu extends JMenuBar implements ActionListener {
                                 return;
                         }
 
-                        logger.finest("Setting parameters for module " + module);
+                        logger.log(Level.FINEST, "Setting parameters for module {0}", module);
                         ExitCode exitCode = moduleParameters.showSetupDialog();
                         if (exitCode == ExitCode.OK) {
                                 ParameterSet parametersCopy = moduleParameters.clone();
-                                logger.finest("Starting module " + module + " with parameters "
-                                        + parametersCopy);
+                                logger.log(Level.FINEST, "Starting module {0} with parameters {1}", new Object[]{module, parametersCopy});
                                 module.runModule(parametersCopy);
                         }
                         return;

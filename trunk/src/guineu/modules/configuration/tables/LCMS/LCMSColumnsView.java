@@ -72,7 +72,7 @@ public class LCMSColumnsView implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/conf1.png";
+                return "icons/tablesconflcms.png";
         }
 
         public boolean setSeparator() {

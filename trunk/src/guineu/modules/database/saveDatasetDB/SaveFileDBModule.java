@@ -29,7 +29,7 @@ import guineu.taskcontrol.Task;
  */
 public class SaveFileDBModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Save data set in DB";
+        public static final String MODULE_NAME = "Save data set";
         private SaveFileParameters parameters = new SaveFileParameters();
 
         public void showDialog() {                
@@ -59,7 +59,7 @@ public class SaveFileDBModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/databasesave.png";
         }
 
         public boolean setSeparator() {

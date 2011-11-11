@@ -58,7 +58,7 @@ public class RelatedPeaksFilterModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/relatedpeaks.png";
         }
 
         public boolean setSeparator() {

@@ -59,7 +59,7 @@ public class TransposeFilterModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/transpose.png";
         }
 
         public boolean setSeparator() {

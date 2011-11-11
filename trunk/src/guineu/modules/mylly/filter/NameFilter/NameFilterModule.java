@@ -61,7 +61,7 @@ public class NameFilterModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/namefilter.png";
         }
 
         public boolean setSeparator() {

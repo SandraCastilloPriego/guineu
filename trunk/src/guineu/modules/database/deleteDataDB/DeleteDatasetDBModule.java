@@ -73,7 +73,7 @@ public class DeleteDatasetDBModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/databasedel.png";
         }
 
         public boolean setSeparator() {

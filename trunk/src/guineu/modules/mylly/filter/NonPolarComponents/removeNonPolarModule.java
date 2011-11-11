@@ -59,7 +59,7 @@ public class removeNonPolarModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/removenonpolar.png";
         }
 
         public boolean setSeparator() {
