@@ -25,12 +25,18 @@ import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Panel;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import org.jfree.chart.ChartPanel;
 import org.jfree.data.xy.AbstractXYDataset;
 import weka.attributeSelection.PrincipalComponents;
 
@@ -71,9 +77,9 @@ public class PCADataset extends AbstractXYDataset implements
 
                 this.selectedSamples = parameters.getParameter(ProjectionPlotParameters.dataFiles).getValue();
                 this.selectedRows = parameters.getParameter(ProjectionPlotParameters.rows).getValue();
-                
+
                 this.showLoadings = parameters.getParameter(ProjectionPlotParameters.showLoadings).getValue();
-                
+
                 this.coloringType = parameters.getParameter(
                         ProjectionPlotParameters.coloringType).getValue();
 
@@ -231,13 +237,20 @@ public class PCADataset extends AbstractXYDataset implements
                 }
 
 
-                PCA pca = new PCA(selectedSamples.length, selectedRows.length);               
-   
-              
+                PCA pca = new PCA(selectedSamples.length, selectedRows.length);
+
+
                 Matrix X = new Matrix(rawData, selectedSamples.length, selectedRows.length);
+
+                String[] rowNames = new String[selectedRows.length];
+                for (int j = 0; j < selectedRows.length; j++) {
+                        rowNames[j] = selectedRows[j].getName();
+                }
+
+
                 // X = pca.center(X);
                 //   X = pca.scale(X);
-                pca.nipals(X);
+                pca.nipals(X, this.selectedSamples, rowNames);
                 mainComponents = pca.getPCs();
                 Collections.sort(mainComponents);
                 if (status == TaskStatus.CANCELED) {
@@ -246,7 +259,7 @@ public class PCADataset extends AbstractXYDataset implements
                 this.progress = 0.75f;
 
                 for (PrincipleComponent components : mainComponents) {
-                        this.totalVariation += components.eigenValue;                        
+                        this.totalVariation += components.eigenValue;
                 }
 
                 if (mainComponents.size() > yAxisPC - 1) {
@@ -257,6 +270,18 @@ public class PCADataset extends AbstractXYDataset implements
                         ProjectionPlotWindow newFrame = new ProjectionPlotWindow(this.datasetTitle, this,
                                 parameters);
                         desktop.addInternalFrame(newFrame);
+
+                        if (this.showLoadings) {
+                                ChartPanel loadings = pca.loadingsplot(this.getXLabel(), this.getYLabel());
+                                JInternalFrame frame = new JInternalFrame();
+                                frame.setResizable(true);
+                                frame.setClosable(true);
+                                frame.setMaximizable(true);
+                                frame.add(loadings, BorderLayout.CENTER);
+                                frame.setPreferredSize(new Dimension(700, 500));
+                                frame.pack();
+                                desktop.addInternalFrame(frame);
+                        }
                 }
                 this.progress = 1.0f;
                 setStatus(TaskStatus.FINISHED);
