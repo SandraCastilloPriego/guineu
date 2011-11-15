@@ -25,9 +25,9 @@ public enum GCGCColumnName {
 
         SELECTION("Selection","isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
         ID("ID", "getID", "setID", "^ID.*", ParameterType.INTEGER),
-        RT1("RT1", "getRT1", "setRT1", ".*RT1.*", ParameterType.DOUBLE),
+        RT1("RT1", "getRT1", "setRT1", ".*RT1.*|.*R.T..*", ParameterType.DOUBLE),
         RT2("RT2", "getRT2", "setRT2", ".*RT2.*", ParameterType.DOUBLE),
-        RTI("RTI", "getRTI", "setRTI", ".*RTI.*|RI", ParameterType.DOUBLE),
+        RTI("RTI", "getRTI", "setRTI", ".*RTI.*|RI|.*Retention Index.*", ParameterType.DOUBLE),
         NFOUND("N Found",  "getNumFound", "setNumFound", ".*Num Found.*|.*Number of detected peaks.*|.*n_found.*|.*number of detected peaks.*|.*N Found.*", ParameterType.DOUBLE),
         CAS2("New Cas Number",  "getNewCAS", "setNewCAS", "^New Cas Number.*", ParameterType.STRING),
         CAS("Cas Number", "getCAS", "setCAS", ".*CAS.*|.*Cas Number.*", ParameterType.STRING),
@@ -43,7 +43,7 @@ public enum GCGCColumnName {
         ChEBI("ChEBI ID", "getChebiID", "setChebiID", ".*ChEBI.*", ParameterType.STRING),
         SYNONYM("Synonyms", "getSynonyms", "setSynonyms", ".*Synonyms.*", ParameterType.STRING),
         MOLWEIGHT("Molecular weight", "getMolWeight", "setMolWeight", ".*Molecular weight.*", ParameterType.DOUBLE),
-        MASS("Mass",  "getMass", "setMass", ".*Mass.*", ParameterType.DOUBLE),
+        MASS("Mass",  "getMass", "setMass", ".*Mass.*|.*Quant Masses.*", ParameterType.DOUBLE),
         DIFFERENCE("Difference",  "getDifference", "setDifference", ".*Difference.*", ParameterType.DOUBLE),
         SPECTRUM("Spectrum","getSpectrumString", "setSpectrumString", ".*Spectrum.*|.*Spectra.*", ParameterType.STRING);
         private final String columnName;
