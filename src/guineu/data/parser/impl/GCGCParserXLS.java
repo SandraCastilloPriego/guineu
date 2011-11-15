@@ -41,12 +41,11 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
     private Vector<String> head;
     private HSSFWorkbook book;
     private String sheetName;
-    private int numberRows,  rowsReaded, numColumns;
+    private int numberRows,  rowsReaded;
 
-    public GCGCParserXLS(String DatasetName, String sheetName, int numColumns) {
+    public GCGCParserXLS(String DatasetName, String sheetName) {
         this.numberRows = 0;
         this.rowsReaded = 0;
-        this.numColumns = numColumns;
         this.DatasetName = DatasetName;
         this.sheetName = sheetName;
         this.dataset = new SimpleGCGCDataset(this.getDatasetName());
@@ -64,9 +63,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 sheet = book.getSheetAt(0);
             }
 
-          //  int initRow = this.getRowInit(sheet);
-
-            int initRow = numColumns;
+            int initRow = this.getRowInit(sheet);          
             
             if (initRow > -1) {
                 numberRows = this.getNumberRows(initRow, sheet);
@@ -213,7 +210,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 regExpression += value.getRegularExpression() + "|";
             }
 
-            for (int i = numColumns; i < header.size(); i++) {
+            for (int i = 0; i < header.size(); i++) {
                 if (!header.elementAt(i).matches(regExpression)) {
                     this.dataset.addColumnName(header.elementAt(i));
                 }

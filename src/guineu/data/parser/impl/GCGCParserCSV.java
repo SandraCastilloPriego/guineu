@@ -37,13 +37,12 @@ public class GCGCParserCSV implements Parser {
 
         private String datasetPath;
         private SimpleGCGCDataset dataset;
-        private int rowsNumber, numColumns;
+        private int rowsNumber;
         private int rowsReaded;
 
-        public GCGCParserCSV(String datasetPath, int numColumns) {
+        public GCGCParserCSV(String datasetPath) {
                 this.rowsNumber = 0;
                 this.rowsReaded = 0;
-                this.numColumns = numColumns;
                 this.datasetPath = datasetPath;
                 this.dataset = new SimpleGCGCDataset(this.getDatasetName());
                 this.dataset.setType(DatasetType.GCGCTOF);
@@ -117,7 +116,7 @@ public class GCGCParserCSV implements Parser {
                                         }
                                 }
 
-                                if (!isfound && i >= numColumns) {
+                                if (!isfound) {
                                         try {
                                                 metabolite.setPeak(header[i], Double.valueOf(sdata[i]));
                                         } catch (Exception e) {
@@ -146,7 +145,7 @@ public class GCGCParserCSV implements Parser {
                         for (GCGCColumnName value : GCGCColumnName.values()) {
                                 regExpression += value.getRegularExpression() + "|";
                         }
-                        for (int i = numColumns; i < header.length; i++) {
+                        for (int i = 0; i < header.length; i++) {
                                 if (!header[i].matches(regExpression)) {
                                         this.dataset.addColumnName(header[i]);
                                 }

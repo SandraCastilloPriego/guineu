@@ -20,18 +20,14 @@ package guineu.modules.mylly.openGCGCDatasetFile;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.FileNameParameter;
-import guineu.parameters.parametersType.IntegerParameter;
 
 public class OpenGCGCDatasetParameters extends SimpleParameterSet {
 
         public static final FileNameParameter fileName = new FileNameParameter(
                 "File Name: ",
-                "File Name");
-        public static final IntegerParameter numColumns = new IntegerParameter(
-                "Number of Columns for Parameters: ",
-                "Number of columns before the columns corresponding to the samples", 10);
+                "File Name");      
 
         public OpenGCGCDatasetParameters() {
-                super(new UserParameter[]{fileName, numColumns});
+                super(new UserParameter[]{fileName});
         }
 }

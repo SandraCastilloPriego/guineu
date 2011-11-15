@@ -33,14 +33,12 @@ import java.io.IOException;
 public class OpenGCGCDatasetTask extends AbstractTask {
 
         private String fileDir;
-        private int numColumns;
         private Parser parser;
 
-        public OpenGCGCDatasetTask(String fileDir, int numColumns) {
+        public OpenGCGCDatasetTask(String fileDir) {
                 if (fileDir != null) {
                         this.fileDir = fileDir;
                 }
-                this.numColumns = numColumns;
         }
 
         public String getTaskDescription() {
@@ -74,12 +72,12 @@ public class OpenGCGCDatasetTask extends AbstractTask {
                 try {
                         if (fileDir.matches(".*xls")) {
                                 try {
-                                        Parser parserName = new GCGCParserXLS(fileDir, null, numColumns);
+                                        Parser parserName = new GCGCParserXLS(fileDir, null);
                                         String[] sheetsNames = ((GCGCParserXLS) parserName).getSheetNames(fileDir);
                                         for (String Name : sheetsNames) {
                                                 try {
                                                         if (getStatus() != TaskStatus.CANCELED) {
-                                                                parser = new GCGCParserXLS(fileDir, Name, numColumns);
+                                                                parser = new GCGCParserXLS(fileDir, Name);
                                                                 parser.fillData();
                                                                 this.open(parser);
                                                         }
@@ -93,7 +91,7 @@ public class OpenGCGCDatasetTask extends AbstractTask {
                         } else if (fileDir.matches(".*csv")) {
                                 try {
                                         if (getStatus() != TaskStatus.CANCELED) {
-                                                parser = new GCGCParserCSV(fileDir, numColumns);
+                                                parser = new GCGCParserCSV(fileDir);
                                                 parser.fillData();
                                                 this.open(parser);
                                         }

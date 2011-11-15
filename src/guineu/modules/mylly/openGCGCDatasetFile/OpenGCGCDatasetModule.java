@@ -42,11 +42,10 @@ public class OpenGCGCDatasetModule implements GuineuProcessingModule {
 
         public Task[] runModule(ParameterSet parameters) {
                 String path = (String) parameters.getParameter(OpenGCGCDatasetParameters.fileName).getValue().getAbsolutePath();
-                int numColumns = (Integer) parameters.getParameter(OpenGCGCDatasetParameters.numColumns).getValue().intValue();
                 // prepare a new group of tasks
                 if (path != null) {
                         Task tasks[] = new OpenGCGCDatasetTask[1];
-                        tasks[0] = new OpenGCGCDatasetTask(path, numColumns);
+                        tasks[0] = new OpenGCGCDatasetTask(path);
 
                         GuineuCore.getTaskController().addTasks(tasks);
 
