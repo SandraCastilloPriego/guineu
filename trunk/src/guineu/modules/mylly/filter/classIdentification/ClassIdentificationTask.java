@@ -57,18 +57,23 @@ public class ClassIdentificationTask extends AbstractTask {
 
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
-                try {
-
-                        String name = parameters.getParameter(ClassIdentificationParameters.fileNames).getValue().getAbsolutePath();
-                        filter.createCorrector(new File(name));
-                        SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
-                        alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(ClassIdentificationParameters.suffix).getValue());
-                        alignment.setType(DatasetType.GCGCTOF);
-                        GUIUtils.showNewTable(alignment, true);
-                        setStatus(TaskStatus.FINISHED);
-                } catch (Exception ex) {
-                        Logger.getLogger(ClassIdentificationTask.class.getName()).log(Level.SEVERE, null, ex);
+                if (dataset.getType() != DatasetType.GCGCTOF) {
                         setStatus(TaskStatus.ERROR);
+                        errorMessage = "Wrong data set type. This module is for the class identification in GCxGC-MS data";
+                        return;
+                } else {
+                        try {
+                                String name = parameters.getParameter(ClassIdentificationParameters.fileNames).getValue().getAbsolutePath();
+                                filter.createCorrector(new File(name));
+                                SimpleGCGCDataset alignment = filter.actualMap((SimpleGCGCDataset) dataset);
+                                alignment.setDatasetName(alignment.getDatasetName() + parameters.getParameter(ClassIdentificationParameters.suffix).getValue());
+                                alignment.setType(DatasetType.GCGCTOF);
+                                GUIUtils.showNewTable(alignment, true);
+                                setStatus(TaskStatus.FINISHED);
+                        } catch (Exception ex) {
+                                Logger.getLogger(ClassIdentificationTask.class.getName()).log(Level.SEVERE, null, ex);
+                                setStatus(TaskStatus.ERROR);
+                        }
                 }
         }
 }

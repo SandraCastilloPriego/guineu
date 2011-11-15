@@ -17,6 +17,8 @@
  */
 package guineu.modules.mylly.filter.pubChem.GolmIdentification;
 
+import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.GCGCColumnName;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
@@ -37,10 +39,10 @@ import java.util.logging.Logger;
  */
 public class GetGolmIDsTask extends AbstractTask {
 
-        private SimpleGCGCDataset dataset;
+        private Dataset dataset;
         private double progress = 0.0;
 
-        public GetGolmIDsTask(SimpleGCGCDataset dataset) {
+        public GetGolmIDsTask(Dataset dataset) {
                 this.dataset = dataset;
         }
 
@@ -58,12 +60,18 @@ public class GetGolmIDsTask extends AbstractTask {
 
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
-                try {
-                        actualMap(dataset);
-                        setStatus(TaskStatus.FINISHED);
-                } catch (Exception ex) {
-                        Logger.getLogger(GetGolmIDsTask.class.getName()).log(Level.SEVERE, null, ex);
+                if (dataset.getType() != DatasetType.GCGCTOF) {
                         setStatus(TaskStatus.ERROR);
+                        errorMessage = "Wrong data set type. This module is for the ID identification in GCxGC-MS data";
+                        return;
+                } else {
+                        try {
+                                actualMap((SimpleGCGCDataset) dataset);
+                                setStatus(TaskStatus.FINISHED);
+                        } catch (Exception ex) {
+                                Logger.getLogger(GetGolmIDsTask.class.getName()).log(Level.SEVERE, null, ex);
+                                setStatus(TaskStatus.ERROR);
+                        }
                 }
         }
 

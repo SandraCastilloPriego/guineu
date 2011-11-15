@@ -48,7 +48,7 @@ public class GetGolmIDsModule implements GuineuProcessingModule {
                 // prepare a new group of tasks
                 Task tasks[] = new GetGolmIDsTask[DataFiles.length];
                 for (int cont = 0; cont < DataFiles.length; cont++) {
-                        tasks[cont] = new GetGolmIDsTask((SimpleGCGCDataset) DataFiles[cont]);
+                        tasks[cont] = new GetGolmIDsTask(DataFiles[cont]);
                 }
                 GuineuCore.getTaskController().addTasks(tasks);
 

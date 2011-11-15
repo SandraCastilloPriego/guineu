@@ -21,7 +21,6 @@ import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
 import guineu.data.Dataset;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 
@@ -47,7 +46,8 @@ public class GroupIdentificationModule implements GuineuProcessingModule {
                 // prepare a new group of tasks
                 Task tasks[] = new GroupIdentificationTask[DataFiles.length];
                 for (int cont = 0; cont < DataFiles.length; cont++) {
-                        tasks[cont] = new GroupIdentificationTask((SimpleGCGCDataset) DataFiles[cont]);
+                        tasks[cont] = new GroupIdentificationTask(DataFiles[cont]);
+
                 }
                 GuineuCore.getTaskController().addTasks(tasks);
 
