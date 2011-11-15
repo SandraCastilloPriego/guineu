@@ -17,6 +17,8 @@
  */
 package guineu.modules.mylly.filter.GroupIdentification;
 
+import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
@@ -49,11 +51,13 @@ import org.jfree.xml.writer.XMLWriter;
  */
 public class GroupIdentificationTask extends AbstractTask {
 
-        private SimpleGCGCDataset dataset;
+        private Dataset dataset;
         private double progress = 0.0;
 
-        public GroupIdentificationTask(SimpleGCGCDataset dataset) {
+        public GroupIdentificationTask(Dataset dataset) {
+
                 this.dataset = dataset;
+
         }
 
         public String getTaskDescription() {
@@ -70,12 +74,20 @@ public class GroupIdentificationTask extends AbstractTask {
 
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
-                try {
-                        actualMap(dataset);
-                        setStatus(TaskStatus.FINISHED);
-                } catch (Exception ex) {
-                        Logger.getLogger(GroupIdentificationTask.class.getName()).log(Level.SEVERE, null, ex);
-                        setStatus(TaskStatus.ERROR);
+
+                if (dataset.getType() != DatasetType.GCGCTOF) {
+                                setStatus(TaskStatus.ERROR);
+                                errorMessage = "Wrong data set type. This module is for the group identification in GCxGC-MS data";
+                        return;
+                } else {
+
+                        try {
+                                actualMap((SimpleGCGCDataset) dataset);
+                                setStatus(TaskStatus.FINISHED);
+                        } catch (Exception ex) {
+                                Logger.getLogger(GroupIdentificationTask.class.getName()).log(Level.SEVERE, null, ex);
+                                setStatus(TaskStatus.ERROR);
+                        }
                 }
         }
 
