@@ -253,7 +253,7 @@ public class GuineuCore implements Runnable {
 
                 // show the welcome message
                 desktop.setStatusBarText("Welcome to Guineu!");
-       //         preferences.setProxy();
+                preferences.setProxy();
 
         }
 

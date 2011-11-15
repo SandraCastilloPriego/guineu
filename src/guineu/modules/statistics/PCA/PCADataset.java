@@ -27,18 +27,15 @@ import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Panel;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.xy.AbstractXYDataset;
-import weka.attributeSelection.PrincipalComponents;
 
 /**
  * @author Taken from MZmine2
@@ -274,6 +271,7 @@ public class PCADataset extends AbstractXYDataset implements
                         if (this.showLoadings) {
                                 ChartPanel loadings = pca.loadingsplot(this.getXLabel(), this.getYLabel());
                                 JInternalFrame frame = new JInternalFrame();
+                                frame.setTitle("Principal Components Analysis: Loadings");
                                 frame.setResizable(true);
                                 frame.setClosable(true);
                                 frame.setMaximizable(true);
