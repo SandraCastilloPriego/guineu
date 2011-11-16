@@ -43,15 +43,18 @@ public class SortingModule implements GuineuProcessingModule {
         public Task[] runModule(ParameterSet parameters) {
                 Dataset[] peakLists = GuineuCore.getDesktop().getSelectedDataFiles();
                 // prepare a new sequence of tasks
-                Task tasks[] = new SortingTask[1];
+                if (peakLists.length > 0) {
+                        Task tasks[] = new SortingTask[1];
 
-                tasks[0] = new SortingTask(
-                        (SortingParameters) parameters, peakLists[0]);
+                        tasks[0] = new SortingTask(
+                                (SortingParameters) parameters, peakLists[0]);
 
 
-                GuineuCore.getTaskController().addTasks(tasks);
+                        GuineuCore.getTaskController().addTasks(tasks);
 
-                return tasks;
+                        return tasks;
+                }
+                return null;
         }
 
         public GuineuModuleCategory getModuleCategory() {
