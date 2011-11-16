@@ -26,7 +26,7 @@ import guineu.taskcontrol.Task;
 
 public class STDNormalizationModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Normalization";
+        public static final String MODULE_NAME = "Standard Deviation Normalization";
 
         public String toString() {
                 return MODULE_NAME;

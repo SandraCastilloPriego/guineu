@@ -35,7 +35,7 @@ class STDNormalizationTask extends AbstractTask {
         }
 
         public String getTaskDescription() {
-                return "Normalization";
+                return "Standard deviation normalization";
         }
 
         public double getFinishedPercentage() {
