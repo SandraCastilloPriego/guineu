@@ -22,10 +22,11 @@ import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
-import guineu.desktop.Desktop;
 import guineu.main.GuineuCore;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +35,12 @@ import java.util.List;
  * @author scsandra
  */
 public class TransposeFilterTask extends AbstractTask {
-       
+
         private double progress = 0.0f;
         private Dataset dataset;
 
         public TransposeFilterTask(Dataset dataset) {
-                this.dataset = dataset;               
+                this.dataset = dataset;
         }
 
         public String getTaskDescription() {
@@ -60,6 +61,8 @@ public class TransposeFilterTask extends AbstractTask {
                         newDataset.addColumnName("Name");
                         setStatus(TaskStatus.PROCESSING);
 
+                        NumberFormat formatter = new DecimalFormat("#.####");
+
                         List<String> newNames = new ArrayList<String>();
                         for (PeakListRow row : dataset.getRows()) {
                                 String newName = " ";
@@ -67,10 +70,10 @@ public class TransposeFilterTask extends AbstractTask {
                                 try {
                                         switch (dataset.getType()) {
                                                 case LCMS:
-                                                        newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getMZ")).toString() + " - " + ((Double) row.getVar("getRT")).toString() + " - " + ((Double) row.getVar("getNumFound")).toString();
+                                                        newName = ((String) row.getVar("getName")).substring(0, l) + " - " + (formatter.format((Double) row.getVar("getMZ"))).toString() + " - " + (formatter.format((Double) row.getVar("getRT"))).toString() + " - " + ((Double) row.getVar("getNumFound")).toString();
                                                         break;
                                                 case GCGCTOF:
-                                                        newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Double) row.getVar("getRT1")).toString() + " - " + ((Double) row.getVar("getRT2")).toString() + " - " + ((Double) row.getVar("getRTI")).toString();
+                                                        newName = ((String) row.getVar("getName")).substring(0, l) + " - " + (formatter.format((Double) row.getVar("getRT1"))).toString() + " - " + (formatter.format((Double) row.getVar("getRT2"))).toString() + " - " + (formatter.format((Double) row.getVar("getRTI"))).toString();
                                                         break;
                                                 case BASIC:
                                                         newName = ((String) row.getVar("getName")).substring(0, l) + " - " + ((Integer) row.getVar("getID")).toString();
