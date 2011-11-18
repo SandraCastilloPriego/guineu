@@ -38,25 +38,23 @@ public class RTScore implements ScoreCalculator {
         public double calculateScore(Peak path, Peak peak,
                 ScoreAlignmentParameters params) {
 
-
-
                 double score;
 
-                score = ((1 - path.getRT1() / peak.getRT1()) + (1 - path.getRT2() / peak.getRT2()) + (1 / this.compareSpectraVal(path.getSpectrum(), peak.getSpectrum())));
+                //score = ((1 - path.getRT1() / peak.getRT1()) + (1 - path.getRT2() / peak.getRT2()) + (1 / this.compareSpectraVal(path.getSpectrum(), peak.getSpectrum())));
 
 
 
-                /*double rtiDiff = Math.abs(path.getRTI() - peak.getRTI());
-                if (rtiDiff > (Double) params.getParameterValue(ScoreAlignmentParameters.rtiLax)) {
-                return WORST_SCORE;
+                double rtiDiff = Math.abs(path.getRTI() - peak.getRTI());
+                if (rtiDiff > (Double) params.getParameter(ScoreAlignmentParameters.rtiLax).getValue()) {
+                        return WORST_SCORE;
                 }
                 double rt2Diff = Math.abs(path.getRT2() - peak.getRT2());
-                if (rt2Diff > (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Lax)) {
-                return WORST_SCORE;
+                if (rt2Diff > (Double) params.getParameter(ScoreAlignmentParameters.rt2Lax).getValue()) {
+                        return WORST_SCORE;
                 }
                 double rt1Diff = Math.abs(path.getRT1() - peak.getRT1());
-                if (rt1Diff > (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Lax)) {
-                return WORST_SCORE;
+                if (rt1Diff > (Double) params.getParameter(ScoreAlignmentParameters.rt1Lax).getValue()) {
+                        return WORST_SCORE;
                 }
                 double comparison = compareSpectraVal(path.getSpectrum(), peak.getSpectrum());
                 /*System.out.println("path names: " + path.names());
@@ -66,17 +64,17 @@ public class RTScore implements ScoreCalculator {
                 System.out.println("Spectra comparation Value: " + comparison);
                 System.out.println("-------------------------------------");*/
 
-                /*   if (comparison > (Double) params.getParameterValue(ScoreAlignmentParameters.minSpectrumMatch)) {
-                score = rtiDiff * (Double) params.getParameterValue(ScoreAlignmentParameters.rtiPenalty) +
-                rt1Diff * (Double) params.getParameterValue(ScoreAlignmentParameters.rt1Penalty) +
-                rt2Diff * (Double) params.getParameterValue(ScoreAlignmentParameters.rt2Penalty);
+                if (comparison > params.getParameter(ScoreAlignmentParameters.minSpectrumMatch).getValue()) {
+                        score = rtiDiff * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue()
+                                + rt1Diff * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue()
+                                + rt2Diff * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue();
 
-                if (path.matchesWithName(peak)) {
-                score -= (Double) params.getParameterValue(ScoreAlignmentParameters.nameMatchBonus);
-                }
+                        if (path.matchesWithName(peak)) {
+                                score -= params.getParameter(ScoreAlignmentParameters.nameMatchBonus).getValue();
+                        }
                 } else {
-                score = WORST_SCORE;
-                }*/
+                        score = WORST_SCORE;
+                }
                 return score;
         }
 
@@ -172,5 +170,3 @@ public class RTScore implements ScoreCalculator {
                 return "Uses spectrum and retention times";
         }
 }
-
-

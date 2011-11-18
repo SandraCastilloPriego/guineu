@@ -43,7 +43,7 @@ public enum GCGCColumnName {
         ChEBI("ChEBI ID", "getChebiID", "setChebiID", ".*ChEBI.*", ParameterType.STRING),
         SYNONYM("Synonyms", "getSynonyms", "setSynonyms", ".*Synonyms.*", ParameterType.STRING),
         MOLWEIGHT("Molecular weight", "getMolWeight", "setMolWeight", ".*Molecular weight.*", ParameterType.DOUBLE),
-        MASS("Mass",  "getMass", "setMass", ".*Mass.*|.*Quant Masses.*", ParameterType.DOUBLE),
+        MASS("Mass",  "getMass", "setMass", ".*Quant Masses.*", ParameterType.DOUBLE),
         DIFFERENCE("Difference",  "getDifference", "setDifference", ".*Difference.*", ParameterType.DOUBLE),
         SPECTRUM("Spectrum","getSpectrumString", "setSpectrumString", ".*Spectrum.*|.*Spectra.*", ParameterType.STRING);
         private final String columnName;
