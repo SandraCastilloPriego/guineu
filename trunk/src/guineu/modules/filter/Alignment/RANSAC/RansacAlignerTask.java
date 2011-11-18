@@ -18,6 +18,7 @@
 package guineu.modules.filter.Alignment.RANSAC;
 
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
@@ -103,6 +104,8 @@ public class RansacAlignerTask extends AbstractTask {
                 this.alignedPeakList = peakLists[0].clone();
 
                 this.alignedPeakList.setDatasetName(this.peakListName);
+
+                this.alignedPeakList.setType(peakLists[0].getType());
 
                 for (Dataset dataset : this.peakLists) {
                         if (dataset != peakLists[0]) {

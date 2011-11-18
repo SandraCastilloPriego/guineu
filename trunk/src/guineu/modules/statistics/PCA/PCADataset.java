@@ -221,7 +221,7 @@ public class PCADataset extends AbstractXYDataset implements
                                 try {
                                         rawData[fileIndex][rowIndex] = (Double) p;
                                 } catch (Exception e) {
-                                        e.printStackTrace();
+                                       // e.printStackTrace();
                                 }
 
                         }

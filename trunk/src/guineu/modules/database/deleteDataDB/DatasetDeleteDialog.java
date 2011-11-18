@@ -58,7 +58,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
 
     /** Creates new form DatasetOpenDialog */
     public DatasetDeleteDialog() {
-        super(GuineuCore.getDesktop().getMainFrame(), "Deleting Dataset from Database...", true);
+        super(GuineuCore.getDesktop().getMainFrame(), "Deleting Data Set from Database...", true);
 
         nodeTable = new Hashtable<CheckNode, String[]>();
         nodeInfoTable = new Hashtable<CheckNode, NodeInfo>();

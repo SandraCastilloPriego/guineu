@@ -161,7 +161,9 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         }
 
         public void setPeak(String name, Double value) {
-                this.peaks.put(name, value);
+                if (value != null && name != null) {
+                        this.peaks.put(name, value);
+                }
         }
 
         public String getFAComposition() {
