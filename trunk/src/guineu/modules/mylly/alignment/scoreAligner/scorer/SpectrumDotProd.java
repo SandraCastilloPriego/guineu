@@ -30,17 +30,13 @@ public class SpectrumDotProd implements ScoreCalculator {
         /**
          * Creates new ScoreCalculator.
          */
-        private final static double WORST_SCORE = Double.MAX_VALUE;
-
-        public SpectrumDotProd() {
-        }
+        private final static double WORST_SCORE = Double.MAX_VALUE;        
 
         /**
          * @see gcgcaligner.scorer.ScoreCalculator#calculateScore(gcgcaligner.alignment.AlignmentPath, gcgcaligner.datastruct.GCGCDatum, gcgcaligner.alignment.AlignmentParameters)
          */
         public double calculateScore(Peak path, Peak peak,
                 ScoreAlignmentParameters params) {
-
                 double score;
 
                 double rtiDiff = Math.abs(path.getRTI() - peak.getRTI());
@@ -55,8 +51,7 @@ public class SpectrumDotProd implements ScoreCalculator {
                 if (rt1Diff > params.getParameter(ScoreAlignmentParameters.rt1Lax).getValue()) {
                         return WORST_SCORE;
                 }
-                double comparison = compareSpectraVal(path.getSpectrum(), peak.getSpectrum());
-
+                double comparison = compareSpectraVal(path.getSpectrum(), peak.getSpectrum());              
                 if (comparison > params.getParameter(ScoreAlignmentParameters.minSpectrumMatch).getValue()) {
                         score = rtiDiff * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue()
                                 + rt1Diff * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue()

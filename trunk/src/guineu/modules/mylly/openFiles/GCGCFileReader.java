@@ -109,7 +109,7 @@ public class GCGCFileReader {
                                                         rt2 = Double.parseDouble(rts[1]);
 
                                                 } catch (NumberFormatException e) {
-                                                        e.printStackTrace();
+                                                       // e.printStackTrace();
                                                         rt1 = 0;
                                                         rt2 = 0;
                                                 }
@@ -164,7 +164,7 @@ public class GCGCFileReader {
                                                 try {
                                                         quantMass = Double.parseDouble(curStr);
                                                 } catch (NumberFormatException e) {
-                                                        quantMass = 0;
+                                                        quantMass = -1;
                                                 } 
                                         }
 

@@ -127,7 +127,7 @@ public class ScoreAligner implements Aligner {
                 List<AlignmentPath> standards;
 
                 standards = alignQuantified();
-                paths = generatePathsThreaded(calc, peakList);
+                paths = generatePathsThreaded(new SpectrumDotProd(), peakList);
                 standards.addAll(paths);
                 return standards;
         }
@@ -304,7 +304,7 @@ public class ScoreAligner implements Aligner {
                                         // requirements of current score calculator (for example,
                                         // it doesn't have a name).
                                         continue;
-                                }
+                                }                               
                                 double score = c.calculateScore(path, curPeak, params);
                                 if (score < bestPeakScore) {
                                         bestPeak = curPeak;
@@ -402,7 +402,7 @@ public class ScoreAligner implements Aligner {
                 private ThreadInfo ti;
                 private CyclicBarrier barrier;
                 private List<AlignmentPath> readyPaths;
-                private ScoreCalculator calc;
+                private ScoreCalculator calc = new SpectrumDotProd();
                 private List<List<GCGCDatum>> listOfAllPeaks;
 
                 public void setThreadInfo(ThreadInfo ti) {
