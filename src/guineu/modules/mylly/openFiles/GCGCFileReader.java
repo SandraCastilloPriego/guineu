@@ -100,7 +100,7 @@ public class GCGCFileReader {
                                 CAS = "";
 
                                 for (int i = 0; i < splitRow.length; i++) {
-                                        String curStr = splitRow[i];                                        
+                                        String curStr = splitRow[i];
 
                                         if (header[i].matches(GCGCColumnName.RT1.getRegularExpression())) {
                                                 String rts[] = curStr.split(",");
@@ -109,7 +109,7 @@ public class GCGCFileReader {
                                                         rt2 = Double.parseDouble(rts[1]);
 
                                                 } catch (NumberFormatException e) {
-                                                       // e.printStackTrace();
+                                                        // e.printStackTrace();
                                                         rt1 = 0;
                                                         rt2 = 0;
                                                 }
@@ -165,7 +165,11 @@ public class GCGCFileReader {
                                                         quantMass = Double.parseDouble(curStr);
                                                 } catch (NumberFormatException e) {
                                                         quantMass = -1;
-                                                } 
+                                                }
+                                        } else if (header[i].matches("Type")) {
+                                                if (curStr.contains("Not Found")) {
+                                                        filter = true;
+                                                }
                                         }
 
                                 }

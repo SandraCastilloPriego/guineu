@@ -34,12 +34,12 @@ public class QuantMassScoreCalc implements ScoreCalculator {
                 Peak peak,
                 ScoreAlignmentParameters params) {
                 double score = getWorstScore();
-                if (peak.hasQuantMass() &&
-                        peak.getQuantMass() == path.getQuantMass() &&
-                        path.matchesWithName(peak)) {
-                        score = Math.abs(path.getRT1() - peak.getRT1()) * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue()  +
-                                Math.abs(path.getRT2() - peak.getRT2()) * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue()  +
-                                Math.abs(path.getRTI() - peak.getRTI()) * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue();
+                if (peak.hasQuantMass()
+                        && peak.getQuantMass() == path.getQuantMass()
+                        && path.matchesWithName(peak)) {
+                        score = Math.abs(path.getRT1() - peak.getRT1()) * params.getParameter(ScoreAlignmentParameters.rt1Penalty).getValue()
+                                + Math.abs(path.getRT2() - peak.getRT2()) * params.getParameter(ScoreAlignmentParameters.rt2Penalty).getValue()
+                                + Math.abs(path.getRTI() - peak.getRTI()) * params.getParameter(ScoreAlignmentParameters.rtiPenalty).getValue();
                 }
                 return score;
         }
