@@ -38,7 +38,6 @@ public class GCGCFileReader {
         private Character _separator;
         private boolean _filterClassified;
         private boolean _findSpectrum;
-        private boolean _findConcentration;
 
         public GCGCFileReader(String separator, boolean filterClassified) {
                 if (separator.equals("\\t")) {
@@ -48,9 +47,6 @@ public class GCGCFileReader {
                 }
                 _filterClassified = filterClassified;
                 _findSpectrum = true;
-                _findConcentration = false;
-
-
         }
 
         public List<GCGCDatum> readGCGCDataFile(File file) throws IOException {
@@ -127,12 +123,13 @@ public class GCGCFileReader {
                                                 } catch (NumberFormatException e) {
                                                         area = 0;
                                                 }
-                                        } else if (header[i].matches(".*Concentration .*")) {
-                                                if (!("".equals(curStr) || curStr == null)) {
+                                        } else if (header[i].matches(".*Concentration.*")) {
+                                                if (!(curStr.isEmpty() || curStr == null)) {
                                                         try {
                                                                 conc = Double.parseDouble(curStr);
-                                                                foundConc = true;
+                                                                foundConc = true;                                                              
                                                         } catch (NumberFormatException e) {
+                                                                e.printStackTrace();
                                                                 conc = 0;
                                                         }
 
