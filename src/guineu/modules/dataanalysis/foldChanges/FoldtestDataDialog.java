@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.filter.splitdatasets;
+package guineu.modules.dataanalysis.foldChanges;
 
 import guineu.modules.dataanalysis.Ttest.*;
 import guineu.data.Dataset;
@@ -28,17 +28,17 @@ import javax.swing.JDialog;
  *
  * @author  SCSANDRA
  */
-public class SplitDataDialog extends JDialog {
+public class FoldtestDataDialog extends JDialog {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Dataset dataset;
     private TtestDataModel group1, group2, from;
     private ExitCode exit = ExitCode.UNKNOWN;
 
-    /** Creates new form SplitDataDialog */
-    public SplitDataDialog(Dataset dataset) {
+    /** Creates new form TtestDataDialog */
+    public FoldtestDataDialog(Dataset dataset) {
         super(GuineuCore.getDesktop().getMainFrame(),
-                "Please select a experiment groups to do the split filter...", true);
+                "Please select a experiment groups to do the Fold Test...", true);
 
         logger.finest("Displaying experiment open dialog");
         this.dataset = dataset;
@@ -281,10 +281,13 @@ public class SplitDataDialog extends JDialog {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonOK)
-                    .addComponent(jButtonClose))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jButtonOK))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jButtonClose)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
