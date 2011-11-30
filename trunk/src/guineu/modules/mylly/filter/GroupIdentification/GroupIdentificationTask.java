@@ -55,9 +55,7 @@ public class GroupIdentificationTask extends AbstractTask {
         private double progress = 0.0;
 
         public GroupIdentificationTask(Dataset dataset) {
-
                 this.dataset = dataset;
-
         }
 
         public String getTaskDescription() {
@@ -73,11 +71,11 @@ public class GroupIdentificationTask extends AbstractTask {
         }
 
         public void run() {
-                setStatus(TaskStatus.PROCESSING);
+                setStatus(TaskStatus.PROCESSING);              
 
                 if (dataset.getType() != DatasetType.GCGCTOF) {
-                                setStatus(TaskStatus.ERROR);
-                                errorMessage = "Wrong data set type. This module is for the group identification in GCxGC-MS data";
+                        setStatus(TaskStatus.ERROR);
+                        errorMessage = "Wrong data set type. This module is for the group identification in GCxGC-MS data";
                         return;
                 } else {
 
@@ -109,7 +107,7 @@ public class GroupIdentificationTask extends AbstractTask {
 
                 xmlW.startBlock();
                 attributes = new AttributeList();
-                attributes.setAttribute("xmlns", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/");
+                attributes.setAttribute("xmlns", "http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/");
                 xmlW.writeTag("PredictAll4AlkaneRiColumnTypeComposition", attributes, false);
                 xmlW.startBlock();
 
@@ -158,7 +156,7 @@ public class GroupIdentificationTask extends AbstractTask {
                         // Set the appropriate HTTP parameters.
                         httpConn.setRequestProperty("Content-Length", String.valueOf(b.length));
                         httpConn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
-                        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/FunctionalGroupPrediction/PredictAll4AlkaneRiColumnTypeComposition");
+                        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/webservices/wsPrediction.asmx/PredictAll4AlkaneRiColumnTypeComposition");
                         httpConn.setRequestMethod("POST");
                         httpConn.setDoOutput(true);
                         httpConn.setDoInput(true);
@@ -189,6 +187,7 @@ public class GroupIdentificationTask extends AbstractTask {
                         return group;
 
                 } catch (Exception ex) {
+                        ex.printStackTrace();
                         return null;
                 }
 
