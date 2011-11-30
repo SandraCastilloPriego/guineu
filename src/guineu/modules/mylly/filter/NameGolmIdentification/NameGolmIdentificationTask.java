@@ -105,7 +105,7 @@ public class NameGolmIdentificationTask extends AbstractTask {
 
                 xmlW.startBlock();
                 attributes = new AttributeList();
-                attributes.setAttribute("xmlns", "http://gmd.mpimp-golm.mpg.de/LibrarySearch/");
+                attributes.setAttribute("xmlns", "http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/");
                 xmlW.writeTag("LibrarySearch", attributes, false);
                 xmlW.startBlock();
 
@@ -167,7 +167,7 @@ public class NameGolmIdentificationTask extends AbstractTask {
                         // Set the appropriate HTTP parameters.
                         httpConn.setRequestProperty("Content-Length", String.valueOf(b.length));
                         httpConn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
-                        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/LibrarySearch/LibrarySearch");
+                        httpConn.setRequestProperty("SOAPAction", "http://gmd.mpimp-golm.mpg.de/webservices/wsLibrarySearch.asmx/LibrarySearch");
                         httpConn.setRequestMethod("POST");
                         httpConn.setDoOutput(true);
                         httpConn.setDoInput(true);
