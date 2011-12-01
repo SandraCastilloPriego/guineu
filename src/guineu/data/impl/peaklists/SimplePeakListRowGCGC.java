@@ -661,20 +661,8 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         @Override
         public String toString() {
                 StringBuilder sb = new StringBuilder();
-                sb.append('\t').append(getRT1());
-                sb.append('\t').append(getRT2()).append('\t');
-                for (GCGCDatum d : row) {
-                        if (d != null) {
-                                if (d.useConcentration()) {
-                                        sb.append(d.getConcentration());
-                                } else {
-                                        sb.append(d.getArea());
-                                }
-                        } else {
-                                sb.append("NA");
-                        }
-                        sb.append('\t');
-                }
+                sb.append(getName()).append(" - ").append(getRT1());
+                sb.append(" - ").append(getRT2()).append('\t');
                 return sb.toString();
         }
 
