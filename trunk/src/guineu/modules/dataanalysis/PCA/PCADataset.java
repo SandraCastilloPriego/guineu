@@ -199,6 +199,9 @@ public class PCADataset extends AbstractXYDataset implements
                 if ((parameterValuesForGroups.length - 1) < groupNumber) {
                         return null;
                 }
+                if ((parameterValuesForGroups.length - 1) < 1) {
+                        return null;
+                }
                 return parameterValuesForGroups[groupNumber];
         }
 
@@ -221,7 +224,7 @@ public class PCADataset extends AbstractXYDataset implements
                                 try {
                                         rawData[fileIndex][rowIndex] = (Double) p;
                                 } catch (Exception e) {
-                                       // e.printStackTrace();
+                                        // e.printStackTrace();
                                 }
 
                         }
@@ -236,8 +239,8 @@ public class PCADataset extends AbstractXYDataset implements
 
                 PCA pca = new PCA(selectedSamples.length, selectedRows.length);
 
-
                 Matrix X = new Matrix(rawData, selectedSamples.length, selectedRows.length);
+
 
                 String[] rowNames = new String[selectedRows.length];
                 for (int j = 0; j < selectedRows.length; j++) {
@@ -245,8 +248,8 @@ public class PCADataset extends AbstractXYDataset implements
                 }
 
 
-                // X = pca.center(X);
-                //   X = pca.scale(X);
+                X = pca.center(X);
+                X = pca.scale(X);
                 pca.nipals(X, this.selectedSamples, rowNames);
                 mainComponents = pca.getPCs();
                 Collections.sort(mainComponents);
