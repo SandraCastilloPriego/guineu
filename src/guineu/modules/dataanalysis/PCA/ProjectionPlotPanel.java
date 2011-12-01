@@ -31,9 +31,11 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.LegendItemSource;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.RectangleInsets;
 
@@ -56,13 +58,12 @@ public class ProjectionPlotPanel extends ChartPanel {
                 ProjectionPlotDataset dataset, ParameterSet parameters) {
                 super(null);
 
-                boolean createLegend = false;
-                if ((dataset.getNumberOfGroups() > 1)
-                        && (dataset.getNumberOfGroups() < 20)) {
-                        createLegend = true;
-                }              
+                boolean createLegend = true;
+                if (dataset.getNumberOfGroups() > 20) {
+                        createLegend = false;
+                }
 
-                chart = ChartFactory.createXYAreaChart("", dataset.getXLabel(), dataset.getYLabel(), dataset, PlotOrientation.VERTICAL, false,
+                chart = ChartFactory.createXYAreaChart("", dataset.getXLabel(), dataset.getYLabel(), dataset, PlotOrientation.VERTICAL, createLegend,
                         false, false);
                 chart.setBackgroundPaint(Color.white);
 
@@ -108,42 +109,42 @@ public class ProjectionPlotPanel extends ChartPanel {
                 plot.setDataset(dataset);
 
                 spotRenderer = new ProjectionPlotRenderer(plot, dataset);
-                itemLabelGenerator = new ProjectionPlotItemLabelGenerator(parameters);
-                spotRenderer.setBaseItemLabelGenerator(itemLabelGenerator);
-                spotRenderer.setBaseItemLabelsVisible(true);
-                spotRenderer.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
-                        parameters));
-               
-                plot.setRenderer(spotRenderer);
+		itemLabelGenerator = new ProjectionPlotItemLabelGenerator(parameters);
+		spotRenderer.setBaseItemLabelGenerator(itemLabelGenerator);
+		spotRenderer.setBaseItemLabelsVisible(true);
+		spotRenderer.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
+						parameters));
+		plot.setRenderer(spotRenderer);
 
                 // Setup legend
-                if (createLegend) {
+                if (createLegend) {                        
                         LegendItemCollection legendItemsCollection = new LegendItemCollection();
-                        for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
-                                Object paramValue = dataset.getGroupParameterValue(groupNumber);
-                                if (paramValue == null) {
-                                        // No parameter value available: search for raw data files
-                                        // within this group, and use their names as group's name
-                                        String fileNames = new String();
-                                        for (int itemNumber = 0; itemNumber < dataset.getItemCount(0); itemNumber++) {
-                                                String rawDataFile = dataset.getRawDataFile(itemNumber);
-                                                if (dataset.getGroupNumber(itemNumber) == groupNumber) {
-                                                        fileNames = fileNames.concat(rawDataFile.toString());
-                                                }
-                                        }
-                                        if (fileNames.length() == 0) {
-                                                fileNames = "Empty group";
-                                        }
+			for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
+				Object paramValue = dataset.getGroupParameterValue(groupNumber);                                
+				if (paramValue == null) {
+					// No parameter value available: search for raw data files
+					// within this group, and use their names as group's name
+					String fileNames = new String();
+					for (int itemNumber = 0; itemNumber < dataset
+							.getItemCount(0); itemNumber++) {
+						String rawDataFile = dataset
+								.getRawDataFile(itemNumber);
+						if (dataset.getGroupNumber(itemNumber) == groupNumber)
+							fileNames = fileNames
+									.concat(rawDataFile);
+					}
+					if (fileNames.length() == 0)
+						fileNames = "Empty group";
 
-                                        paramValue = fileNames;
-                                }
-                                Color nextColor = (Color) spotRenderer.getGroupPaint(groupNumber);
-                                Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int) Math.round(255 * dataPointAlpha));
-                                legendItemsCollection.add(new LegendItem(paramValue.toString(),
-                                        "-", null, null, spotRenderer.getDataPointsShape(),
-                                        groupColor));
-                        }
-                        plot.setFixedLegendItems(legendItemsCollection);
+					paramValue = fileNames;
+				}
+				Color nextColor = (Color)spotRenderer.getGroupPaint(groupNumber);
+				Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int)Math.round(255*dataPointAlpha));
+				legendItemsCollection.add(new LegendItem(paramValue.toString(),
+						"-", null, null, spotRenderer.getDataPointsShape(),
+						groupColor));
+			}
+                       plot.setFixedLegendItems(legendItemsCollection);                       
                 } else {
 
                         Dataset legends = new SimpleBasicDataset("Legends");
@@ -175,7 +176,6 @@ public class ProjectionPlotPanel extends ChartPanel {
                                 row.setPeak("Samples", paramValue.toString());
                                 legends.addRow(row);
                                 legends.addRowColor(groupColor);
-
                         }
 
                         GuineuCore.getDesktop().AddNewFile(legends);

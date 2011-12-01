@@ -62,18 +62,22 @@ public class ColoringTypeParameter implements
         @Override
         public JComboBox createEditingComponent() {
                 ArrayList<Object> choicesList = new ArrayList<Object>();
-                choicesList.add(ColoringType.NOCOLORING);
-                choicesList.add(ColoringType.COLORBYFILE);
-                this.metaData = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
-                for (String metaD : this.metaData) {
-                        choicesList.add(new ColoringType("Color by " + metaD));
+                try {
+                        choicesList.add(ColoringType.NOCOLORING);
+                        choicesList.add(ColoringType.COLORBYFILE);
+                        this.metaData = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
+                        for (String metaD : this.metaData) {
+                                choicesList.add(new ColoringType("Color by " + metaD));
+                        }
+                        Object choices[] = choicesList.toArray();
+                        JComboBox editor = new JComboBox(choices);
+                        if (value != null) {
+                                editor.setSelectedItem(value);
+                        }
+                        return editor;
+                } catch (Exception e) {
+                        return new JComboBox();
                 }
-                Object choices[] = choicesList.toArray();
-                JComboBox editor = new JComboBox(choices);
-                if (value != null) {
-                        editor.setSelectedItem(value);
-                }
-                return editor;
         }
 
         @Override
