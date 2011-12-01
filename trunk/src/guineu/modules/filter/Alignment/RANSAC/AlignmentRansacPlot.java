@@ -102,7 +102,7 @@ public class AlignmentRansacPlot extends ChartPanel {
                 // legend constructed by ChartFactory
                 legend = chart.getLegend();
                 legend.setItemFont(legendFont);
-                legend.setFrame(BlockBorder.NONE);
+           //     legend.setFrame(BlockBorder.NONE);
 
                 // set the plot properties
                 plot = chart.getXYPlot();

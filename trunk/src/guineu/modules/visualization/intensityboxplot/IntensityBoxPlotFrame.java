@@ -52,8 +52,11 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerXYDataset;
 
 /**
  * 
@@ -95,7 +98,7 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                 // set renderer
                 BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
                 renderer.setFillBox(true);
-                renderer.setMeanVisible(false);
+             //   renderer.setMeanVisible(false);
                 plot.setRenderer(renderer);
                 plot.setBackgroundPaint(Color.white);
 
@@ -132,6 +135,7 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
 
                 // set shape provider
                 IntensityBoxPlotDrawingSupplier shapeSupplier = new IntensityBoxPlotDrawingSupplier();
+
                 dplot.setDrawingSupplier(shapeSupplier);
 
                 // set y axis properties
@@ -169,10 +173,12 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                                                 for (int k = 0; k < this.selectedRows.length; k++) {
                                                         Double value = (Double) this.selectedRows[k].getPeak(sampleName);
                                                         list.add(value);
+
                                                 }
                                         }
                                 }
-                                dataset.add(list, "Series ", parameterValues.get(i));
+
+                                dataset.add(BoxAndWhiskerCalculator.calculateBoxAndWhiskerStatistics(list), "Series ", parameterValues.get(i));
                         }
                 } else {
                         for (int i = 0; i < this.selectedFiles.length; i++) {
@@ -180,7 +186,7 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                                         Double value = (Double) this.selectedRows[k].getPeak(this.selectedFiles[i]);
                                         list.add(value);
                                 }
-                                dataset.add(list, "Series ", this.selectedFiles[i]);
+                                dataset.add(BoxAndWhiskerCalculator.calculateBoxAndWhiskerStatistics(list), "Series ", this.selectedFiles[i]);
                         }
                 }
 
