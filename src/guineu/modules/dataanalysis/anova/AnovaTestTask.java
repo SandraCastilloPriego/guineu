@@ -61,18 +61,11 @@ public class AnovaTestTask extends AbstractTask {
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
-                        Vector<String> groups = dataset.getParameterAvailableValues(parameter);
-                        Dataset newDataset = FileUtils.getDataset(dataset, "Anova Test - ");
-                        newDataset.addColumnName("Anova test");
-
-                        for (PeakListRow row : dataset.getRows()) {
-                                PeakListRow newRow = row.clone();
-                                newRow.removePeaks();
-                                newRow.setPeak("Anova test", anova(groups, row));
-                                newDataset.addRow(newRow);
+                        Vector<String> groups = dataset.getParameterAvailableValues(parameter);                        
+                        for (PeakListRow row : dataset.getRows()) {                               
+                                row.setVar("setPValue", anova(groups, row));
                                 progress++;
-                        }
-                        GUIUtils.showNewTable(newDataset, true);
+                        }                   
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(AnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);
