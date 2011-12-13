@@ -30,9 +30,9 @@ public class AnovaParameters extends SimpleParameterSet {
 
         private static String[] parameters = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
         public static final ComboParameter<String> groups = new ComboParameter<String>(
-                "Select the parameter",
+                "Select the groups",
                 "The groups to perform anova test will be taken from the choosen parameter", parameters);
-
+       
         public AnovaParameters(String[] parameters) {
                 super(new UserParameter[]{groups});
                 groups.setChoices(parameters);
