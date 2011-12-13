@@ -32,6 +32,8 @@ public class GCGCDatumWithConcentration extends GCGCDatum {
 			double rt2,
 			double retentionIndex,
 			double quantMass,
+                        double pValue,
+                        double qValue,
 			int similarity,
 			double area,
 			String CAS,
@@ -40,7 +42,7 @@ public class GCGCDatumWithConcentration extends GCGCDatum {
 			String columnName,
 			List<? extends Pair<Integer, Integer>> peakList,
 			double concentration) {
-		super(id, rt1, rt2, retentionIndex, quantMass, similarity, area, concentration, useConc, CAS, name, columnName, peakList);
+		super(id, rt1, rt2, retentionIndex, quantMass, pValue, qValue, similarity, area, concentration, useConc, CAS, name, columnName, peakList);
 		conc = concentration;
 	}
 
