@@ -83,6 +83,8 @@ public class GCGCFileReader {
                                 double area;
                                 double retentionIndex;
                                 double quantMass;
+                                double pValue = 0.0;
+                                double qValue = 0.0;
                                 double conc = -1;
                                 boolean useConc = false;
                                 List<ComparablePair<Integer, Integer>> spectrum = null;
@@ -163,7 +165,19 @@ public class GCGCFileReader {
                                                 } catch (NumberFormatException e) {
                                                         quantMass = -1;
                                                 }
-                                        } else if (header[i].matches("Type")) {
+                                        }else if (header[i].matches(GCGCColumnName.P.getRegularExpression())) {
+                                                try {
+                                                        pValue = Double.parseDouble(curStr);
+                                                } catch (NumberFormatException e) {
+                                                        pValue = 0.0;
+                                                }
+                                        }else if (header[i].matches(GCGCColumnName.Q.getRegularExpression())) {
+                                                try {
+                                                        qValue = Double.parseDouble(curStr);
+                                                } catch (NumberFormatException e) {
+                                                        qValue = 0.0;
+                                                }
+                                        }else if (header[i].matches("Type")) {
                                                 if (curStr.contains("Not Found")) {
                                                         filter = true;
                                                 }
@@ -179,15 +193,15 @@ public class GCGCFileReader {
                                         GCGCDatum currentRow;
                                         if (foundConc) {
                                                 currentRow = new GCGCDatumWithConcentration(cont++, rt1, rt2, retentionIndex,
-                                                        quantMass, similarity, area, CAS, name, useConc, file.getName(),
+                                                        quantMass, pValue, qValue, similarity, area, CAS, name, useConc, file.getName(),
                                                         spectrum, conc);
                                         } else if (foundRetentionIndex) {
                                                 currentRow = new GCGCDatum(cont++, rt1, rt2, retentionIndex,
-                                                        quantMass, similarity, area, conc, useConc,
+                                                        quantMass, pValue, qValue, similarity, area, conc, useConc,
                                                         CAS, name, file.getName(), spectrum);
                                         } else {
                                                 currentRow = new GCGCDatum(cont++, rt1, rt2, quantMass,
-                                                        area, conc, useConc, similarity, CAS, name, file.getName(), spectrum);
+                                                        area, conc, pValue, qValue, useConc, similarity, CAS, name, file.getName(), spectrum);
                                         }
                                         peaks.add(currentRow);
                                 }

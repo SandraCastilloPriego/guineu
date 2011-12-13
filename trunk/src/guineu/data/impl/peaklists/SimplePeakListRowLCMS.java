@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 public class SimplePeakListRowLCMS implements PeakListRow {
 
         private String FAComposition = "", allNames, Name, lipidClass = "0";
-        private double averageMZ, averageRT, numFound;
+        private double averageMZ, averageRT, numFound, pValue, qValue;
         private int standard, ID, aligment;
         private boolean control, selection;
         private String VTTid = "", VTTAllIDs = "";
@@ -43,7 +43,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         private String pubchemID = "";
         private String identificationType = IdentificationType.UNKNOWN.toString();
 
-        public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound,
+        public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound, double pValue, double qValue,
                 int standard, String lipidClass, String Name, String identificationType, String allNames, String FAComposition) {
                 this.ID = ID;
                 this.FAComposition = FAComposition;
@@ -70,7 +70,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         @Override
         public PeakListRow clone() {
                 PeakListRow peakListRow = new SimplePeakListRowLCMS(this.ID, this.averageMZ, this.averageRT,
-                        this.numFound, this.standard, this.lipidClass, this.Name, this.identificationType, this.allNames,
+                        this.numFound, this.pValue, this.qValue, this.standard, this.lipidClass, this.Name, this.identificationType, this.allNames,
                         this.FAComposition);
                 peakListRow.setVar("setNumberAligment", aligment);
                 peakListRow.setVar("setVTTID", VTTid);
@@ -287,6 +287,22 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 } else {
                         this.pubchemID = pubchemID;
                 }
+        }
+
+        public double getPValue(){
+                return this.pValue;
+        }
+
+        public void setPValue(double pValue){
+                this.pValue = pValue;
+        }
+
+        public double getQValue(){
+                return this.qValue;
+        }
+
+        public void setQValue(double qValue){
+                this.qValue = qValue;
         }
 
         public Hashtable<String, Double> getPeaksTable() {

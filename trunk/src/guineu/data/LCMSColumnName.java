@@ -24,20 +24,23 @@ public enum LCMSColumnName {
          * Column name, getVar function, setVar function, regular Expresion to parse files and type of data. *
          */
         SELECTION("Selection", "isSelected", "setSelectionMode", "Selection", ParameterType.BOOLEAN),
-        ID("Id","getID", "setID", "^ID.*|^Id|.*row ID.*", ParameterType.INTEGER),
+        ID("Id", "getID", "setID", "^ID.*|^Id|.*row ID.*", ParameterType.INTEGER),
         MZ("Average m/z", "getMZ", "setMZ", ".*Average M/Z.*|.*Average m/z.*|.*row m/z.*", ParameterType.DOUBLE),
-        RT("Average Retention time",  "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*|.*Average Retention time.*", ParameterType.DOUBLE),
-        NAME("Name",  "getName", "setName", ".*identity.*|.*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|^Name", ParameterType.STRING),
+        RT("Average Retention time", "getRT", "setRT", ".*Average RT.*|.*Average retention time.*|.*row retention time*|.*Average Retention time.*", ParameterType.DOUBLE),
+        NAME("Name", "getName", "setName", ".*identity.*|.*LipidName.*|.*Lipid name.*|.*Lipid Name.*|^Name.*|^name.*|^Metabolite name.*|.*row compound name.*|^Metabolite Name.*|^Name", ParameterType.STRING),
         ALLNAMES("All names", "getAllNames", "setAllNames", ".*Identity.*|.*All Names.*|.*All names.*|.*all Names.*|.*row all compound names.*|.*Metabolite all Names.*", ParameterType.STRING),
         IDENTIFICATION("Identification type", "getIdentificationType", "setIdentificationType", ".*Identification type.*", ParameterType.STRING),
         PUBCHEM("PubChem ID", "getPubChemID", "setPubChemID", ".*Pubchem.*|.*ubChem.*|.*PubChem ID.*", ParameterType.STRING),
         VTT("VTT ID", "getVTTID", "setVTTID", "^VTT ID.*", ParameterType.STRING),
         ALLVTT("All VTT IDs", "getAllVTTID", "setAllVTTD", ".*All VTT IDs.*", ParameterType.STRING),
-        LIPIDCLASS("Lipid class","getMolClass", "setLipidClass", ".*Class.*|.*Lipid class.*", ParameterType.STRING),
+        LIPIDCLASS("Lipid class", "getMolClass", "setLipidClass", ".*Class.*|.*Lipid class.*", ParameterType.STRING),
         NFOUND("Num found", "getNumFound", "setNumFound", ".*um found.*|.*umber of detected peaks.*|.*n_found.*|.*Num Found.*", ParameterType.DOUBLE),
         STANDARD("Standard", "getStandard", "setStandard", ".*Standard.*", ParameterType.INTEGER),
         FA("FA Composition", "getFAComposition", "setFAComposition", ".*FA Composition.*", ParameterType.STRING),
-        ALIGNMENT("Alignment", "getNumberAlignment", "setNumberAligment", ".*Aligment.*|.*Alignment.*", ParameterType.INTEGER);
+        ALIGNMENT("Alignment", "getNumberAlignment", "setNumberAligment", ".*Aligment.*|.*Alignment.*", ParameterType.INTEGER),
+        P("P-value", "getPValue", "setPValue", ".*p-value.*", ParameterType.DOUBLE),
+        Q("Q-value", "getQValue", "setQValue", ".*q-value.*", ParameterType.DOUBLE);
+        
         private final String columnName;
         private final String getFunctionName, setFunctionName;
         private final String regExp;
@@ -48,7 +51,7 @@ public enum LCMSColumnName {
                 String regExp, ParameterType type) {
                 this.columnName = columnName;
                 this.getFunctionName = getFunctionName;
-                this.setFunctionName = setFunctionName;    
+                this.setFunctionName = setFunctionName;
                 this.regExp = regExp;
                 this.type = type;
         }
@@ -56,14 +59,14 @@ public enum LCMSColumnName {
         public String getColumnName() {
                 return this.columnName;
         }
-       
+
         public String getGetFunctionName() {
                 return this.getFunctionName;
         }
 
         public String getSetFunctionName() {
                 return this.setFunctionName;
-        }        
+        }
 
         public String getRegularExpression() {
                 return this.regExp;

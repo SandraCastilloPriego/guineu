@@ -53,7 +53,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 }
         };
         private int ID;
-        private double RT1 = 0.0, RT2 = 0.0, RTI = 0.0, maxSimilarity = 0, meanSimilarity = 0, similaritySTDDev = 0, mass = 0;
+        private double RT1 = 0.0, RT2 = 0.0, RTI = 0.0, maxSimilarity = 0, meanSimilarity = 0, similaritySTDDev = 0, mass = 0, pValue, qValue;
         private String name, allNames, spectra, pubChemID = "", molClass, group;
         private boolean selection = false;
         private String CAS, newCAS, keggID = "", chEBIID = "", synonyms = "";
@@ -67,7 +67,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
         public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
                 double maxSimilarity, double meanSimilarity, double similaritySTDDev,
-                double numFound, double mass, DistValue _distValue, String name,
+                double numFound, double mass, double pValue, double qValue, DistValue _distValue, String name,
                 String allNames, String spectra, String pubChemID, String CAS, String newCAS, String keggID, String chEBIID, String synonyms, String molClass, String group, double molWeight) {
                 this.ID = ID;
                 this.RT1 = RT1;
@@ -404,11 +404,11 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 this.newCAS = newCAS;
         }
 
-        public void setGolmGroup(String group){
+        public void setGolmGroup(String group) {
                 this.group = group;
         }
 
-        public String getGolmGroup(){
+        public String getGolmGroup() {
                 return group;
         }
 
@@ -599,7 +599,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         public PeakListRow clone() {
                 PeakListRow newPeakListRow = new SimplePeakListRowGCGC(ID, RT1, RT2, RTI,
                         maxSimilarity, meanSimilarity, similaritySTDDev,
-                        numFound, mass, _distValue, name, allNames, spectra, pubChemID, CAS, newCAS, keggID, chEBIID, synonyms, molClass, group, molWeight);
+                        numFound, mass, pValue, qValue, _distValue, name, allNames, spectra, pubChemID, CAS, newCAS, keggID, chEBIID, synonyms, molClass, group, molWeight);
 
                 ((SimplePeakListRowGCGC) newPeakListRow).numFound = numFound;
                 ((SimplePeakListRowGCGC) newPeakListRow).names = names == null ? null : names.clone();
@@ -698,12 +698,28 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 }
                 if (!isFound) {
                         GCGCDatum datum2 = new GCGCDatum(0, this.RT1, this.RT2, this.RTI,
-                                value, value, true, 0, CAS, name, columnName, null);
+                                value, value, this.pValue, this.qValue, true, 0, CAS, name, columnName, null);
 
                         this.row.add(datum2);
                 }
 
 
+        }
+
+        public double getPValue() {
+                return this.pValue;
+        }
+
+        public void setPValue(double pValue) {
+                this.pValue = pValue;
+        }
+
+        public double getQValue() {
+                return this.qValue;
+        }
+
+        public void setQValue(double qValue) {
+                this.qValue = qValue;
         }
 
         public void setPeak(String str, String get) {
