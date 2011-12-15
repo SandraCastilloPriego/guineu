@@ -21,8 +21,6 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import guineu.util.GUIUtils;
-import guineu.util.components.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -61,11 +59,11 @@ public class AnovaTestTask extends AbstractTask {
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
-                        Vector<String> groups = dataset.getParameterAvailableValues(parameter);                        
-                        for (PeakListRow row : dataset.getRows()) {                               
+                        Vector<String> groups = dataset.getParameterAvailableValues(parameter);
+                        for (PeakListRow row : dataset.getRows()) {
                                 row.setVar("setPValue", anova(groups, row));
                                 progress++;
-                        }                   
+                        }
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(AnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,7 +78,12 @@ public class AnovaTestTask extends AbstractTask {
                                 Vector<Double> values = new Vector<Double>();
                                 for (String name : dataset.getAllColumnNames()) {
                                         if (dataset.getParametersValue(name, parameter) != null && dataset.getParametersValue(name, parameter).equals(group)) {
-                                                values.addElement((Double) row.getPeak(name));
+                                                try {
+                                                        values.addElement((Double) row.getPeak(name));
+                                                } catch (Exception e) {
+                                                        System.out.println(row.getPeak(name));
+                                                }
+
                                         }
                                 }
                                 double[] valuesArray = new double[values.size()];
