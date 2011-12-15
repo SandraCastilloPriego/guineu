@@ -77,7 +77,6 @@ public class CorrelationTask extends AbstractTask {
                                 String name = row.getID() + " - " + row.getName();
                                 for (int i = 0; i < data2.getNumberRows(); i++) {
                                         double r = getCorrelation(row, data2.getRow(i), data1.getAllColumnNames());
-                                        System.out.println(r);
                                         newDataset.getRow(i).setPeak(name, String.valueOf(r));
                                 }
                         }
