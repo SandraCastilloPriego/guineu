@@ -71,6 +71,7 @@ import guineu.modules.dataanalysis.PCA.SammonsPlotModule;
 import guineu.modules.dataanalysis.Ttest.TtestModule;
 import guineu.modules.dataanalysis.anova.AnovaTestModule;
 import guineu.modules.dataanalysis.clustering.ClusteringModule;
+import guineu.modules.dataanalysis.correlations.CorrelationModule;
 import guineu.modules.dataanalysis.foldChanges.FoldtestModule;
 import guineu.modules.dataanalysis.standardVariation.StandardVariationModule;
 import guineu.modules.dataanalysis.twowayanova.TwoWayAnovaTestModule;
@@ -139,6 +140,7 @@ public class GuineuModulesList {
                 CDAPlotModule.class,
                 SammonsPlotModule.class,
                 ClusteringModule.class,
+                CorrelationModule.class,
                 HeatMapModule.class,
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,
