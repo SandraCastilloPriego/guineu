@@ -22,14 +22,11 @@ import guineu.data.PeakListRow;
 import guineu.modules.R.RUtilities;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Enumeration;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.rosuda.JRI.Rengine;
 import org.rosuda.JRI.REXP;
-import org.rosuda.JRI.RList;
-import org.rosuda.JRI.RVector;
 
 /**
  *
@@ -79,7 +76,7 @@ public class TwoWayAnovaTestTask extends AbstractTask {
 
 
                         Vector<String> columnNames = dataset.getAllColumnNames();
-                        String dataColNames = "c(";                 
+                        String dataColNames = "c(";
 
                         // assing the values to the matrix
                         for (int row = 0; row < dataset.getNumberRows(); row++) {
@@ -93,16 +90,16 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                                         try {
                                                 value = (Double) peakRow.getPeak(colName);
                                         } catch (Exception e) {
-                                               System.out.println(peakRow.getPeak(colName));
+                                                System.out.println(peakRow.getPeak(colName));
                                         }
-                                 
+
                                         if (!Double.isInfinite(value) && !Double.isNaN(value)) {
 
                                                 rEngine.eval("dataset[" + r + "," + c + "] = " + value);
                                         } else {
 
                                                 rEngine.eval("dataset[" + r + "," + c + "] = NA");
-                                        }                                        
+                                        }
                                 }
                         }
                         for (int column = 0; column < dataset.getNumberCols(); column++) {
@@ -119,7 +116,7 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                         dataColNames += ")";
 
                         rEngine.eval("colnames(dataset)<- " + dataColNames);
-                       
+
                         rEngine.eval("write.csv(dataset, \"Dataset.csv\")");
 
                         rEngine.eval("rownames(pheno)<- " + dataColNames);
@@ -127,28 +124,31 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                         rEngine.eval("pheno <- data.frame(pheno)");
 
                         rEngine.eval("write.csv(pheno, \"pheno.csv\")");
+                        rEngine.eval("p <- vector(mode=\"numeric\",length=nrow(dataset))");
 
-                     
                         for (int row = 1; row < dataset.getNumberRows() + 1; row++) {
                                 try {
                                         rEngine.eval("one.2 <- data.frame(\"Profile\"=as.numeric(unlist(dataset[" + row + ",])),\"Phenotype\"=factor(pheno[,\"Phenotype\"]), \"Time\"=factor(pheno[,\"Time\"]))");
                                         rEngine.eval("one.aov <- aov(Profile ~ Phenotype*Time, data=one.2)");
-                                        rEngine.eval("p<- summary(one.aov)[[1]][\"Phenotype:Time\", \"Pr(>F)\"] ");
-                                        rEngine.eval("fdr <- p.adjust(p, method=\"BH\")");
-                                        REXP x = rEngine.eval("p");
+                                        rEngine.eval("p[" + row + "]<- summary(one.aov)[[1]][\"Phenotype:Time\", \"Pr(>F)\"] ");
+
+                                        REXP x = rEngine.eval("p[" + row + "]");
                                         double p = x.asDouble();
-                                        this.dataset.getRow(row - 1).setVar("setPValue", p);                                        
-                                        REXP qexp = rEngine.eval("fdr");
-                                        double q = qexp.asDouble();
-                                        this.dataset.getRow(row - 1).setVar("setQValue", q);
-                                        
-                                        if (p < 0.05 && q < 0.05) {
-                                                this.dataset.getRow(row - 1).setSelectionMode(true);
-                                        }
+                                        this.dataset.getRow(row - 1).setVar("setPValue", p);
                                 } catch (Exception ex) {
                                 }
                         }
+                        rEngine.eval("fdr <- p.adjust(p, method=\"BH\")");
+                        REXP qexp = rEngine.eval("fdr");
+                        double[] q = qexp.asDoubleArray();
 
+                        for (int row = 0; row < dataset.getNumberRows(); row++) {
+                                PeakListRow r = this.dataset.getRow(row);
+                                r.setVar("setQValue", q[row]);
+                                if ((Double)r.getVar("getPValue") < 0.05 && (Double)r.getVar("getQValue") < 0.05) {
+                                        this.dataset.getRow(row).setSelectionMode(true);
+                                }
+                        }
 
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
