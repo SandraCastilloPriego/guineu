@@ -115,15 +115,12 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                         dataColNames = dataColNames.substring(0, dataColNames.length() - 2);
                         dataColNames += ")";
 
-                        rEngine.eval("colnames(dataset)<- " + dataColNames);
-
-                        rEngine.eval("write.csv(dataset, \"Dataset.csv\")");
+                        rEngine.eval("colnames(dataset)<- " + dataColNames);                       
 
                         rEngine.eval("rownames(pheno)<- " + dataColNames);
                         rEngine.eval("colnames(pheno)<- c(\"SampleName\", \"Phenotype\" , \"Time\")");
                         rEngine.eval("pheno <- data.frame(pheno)");
-
-                        rEngine.eval("write.csv(pheno, \"pheno.csv\")");
+                        
                         rEngine.eval("p <- vector(mode=\"numeric\",length=nrow(dataset))");
 
                         for (int row = 1; row < dataset.getNumberRows() + 1; row++) {
