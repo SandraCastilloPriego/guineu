@@ -81,6 +81,7 @@ public class TTestTask extends AbstractTask {
                         int cont = 0;
 
                         for (PeakListRow row : dataset.getRows()) {
+                                row.setVar("setPValue", t.get(cont)[0]);
                                 PeakListRow newRow = row.clone();
                                 newRow.removePeaks();
                                 newRow.setPeak("Ttest", t.get(cont)[0]);
