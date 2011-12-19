@@ -27,6 +27,9 @@ import guineu.util.GUIUtils;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.linear.BlockRealMatrix;
+import org.apache.commons.math.linear.RealMatrix;
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
 
 /**
@@ -89,17 +92,25 @@ public class CorrelationTask extends AbstractTask {
         }
 
         private double getCorrelation(PeakListRow row, PeakListRow row2, Vector<String> sampleNames) {
-                double[] xArray = new double[sampleNames.size()];
-                double[] yArray = new double[sampleNames.size()];
+
+                double[][] dataMatrix = new double[sampleNames.size()][2];
                 for (int i = 0; i < sampleNames.size(); i++) {
                         try {
-                                xArray[i] = (Double) row.getPeak(sampleNames.elementAt(i));
-                                yArray[i] = (Double) row2.getPeak(sampleNames.elementAt(i));
+                                dataMatrix[i][0] = (Double) row.getPeak(sampleNames.elementAt(i));
+                                dataMatrix[i][1] = (Double) row2.getPeak(sampleNames.elementAt(i));
                         } catch (Exception e) {
-                                e.printStackTrace();
+                               // System.out.println(row.getPeak(sampleNames.elementAt(i)) + " - " + row2.getPeak(sampleNames.elementAt(i)));
+                              //  e.printStackTrace();
                         }
+                }  
+                RealMatrix matrix = new BlockRealMatrix(dataMatrix);
+                PearsonsCorrelation correlation = new PearsonsCorrelation(matrix);                
+                try {
+                        return correlation.getCorrelationPValues().getEntry(1,0);
+                } catch (MathException ex) {
+                        Logger.getLogger(CorrelationTask.class.getName()).log(Level.SEVERE, null, ex);
+                        return -1;
                 }
-                PearsonsCorrelation correlation = new PearsonsCorrelation();
-                return correlation.correlation(xArray, yArray);
+
         }
 }
