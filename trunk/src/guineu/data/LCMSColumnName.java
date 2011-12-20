@@ -38,8 +38,8 @@ public enum LCMSColumnName {
         STANDARD("Standard", "getStandard", "setStandard", ".*Standard.*", ParameterType.INTEGER),
         FA("FA Composition", "getFAComposition", "setFAComposition", ".*FA Composition.*", ParameterType.STRING),
         ALIGNMENT("Alignment", "getNumberAlignment", "setNumberAligment", ".*Aligment.*|.*Alignment.*", ParameterType.INTEGER),
-        P("P-value", "getPValue", "setPValue", ".*p-value.*", ParameterType.DOUBLE),
-        Q("Q-value", "getQValue", "setQValue", ".*q-value.*", ParameterType.DOUBLE);
+        P("P-value", "getPValue", "setPValue", ".*p-value.*|.*P-value.*", ParameterType.DOUBLE),
+        Q("Q-value", "getQValue", "setQValue", ".*q-value.*|.*Q-value.*", ParameterType.DOUBLE);
         
         private final String columnName;
         private final String getFunctionName, setFunctionName;

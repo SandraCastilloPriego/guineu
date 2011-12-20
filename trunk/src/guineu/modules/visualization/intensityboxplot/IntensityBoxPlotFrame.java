@@ -90,33 +90,42 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                 this.dataset = this.createSampleDataset();
                 // create new JFreeChart
                 logger.finest("Creating new chart instance");
-                chart = ChartFactory.createLineChart(title, xAxisLabel, "Intensity",
-                        dataset, PlotOrientation.VERTICAL, true, true, false);
+                //      chart = ChartFactory.createLineChart(title, xAxisLabel, "Intensity",
+                //               dataset, PlotOrientation.VERTICAL, true, true, false);
 
-                CategoryPlot plot = (CategoryPlot) chart.getPlot();
+                //  CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
                 // set renderer
                 BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
                 renderer.setFillBox(true);
-             //   renderer.setMeanVisible(false);
-                plot.setRenderer(renderer);
-                plot.setBackgroundPaint(Color.white);
-
                 // set tooltip generator               
                 renderer.setBaseToolTipGenerator(new BoxAndWhiskerToolTipGenerator());
 
-                CategoryAxis xAxis = (CategoryAxis) plot.getDomainAxis();
-                xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+                //  plot.setRenderer(renderer);
+                //  plot.setBackgroundPaint(Color.white);
+                //   CategoryAxis xAxis = (CategoryAxis) plot.getDomainAxis();
+                //  xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+                // set y axis properties
 
+                final CategoryAxis xAxis = new CategoryAxis("Type");
+                final NumberAxis yAxis = new NumberAxis("Value");
+                NumberFormat yAxisFormat = new DecimalFormat("0.0E0");
+                yAxis.setNumberFormatOverride(yAxisFormat);
+                final CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
 
+                final JFreeChart chart = new JFreeChart(
+                        "Box-and-Whisker Demo",
+                        new Font("SansSerif", Font.BOLD, 14),
+                        plot,
+                        true);
                 chart.setBackgroundPaint(Color.white);
 
                 // create chart JPanel
                 ChartPanel chartPanel = new ChartPanel(chart);
                 add(chartPanel, BorderLayout.CENTER);
 
-                IntensityBoxPlotToolBar toolBar = new IntensityBoxPlotToolBar(this);
-                add(toolBar, BorderLayout.EAST);
+//                IntensityBoxPlotToolBar toolBar = new IntensityBoxPlotToolBar(this);
+                //   add(toolBar, BorderLayout.EAST);
 
                 // disable maximum size (we don't want scaling)
                 chartPanel.setMaximumDrawWidth(Integer.MAX_VALUE);
@@ -131,22 +140,14 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                 legend.setItemFont(legendFont);
                 legend.setBorder(0, 0, 0, 0);
 
-                Plot dplot = chart.getPlot();
+
 
                 // set shape provider
                 IntensityBoxPlotDrawingSupplier shapeSupplier = new IntensityBoxPlotDrawingSupplier();
 
-                dplot.setDrawingSupplier(shapeSupplier);
+                plot.setDrawingSupplier(shapeSupplier);
 
-                // set y axis properties
-                NumberAxis yAxis;
-                if (dplot instanceof CategoryPlot) {
-                        yAxis = (NumberAxis) ((CategoryPlot) dplot).getRangeAxis();
-                } else {
-                        yAxis = (NumberAxis) ((XYPlot) dplot).getRangeAxis();
-                }
-                NumberFormat yAxisFormat = new DecimalFormat("0.0E0");
-                yAxis.setNumberFormatOverride(yAxisFormat);
+
 
                 setTitle(title);
                 setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
