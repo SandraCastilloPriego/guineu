@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.R.heatmaps;
+package guineu.modules.dataanalysis.heatmaps;
 
 import guineu.data.Dataset;
 import guineu.main.GuineuCore;
@@ -30,7 +30,7 @@ import guineu.taskcontrol.Task;
  */
 public class HeatMapModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Heat Map";
+        public static final String MODULE_NAME = "Heat Map (R)";
         private HeatMapParameters parameters = new HeatMapParameters();        
 
         public ParameterSet getParameterSet() {

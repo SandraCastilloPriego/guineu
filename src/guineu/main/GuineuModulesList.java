@@ -18,7 +18,7 @@
  */
 package guineu.main;
 
-import guineu.modules.R.heatmaps.HeatMapModule;
+import guineu.modules.dataanalysis.heatmaps.HeatMapModule;
 import guineu.modules.configuration.general.GeneralConfiguration;
 import guineu.modules.configuration.parameters.ParameterConfiguration;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsView;
@@ -78,7 +78,7 @@ import guineu.modules.dataanalysis.standardVariation.StandardVariationModule;
 import guineu.modules.dataanalysis.twowayanova.TwoWayAnovaTestModule;
 import guineu.modules.dataanalysis.variationCoefficient.VariationCoefficientModule;
 import guineu.modules.dataanalysis.variationCoefficientRow.VariationCoefficientRowModule;
-import guineu.modules.database.variableSelection.annealing.AnnealingModule;
+import guineu.modules.dataanalysis.variableSelection.annealing.AnnealingModule;
 import guineu.modules.visualization.intensityboxplot.IntensityBoxPlotModule;
 import guineu.modules.visualization.intensityplot.IntensityPlotModule;
 
