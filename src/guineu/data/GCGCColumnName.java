@@ -46,8 +46,8 @@ public enum GCGCColumnName {
         MASS("Quant Masses", "getMass", "setMass", ".*Quant Masses.*|^Mass.*", ParameterType.DOUBLE),
         DIFFERENCE("Difference", "getDifference", "setDifference", ".*Difference.*", ParameterType.DOUBLE),
         SPECTRUM("Spectrum", "getSpectrumString", "setSpectrumString", ".*Spectrum.*|.*Spectra.*", ParameterType.STRING),
-        P("P-value", "getPValue", "setPValue", ".*p-value.*", ParameterType.DOUBLE),
-        Q("Q-value", "getQValue", "setQValue", ".*q-value.*", ParameterType.DOUBLE);
+        P("P-value", "getPValue", "setPValue", ".*p-value.*|.*P-value.*", ParameterType.DOUBLE),
+        Q("Q-value", "getQValue", "setQValue", ".*q-value.*|.*Q-value.*", ParameterType.DOUBLE);
         private final String columnName;
         private final String getFunctionName, setFunctionName;
         private final String regExp;

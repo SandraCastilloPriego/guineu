@@ -138,9 +138,15 @@ public class TTestTask extends AbstractTask {
 
                                         for (String sampleName : dataset.getAllColumnNames()) {
                                                 if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {
-                                                        stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                        try {
+                                                                stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                        } catch (Exception e) {
+                                                        }
                                                 } else if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
-                                                        stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                        try {
+                                                                stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
+                                                        } catch (Exception e) {
+                                                        }
                                                 }
                                         }
                                 } else {

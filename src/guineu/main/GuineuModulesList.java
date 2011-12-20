@@ -78,6 +78,7 @@ import guineu.modules.dataanalysis.standardVariation.StandardVariationModule;
 import guineu.modules.dataanalysis.twowayanova.TwoWayAnovaTestModule;
 import guineu.modules.dataanalysis.variationCoefficient.VariationCoefficientModule;
 import guineu.modules.dataanalysis.variationCoefficientRow.VariationCoefficientRowModule;
+import guineu.modules.database.variableSelection.annealing.AnnealingModule;
 import guineu.modules.visualization.intensityboxplot.IntensityBoxPlotModule;
 import guineu.modules.visualization.intensityplot.IntensityPlotModule;
 
@@ -143,6 +144,7 @@ public class GuineuModulesList {
                 SammonsPlotModule.class,
                 ClusteringModule.class,
                 CorrelationModule.class,
+                AnnealingModule.class,
                 HeatMapModule.class,
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,
