@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.database.variableSelection.annealing;
+package guineu.modules.dataanalysis.variableSelection.annealing;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;

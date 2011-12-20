@@ -30,7 +30,7 @@ import guineu.parameters.ParameterSet;
  */
 public class QvalueModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Calculate Q-value";
+        public static final String MODULE_NAME = "Calculate Q-value (R)";
 
         public ParameterSet getParameterSet() {
                 return null;

@@ -31,7 +31,7 @@ import guineu.parameters.ParameterSet;
  */
 public class TwoWayAnovaTestModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "2 way Anova Test";
+        public static final String MODULE_NAME = "2 way Anova Test (R)";
         private TwoWayAnovaParameters parameters;
 
         public ParameterSet getParameterSet() {
