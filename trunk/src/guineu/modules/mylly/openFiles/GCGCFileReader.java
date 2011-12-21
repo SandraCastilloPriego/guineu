@@ -129,7 +129,7 @@ public class GCGCFileReader {
                                                 if (!(curStr.isEmpty() || curStr == null)) {
                                                         try {
                                                                 conc = Double.parseDouble(curStr);
-                                                                foundConc = true;                                                              
+                                                                foundConc = true;
                                                         } catch (NumberFormatException e) {
                                                                 e.printStackTrace();
                                                                 conc = 0;
@@ -161,23 +161,26 @@ public class GCGCFileReader {
                                                 }
                                         } else if (header[i].matches(GCGCColumnName.MASS.getRegularExpression())) {
                                                 try {
-                                                        quantMass = Double.parseDouble(curStr);
+                                                        if (!curStr.contains("Dt") && !curStr.isEmpty()) {
+                                                                quantMass = Double.parseDouble(curStr);
+                                                        }
                                                 } catch (NumberFormatException e) {
+                                                        e.printStackTrace();
                                                         quantMass = -1;
                                                 }
-                                        }else if (header[i].matches(GCGCColumnName.P.getRegularExpression())) {
+                                        } else if (header[i].matches(GCGCColumnName.P.getRegularExpression())) {
                                                 try {
                                                         pValue = Double.parseDouble(curStr);
                                                 } catch (NumberFormatException e) {
                                                         pValue = 0.0;
                                                 }
-                                        }else if (header[i].matches(GCGCColumnName.Q.getRegularExpression())) {
+                                        } else if (header[i].matches(GCGCColumnName.Q.getRegularExpression())) {
                                                 try {
                                                         qValue = Double.parseDouble(curStr);
                                                 } catch (NumberFormatException e) {
                                                         qValue = 0.0;
                                                 }
-                                        }else if (header[i].matches("Type")) {
+                                        } else if (header[i].matches("Type")) {
                                                 if (curStr.contains("Not Found")) {
                                                         filter = true;
                                                 }
@@ -191,15 +194,15 @@ public class GCGCFileReader {
                                         }
 
                                         GCGCDatum currentRow;
-                                        if (foundConc) {
+                                        if (foundConc) {                                                
                                                 currentRow = new GCGCDatumWithConcentration(cont++, rt1, rt2, retentionIndex,
                                                         quantMass, pValue, qValue, similarity, area, CAS, name, useConc, file.getName(),
                                                         spectrum, conc);
-                                        } else if (foundRetentionIndex) {
+                                        } else if (foundRetentionIndex) {                                               
                                                 currentRow = new GCGCDatum(cont++, rt1, rt2, retentionIndex,
                                                         quantMass, pValue, qValue, similarity, area, conc, useConc,
                                                         CAS, name, file.getName(), spectrum);
-                                        } else {
+                                        } else {                                                
                                                 currentRow = new GCGCDatum(cont++, rt1, rt2, quantMass,
                                                         area, conc, pValue, qValue, useConc, similarity, CAS, name, file.getName(), spectrum);
                                         }

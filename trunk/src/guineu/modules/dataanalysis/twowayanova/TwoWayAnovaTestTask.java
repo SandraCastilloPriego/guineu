@@ -67,83 +67,84 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                                 throw new IllegalStateException(
                                         "2 way-Anova requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
+                        synchronized (RUtilities.R_SEMAPHORE) {
+                                // Creates the data set
+                                rEngine.eval("dataset<- matrix(nrow =" + dataset.getNumberRows() + ",ncol=" + dataset.getNumberCols() + ")");
 
-                        // Creates the data set
-                        rEngine.eval("dataset<- matrix(nrow =" + dataset.getNumberRows() + ",ncol=" + dataset.getNumberCols() + ")");
-
-                        // Creates the description of the samples data set
-                        rEngine.eval("pheno <- matrix(nrow =" + dataset.getNumberCols() + ",ncol=" + 3 + ")");
+                                // Creates the description of the samples data set
+                                rEngine.eval("pheno <- matrix(nrow =" + dataset.getNumberCols() + ",ncol=" + 3 + ")");
 
 
-                        Vector<String> columnNames = dataset.getAllColumnNames();
-                        String dataColNames = "c(";
+                                Vector<String> columnNames = dataset.getAllColumnNames();
+                                String dataColNames = "c(";
 
-                        // assing the values to the matrix
-                        for (int row = 0; row < dataset.getNumberRows(); row++) {
-                                PeakListRow peakRow = dataset.getRow(row);
-                                int r = row + 1;
+                                // assing the values to the matrix
+                                for (int row = 0; row < dataset.getNumberRows(); row++) {
+                                        PeakListRow peakRow = dataset.getRow(row);
+                                        int r = row + 1;
+                                        for (int column = 0; column < dataset.getNumberCols(); column++) {
+                                                int c = column + 1;
+
+                                                String colName = columnNames.elementAt(column);
+                                                double value = 0.0;
+                                                try {
+                                                        value = (Double) peakRow.getPeak(colName);
+                                                } catch (Exception e) {
+                                                        System.out.println(peakRow.getPeak(colName));
+                                                }
+
+                                                if (!Double.isInfinite(value) && !Double.isNaN(value)) {
+
+                                                        rEngine.eval("dataset[" + r + "," + c + "] = " + value);
+                                                } else {
+
+                                                        rEngine.eval("dataset[" + r + "," + c + "] = NA");
+                                                }
+                                        }
+                                }
                                 for (int column = 0; column < dataset.getNumberCols(); column++) {
                                         int c = column + 1;
-
                                         String colName = columnNames.elementAt(column);
-                                        double value = 0.0;
+                                        dataColNames += "\"" + colName + "\", ";
+                                        rEngine.eval("pheno[" + c + ",1]<- \"" + colName + "\"");
+                                        rEngine.eval("pheno[" + c + ",2]<- \"" + dataset.getParametersValue(colName, this.parameterGroup) + "\"");
+                                        rEngine.eval("pheno[" + c + ",3]<- \"" + dataset.getParametersValue(colName, this.parameterTime) + "\"");
+
+                                }
+
+                                dataColNames = dataColNames.substring(0, dataColNames.length() - 2);
+                                dataColNames += ")";
+
+                                rEngine.eval("colnames(dataset)<- " + dataColNames);
+
+                                rEngine.eval("rownames(pheno)<- " + dataColNames);
+                                rEngine.eval("colnames(pheno)<- c(\"SampleName\", \"Phenotype\" , \"Time\")");
+                                rEngine.eval("pheno <- data.frame(pheno)");
+
+                                rEngine.eval("p <- vector(mode=\"numeric\",length=nrow(dataset))");
+
+                                for (int row = 1; row < dataset.getNumberRows() + 1; row++) {
                                         try {
-                                                value = (Double) peakRow.getPeak(colName);
-                                        } catch (Exception e) {
-                                                System.out.println(peakRow.getPeak(colName));
-                                        }
+                                                rEngine.eval("one.2 <- data.frame(\"Profile\"=as.numeric(unlist(dataset[" + row + ",])),\"Phenotype\"=factor(pheno[,\"Phenotype\"]), \"Time\"=factor(pheno[,\"Time\"]))");
+                                                rEngine.eval("one.aov <- aov(Profile ~ Phenotype*Time, data=one.2)");
+                                                rEngine.eval("p[" + row + "]<- summary(one.aov)[[1]][\"Phenotype:Time\", \"Pr(>F)\"] ");
 
-                                        if (!Double.isInfinite(value) && !Double.isNaN(value)) {
-
-                                                rEngine.eval("dataset[" + r + "," + c + "] = " + value);
-                                        } else {
-
-                                                rEngine.eval("dataset[" + r + "," + c + "] = NA");
+                                                REXP x = rEngine.eval("p[" + row + "]");
+                                                double p = x.asDouble();
+                                                this.dataset.getRow(row - 1).setVar("setPValue", p);
+                                        } catch (Exception ex) {
                                         }
                                 }
-                        }
-                        for (int column = 0; column < dataset.getNumberCols(); column++) {
-                                int c = column + 1;
-                                String colName = columnNames.elementAt(column);
-                                dataColNames += "\"" + colName + "\", ";
-                                rEngine.eval("pheno[" + c + ",1]<- \"" + colName + "\"");
-                                rEngine.eval("pheno[" + c + ",2]<- \"" + dataset.getParametersValue(colName, this.parameterGroup) + "\"");
-                                rEngine.eval("pheno[" + c + ",3]<- \"" + dataset.getParametersValue(colName, this.parameterTime) + "\"");
+                                rEngine.eval("fdr <- p.adjust(p, method=\"BH\")");
+                                REXP qexp = rEngine.eval("fdr");
+                                double[] q = qexp.asDoubleArray();
 
-                        }
-
-                        dataColNames = dataColNames.substring(0, dataColNames.length() - 2);
-                        dataColNames += ")";
-
-                        rEngine.eval("colnames(dataset)<- " + dataColNames);                       
-
-                        rEngine.eval("rownames(pheno)<- " + dataColNames);
-                        rEngine.eval("colnames(pheno)<- c(\"SampleName\", \"Phenotype\" , \"Time\")");
-                        rEngine.eval("pheno <- data.frame(pheno)");
-                        
-                        rEngine.eval("p <- vector(mode=\"numeric\",length=nrow(dataset))");
-
-                        for (int row = 1; row < dataset.getNumberRows() + 1; row++) {
-                                try {
-                                        rEngine.eval("one.2 <- data.frame(\"Profile\"=as.numeric(unlist(dataset[" + row + ",])),\"Phenotype\"=factor(pheno[,\"Phenotype\"]), \"Time\"=factor(pheno[,\"Time\"]))");
-                                        rEngine.eval("one.aov <- aov(Profile ~ Phenotype*Time, data=one.2)");
-                                        rEngine.eval("p[" + row + "]<- summary(one.aov)[[1]][\"Phenotype:Time\", \"Pr(>F)\"] ");
-
-                                        REXP x = rEngine.eval("p[" + row + "]");
-                                        double p = x.asDouble();
-                                        this.dataset.getRow(row - 1).setVar("setPValue", p);
-                                } catch (Exception ex) {
-                                }
-                        }
-                        rEngine.eval("fdr <- p.adjust(p, method=\"BH\")");
-                        REXP qexp = rEngine.eval("fdr");
-                        double[] q = qexp.asDoubleArray();
-
-                        for (int row = 0; row < dataset.getNumberRows(); row++) {
-                                PeakListRow r = this.dataset.getRow(row);
-                                r.setVar("setQValue", q[row]);
-                                if ((Double)r.getVar("getPValue") < 0.05 && (Double)r.getVar("getQValue") < 0.05) {
-                                        this.dataset.getRow(row).setSelectionMode(true);
+                                for (int row = 0; row < dataset.getNumberRows(); row++) {
+                                        PeakListRow r = this.dataset.getRow(row);
+                                        r.setVar("setQValue", q[row]);
+                                        if ((Double) r.getVar("getPValue") < 0.05 && (Double) r.getVar("getQValue") < 0.05) {
+                                                this.dataset.getRow(row).setSelectionMode(true);
+                                        }
                                 }
                         }
 

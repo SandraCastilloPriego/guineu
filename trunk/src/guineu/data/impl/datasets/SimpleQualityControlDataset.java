@@ -56,7 +56,7 @@ public class SimpleQualityControlDataset extends SimpleBasicDataset {
         for(PeakListRow row : PeakListDB){
             if(row.getPeak("1").toString().compareTo(newRow.getPeak("1").toString()) == 0){
                 int cont = 1;
-                for(Object peak : newRow.getPeaks()){
+                for(Object peak : newRow.getPeaks(null)){
                     row.setPeak("*" + cont, peak.toString());
                     cont++;
                 }

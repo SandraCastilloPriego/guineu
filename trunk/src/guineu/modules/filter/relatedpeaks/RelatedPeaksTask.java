@@ -86,8 +86,8 @@ public class RelatedPeaksTask extends AbstractTask {
         }
 
         private boolean isAdduct(PeakListRow row, PeakListRow row2) {
-                Double[] peaksRow1 = (Double[]) row.getPeaks();
-                Double[] peaksRow2 = (Double[]) row2.getPeaks();
+                Double[] peaksRow1 = (Double[]) row.getPeaks(null);
+                Double[] peaksRow2 = (Double[]) row2.getPeaks(null);
                 for (int i = 0; i < row.getNumberPeaks(); i++) {
                         if (peaksRow1[i] > peaksRow2[i]) {
                                 return false;
@@ -134,7 +134,7 @@ public class RelatedPeaksTask extends AbstractTask {
          */
         private double getMean(PeakListRow row) {
                 double mean = 0;
-                Double[] peaks = (Double[]) row.getPeaks();
+                Double[] peaks = (Double[]) row.getPeaks(null);
                 for (Double concentration : peaks) {
                         mean += concentration;
                 }

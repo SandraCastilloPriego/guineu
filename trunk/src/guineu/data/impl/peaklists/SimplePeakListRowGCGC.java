@@ -627,14 +627,21 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 this.row.removeAll(row);
         }
 
-        public Double[] getPeaks() {
+        public Double[] getPeaks(String[] columnNames) {
                 Double[] aPeaks = new Double[this.row.size()];
                 int cont = 0;
-                for (GCGCDatum datum : this.row) {
-                        if (datum.useConcentration() && datum.getConcentration() != 0.0) {
-                                aPeaks[cont++] = datum.getConcentration();
-                        } else {
-                                aPeaks[cont++] = datum.getArea();
+                if (columnNames == null) {
+
+                        for (GCGCDatum datum : this.row) {
+                                if (datum.useConcentration() && datum.getConcentration() != 0.0) {
+                                        aPeaks[cont++] = datum.getConcentration();
+                                } else {
+                                        aPeaks[cont++] = datum.getArea();
+                                }
+                        }
+                } else {
+                        for (String columnName : columnNames) {
+                                aPeaks[cont++] = this.getPeak(columnName);
                         }
                 }
                 return aPeaks;

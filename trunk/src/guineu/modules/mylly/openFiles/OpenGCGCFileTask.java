@@ -82,8 +82,8 @@ public class OpenGCGCFileTask extends AbstractTask {
                 dataset.setType(DatasetType.GCGCTOF);
 
                 for (GCGCDatum mol : data) {
-                        SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(), mol.getPValue(), mol.getQValue(),
-                                mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), null, mol.getName(),
+                        SimplePeakListRowGCGC row = new SimplePeakListRowGCGC((int) mol.getId(), mol.getRT1(), mol.getRT2(), mol.getRTI(),
+                                mol.getSimilarity(), 0, 0, 0, mol.getQuantMass(), mol.getPValue(), mol.getQValue(), null, mol.getName(),
                                 null, mol.getSpectrum().toString(), null, mol.getCAS(), mol.getNewCAS(), mol.getKeggID(), mol.getChebiID(), mol.getSynonyms(), null, null, mol.getMolWeight());
 
                         GCGCDatum[] peaks = new GCGCDatum[1];

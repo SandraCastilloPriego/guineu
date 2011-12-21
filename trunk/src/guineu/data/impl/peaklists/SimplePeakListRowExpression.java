@@ -131,7 +131,7 @@ public class SimplePeakListRowExpression implements PeakListRow {
         this.peaks = new Hashtable<String, Double>();
     }
 
-    public Double[] getPeaks() {
+    public Double[] getPeaks(String[] columnName) {
         Double[] aPeaks = new Double[this.peaks.size()];
         String str;
         Set<String> set = peaks.keySet();
