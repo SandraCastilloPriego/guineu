@@ -184,7 +184,7 @@ public class AdductSearchTask extends AbstractTask {
         }
 
         private double getHeight(SimplePeakListRowLCMS row) {
-                Double[] peaks = row.getPeaks();
+                Double[] peaks = row.getPeaks(null);
                 double value = 0;
                 for (Double peak : peaks) {
                         value += peak;

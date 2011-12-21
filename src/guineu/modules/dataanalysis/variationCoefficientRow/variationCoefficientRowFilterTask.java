@@ -83,7 +83,7 @@ public class variationCoefficientRowFilterTask extends AbstractTask {
 
         public double CoefficientOfVariation(PeakListRow row) {
                 DescriptiveStatistics stats = new DescriptiveStatistics();
-                for (Object peak : row.getPeaks()) {
+                for (Object peak : row.getPeaks(null)) {
                         if (peak != null) {
                                 stats.addValue((Double) peak);
                         }

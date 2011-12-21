@@ -138,8 +138,8 @@ public class LinearNormalizer {
                         for (int i = 0; i < this._standards.size(); i++) {
                                 SimplePeakListRowGCGC curStd = (SimplePeakListRowGCGC) this._standards.get(i);
                                 double[] curCoeffs = new double[curStd.getNumberPeaks()];
-                                for (int j = 0; j < curCoeffs.length; j++) {
-                                        curCoeffs[j] = baseLevel / curStd.getPeaks()[j];
+                                for (int j = 0; j < curStd.getNumberPeaks(); j++) {
+                                        curCoeffs[j] = baseLevel / curStd.getPeaks(dataset.getColumnNames())[j];
                                 }
                                 coeffs[i] = curCoeffs;
                         }
@@ -150,7 +150,6 @@ public class LinearNormalizer {
                                 int ix = findProperIndex(scaled.getRT1());
                                 scaled.scaleArea(coeffs[ix], dataset.getColumnNames());
                                 rows.add(scaled);
-
                         }
                         normalized.addAll(rows);
                 } else //Only one standard
@@ -192,7 +191,7 @@ public class LinearNormalizer {
                                 SimplePeakListRowLCMS curStd = (SimplePeakListRowLCMS) this._standards.get(i);
                                 double[] curCoeffs = new double[curStd.getNumberPeaks()];
                                 for (int j = 0; j < curCoeffs.length; j++) {
-                                        curCoeffs[j] = baseLevel / curStd.getPeaks()[j];
+                                        curCoeffs[j] = baseLevel / curStd.getPeaks(dataset.getAllColumnNames().toArray(new String[0]))[j];
                                 }
                                 coeffs[i] = curCoeffs;
                         }
@@ -210,7 +209,7 @@ public class LinearNormalizer {
                         normalized.addAll(rows);
                 } else //Only one standard
                 {
-                        Double[] stds = ((SimplePeakListRowLCMS) onlyStandard).getPeaks();
+                        Double[] stds = ((SimplePeakListRowLCMS) onlyStandard).getPeaks(dataset.getAllColumnNames().toArray(new String[0]));
                         double[] coeffs = new double[stds.length];
                         for (int i = 0; i < stds.length; i++) {
                                 coeffs[i] = baseLevel / stds[i];

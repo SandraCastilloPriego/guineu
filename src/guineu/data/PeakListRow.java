@@ -67,7 +67,7 @@ public interface PeakListRow {
          *
          * @return Array of Object values
          */
-        public Object[] getPeaks();
+        public Object[] getPeaks(String[] columnNames);
 
         /**
          * Removes all the values from the row.

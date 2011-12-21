@@ -178,7 +178,7 @@ public class OpenFileTask extends AbstractTask {
 
         private PeakListRow orderRow(PeakListRow newRow) {
                 PeakListRow newOrderRow = new SimplePeakListRowOther();
-                Object[] peaks = newRow.getPeaks();
+                Object[] peaks = newRow.getPeaks(null);
                 Double[] newPeaks = new Double[peaks.length];
                 for (int i = 0; i < peaks.length; i++) {
                         newPeaks[i] = Double.valueOf(peaks[i].toString());

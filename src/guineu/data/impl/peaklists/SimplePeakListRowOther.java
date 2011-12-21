@@ -80,7 +80,7 @@ public class SimplePeakListRowOther implements PeakListRow {
         this.peaks = new Hashtable<String, String>();
     }
 
-    public String[] getPeaks() {
+    public String[] getPeaks(String[] columnNames) {
         String[] aPeaks = new String[this.peaks.size()];
         String str;
         Set<String> set = peaks.keySet();

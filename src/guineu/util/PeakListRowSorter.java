@@ -56,7 +56,7 @@ public class PeakListRowSorter implements Comparator<PeakListRow> {
         private double getValue(PeakListRow row) {
                 switch (property) {
                         case Intensity:
-                                Object[] intensityPeaks = row.getPeaks();
+                                Object[] intensityPeaks = row.getPeaks(null);
                                 double[] peakIntensities = new double[intensityPeaks.length];
                                 for (int i = 0; i < intensityPeaks.length; i++) {
                                         try {
@@ -70,7 +70,7 @@ public class PeakListRowSorter implements Comparator<PeakListRow> {
                                 return medianIntensity;
 
                         case Height:
-                                Object[] heightPeaks = row.getPeaks();
+                                Object[] heightPeaks = row.getPeaks(null);
                                 double[] peakHeights = new double[heightPeaks.length];
                                 for (int i = 0; i < peakHeights.length; i++) {
                                         try {

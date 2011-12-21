@@ -545,7 +545,7 @@ public class WriteDataBase {
             double progressDone = 0;
             Statement statement = conn.createStatement();
             for (PeakListRow row : QCDataset.getRowsDB()) {
-                Object[] peaks = row.getPeaks();
+                Object[] peaks = row.getPeaks(null);
                 DateFormat dfm = new SimpleDateFormat("ddMMyy");
                 try {                  
                     statement.executeUpdate("INSERT INTO QCSAMPLE (DATASETID," +

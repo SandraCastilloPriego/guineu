@@ -222,15 +222,21 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 this.peaks = new Hashtable<String, Double>();
         }
 
-        public Double[] getPeaks() {
+        public Double[] getPeaks(String[] columnNames) {
                 Double[] aPeaks = new Double[this.peaks.size()];
-                String str;
-                Set<String> set = peaks.keySet();
-                int cont = 0;
-                Iterator<String> itr = set.iterator();
-                while (itr.hasNext()) {
-                        str = itr.next();
-                        aPeaks[cont++] = peaks.get(str);
+                if (columnNames == null) {
+                        String str;
+                        Set<String> set = peaks.keySet();
+                        int cont = 0;
+                        Iterator<String> itr = set.iterator();
+                        while (itr.hasNext()) {
+                                str = itr.next();
+                                aPeaks[cont++] = peaks.get(str);
+                        }
+                } else {
+                        for(int i = 0; i < columnNames.length; i++){
+                             aPeaks[i] = peaks.get(columnNames[i]);  
+                        }
                 }
                 return aPeaks;
         }
@@ -289,19 +295,19 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 }
         }
 
-        public double getPValue(){
+        public double getPValue() {
                 return this.pValue;
         }
 
-        public void setPValue(double pValue){
+        public void setPValue(double pValue) {
                 this.pValue = pValue;
         }
 
-        public double getQValue(){
+        public double getQValue() {
                 return this.qValue;
         }
 
-        public void setQValue(double qValue){
+        public void setQValue(double qValue) {
                 this.qValue = qValue;
         }
 

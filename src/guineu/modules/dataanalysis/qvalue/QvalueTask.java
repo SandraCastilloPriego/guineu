@@ -22,7 +22,6 @@ import guineu.data.PeakListRow;
 import guineu.modules.R.RUtilities;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.rosuda.JRI.Rengine;
@@ -34,11 +33,11 @@ import org.rosuda.JRI.REXP;
  */
 public class QvalueTask extends AbstractTask {
 
-        private Dataset dataset;       
+        private Dataset dataset;
         private int progress = 0;
 
         public QvalueTask(Dataset dataset) {
-                this.dataset = dataset;                
+                this.dataset = dataset;
         }
 
         public String getTaskDescription() {
@@ -64,25 +63,27 @@ public class QvalueTask extends AbstractTask {
                                 throw new IllegalStateException(
                                         "q-value test requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
+                        synchronized (RUtilities.R_SEMAPHORE) {
 
-                        rEngine.eval("p <- vector(mode=\"numeric\",length="+dataset.getNumberRows()+")");
+                                rEngine.eval("p <- vector(mode=\"numeric\",length=" + dataset.getNumberRows() + ")");
 
-                       
-                        // assing the values to the matrix
-                        for (int row = 0; row < dataset.getNumberRows(); row++) {
-                                int r = row + 1;
-                                rEngine.eval("p["+r+"] <- "+ dataset.getRow(row).getVar("getPValue"));
-                        }                       
 
-                        rEngine.eval("fdr <- p.adjust(p, method=\"BH\")");
-                        REXP qexp = rEngine.eval("fdr");
-                        double[] q = qexp.asDoubleArray();
+                                // assing the values to the matrix
+                                for (int row = 0; row < dataset.getNumberRows(); row++) {
+                                        int r = row + 1;
+                                        rEngine.eval("p[" + r + "] <- " + dataset.getRow(row).getVar("getPValue"));
+                                }
 
-                        for (int row = 0; row < dataset.getNumberRows(); row++) {
-                                PeakListRow r = this.dataset.getRow(row);
-                                r.setVar("setQValue", q[row]);
-                                if ((Double)r.getVar("getPValue") < 0.05 && (Double)r.getVar("getQValue") < 0.05) {
-                                        this.dataset.getRow(row).setSelectionMode(true);
+                                rEngine.eval("fdr <- p.adjust(p, method=\"BH\")");
+                                REXP qexp = rEngine.eval("fdr");
+                                double[] q = qexp.asDoubleArray();
+
+                                for (int row = 0; row < dataset.getNumberRows(); row++) {
+                                        PeakListRow r = this.dataset.getRow(row);
+                                        r.setVar("setQValue", q[row]);
+                                        if ((Double) r.getVar("getPValue") < 0.05 && (Double) r.getVar("getQValue") < 0.05) {
+                                                this.dataset.getRow(row).setSelectionMode(true);
+                                        }
                                 }
                         }
 
