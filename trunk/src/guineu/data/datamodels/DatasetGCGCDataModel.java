@@ -59,7 +59,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
                 }
         }
         
-        public void addColor(Color[] color) {
+        public void addRowColor(Color[] color) {
                 this.rowColor = color;
         }
 
@@ -184,5 +184,10 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
          */
         public void addColumn(String columnName) {
                 this.dataset.addColumnName(columnName);
+        }
+
+        @Override
+        public Color getCellColor(int row, int column) {
+                return this.dataset.getCellColor(row, column);
         }
 }

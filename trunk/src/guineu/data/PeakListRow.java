@@ -17,6 +17,8 @@
  */
 package guineu.data;
 
+import java.awt.Color;
+
 /**
  * Definition of a Row.
  *
@@ -137,4 +139,9 @@ public interface PeakListRow {
          * @return the name of the variable
          */
         public String getName();
+
+        public Color getColor(int column);
+
+        public void setColor(Color color, int column);
+
 }

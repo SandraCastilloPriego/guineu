@@ -136,7 +136,12 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
                 this.dataset.addColumnName(ColumnName);
         }
 
-        public void addColor(Color[] color) {
+        public void addRowColor(Color[] color) {
                 this.rowColor = color;
+        }
+
+        @Override
+        public Color getCellColor(int row, int column) {
+                return this.dataset.getCellColor(row, column);
         }
 }

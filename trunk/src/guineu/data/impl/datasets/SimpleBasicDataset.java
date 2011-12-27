@@ -263,4 +263,14 @@ public class SimpleBasicDataset implements Dataset {
         public void addRowColor(Color rowColor) {
                 this.rowColor.add(rowColor);
         }
+
+        @Override
+        public Color getCellColor(int row, int column) {
+                return this.getRow(row).getColor(column-2);
+        }
+
+        @Override
+        public void setCellColor(Color cellColor, int row, int column) {
+                this.getRow(row).setColor(cellColor, column);
+        }
 }

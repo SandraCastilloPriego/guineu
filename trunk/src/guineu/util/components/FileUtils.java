@@ -91,7 +91,7 @@ public class FileUtils {
             case BASIC:
                 model = new OtherDataModel(dataset);
                 if(dataset.getRowColor() != null){
-                        model.addColor(dataset.getRowColor());
+                        model.addRowColor(dataset.getRowColor());
                 }
                 break;
             case EXPRESSION:

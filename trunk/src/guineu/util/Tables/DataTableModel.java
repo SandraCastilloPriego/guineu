@@ -58,7 +58,9 @@ public interface DataTableModel extends TableModel {
          */
         public void addColumn(String columnName);
 
-        public void addColor(Color[] color);
+        public void addRowColor(Color[] color);
 
         public Color getRowColor(int row);
+
+        public Color getCellColor(int row, int column);
 }

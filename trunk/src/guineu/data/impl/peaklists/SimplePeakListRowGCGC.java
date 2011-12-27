@@ -22,6 +22,7 @@ import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentPath;
 import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
 import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.modules.mylly.datastruct.Spectrum;
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
         private DistValue _distValue;
         private double numFound = 0;
         private double molWeight = 0;
+        private List<Color> colors;
 
         public SimplePeakListRowGCGC(int ID, double RT1, double RT2, double RTI,
                 double maxSimilarity, double meanSimilarity, double similaritySTDDev,
@@ -91,6 +93,8 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 this.molWeight = molWeight;
                 this.molClass = molClass;
                 this.group = group;
+                this.colors = new ArrayList<Color>();
+
 
         }
 
@@ -169,6 +173,8 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 this.spectrum = p.getSpectrum() == null ? null : p.getSpectrum().clone();
                 this.spectra = this.spectrum.toString();
                 _distValue = new DistValue(0);
+                this.colors = new ArrayList<Color>();
+
         }
 
         public SimplePeakListRowGCGC() {
@@ -784,5 +790,15 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                         Logger.getLogger(SimplePeakListRowGCGC.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
+        }
+
+        @Override
+        public Color getColor(int column) {
+                return this.colors.get(column);
+        }
+
+        @Override
+        public void setColor(Color color, int column) {
+                this.colors.set(column, color);
         }
 }

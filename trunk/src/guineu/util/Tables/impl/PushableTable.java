@@ -65,11 +65,11 @@ public class PushableTable implements DataTable, ActionListener {
         private StringSelection stsel;
         private Vector<register> registers;
         int indexRegister = 0;
-       
+
         public PushableTable() {
                 registers = new Vector<register>();
         }
-       
+
         public PushableTable(DataTableModel model) {
                 this.model = model;
                 table = this.tableRowsColor(model);
@@ -121,18 +121,24 @@ public class PushableTable implements DataTable, ActionListener {
                                                 if (comp.getBackground().getRGB() != new Color(173, 205, 203).getRGB()) {
                                                         this.repaint();
                                                 }
-                                        } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col)&& getColor(Index_row) == null) {
+                                        } else if (Index_row % 2 == 0 && !isCellSelected(Index_row, Index_col) && getRowColor(Index_row) == null) {
                                                 comp.setBackground(new Color(234, 235, 243));
                                         } else if (isCellSelected(Index_row, Index_col)) {
                                                 comp.setBackground(new Color(173, 205, 203));
                                                 if (comp.getBackground().getRGB() != new Color(173, 205, 203).getRGB()) {
                                                         this.repaint();
                                                 }
-                                        }else if(getColor(Index_row) != null){
-                                                comp.setBackground(getColor(Index_row));
+
+                                        }else if (getRowColor(Index_row) != null) {
+                                                comp.setBackground(getRowColor(Index_row));
                                         } else {
                                                 comp.setBackground(Color.white);
                                         }
+
+                                        if (getCellColor(Index_row, Index_col) != null) {
+                                                comp.setBackground(getCellColor(Index_row, Index_col));
+                                        } 
+
                                 } catch (Exception e) {
                                         e.printStackTrace();
                                 }
@@ -146,9 +152,13 @@ public class PushableTable implements DataTable, ActionListener {
                                         return false;
                                 }
                         }
-                        
-                        private Color getColor(int row){
+
+                        private Color getRowColor(int row) {
                                 return tableModel.getRowColor(row);
+                        }
+
+                        private Color getCellColor(int row, int column) {
+                                return tableModel.getCellColor(row, column);
                         }
                 };
 
@@ -285,10 +295,10 @@ public class PushableTable implements DataTable, ActionListener {
                         int numrows = table.getSelectedRowCount();
                         int[] rowsselected = table.getSelectedRows();
                         int[] colsselected = table.getSelectedColumns();
-                        if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] &&
-                                numrows == rowsselected.length) &&
-                                (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0] &&
-                                numcols == colsselected.length))) {
+                        if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0]
+                                && numrows == rowsselected.length)
+                                && (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0]
+                                && numcols == colsselected.length))) {
                                 JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
                                         "Invalid Copy Selection",
                                         JOptionPane.ERROR_MESSAGE);
@@ -334,8 +344,8 @@ public class PushableTable implements DataTable, ActionListener {
                                         StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
                                         for (int j = 0; st2.hasMoreTokens(); j++) {
                                                 value = st2.nextToken();
-                                                if (startRow + i < table.getRowCount() &&
-                                                        startCol + j < table.getColumnCount()) {
+                                                if (startRow + i < table.getRowCount()
+                                                        && startCol + j < table.getColumnCount()) {
                                                         table.setValueAt(value, startRow + i, startCol + j);
                                                 }
                                         }

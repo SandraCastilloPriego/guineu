@@ -52,7 +52,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                 }
         }
         
-        public void addColor(Color[] color) {
+        public void addRowColor(Color[] color) {
                 this.rowColor = color;
         }
 
@@ -171,5 +171,10 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
          */
         public void addColumn(String columnName) {
                 this.dataset.addColumnName(columnName);
+        }
+
+        @Override
+        public Color getCellColor(int row, int column) {
+                return this.dataset.getCellColor(row, column);
         }
 }

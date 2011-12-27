@@ -35,7 +35,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
                 }
         }
 
-        public void addColor(Color[] color) {
+        public void addRowColor(Color[] color) {
                 this.rowColor = color;
         }
 
@@ -162,5 +162,10 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
          */
         public void addColumn(String ColumnName) {
                 throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Color getCellColor(int row, int column) {
+                return null;
         }
 }
