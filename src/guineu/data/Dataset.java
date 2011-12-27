@@ -228,4 +228,8 @@ public interface Dataset {
         public Color[] getRowColor();
         
         public void addRowColor(Color rowColor);
+
+        public Color getCellColor(int row, int column);
+
+        public void setCellColor(Color cellColor, int row, int column);
 }

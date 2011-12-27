@@ -42,6 +42,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -55,6 +56,9 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
  * @author SCSANDRA
  */
 public class WriteFile {
+
+        HSSFWorkbook wb;
+        List<HSSFCellStyle> styles = new ArrayList<HSSFCellStyle>();
 
         /**
          * Writes Comma Separated file for LC-MS data set.
@@ -121,8 +125,7 @@ public class WriteFile {
         public void WriteExcelFileLCMS(Dataset dataset, String path, SimpleParameterSet parameters) {
                 FileOutputStream fileOut = null;
                 try {
-                        // Prepares sheet
-                        HSSFWorkbook wb;
+                        // Prepares sheet                   
                         HSSFSheet sheet;
                         try {
                                 FileInputStream fileIn = new FileInputStream(path);
@@ -270,7 +273,6 @@ public class WriteFile {
         public void WriteXLSFileBasicDataset(Dataset dataset, String path) {
                 FileOutputStream fileOut = null;
                 try {
-                        HSSFWorkbook wb;
                         HSSFSheet sheet;
                         try {
                                 FileInputStream fileIn = new FileInputStream(path);
@@ -294,25 +296,50 @@ public class WriteFile {
 
                         HSSFPalette palette = wb.getCustomPalette();
                         Color[] colors = dataset.getRowColor();
-                        for (int i = 0; i < dataset.getNumberRows(); i++) {
-                                palette.setColorAtIndex((short) 0x12, (byte) colors[i].getRed(), (byte) colors[i].getGreen(), (byte) colors[i].getBlue());
-                                HSSFColor mycolor = palette.getColor((short) 0x12);  //unmodified
-                                SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
+                        if (colors.length > 0) {
+                                for (int i = 0; i < dataset.getNumberRows(); i++) {
+                                        palette.setColorAtIndex((short) 0x12, (byte) colors[i].getRed(), (byte) colors[i].getGreen(), (byte) colors[i].getBlue());
+                                        HSSFColor mycolor = palette.getColor((short) 0x12);  //unmodified
+                                        SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
 
-                                row = sheet.getRow(i + 1);
-                                if (row == null) {
-                                        row = sheet.createRow(i + 1);
+                                        row = sheet.getRow(i + 1);
+                                        if (row == null) {
+                                                row = sheet.createRow(i + 1);
+                                        }
+                                        int c = 0;
+                                        for (String experimentName : dataset.getAllColumnNames()) {
+                                                if (lipid.getPeak(experimentName) == null) {
+                                                        this.setCell(row, c++, "", mycolor);
+                                                } else {
+                                                        this.setCell(row, c++, lipid.getPeak(experimentName), mycolor);
+                                                }
+                                        }
+
                                 }
-                                int c = 0;
-                                for (String experimentName : dataset.getAllColumnNames()) {
-                                        if (lipid.getPeak(experimentName) == null) {
-                                                this.setCell(row, c++, "", mycolor);
-                                        } else {
-                                                this.setCell(row, c++, lipid.getPeak(experimentName), mycolor);
+                        } else {
+
+                                Vector<String> names = dataset.getAllColumnNames();
+                                for (int i = 0; i < dataset.getNumberRows(); i++) {
+                                        SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
+                                        row = sheet.getRow(i + 1);
+                                        if (row == null) {
+                                                row = sheet.createRow(i + 1);
+                                        }
+                                        for (int j = 0; j < names.size(); j++) {
+                                                Color c = dataset.getCellColor(i, j+1);
+                                                HSSFColor mycolor = null;
+                                                if (c != null) {
+                                                        mycolor = palette.findColor((byte) c.getRed(), (byte) c.getGreen(), (byte) c.getBlue());
+                                                }
+                                                if (lipid.getPeak(names.elementAt(j)) == null) {
+                                                        this.setCell(row, j, "", null);
+                                                } else {
+                                                        this.setCell(row, j, lipid.getPeak(names.elementAt(j)), mycolor);
+                                                }
                                         }
                                 }
-
                         }
+
                         //Write the output to a file
                         fileOut = new FileOutputStream(path);
                         wb.write(fileOut);
@@ -330,9 +357,9 @@ public class WriteFile {
          * @param data data to be writen into the cell
          */
         private void setCell(HSSFRow row, int Index, Object data, HSSFColor color) {
-                HSSFCell cell = row.getCell((short) Index);
+                HSSFCell cell = row.getCell(Index);
                 if (cell == null) {
-                        cell = row.createCell((short) Index);
+                        cell = row.createCell(Index);
                 }
                 if (data.getClass().toString().contains("String")) {
                         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -343,7 +370,19 @@ public class WriteFile {
                         cell.setCellValue((Integer) data);
                 }
                 if (color != null) {
-                        cell.getCellStyle().setFillBackgroundColor(color.getIndex());
+                        HSSFCellStyle style1 = wb.createCellStyle();
+                        style1.setFillForegroundColor(color.getIndex());
+                        style1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                        for(HSSFCellStyle style : styles){
+                                if(style.getFillForegroundColor() == style1.getFillForegroundColor()){
+                                        style1 = style;
+                                }
+                        }
+                        if(!styles.contains(style1)){
+                                this.styles.add(style1);
+                        }
+                        cell.setCellStyle(style1);
+                } else {                       
                 }
         }
 
@@ -357,7 +396,6 @@ public class WriteFile {
         public void WriteExcelFileGCGC(Dataset dataset, String path, SimpleParameterSet parameters) {
                 FileOutputStream fileOut = null;
                 try {
-                        HSSFWorkbook wb;
                         HSSFSheet sheet;
                         try {
                                 FileInputStream fileIn = new FileInputStream(path);
@@ -617,7 +655,6 @@ public class WriteFile {
                         w.writeRecord(rowString);
 
                         // Write Pheno file header
-                        System.out.println(dataset.getAllColumnNames().size());
                         for (String sampleName : dataset.getAllColumnNames()) {
                                 rowString = new String[dataset.getParametersName().size() + 1];
                                 rowString[0] = sampleName;

@@ -36,12 +36,16 @@ public class HeatMapParameters extends SimpleParameterSet {
                 "Output name", "Select the path and name of the output file.");
         public static final ComboParameter<String> fileTypeSelection = new ComboParameter<String>(
                 "Output file type", "Output file type", fileTypes, fileTypes[0]);
-        public static final ComboParameter<String> selectionData = new ComboParameter<String>(
-                "Sample parameter",
+        public static final ComboParameter<String> grouping = new ComboParameter<String>(
+                "Groups",
                 "One sample parameter has to be selected to be used in the heat map. They can be defined in \"Project -> Set sample parameters\"",
                 new String[0]);
         public static final ComboParameter<String> referenceGroup = new ComboParameter<String>(
-                "Group of reference",
+                "Group for p-value calculation",
+                "Name of the group that will be used to perform the t-test respect the rest of the groups",
+                new String[0]);
+        public static final ComboParameter<String> referencePheno = new ComboParameter<String>(
+                "Phenotype of reference",
                 "Name of the group that will be used as a reference from the sample parameters",
                 new String[0]);
         public static final BooleanParameter scale = new BooleanParameter(
@@ -66,8 +70,8 @@ public class HeatMapParameters extends SimpleParameterSet {
                 "Row margin", "Row margin", 10);
 
         public HeatMapParameters() {
-                super(new Parameter[]{fileName, fileTypeSelection, selectionData,
-                                referenceGroup, scale, log,
+                super(new Parameter[]{fileName, fileTypeSelection, grouping,
+                                referenceGroup, referencePheno, scale, log,
                                 showControlSamples, plegend, star, height, width, columnMargin,
                                 rowMargin});
         }
@@ -77,11 +81,11 @@ public class HeatMapParameters extends SimpleParameterSet {
                 Dataset dataset = GuineuCore.getDesktop().getSelectedDataFiles()[0];
                 // Update the parameter choices
                 List<String> choices = dataset.getParametersName();
-                getParameter(HeatMapParameters.selectionData).setChoices(choices.toArray(new String[0]));
-                
-                Vector<String> paramValues = dataset.getParameterAvailableValues(choices.get(0));
+                getParameter(HeatMapParameters.grouping).setChoices(choices.toArray(new String[0]));
+                getParameter(HeatMapParameters.referenceGroup).setChoices(choices.toArray(new String[0]));
 
-                getParameter(HeatMapParameters.referenceGroup).setChoices(paramValues.toArray(new String[0]));
+                Vector<String> paramValues = dataset.getParameterAvailableValues(choices.get(0));
+                getParameter(HeatMapParameters.referencePheno).setChoices(paramValues.toArray(new String[0]));
                 
                 HeatmapSetupDialog dialog = new HeatmapSetupDialog(this, dataset);
                 dialog.setVisible(true);

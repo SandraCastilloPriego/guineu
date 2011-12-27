@@ -19,10 +19,13 @@ package guineu.data.impl.peaklists;
 
 import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +45,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         private Hashtable<String, String> peaksString;
         private String pubchemID = "";
         private String identificationType = IdentificationType.UNKNOWN.toString();
+        private List<Color> colors;
 
         public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound, double pValue, double qValue,
                 int standard, String lipidClass, String Name, String identificationType, String allNames, String FAComposition) {
@@ -58,11 +62,13 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 this.peaks = new Hashtable<String, Double>();
                 this.peaksString = new Hashtable<String, String>();
                 this.aligment = -1;
+                this.colors = new ArrayList<Color>();
         }
 
         public SimplePeakListRowLCMS() {
                 this.peaks = new Hashtable<String, Double>();
                 this.peaksString = new Hashtable<String, String>();
+                this.colors = new ArrayList<Color>();
                 this.ID = -1;
                 this.aligment = -1;
         }
@@ -234,8 +240,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                                 aPeaks[cont++] = peaks.get(str);
                         }
                 } else {
-                        for(int i = 0; i < columnNames.length; i++){
-                             aPeaks[i] = peaks.get(columnNames[i]);  
+                        for (int i = 0; i < columnNames.length; i++) {
+                                aPeaks[i] = peaks.get(columnNames[i]);
                         }
                 }
                 return aPeaks;
@@ -378,5 +384,19 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         @Override
         public String toString() {
                 return this.Name;
+        }
+
+        @Override
+        public Color getColor(int column) {
+                try {
+                        return this.colors.get(column);
+                } catch (Exception e) {
+                        return null;
+                }
+        }
+
+        @Override
+        public void setColor(Color color, int column) {
+                this.colors.set(column, color);
         }
 }

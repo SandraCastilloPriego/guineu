@@ -36,6 +36,7 @@ import org.rosuda.JRI.Rengine;
  * @author scsandra
  */
 public class HeatMapTask extends AbstractTask {
+
         private String outputType;
         private boolean log, rcontrol, scale, plegend;
         private int height, width, columnMargin, rowMargin, starSize;
@@ -43,7 +44,7 @@ public class HeatMapTask extends AbstractTask {
         private String[] rowNames, colNames;
         private String[][] pValueMatrix;
         private Dataset dataset;
-        private String parameterName, referenceGroup;
+        private String parameterName, referenceParameter, groups;
         private double finishedPercentage = 0.0f;
 
         public HeatMapTask(Dataset dataset, ParameterSet parameters) {
@@ -51,8 +52,9 @@ public class HeatMapTask extends AbstractTask {
 
                 outputFile = parameters.getParameter(HeatMapParameters.fileName).getValue();
                 outputType = parameters.getParameter(HeatMapParameters.fileTypeSelection).getValue();
-                parameterName = parameters.getParameter(HeatMapParameters.selectionData).getValue();
-                referenceGroup = parameters.getParameter(HeatMapParameters.referenceGroup).getValue();
+                groups = parameters.getParameter(HeatMapParameters.grouping).getValue();
+                parameterName = parameters.getParameter(HeatMapParameters.referenceGroup).getValue();
+                referenceParameter = parameters.getParameter(HeatMapParameters.referencePheno).getValue();
 
                 log = parameters.getParameter(HeatMapParameters.log).getValue();
                 scale = parameters.getParameter(HeatMapParameters.scale).getValue();
@@ -76,14 +78,12 @@ public class HeatMapTask extends AbstractTask {
                 return finishedPercentage;
         }
 
-       
-
         public void run() {
                 try {
-                        setStatus(TaskStatus.PROCESSING);                       
+                        setStatus(TaskStatus.PROCESSING);
                         double[][] newDataset;
-                       
-                        if (!parameterName.isEmpty() && !referenceGroup.isEmpty()) {
+
+                        if (!parameterName.isEmpty() && !referenceParameter.isEmpty()) {
                                 if (plegend) {
                                         newDataset = this.GroupingDataset(dataset);
                                 } else {
@@ -93,19 +93,19 @@ public class HeatMapTask extends AbstractTask {
                                 setStatus(TaskStatus.ERROR);
                                 if (parameterName.isEmpty()) {
                                         errorMessage = "Sample parameters have to be defined.";
-                                } else if (referenceGroup.isEmpty()) {
+                                } else if (referenceParameter.isEmpty()) {
                                         errorMessage = "Reference group has to be defined.";
                                 }
                                 return;
                         }
 
-                       
+
                         if (newDataset == null || newDataset.length == 0 || newDataset[0].length == 0) {
                                 setStatus(TaskStatus.ERROR);
                                 errorMessage = "The data for heat map is empty.";
                                 return;
                         }
-                       
+
                         final Rengine rEngine;
                         try {
                                 rEngine = RUtilities.getREngine();
@@ -114,7 +114,7 @@ public class HeatMapTask extends AbstractTask {
                                 throw new IllegalStateException(
                                         "Heat map requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
-                        
+
                         finishedPercentage = 0.3f;
 
                         synchronized (RUtilities.R_SEMAPHORE) {
@@ -125,7 +125,9 @@ public class HeatMapTask extends AbstractTask {
                                         errorMessage = "The \"gplots\" R package couldn't be loaded - is it installed in R?";
                                 }
 
+
                                 try {
+                                        rEngine.eval("library(gplots)");
 
                                         if (outputType.contains("png")) {
                                                 if (height < 500 || width < 500) {
@@ -167,7 +169,7 @@ public class HeatMapTask extends AbstractTask {
                                                 }
                                         }
                                         finishedPercentage = 0.4f;
-                                        
+
                                         rEngine.eval("dataset <- apply(dataset, 2, as.numeric)");
 
                                         // Assign row names to the data set
@@ -179,6 +181,15 @@ public class HeatMapTask extends AbstractTask {
                                         long columns = rEngine.rniPutStringArray(colNames);
                                         rEngine.rniAssign("colNames", columns, 0);
                                         rEngine.eval("colnames(dataset)<-colNames");
+
+
+                                        // 0 imputation
+                                       rEngine.eval("write.csv(matrix(rnorm(100),10,10), \"/home/scsandra/Desktop/Guineu/trunk/dist/dataset2.csv\"");
+                                      /*  rEngine.eval("source(\"conf/colonModel.R\")");
+                                        rEngine.eval("dataset <- zero.impute(dataset)");
+                                        rEngine.eval("write.csv(dataset, \"dataset.csv\"");*/
+
+
 
                                         finishedPercentage = 0.5f;
 
@@ -250,7 +261,7 @@ public class HeatMapTask extends AbstractTask {
 
                         String paramValue = dataset.getParametersValue(rawDataFile, parameterName);
 
-                        if (paramValue.equals(referenceGroup)) {
+                        if (paramValue.equals(referenceParameter)) {
 
                                 referenceDataFiles.add(rawDataFile);
                         } else {
@@ -368,12 +379,12 @@ public class HeatMapTask extends AbstractTask {
                 List<String> groups = new ArrayList<String>();
                 for (String rawDataFile : dataset.getAllColumnNames()) {
 
-                        String paramValue = dataset.getParametersValue(rawDataFile, parameterName);
-                       
+                        String paramValue = dataset.getParametersValue(rawDataFile, this.groups);
+
                         if (!groups.contains(paramValue)) {
                                 groups.add(paramValue);
                         }
-                        if (paramValue.equals(referenceGroup)) {
+                        if (paramValue.equals(referenceParameter)) {
 
                                 referenceDataFiles.add(rawDataFile);
                         } else {
@@ -388,7 +399,7 @@ public class HeatMapTask extends AbstractTask {
                                 numRows++;
                         }
                 }
-               
+
                 boolean useCompleteDataset = false;
                 if (numRows == 0) {
                         numRows = dataset.getNumberRows();
@@ -404,7 +415,7 @@ public class HeatMapTask extends AbstractTask {
                         pValueMatrix = new String[groups.size() - 1][numRows];
                 } else {
                         return null;
-                }                                
+                }
 
                 for (int row = 0, rowIndex = 0; row < dataset.getNumberRows(); row++) {
                         PeakListRow rowPeak = dataset.getRow(row);
@@ -425,7 +436,7 @@ public class HeatMapTask extends AbstractTask {
                                 for (int column = 0; column < groups.size(); column++) {
                                         String group = groups.get(column);
                                         meanGroupStats.clear();
-                                        if (!group.equals(referenceGroup)) {
+                                        if (!group.equals(referenceParameter)) {
 
                                                 for (int dataColumn = 0; dataColumn < nonReferenceDataFiles.size(); dataColumn++) {
 
@@ -456,13 +467,13 @@ public class HeatMapTask extends AbstractTask {
                                 rowIndex++;
                         }
                 }
-                
+
                 // Scale the data dividing the peak area/height by the standard
                 // deviation of each column
                 if (scale) {
                         scale(dataMatrix);
                 }
-              
+
                 // Create two arrays: row and column names
                 rowNames = new String[dataMatrix[0].length];
                 colNames = new String[groups.size() - 1];
@@ -470,7 +481,7 @@ public class HeatMapTask extends AbstractTask {
                 int columnIndex = 0;
                 for (String group : groups) {
 
-                        if (!group.equals(referenceGroup)) {
+                        if (!group.equals(referenceParameter)) {
 
                                 colNames[columnIndex++] = group;
                         }
@@ -480,7 +491,7 @@ public class HeatMapTask extends AbstractTask {
                                 rowNames[rowIndex++] = dataset.getRow(row).getName();
                         }
                 }
-                
+
                 return dataMatrix;
         }
 
@@ -529,5 +540,4 @@ public class HeatMapTask extends AbstractTask {
                         }
                 }
         }
-
 }

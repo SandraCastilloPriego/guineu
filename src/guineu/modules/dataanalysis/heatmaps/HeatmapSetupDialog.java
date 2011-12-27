@@ -18,7 +18,6 @@
 package guineu.modules.dataanalysis.heatmaps;
 
 import guineu.data.Dataset;
-import guineu.main.GuineuCore;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ import javax.swing.JComboBox;
 
 public class HeatmapSetupDialog extends ParameterSetupDialog {
 
-        private JComboBox selDataCombo, refGroupCombo;
+        private JComboBox refGroupCombo, refPheno;
         private String previousParameterSelection;
         private Dataset dataset;
 
@@ -36,12 +35,11 @@ public class HeatmapSetupDialog extends ParameterSetupDialog {
 
                 this.dataset = dataset;
 
-                // Get a reference to the combo boxes
-                selDataCombo = (JComboBox) this.getComponentForParameter(HeatMapParameters.selectionData);
+                // Get a reference to the combo boxes               
                 refGroupCombo = (JComboBox) this.getComponentForParameter(HeatMapParameters.referenceGroup);
-
+                refPheno = (JComboBox) this.getComponentForParameter(HeatMapParameters.referencePheno);
                 // Save a reference to current "Sample parameter" value
-                previousParameterSelection = (String) selDataCombo.getSelectedItem();
+                previousParameterSelection = (String) refGroupCombo.getSelectedItem();
 
                 // Call parametersChanged() to rebuild the reference group combo
                 parametersChanged();
@@ -52,7 +50,7 @@ public class HeatmapSetupDialog extends ParameterSetupDialog {
         public void parametersChanged() {
         
                 // Get the current value of the "Sample parameter" combo
-                String currentParameterSelection = (String) selDataCombo.getSelectedItem();
+                String currentParameterSelection = (String) refGroupCombo.getSelectedItem();
                 if (currentParameterSelection == null) {
                         return;
                 }
@@ -66,8 +64,8 @@ public class HeatmapSetupDialog extends ParameterSetupDialog {
 
                         // Update the parameter and combo model
                         String newValues[] = values.toArray(new String[0]);
-                        super.parameterSet.getParameter(HeatMapParameters.referenceGroup).setChoices(newValues);
-                        refGroupCombo.setModel(new DefaultComboBoxModel(newValues));
+                        super.parameterSet.getParameter(HeatMapParameters.referencePheno).setChoices(newValues);
+                        refPheno.setModel(new DefaultComboBoxModel(newValues));
 
                         previousParameterSelection = currentParameterSelection;
                 }

@@ -59,7 +59,7 @@ public class SimpleLCMSDataset implements Dataset {
                 this.sampleNames = new Vector<String>();
                 this.parameters = new Hashtable<String, SampleDescription>();
                 this.parameterNames = new Vector<String>();
-                this.rowColor = new ArrayList<Color>(); 
+                this.rowColor = new ArrayList<Color>();
                 type = DatasetType.LCMS;
         }
 
@@ -275,15 +275,28 @@ public class SimpleLCMSDataset implements Dataset {
                 return selectedRows;
         }
 
+        @Override
         public void removeSampleNames() {
                 this.sampleNames.clear();
         }
 
+        @Override
         public Color[] getRowColor() {
                 return this.rowColor.toArray(new Color[0]);
         }
 
+        @Override
         public void addRowColor(Color rowColor) {
                 this.rowColor.add(rowColor);
+        }
+
+        @Override
+        public Color getCellColor(int row, int column) {
+                return this.getRow(row).getColor(column);
+        }
+
+        @Override
+        public void setCellColor(Color cellColor, int row, int column) {
+                this.getRow(row).setColor(cellColor, column);
         }
 }
