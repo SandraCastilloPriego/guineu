@@ -31,9 +31,9 @@ import guineu.parameters.ParameterSet;
 public class CorrelationModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "Correlation matrix";  
-
+        public CorrelationParameters parameters = new CorrelationParameters();
         public ParameterSet getParameterSet() {
-                return null;
+                return parameters;
         }
 
         public String toString() {
@@ -46,7 +46,7 @@ public class CorrelationModule implements GuineuProcessingModule {
                                 Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
                                 // prepare a new group of tasks
                                 Task tasks[] = new CorrelationTask[1];
-                                tasks[0] = new CorrelationTask(DataFiles);
+                                tasks[0] = new CorrelationTask(DataFiles, this.parameters);
                                 GuineuCore.getTaskController().addTasks(tasks);
 
                                 return tasks;

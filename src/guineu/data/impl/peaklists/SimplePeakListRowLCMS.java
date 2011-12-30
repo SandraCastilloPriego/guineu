@@ -397,6 +397,10 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
         @Override
         public void setColor(Color color, int column) {
-                this.colors.set(column, color);
+                try {
+                        this.colors.set(column, color);
+                } catch (Exception e) {
+                        this.colors.add(color);
+                }
         }
 }

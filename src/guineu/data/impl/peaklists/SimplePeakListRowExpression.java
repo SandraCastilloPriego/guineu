@@ -235,11 +235,19 @@ public class SimplePeakListRowExpression implements PeakListRow {
 
         @Override
         public Color getColor(int column) {
-                return this.colors.get(column);
+                try {
+                        return this.colors.get(column);
+                } catch (Exception e) {
+                        return null;
+                }
         }
 
         @Override
         public void setColor(Color color, int column) {
-                this.colors.set(column, color);
+                try {
+                        this.colors.set(column, color);
+                } catch (Exception e) {
+                        this.colors.add(color);
+                }
         }
 }
