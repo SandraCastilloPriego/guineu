@@ -30,7 +30,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math.linear.BlockRealMatrix;
 import org.apache.commons.math.linear.RealMatrix;
+import org.apache.commons.math.stat.correlation.Covariance;
 import org.apache.commons.math.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math.stat.correlation.SpearmansCorrelation;
 
 /**
  *
@@ -40,9 +42,15 @@ public class CorrelationTask extends AbstractTask {
 
         private Dataset[] dataset;
         private int progress = 0;
+        private double cutoff = 0.05;
+        private String correlationType;
+        private boolean showPvalue;
 
-        public CorrelationTask(Dataset[] dataset) {
+        public CorrelationTask(Dataset[] dataset, CorrelationParameters parameters) {
                 this.dataset = dataset;
+                cutoff = parameters.getParameter(CorrelationParameters.cutoff).getValue();
+                correlationType = parameters.getParameter(CorrelationParameters.correlationTypeSelection).getValue();
+                showPvalue = parameters.getParameter(CorrelationParameters.show).getValue();
         }
 
         public String getTaskDescription() {
@@ -88,21 +96,40 @@ public class CorrelationTask extends AbstractTask {
                                 String name = row.getID() + " - " + row.getName();
                                 for (int i = 0; i < data2.getNumberRows(); i++) {
                                         RealMatrix matrix = getCorrelation(row, data2.getRow(i), data1.getAllColumnNames());
-                                        PearsonsCorrelation correlation = new PearsonsCorrelation(matrix);
-                                        double c = correlation.getCorrelationMatrix().getEntry(1, 0);
-                                        double p = correlation.getCorrelationPValues().getEntry(1, 0);
-                                        newDataset.getRow(i).setPeak(name, String.valueOf(c + "(" + p + ")"));
-                                        if (p < 0.05) {
-                                                if(c < 0){
-                                                        newDataset.setCellColor(Color.green, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
-                                                }else{
-                                                        newDataset.setCellColor(Color.red, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                        PearsonsCorrelation correlation = null;
+                                        if (this.correlationType.contains("Pearsons")) {
+                                                correlation = new PearsonsCorrelation(matrix);
+                                        } else if (this.correlationType.contains("Spearmans")) {
+                                                SpearmansCorrelation scorrelation = new SpearmansCorrelation(matrix);
+                                                correlation = scorrelation.getRankCorrelation();
+                                        }
+                                        if (correlation != null) {
+                                                double c = correlation.getCorrelationMatrix().getEntry(1, 0);
+                                                double p = correlation.getCorrelationPValues().getEntry(1, 0);
+                                                String cp = String.valueOf(c);
+                                                if(this.showPvalue){
+                                                        cp += " (" + String.valueOf(p) + ")";
                                                 }
-                                        } else {
-                                                newDataset.setCellColor(null, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                                newDataset.getRow(i).setPeak(name, String.valueOf(cp));
+                                                if (p < cutoff) {
+                                                        if (c < 0) {
+                                                                newDataset.setCellColor(Color.green, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                                        } else {
+                                                                newDataset.setCellColor(Color.red, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                                        }
+                                                } else {
+                                                        newDataset.setCellColor(null, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                                }
+                                        }
+
+                                        if(this.correlationType.contains("Covariance")){
+                                               Covariance covariance = new Covariance(matrix);
+                                               double c = covariance.getCovarianceMatrix().getEntry(1, 0);
+                                               newDataset.getRow(i).setPeak(name, String.valueOf(c));
                                         }
                                 }
                         }
+
                         GUIUtils.showNewTable(newDataset, true);
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
