@@ -86,7 +86,7 @@ public class QvalueTask extends AbstractTask {
                                         }
                                 }
                         }
-
+                        rEngine.end();
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(QvalueTask.class.getName()).log(Level.SEVERE, null, ex);

@@ -147,7 +147,7 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                                         }
                                 }
                         }
-
+                        rEngine.end();
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(TwoWayAnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);
