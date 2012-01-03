@@ -72,12 +72,6 @@ public class HeatMapTask extends AbstractTask {
 
                 starSize = parameters.getParameter(HeatMapParameters.star).getValue();
 
-
-
-                // Create two arrays: row and column names
-                rowNames = new String[this.dataset.getNumberRows()];
-                colNames = new String[this.dataset.getNumberCols()];
-
         }
 
         public String getTaskDescription() {
@@ -120,30 +114,45 @@ public class HeatMapTask extends AbstractTask {
                                                         this.width = 500;
                                                 }
                                         }
+                                        int numberOfRows = this.isAnySelected(dataset);
+                                        boolean isAnySelected = true;
+                                        if (numberOfRows == 0) {
+                                                numberOfRows = dataset.getNumberRows();
+                                                isAnySelected = false;
+                                        }
 
-                                        rEngine.eval("dataset<- matrix(\"\",nrow =" + dataset.getNumberRows() + ",ncol=" + dataset.getNumberCols() + ")");
+                                        // Create two arrays: row and column names
+                                        rowNames = new String[numberOfRows];
+                                        colNames = new String[this.dataset.getNumberCols()];
+
+                                        rEngine.eval("dataset<- matrix(\"\",nrow =" + numberOfRows + ",ncol=" + dataset.getNumberCols() + ")");
 
                                         rEngine.eval("pheno <- matrix(nrow =" + dataset.getNumberCols() + ",ncol=" + 3 + ")");
 
                                         Vector<String> columnNames = dataset.getAllColumnNames();
+
                                         // assing the values to the matrix
+                                        int realRowIndex = 0;
                                         for (int indexRow = 0; indexRow < dataset.getNumberRows(); indexRow++) {
                                                 PeakListRow row = dataset.getRow(indexRow);
-                                                this.rowNames[indexRow] = row.getID() + " - " + row.getName();
-                                                for (int indexColumn = 0; indexColumn < dataset.getNumberCols(); indexColumn++) {
+                                                if ((isAnySelected && row.isSelected()) || !isAnySelected) {
+                                                        this.rowNames[realRowIndex] = row.getID() + " - " + row.getName();
+                                                        for (int indexColumn = 0; indexColumn < dataset.getNumberCols(); indexColumn++) {
 
-                                                        int r = indexRow + 1;
-                                                        int c = indexColumn + 1;
+                                                                int r = realRowIndex + 1;
+                                                                int c = indexColumn + 1;
 
-                                                        double value = (Double) row.getPeak(columnNames.elementAt(indexColumn));
+                                                                double value = (Double) row.getPeak(columnNames.elementAt(indexColumn));
 
-                                                        if (!Double.isInfinite(value) && !Double.isNaN(value)) {
+                                                                if (!Double.isInfinite(value) && !Double.isNaN(value)) {
 
-                                                                rEngine.eval("dataset[" + r + "," + c + "] = " + value);
-                                                        } else {
+                                                                        rEngine.eval("dataset[" + r + "," + c + "] = " + value);
+                                                                } else {
 
-                                                                rEngine.eval("dataset[" + r + "," + c + "] = NA");
+                                                                        rEngine.eval("dataset[" + r + "," + c + "] = NA");
+                                                                }
                                                         }
+                                                        realRowIndex++;
                                                 }
                                         }
 
@@ -270,5 +279,15 @@ public class HeatMapTask extends AbstractTask {
                         errorMessage = e.toString();
                         return;
                 }
+        }
+
+        private int isAnySelected(Dataset dataset) {
+                int cont = 0;
+                for (PeakListRow row : dataset.getRows()) {
+                        if (row.isSelected()) {
+                                cont++;
+                        }
+                }
+                return cont;
         }
 }

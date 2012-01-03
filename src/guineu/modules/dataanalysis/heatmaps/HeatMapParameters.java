@@ -86,10 +86,14 @@ public class HeatMapParameters extends SimpleParameterSet {
                 Dataset dataset = GuineuCore.getDesktop().getSelectedDataFiles()[0];
                 // Update the parameter choices
                 List<String> timePointChoices = dataset.getParametersName();
-                if (!timePointChoices.contains("No time Points")) {
-                        timePointChoices.add(0, "No time Points");
+                String[] tpChoices = new String[timePointChoices.size() +1];
+                tpChoices[0] = "No time Points";
+                int cont = 1;
+                for(String p : timePointChoices){
+                        tpChoices[cont++] = p;
                 }
-                getParameter(HeatMapParameters.timePoints).setChoices(timePointChoices.toArray(new String[0]));
+
+                getParameter(HeatMapParameters.timePoints).setChoices(tpChoices);
                 List<String> phenotypeChoices = dataset.getParametersName();
                 getParameter(HeatMapParameters.phenotype).setChoices(phenotypeChoices.toArray(new String[0]));
 
