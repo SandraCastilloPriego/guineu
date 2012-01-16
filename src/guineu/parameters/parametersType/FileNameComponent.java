@@ -86,9 +86,9 @@ public class FileNameComponent extends JPanel implements ActionListener {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setMultiSelectionEnabled(this.multiSelection);
 
-                String currentPath = txtFilename.getText();
-                if (currentPath.length() > 0) {
-                        File currentFile = new File(currentPath);
+                String[] currentPath = txtFilename.getText().split(";");
+                if (currentPath[0].length() > 0) {
+                        File currentFile = new File(currentPath[0]);
                         File currentDir = currentFile.getParentFile();
                         if (currentDir != null && currentDir.exists()) {
                                 fileChooser.setCurrentDirectory(currentDir);
@@ -104,10 +104,10 @@ public class FileNameComponent extends JPanel implements ActionListener {
                                 for (File file : files) {
                                         text += file.getAbsolutePath() + ";";
                                 }
-                                txtFilename.setText(text);
+                                txtFilename.setText(text);                                 
                         } else {
                                 String selectedPath = fileChooser.getSelectedFile().getPath();
-                                txtFilename.setText(selectedPath);
+                                txtFilename.setText(selectedPath);                                
                         }
                 }
         }
