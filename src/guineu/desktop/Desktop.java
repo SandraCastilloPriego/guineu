@@ -24,6 +24,7 @@ import java.awt.Color;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import org.w3c.dom.Element;
 
 /**
  * This interface represents the application GUI
@@ -38,8 +39,8 @@ public interface Desktop extends GuineuModule {
          *
          * @return Main window frame
          */
-        public JFrame getMainFrame(); 
-       
+        public JFrame getMainFrame();
+
         /**
          * Adds a new internal frame (JInternalFrame) to the desktop pane
          *
@@ -124,4 +125,12 @@ public interface Desktop extends GuineuModule {
         public void removeData(Dataset file);
 
         public JDesktopPane getDesktopPane();
+
+        public void loadParameterPathFromXML(Element xmlElement);
+
+        public void saveParameterPathToXML(Element xmlElement);
+
+        public void setParameteresPath(String path);
+
+        public String getParameteresPath();
 }

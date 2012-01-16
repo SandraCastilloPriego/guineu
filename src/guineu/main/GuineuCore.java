@@ -213,7 +213,7 @@ public class GuineuCore implements Runnable {
                                 logger.finest("Loading module " + moduleClass.getName());
 
                                 // create instance and init module
-                                GuineuModule moduleInstance =  (GuineuModule) moduleClass.newInstance();
+                                GuineuModule moduleInstance = (GuineuModule) moduleClass.newInstance();
 
                                 // add desktop menu icon
                                 if (moduleInstance instanceof GuineuProcessingModule) {
@@ -304,6 +304,19 @@ public class GuineuCore implements Runnable {
 
                 }
 
+
+                // Save Parameters path
+                String className = "ParameterPath";
+                Element moduleElement = configuration.createElement("module");
+                moduleElement.setAttribute("class", className);
+                modulesElement.appendChild(moduleElement);
+
+                Element paramElement = configuration.createElement("parameters");
+                moduleElement.appendChild(paramElement);
+                GuineuCore.getDesktop().saveParameterPathToXML(paramElement);
+
+
+
                 TransformerFactory transfac = TransformerFactory.newInstance();
                 Transformer transformer = transfac.newTransformer();
                 transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -373,6 +386,16 @@ public class GuineuCore implements Runnable {
                         if (moduleParameters != null) {
                                 moduleParameters.loadValuesFromXML(moduleElement);
                         }
+                }
+
+                String className = "ParameterPath";
+                expr = xpath.compile("//configuration/modules/module[@class='" + className + "']/parameters");
+                if (nodes.getLength() == 1) {
+                        nodes = (NodeList) expr.evaluate(configuration,
+                                XPathConstants.NODESET);
+
+                        Element moduleElement = (Element) nodes.item(0);
+                        GuineuCore.getDesktop().loadParameterPathFromXML(moduleElement);
                 }
 
                 logger.info("Loaded configuration from file " + file);
