@@ -480,7 +480,6 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 try {
                         filePath = dialog.getCurrentDirectory();
                         GuineuCore.getDesktop().setParameteresPath(filePath);
-                        System.out.println(filePath);
                 } catch (Exception e) {
                 }
                 try {
