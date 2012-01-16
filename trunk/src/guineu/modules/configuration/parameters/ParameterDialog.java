@@ -19,6 +19,7 @@ package guineu.modules.configuration.parameters;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
+import guineu.main.GuineuCore;
 import guineu.modules.identification.normalizationtissue.readFileDialog;
 import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
@@ -30,6 +31,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -468,11 +470,17 @@ public class ParameterDialog extends JDialog implements ActionListener {
         }
 
         private void openSelectionFile() {
-                readFileDialog dialog = new readFileDialog(null);
+                File file = null;
+                if(GuineuCore.getDesktop().getParameteresPath() !=null){
+                        file = new File(GuineuCore.getDesktop().getParameteresPath());
+                }
+                readFileDialog dialog = new readFileDialog(file);
                 dialog.setVisible(true);
                 String filePath = "";
                 try {
                         filePath = dialog.getCurrentDirectory();
+                        GuineuCore.getDesktop().setParameteresPath(filePath);
+                        System.out.println(filePath);
                 } catch (Exception e) {
                 }
                 try {

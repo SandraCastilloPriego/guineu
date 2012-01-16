@@ -35,6 +35,7 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.help.HelpBroker;
 import javax.imageio.ImageIO;
@@ -45,6 +46,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.border.EtchedBorder;
+import org.w3c.dom.Document;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * This class is the main window of application
@@ -54,13 +59,14 @@ import javax.swing.border.EtchedBorder;
  * 
  */
 public class MainWindow extends JFrame implements GuineuModule, Desktop,
-		WindowListener {
+        WindowListener {
 
         static final String aboutHelpID = "guineu/desktop/help/AboutGuineu.html";
         private JDesktopPane desktopPane;
         private JSplitPane split;
         private ItemSelector itemSelector;
         private TaskProgressWindow taskList;
+        private String parametersFilePath;
 
         public TaskProgressWindow getTaskList() {
                 return taskList;
@@ -79,6 +85,44 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
+        }
+
+        public void setParameteresPath(String path) {
+                this.parametersFilePath = path;
+        }
+
+        public String getParameteresPath() {
+                return this.parametersFilePath;
+        }
+
+        public void loadParameterPathFromXML(Element xmlElement) {
+                NodeList list = xmlElement.getElementsByTagName("parameter");
+                for (int i = 0; i < list.getLength(); i++) {
+                        Element nextElement = (Element) list.item(i);
+                        String paramName = nextElement.getAttribute("name");
+
+                        if ("Path".equals(paramName)) {
+                                try {
+                                        String fileString = xmlElement.getTextContent();
+                                        if (fileString.length() == 0) {
+                                                return;
+                                        }
+                                        this.parametersFilePath = new File(fileString).getPath();
+                                } catch (Exception e) {
+                                }
+                        }
+                }
+        }
+
+        public void saveParameterPathToXML(Element xmlElement) {
+                Document parentDocument = xmlElement.getOwnerDocument();
+                Element paramElement = parentDocument.createElement("parameter");
+                paramElement.setAttribute("name", "Path");
+                xmlElement.appendChild(paramElement);
+                if (this.parametersFilePath == null) {
+                        return;
+                }
+                xmlElement.setTextContent(this.parametersFilePath);
         }
 
         /**
@@ -143,8 +187,8 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         }
 
         public void addMenuItem(GuineuModuleCategory parentMenu, JMenuItem newItem) {
-		menuBar.addMenuItem(parentMenu, newItem);
-	}
+                menuBar.addMenuItem(parentMenu, newItem);
+        }
 
         /**
          */
@@ -162,7 +206,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
                 // Initialize item selector
                 itemSelector = new ItemSelector(this);
-               
+
 
                 // Place objects on main window
                 desktopPane = new JDesktopPane();
@@ -207,8 +251,8 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
         public JFrame getMainFrame() {
                 return this;
-        } 
-       
+        }
+
         public JInternalFrame getSelectedFrame() {
                 return desktopPane.getSelectedFrame();
         }
@@ -241,7 +285,7 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         /*public Vector[] getSelectedExperiments() {
         return this.itemSelector.getSelectedExperiments();
         }*/
-        public void AddNewFile(Dataset dataset) {               
+        public void AddNewFile(Dataset dataset) {
                 this.itemSelector.addNewFile(dataset);
         }
 
@@ -264,5 +308,4 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
 
                 hb.setDisplayed(true);
         }
-
 }
