@@ -29,10 +29,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -151,15 +154,8 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                         CASnumbers[i] = toSort.get(i).getKey()[1];
                 }
 
-                name = GCGCDatum.UNKOWN_NAME;
-                for (int i = 0; i < names.length; i++) {
-                        if (!GCGCDatum.UNKOWN_NAME.equals(names[i])) {
-                                name = names[i];
-                                CAS = CASnumbers[i];
-                                break;
-                        }
+                this.name = this.getCommonName();
 
-                }
                 this.allNames = "";
                 for (int i = 0; i < names.length; i++) {
                         if (!GCGCDatum.UNKOWN_NAME.equals(names[i])) {
@@ -175,6 +171,43 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 _distValue = new DistValue(0);
                 this.colors = new ArrayList<Color>();
 
+        }
+
+        private String getCommonName() {
+                HashMap<String, Integer> nameFile = new HashMap<String, Integer>();
+                HashMap<String, String> casFile = new HashMap<String, String>();
+                name = GCGCDatum.UNKOWN_NAME;
+                for (int i = 0; i < names.length; i++) {
+                        if (!GCGCDatum.UNKOWN_NAME.equals(names[i])) {
+                                if (nameFile.get(names[i]) == null) {
+                                        nameFile.put(names[i], 1);
+                                        casFile.put(names[i], CASnumbers[i]);
+                                } else {
+                                        nameFile.put(names[i], nameFile.get(names[i]) + 1);
+                                }
+                        }
+                }
+
+                List keys = new ArrayList(nameFile.keySet());
+                List values = new ArrayList(nameFile.values());
+                TreeSet sortedSet = new TreeSet(values);
+                Object[] sortedArray = sortedSet.toArray();
+                int size = sortedArray.length;
+                HashMap map = new LinkedHashMap();
+                for (int i = 0; i < size; i++) {
+                        map.put(keys.get(values.indexOf(sortedArray[i])),
+                                sortedArray[i]);
+                }
+
+                Set ref = map.keySet();
+                Iterator it = ref.iterator();
+
+                while (it.hasNext()) {
+                        name = (String) it.next();
+                        this.CAS = casFile.get(name);
+                }
+
+                return name;
         }
 
         public SimplePeakListRowGCGC() {
