@@ -100,7 +100,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                 for (int i = 0; i < list.getLength(); i++) {
                         Element nextElement = (Element) list.item(i);
                         String paramName = nextElement.getAttribute("name");
-
                         if ("Path".equals(paramName)) {
                                 try {
                                         String fileString = xmlElement.getTextContent();
@@ -117,12 +116,12 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
         public void saveParameterPathToXML(Element xmlElement) {
                 Document parentDocument = xmlElement.getOwnerDocument();
                 Element paramElement = parentDocument.createElement("parameter");
-                paramElement.setAttribute("name", "Path");
-                xmlElement.appendChild(paramElement);
+                paramElement.setAttribute("name", "Path");               
                 if (this.parametersFilePath == null) {
                         return;
                 }
-                xmlElement.setTextContent(this.parametersFilePath);
+                paramElement.setTextContent(this.parametersFilePath);
+                xmlElement.appendChild(paramElement);
         }
 
         /**
