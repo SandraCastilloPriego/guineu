@@ -32,9 +32,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -45,6 +47,11 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  * Dialog to configure the parameters of the samples
@@ -471,7 +478,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
 
         private void openSelectionFile() {
                 File file = null;
-                if(GuineuCore.getDesktop().getParameteresPath() !=null){
+                if (GuineuCore.getDesktop().getParameteresPath() != null) {
                         file = new File(GuineuCore.getDesktop().getParameteresPath());
                 }
                 readFileDialog dialog = new readFileDialog(file);
@@ -482,6 +489,15 @@ public class ParameterDialog extends JDialog implements ActionListener {
                         GuineuCore.getDesktop().setParameteresPath(filePath);
                 } catch (Exception e) {
                 }
+
+                if (filePath.contains(".csv") || filePath.contains(".CSV")) {
+                        openCSV(filePath);
+                } else {
+                        openExcel(filePath);
+                }
+        }
+
+        private void openCSV(String filePath) {
                 try {
                         CsvReader reader = new CsvReader(new FileReader(filePath));
                         try {
@@ -525,6 +541,75 @@ public class ParameterDialog extends JDialog implements ActionListener {
                         }
                         reader.close();
                 } catch (FileNotFoundException ex) {
+                }
+
+        }
+
+        private void openExcel(String filePath) {
+                try {
+                        HSSFWorkbook book;
+                        book = this.openExcelFile(filePath);
+                        HSSFSheet sheet;
+                        try {
+                                sheet = book.getSheetAt(0);
+                                this.readRows(sheet);
+                        } catch (Exception exception) {
+                                exception.printStackTrace();
+                        }
+                } catch (IOException ex) {
+                        Logger.getLogger(ParameterDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
+
+        private HSSFWorkbook openExcelFile(String file_name)
+                throws IOException {
+                FileInputStream fileIn = null;
+                try {
+                        HSSFWorkbook wb;
+                        POIFSFileSystem fs;
+                        fileIn = new FileInputStream(file_name);
+                        fs = new POIFSFileSystem(fileIn);
+                        wb = new HSSFWorkbook(fs);
+                        return wb;
+                } finally {
+                        if (fileIn != null) {
+                                fileIn.close();
+                        }
+                }
+        }
+
+        //get the number of rows to read in the excel file
+        public void readRows(HSSFSheet sheet) {
+                try {
+                        Iterator rowIt = sheet.rowIterator();
+                        HSSFRow row = (HSSFRow) rowIt.next();
+
+                        for (int i = 1; i < row.getLastCellNum(); i++) {
+                                HSSFCell cell = row.getCell(i);
+                                model.addColumn(cell.toString());
+                        }
+                        ((ParameterDataModel) model).fireTableStructureChanged();
+                        table.getColumnModel().getColumn(0).setMinWidth(300);
+                        int rowIndex = -1;
+                        while (rowIt.hasNext()) {
+                                row = (HSSFRow) rowIt.next();
+                                HSSFCell cell;
+                                cell = row.getCell(0);
+                                for (int e = 0; e < model.getRowCount(); e++) {
+                                        String sampleName = model.getValueAt(e, 0);
+                                        if (sampleName.equals(cell.toString())) {
+                                                rowIndex = e;
+                                        }
+                                }
+                                for (int i = 1; i < row.getLastCellNum(); i++) {
+                                        cell = row.getCell(i);
+                                        model.setValueAt(cell.toString(), rowIndex, i);
+                                }
+                        }
+                        ((ParameterDataModel) model).addParameters(dataset);
+                        ((ParameterDataModel) model).fireTableDataChanged();
+                } catch (Exception e) {
+                        e.printStackTrace();
                 }
         }
 

@@ -66,7 +66,7 @@ public abstract class ParserXLS {
 		while(rowIt.hasNext()) {   
 			HSSFRow row   = (HSSFRow) rowIt.next();
 			HSSFCell cell;
-			cell = row.getCell((short) 0 );
+			cell = row.getCell(0);
 			if((cell == null || cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) && row.getRowNum()>init)
 				break;
 			num = row.getRowNum();			
@@ -82,13 +82,13 @@ public abstract class ParserXLS {
 	public int v_type(HSSFWorkbook wb, HSSFRow row, HSSFCell cell){		
 		switch (cell.getCellType()) {
 		case HSSFCell.CELL_TYPE_BLANK :
-			System.out.println( " Error - Row: " + row.getRowNum()+ " Cell: " + cell.getCellNum() + "  - Cell type Blank  - " + cell.toString());
+			System.out.println( " Error - Row: " + row.getRowNum()+ " Cell: " + cell.getColumnIndex() + "  - Cell type Blank  - " + cell.toString());
 			return 0;			
 		case HSSFCell.CELL_TYPE_BOOLEAN :
-			System.out.println( " Error - Row: " + row.getRowNum()+ " Cell: " + cell.getCellNum() + "  - Cell type boolean  - "+ cell.toString());
+			System.out.println( " Error - Row: " + row.getRowNum()+ " Cell: " + cell.getColumnIndex() + "  - Cell type boolean  - "+ cell.toString());
 			return 0;
 		case HSSFCell.CELL_TYPE_FORMULA :
-			System.out.println( " Error - Row: " + row.getRowNum()+ " Cell: " + cell.getCellNum() + "  - Cell type formula  - "+ cell.toString());
+			System.out.println( " Error - Row: " + row.getRowNum()+ " Cell: " + cell.getColumnIndex() + "  - Cell type formula  - "+ cell.toString());
 			return 1;
 		case HSSFCell.CELL_TYPE_NUMERIC :
 			HSSFCellStyle style = cell.getCellStyle();
