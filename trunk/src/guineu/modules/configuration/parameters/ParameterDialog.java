@@ -479,7 +479,15 @@ public class ParameterDialog extends JDialog implements ActionListener {
         private void openSelectionFile() {
                 File file = null;
                 if (GuineuCore.getDesktop().getParameteresPath() != null) {
-                        file = new File(GuineuCore.getDesktop().getParameteresPath());
+                        String pathName = GuineuCore.getDesktop().getParameteresPath();
+                        
+                        if (pathName.contains("/")) {
+                                pathName = pathName.substring(0, pathName.lastIndexOf("/"));
+                        } else if (pathName.contains("\\")) {
+                                pathName = pathName.substring(0, pathName.lastIndexOf("\\"));
+                        }
+                        pathName = pathName.trim();
+                        file = new File(pathName);
                 }
                 readFileDialog dialog = new readFileDialog(file);
                 dialog.setVisible(true);
@@ -492,7 +500,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
 
                 if (filePath.contains(".csv") || filePath.contains(".CSV")) {
                         openCSV(filePath);
-                } else {
+                } else if (filePath != null) {
                         openExcel(filePath);
                 }
         }
@@ -554,10 +562,8 @@ public class ParameterDialog extends JDialog implements ActionListener {
                                 sheet = book.getSheetAt(0);
                                 this.readRows(sheet);
                         } catch (Exception exception) {
-                                exception.printStackTrace();
                         }
-                } catch (IOException ex) {
-                        Logger.getLogger(ParameterDialog.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {                     
                 }
         }
 
