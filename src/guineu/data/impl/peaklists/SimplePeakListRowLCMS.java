@@ -43,12 +43,12 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         private String VTTid = "", VTTAllIDs = "";
         private Hashtable<String, Double> peaks;
         private Hashtable<String, String> peaksString;
-        private String pubchemID = "";
+        private String pubchemID = "", comment, formula, url;
         private String identificationType = IdentificationType.UNKNOWN.toString();
         private List<Color> colors;
 
         public SimplePeakListRowLCMS(int ID, double averageMZ, double averageRT, double numFound, double pValue, double qValue,
-                int standard, String lipidClass, String Name, String identificationType, String allNames, String FAComposition) {
+                int standard, String lipidClass, String Name, String identificationType, String allNames, String FAComposition, String comment, String formula, String url) {
                 this.ID = ID;
                 this.FAComposition = FAComposition;
                 this.averageMZ = averageMZ;
@@ -63,6 +63,9 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 this.peaksString = new Hashtable<String, String>();
                 this.aligment = -1;
                 this.colors = new ArrayList<Color>();
+                this.comment = comment;
+                this.formula = formula;
+                this.url = url;
         }
 
         public SimplePeakListRowLCMS() {
@@ -77,7 +80,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         public PeakListRow clone() {
                 PeakListRow peakListRow = new SimplePeakListRowLCMS(this.ID, this.averageMZ, this.averageRT,
                         this.numFound, this.pValue, this.qValue, this.standard, this.lipidClass, this.Name, this.identificationType, this.allNames,
-                        this.FAComposition);
+                        this.FAComposition, this.comment, this.formula, this.url);
                 peakListRow.setVar("setNumberAligment", aligment);
                 peakListRow.setVar("setVTTID", VTTid);
                 peakListRow.setVar("setAllVTTD", VTTAllIDs);
@@ -317,6 +320,31 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 this.qValue = qValue;
         }
 
+        public String getComment() {
+                return this.comment;
+        }
+
+        public void setComment(String comment) {
+                this.comment = comment;
+        }
+
+        public String getMolecularFormula() {
+                return this.formula;
+        }
+
+        public void setMolecularFormula(String formula) {
+                this.formula = formula;
+        }
+
+        public String getURL() {
+                return this.url;
+        }
+
+        public void setURL(String url) {
+                this.url = url;
+        }
+
+
         public Hashtable<String, Double> getPeaksTable() {
                 return this.peaks;
         }
@@ -403,4 +431,5 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                         this.colors.add(color);
                 }
         }
+
 }
