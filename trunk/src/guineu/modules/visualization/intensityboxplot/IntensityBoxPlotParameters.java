@@ -55,7 +55,7 @@ public class IntensityBoxPlotParameters extends SimpleParameterSet {
         public ExitCode showSetupDialog() {
 
                 String selectedPeakLists[] = getParameter(dataFiles).getValue();
-                if (selectedPeakLists != null && selectedPeakLists.length > 0) {                      
+                if (selectedPeakLists != null && selectedPeakLists.length > 0) {
                         getParameter(dataFiles).setValue(selectedPeakLists);
                 } else {
                         String plDataFiles[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
@@ -63,16 +63,13 @@ public class IntensityBoxPlotParameters extends SimpleParameterSet {
                         getParameter(dataFiles).setValue(plDataFiles);
                 }
 
-                PeakListRow selectedPeakRows[] = getParameter(selectedRows).getValue();
-                if (selectedPeakRows != null && selectedPeakRows.length > 0) {                       
-                        getParameter(selectedRows).setValue(selectedPeakRows);
-                } else {
-                        PeakListRow plRows[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
-                        Arrays.sort(plRows, new PeakListRowSorter(SortingProperty.MZ, SortingDirection.Ascending));
-                        PeakListRow selRows[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getSelectedRows().toArray(new PeakListRow[0]);
-                        getParameter(selectedRows).setChoices(plRows);
-                        getParameter(selectedRows).setValue(selRows);
-                }
+
+                PeakListRow plRows[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
+                Arrays.sort(plRows, new PeakListRowSorter(SortingProperty.MZ, SortingDirection.Ascending));
+                PeakListRow selRows[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getSelectedRows().toArray(new PeakListRow[0]);
+                getParameter(selectedRows).setChoices(plRows);
+                getParameter(selectedRows).setValue(selRows);
+
                 List<String> sampleParameters = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName();
 
                 Object xAxisSources[] = new Object[sampleParameters.size() + 1];
