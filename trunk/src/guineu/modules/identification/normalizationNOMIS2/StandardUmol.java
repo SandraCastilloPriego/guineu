@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2011 VTT Biotechnology
+    Copyright 2007-2012 VTT Biotechnology
 
     This file is part of MULLU.
 
