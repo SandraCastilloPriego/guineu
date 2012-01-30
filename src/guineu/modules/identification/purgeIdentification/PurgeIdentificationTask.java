@@ -22,7 +22,6 @@ import guineu.data.IdentificationType;
 import guineu.data.PeakListRow;
 import guineu.data.parser.impl.Lipidclass;
 import guineu.data.LCMSColumnName;
-import guineu.desktop.Desktop;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.util.regex.Matcher;
@@ -32,17 +31,15 @@ import java.util.regex.Pattern;
  *
  * @author scsandra
  */
-public class purgeIdentificationTask extends AbstractTask {
-
-        private Desktop desktop;
+public class PurgeIdentificationTask extends AbstractTask {
+       
         private Dataset dataset;
         private double count;
         private int NRows;
         Lipidclass LipidClassLib;
 
-        public purgeIdentificationTask(Dataset dataset, Desktop desktop) {
+        public PurgeIdentificationTask(Dataset dataset) {
                 this.dataset = dataset;
-                this.desktop = desktop;
                 this.LipidClassLib = new Lipidclass();
         }
 
