@@ -28,10 +28,10 @@ import guineu.taskcontrol.Task;
  *
  * @author scsandra
  */
-public class HeatMapModule implements GuineuProcessingModule {
+public class BoxPlotModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Heat Map (R)";
-        private HeatMapParameters parameters = new HeatMapParameters();        
+        public static final String MODULE_NAME = "Box plot (R)";
+        private BoxPlotParameters parameters = new BoxPlotParameters();
 
         public ParameterSet getParameterSet() {
                 return parameters;
@@ -44,24 +44,23 @@ public class HeatMapModule implements GuineuProcessingModule {
 
         public Task[] runModule(ParameterSet parameters) {
                 Dataset[] selectedDatasets = GuineuCore.getDesktop().getSelectedDataFiles();
-
                 // prepare a new group of tasks
-                Task tasks[] = new HeatMapTask[selectedDatasets.length];
-                for (int i = 0; i < selectedDatasets.length; i++) {
-
-                        tasks[i] = new HeatMapTask(selectedDatasets[i], this.parameters);
+                if (selectedDatasets != null && selectedDatasets.length > 0) {
+                        Task tasks[] = new BoxPlotTask[1];
+                        tasks[0] = new BoxPlotTask(selectedDatasets[0], this.parameters);
+                        GuineuCore.getTaskController().addTasks(tasks);
+                        return tasks;
+                } else {
+                        return null;
                 }
-                GuineuCore.getTaskController().addTasks(tasks);
-
-                return tasks;
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.DATAANALYSIS;
+                return GuineuModuleCategory.VISUALIZATION;
         }
 
         public String getIcon() {
-                return "icons/heatmaps.png";
+                return "icons/boxplot.png";
         }
 
         public boolean setSeparator() {
