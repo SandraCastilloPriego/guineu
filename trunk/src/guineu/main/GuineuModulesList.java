@@ -79,6 +79,9 @@ import guineu.modules.dataanalysis.twowayanova.TwoWayAnovaTestModule;
 import guineu.modules.dataanalysis.variationCoefficient.VariationCoefficientModule;
 import guineu.modules.dataanalysis.variationCoefficientRow.VariationCoefficientRowModule;
 import guineu.modules.dataanalysis.variableSelection.annealing.AnnealingModule;
+import guineu.modules.dataanalysis.zeroImputation.ZeroImputationModule;
+import guineu.modules.identification.purgeIdentification.PurgeIdentificationModule;
+import guineu.modules.visualization.Rintensityboxplot.BoxPlotModule;
 import guineu.modules.visualization.intensityboxplot.IntensityBoxPlotModule;
 import guineu.modules.visualization.intensityplot.IntensityPlotModule;
 
@@ -88,6 +91,7 @@ import guineu.modules.visualization.intensityplot.IntensityPlotModule;
 public class GuineuModulesList {
 
         public static final Class<?> MODULES[] = new Class<?>[]{
+                // File
                 OpenLCMSFileModule.class, 
                 OpenGCGCFilesModule.class,
                 OpenGCGCDatasetModule.class,
@@ -96,26 +100,40 @@ public class GuineuModulesList {
                 SaveLCMSFileModule.class,
                 SaveGCGCFileModule.class,
                 SaveOtherFileModule.class,
-                ExitProgram.class,                
+                ExitProgram.class,
+
+                // Configuration
                 GeneralConfiguration.class,
                 ParameterConfiguration.class,
                 GCGCColumnsView.class,
                 LCMSColumnsView.class,
+
+                // Ransac alignment and centering
                 RansacAlignerModule.class,
                 MeanCenteringModule.class,
                 MedianCenteringModule.class,
                 STDNormalizationModule.class,
+
+                // Filtering
                 UnitsChangeFilterModule.class,
                 SplitModule.class,
                 TransposeFilterModule.class,
                 SortingModule.class,
+                ZeroImputationModule.class,
                 DataSelectionModule.class,
+
+                // Identification
                 CustomDBSearchModule.class,
                 RelatedPeaksFilterModule.class,
                 AdductSearchModule.class,
+                PurgeIdentificationModule.class,
+
+                // Normalization
                 LinearNormalizerModule.class,
                 NormalizeSerumModule.class,
                 NormalizeTissueModule.class,
+
+                // Mylly
                 ScoreAlignmentModule.class,
                 ConcentrationsFromMassModule.class,
                 GroupIdentificationModule.class,
@@ -130,6 +148,8 @@ public class GuineuModulesList {
                 PubChemModule.class,
                 LinearGCGCNormalizerModule.class,
                 RTIFileModule.class,
+
+                // Data analysis
                 VariationCoefficientModule.class,
                 VariationCoefficientRowModule.class,                
                 mediaFilterModule.class,
@@ -148,6 +168,9 @@ public class GuineuModulesList {
                 HeatMapModule.class,
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,
+                BoxPlotModule.class,
+
+                // Database
                 SaveFileDBModule.class,                
                 OpenFileDBModule.class,
                 DeleteDatasetDBModule.class
