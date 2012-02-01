@@ -19,13 +19,19 @@ package guineu.modules.dataanalysis.heatmaps;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
+import guineu.main.GuineuCore;
 import guineu.modules.R.RUtilities;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.Vector;
+import javax.swing.JInternalFrame;
+import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.Rengine;
+import org.rosuda.javaGD.GDCanvas;
 
 /**
  *
@@ -35,12 +41,13 @@ public class HeatMapTask extends AbstractTask {
 
         private String outputType;
         private boolean log, scale, plegend;
-        private double height, width, heightAvobeHM, heightHM, heightUnderHM, widthDendrogram, widthHM, columnMargin, rowMargin, starSize, rLabelSize, cLabelSize;
+        //private double height, width, heightAvobeHM, heightHM, heightUnderHM, widthDendrogram, widthHM, columnMargin, rowMargin,  starSize, rLabelSize, cLabelSize*/;
         private File outputFile;
         private String[] rowNames, colNames;
         private Dataset dataset;
         private String phenotype, timePoints;
         private double finishedPercentage = 0.0f;
+        public static GDCanvas _gdc;
 
         public HeatMapTask(Dataset dataset, ParameterSet parameters) {
                 this.dataset = dataset;
@@ -55,7 +62,7 @@ public class HeatMapTask extends AbstractTask {
                 plegend = parameters.getParameter(HeatMapParameters.plegend).getValue();
 
                 // Measures
-                heightAvobeHM = parameters.getParameter(HeatMapParameters.height).getValue();
+             /*   heightAvobeHM = parameters.getParameter(HeatMapParameters.height).getValue();
                 heightHM = parameters.getParameter(HeatMapParameters.heighthm).getValue();
                 heightUnderHM = parameters.getParameter(HeatMapParameters.heightuhm).getValue();
                 this.height = heightAvobeHM + heightHM + heightUnderHM;
@@ -70,7 +77,7 @@ public class HeatMapTask extends AbstractTask {
                 rLabelSize = parameters.getParameter(HeatMapParameters.rlabelSize).getValue();
                 cLabelSize = parameters.getParameter(HeatMapParameters.clabelSize).getValue();
 
-                starSize = parameters.getParameter(HeatMapParameters.star).getValue();
+                starSize = parameters.getParameter(HeatMapParameters.star).getValue();*/
 
         }
 
@@ -108,12 +115,6 @@ public class HeatMapTask extends AbstractTask {
                                 try {
                                         rEngine.eval("library(gplots)");
 
-                                        if (outputType.contains("png")) {
-                                                if (this.height < 500 || this.width < 500) {
-                                                        this.height = 500;
-                                                        this.width = 500;
-                                                }
-                                        }
                                         int numberOfRows = this.isAnySelected(dataset);
                                         boolean isAnySelected = true;
                                         if (numberOfRows == 0) {
@@ -121,7 +122,7 @@ public class HeatMapTask extends AbstractTask {
                                                 isAnySelected = false;
                                         }
 
-                                        // Create two arrays: row and column names
+                                        // Create two arrays: row and column names 
                                         rowNames = new String[numberOfRows];
                                         colNames = new String[this.dataset.getNumberCols()];
 
@@ -189,8 +190,10 @@ public class HeatMapTask extends AbstractTask {
                                         // Assign column names to the data set
                                         rEngine.eval("colnames(dataset)<- columnNames");
 
-                                        // 0 imputation
+                                        // Source R script
                                         rEngine.eval("source(\"conf/colonModel.R\")");
+
+                                        // 0 imputation                                        
                                         rEngine.eval("dataset <- zero.impute(dataset)");
 
                                         finishedPercentage = 0.5f;
@@ -198,20 +201,22 @@ public class HeatMapTask extends AbstractTask {
                                         // Remove the rows with too many NA's. The distances between rows can't be calculated if the rows don't have
                                         // at least one sample in common.
                                         rEngine.eval("dataset <- remove.na(dataset)");
+                                        // rEngine.eval("write.csv(dataset, \"dataset2.csv\")");
+                                        // rEngine.eval("write.csv(pheno, \"pheno2.csv\")");
 
                                         finishedPercentage = 0.8f;
                                         if (this.getStatus() == TaskStatus.PROCESSING) {
                                                 if (!this.timePoints.contains("No time Points")) {
                                                         // Time points and T-test. There should be only two phenotypes in each time point.
-                                                        rEngine.eval("foldResult <- fold.changes.by.time(dataset,pheno)");
-                                                        rEngine.eval("tResult <- ttest.by.time(dataset,pheno)");
+                                                        rEngine.eval("foldResult <- fold.changes.by.time(data.frame(dataset),data.frame(pheno))");
+                                                        rEngine.eval("tResult <- ttest.by.time(data.frame(dataset),data.frame(pheno))");
                                                 } else if (!this.plegend) {
                                                         // No t-test and not time points. The raw data set will be shown.
                                                         rEngine.eval("foldResult <- dataset");
                                                 } else {
                                                         // No time points but t-test. The first sample group will be consider the reference group.
-                                                        rEngine.eval("foldResult <- fold.changes.no.time(dataset,pheno)");
-                                                        rEngine.eval("tResult <- ttest.no.time(dataset,pheno)");
+                                                        rEngine.eval("foldResult <- fold.changes.no.time(data.frame(dataset),data.frame(pheno))");
+                                                        rEngine.eval("tResult <- ttest.no.time(data.frame(dataset),data.frame(pheno))");
                                                 }
 
                                                 if (this.log && this.scale) {
@@ -222,45 +227,63 @@ public class HeatMapTask extends AbstractTask {
                                                         rEngine.eval("foldResult <- changes(foldResult, 2)");
                                                 }
 
+                                                //rEngine.eval("write.csv(foldResult, \"dataset4.csv\")");
+                                                //  rEngine.eval("write.csv(tResult, \"pvalues.csv\")");
+                                                //Sizes
+                                                rEngine.eval("hahm <- 1");
+                                                rEngine.eval("hhm = 5*log(nrow(foldResult))");
+                                                rEngine.eval("huhm = 1.5+0.05*max(nchar(colnames(foldResult)))");
+                                                rEngine.eval("rowmargin = 0.55*max(nchar(rownames(foldResult)))");
+                                                rEngine.eval("colmargin = 0.55*max(nchar(colnames(foldResult)))");
+                                                rEngine.eval("wd=1");
+                                                rEngine.eval("whm= 5*log(ncol(foldResult))");
+
+                                                rEngine.eval("width <- 96*(wd+whm+0.1*rowmargin)");
+                                                rEngine.eval("height <-96*(hahm+hhm+huhm+0.1*colmargin) ");
+
+                                                long e = rEngine.rniParse("width", 1);
+                                                long r = rEngine.rniEval(e, 0);
+                                                REXP x = new REXP(rEngine, r);
+                                                double width = x.asDouble() * 0.5;
+
+                                                e = rEngine.rniParse("height", 1);
+                                                r = rEngine.rniEval(e, 0);
+                                                x = new REXP(rEngine, r);
+                                                double height = x.asDouble() * 0.5;
+                                              
+
+                                                // Window
+                                                _gdc = new GDCanvas(width, height);
+                                                JInternalFrame f = new JInternalFrame("Heat map", true, true, true, true);
+                                                f.getContentPane().setLayout(new BorderLayout());
+                                                f.getContentPane().add(_gdc, BorderLayout.PAGE_END);
+                                                f.pack();
+                                                GuineuCore.getDesktop().addInternalFrame(f);
+
                                                 rEngine.eval("library(JavaGD)");
                                                 rEngine.eval("Sys.putenv('JAVAGD_CLASS_NAME'='guineu/modules/dataanalysis/heatmaps/HMFrame')");
-                                                rEngine.eval("JavaGD()");
+                                                rEngine.eval("JavaGD(width=96*(wd+whm+0.1*rowmargin), height=96*(hahm+hhm+huhm+0.1*colmargin),ps=1)");
                                                 if (this.plegend) {
-                                                        rEngine.eval("final.hm(foldResult, tResult," + this.heightAvobeHM + "," + this.heightHM + "," + this.heightUnderHM + "," + this.rowMargin + "," + this.columnMargin + "," + this.widthDendrogram + "," + this.widthHM + "," + this.rLabelSize + "," + this.cLabelSize + ", notecex=" + starSize + ")");
+                                                        rEngine.eval("final.hm(foldResult, tResult)");
                                                 } else {
-                                                        rEngine.eval("final.hm(foldResult, NULL," + this.heightAvobeHM + "," + this.heightHM + "," + this.heightUnderHM + "," + this.rowMargin + "," + this.columnMargin + "," + this.widthDendrogram + "," + this.widthHM + "," + this.rLabelSize + "," + this.cLabelSize + ")");
+                                                        rEngine.eval("final.hm(foldResult, NULL)");
                                                 }
+
+                                                //    rEngine.eval("write.csv(foldResult, \"results.csv\")");
+                                                //    rEngine.eval("write.csv(tResult, \"pvalues.csv\")");
 
                                                 if (!outputType.contains("No export")) {
-                                                        // Possible output file types
-                                                        if (outputType.contains("pdf")) {
-
-                                                                rEngine.eval("pdf(\"" + outputFile + "\", height=" + height + ", width=" + width + ")");
-                                                        } else if (outputType.contains("fig")) {
-
-                                                                rEngine.eval("xfig(\"" + outputFile + "\", height=" + height + ", width=" + width + ", horizontal = FALSE, pointsize = 12)");
-                                                        } else if (outputType.contains("svg")) {
-
-                                                                // Load RSvgDevice library
-                                                                if (rEngine.eval("require(RSvgDevice)").asBool().isFALSE()) {
-
-                                                                        throw new IllegalStateException("The \"RSvgDevice\" R package couldn't be loaded - is it installed in R?");
-                                                                }
-
-                                                                rEngine.eval("devSVG(\"" + outputFile + "\", height=" + height + ", width=" + width + ")");
-                                                        } else if (outputType.contains("png")) {
-
-                                                                rEngine.eval("png(\"" + outputFile + "\", height=" + height + ", width=" + width + ")");
-                                                        }
-
                                                         if (this.plegend) {
-                                                                rEngine.eval("final.hm(foldResult, tResult," + this.heightAvobeHM + "," + this.heightHM + "," + this.heightUnderHM + "," + this.rowMargin + "," + this.columnMargin + "," + this.widthDendrogram + "," + this.widthHM + "," + this.rLabelSize + "," + this.cLabelSize + ", notecex=" + starSize + ")");
+                                                                rEngine.eval("final.hm(foldResult, tResult, xlas=1, device = \"" + this.outputType + "\", OutputFileName=\"" + this.outputFile.getAbsolutePath() + "\")");
                                                         } else {
-                                                                rEngine.eval("final.hm(foldResult, NULL," + this.heightAvobeHM + "," + this.heightHM + "," + this.heightUnderHM + "," + this.rowMargin + "," + this.columnMargin + "," + this.widthDendrogram + "," + this.widthHM + "," + this.rLabelSize + "," + this.cLabelSize + ")");
+                                                                rEngine.eval("final.hm(foldResult, NULL, xlas=1, device = \"" + this.outputType + "\", OutputFileName=\"" + this.outputFile.getAbsolutePath() + "\")");
                                                         }
                                                 }
 
-                                                rEngine.eval("dev.off()", false);
+                                                _gdc.setSize(new Dimension((int) width, (int) height));
+                                                _gdc.initRefresh();
+
+                                                //rEngine.eval("dev.off()", false);
 
                                         }
                                         rEngine.end();
