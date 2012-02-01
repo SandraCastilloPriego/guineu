@@ -18,9 +18,7 @@
 
 package guineu.modules.visualization.Rintensityboxplot;
 
-import javax.swing.JFrame;
 
-import org.rosuda.javaGD.GDCanvas;
 import org.rosuda.javaGD.GDInterface;
 
 /**
