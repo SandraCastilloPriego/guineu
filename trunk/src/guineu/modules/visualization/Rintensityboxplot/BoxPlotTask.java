@@ -182,7 +182,7 @@ public class BoxPlotTask extends AbstractTask {
                                 rEngine.eval("source(\"conf/boxPlot.R\")");
                                 
                                 _gdc = new GDCanvas(this.width, this.height);
-                                JInternalFrame f = new JInternalFrame(this.plotName, false, true, false, true);
+                                JInternalFrame f = new JInternalFrame(this.plotName, true, true, true, true);
                                 f.getContentPane().setLayout(new BorderLayout());
                                 f.getContentPane().add(_gdc, BorderLayout.PAGE_END);
                                 f.pack();
@@ -205,8 +205,7 @@ public class BoxPlotTask extends AbstractTask {
                                         }
                                 }                               
                                 _gdc.setSize(new Dimension(this.width, this.height));
-                                _gdc.initRefresh();
-                                rEngine.eval("dev.off()", false);
+                                _gdc.initRefresh();                               
 
                         }
                         rEngine.end();
