@@ -21,9 +21,8 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Random;
 import java.util.Vector;
-import org.apache.commons.math.distribution.PoissonDistributionImpl;
+import org.apache.commons.math.random.RandomDataImpl;
 
 /**
  *
@@ -33,11 +32,11 @@ public class ZeroImputationTask extends AbstractTask {
 
         private Dataset dataset;
         private double progress;
-        private Random rand;
+        private RandomDataImpl data;
 
         public ZeroImputationTask(Dataset dataset) {
                 this.dataset = dataset;
-                rand = new Random();
+                data = new RandomDataImpl();
         }
 
         public String getTaskDescription() {
@@ -59,13 +58,10 @@ public class ZeroImputationTask extends AbstractTask {
                                 double min = getMinimun(row, dataset.getAllColumnNames());
                                 double zeroVal = min * 0.5;
                                 for (String name : dataset.getAllColumnNames()) {
-                                        double randomVal = rand.nextGaussian();
-                                        if (randomVal < 0 && Math.abs(randomVal) > zeroVal) {
-                                                randomVal = Math.abs(randomVal);
-                                        }
+                                        double randomVal = data.nextGaussian(zeroVal, 0.5);
                                         Double peak = (Double) row.getPeak(name);
                                         if (peak == 0) {
-                                                row.setPeak(name, zeroVal + randomVal);
+                                                row.setPeak(name, randomVal);
                                         }
                                 }
                         }
