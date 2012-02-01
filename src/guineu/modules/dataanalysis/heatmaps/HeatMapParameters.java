@@ -23,17 +23,14 @@ import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.parametersType.BooleanParameter;
 import guineu.parameters.parametersType.ComboParameter;
-import guineu.parameters.parametersType.DoubleParameter;
 import guineu.parameters.parametersType.FileNameParameter;
-import guineu.parameters.parametersType.IntegerParameter;
 import guineu.util.dialogs.ExitCode;
 import guineu.util.dialogs.ParameterSetupDialog;
 import java.util.List;
-import java.util.Vector;
 
 public class HeatMapParameters extends SimpleParameterSet {
 
-        public static final String[] fileTypes = {"No export", "pdf", "svg", "png", "fig"};
+        public static final String[] fileTypes = {"No export", "pdf", "png"};
         public static final FileNameParameter fileName = new FileNameParameter(
                 "Output name", "Select the path and name of the output file.");
         public static final ComboParameter<String> fileTypeSelection = new ComboParameter<String>(
@@ -52,33 +49,12 @@ public class HeatMapParameters extends SimpleParameterSet {
         public static final BooleanParameter log = new BooleanParameter("Log",
                 "Log scaling of the data", true);
         public static final BooleanParameter plegend = new BooleanParameter(
-                "P-value legend", "Adds the p-value legend", true);
-        public static final IntegerParameter star = new IntegerParameter(
-                "Size p-value legend", "Size of the p-value legend", 5);        
-        public static final DoubleParameter height = new DoubleParameter(
-                "Height avobe the heat map", "Height avobe the heat map", 2.0);
-        public static final DoubleParameter heighthm = new DoubleParameter(
-                "Height of the heat map", "Height of the heat map", 20.0);
-        public static final DoubleParameter heightuhm = new DoubleParameter(
-                "Height under heat map", "Height under heat map", 3.0);
-        public static final DoubleParameter widthdendrogram = new DoubleParameter("Width of the dendrogram",
-                "Width of the dendrogram", 1.0);
-        public static final DoubleParameter widthhm = new DoubleParameter("Width of the heat map",
-                "Width of the heat map", 10.0);
-        public static final DoubleParameter columnMargin = new DoubleParameter(
-                "Column margin", "Column margin", 10.0);
-        public static final DoubleParameter rowMargin = new DoubleParameter(
-                "Row margin", "Row margin", 10.0);
-        public static final DoubleParameter clabelSize = new DoubleParameter(
-                "Size of the column labels", "Size of the column labels", 1.0);
-        public static final DoubleParameter rlabelSize = new DoubleParameter(
-                "Size of the row labels", "Size of the row labels", 1.0);
+                "P-value legend", "Adds the p-value legend", true);     
 
         public HeatMapParameters() {
                 super(new Parameter[]{fileName, fileTypeSelection, timePoints,
                                 phenotype, scale, log,
-                                plegend, star, height,heighthm, heightuhm, widthdendrogram, widthhm, columnMargin,
-                                rowMargin, clabelSize, rlabelSize});
+                                plegend});
         }
 
         @Override

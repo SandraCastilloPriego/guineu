@@ -15,12 +15,8 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.dataanalysis.heatmaps;
 
-import javax.swing.JFrame;
-
-import org.rosuda.javaGD.GDCanvas;
 import org.rosuda.javaGD.GDInterface;
 
 /**
@@ -29,16 +25,7 @@ import org.rosuda.javaGD.GDInterface;
  * and tells the program to exit when it is closed.
  */
 public class HMFrame extends GDInterface {
-  public JFrame f;
-
-  public void gdOpen(double w, double h) {
-    f = new JFrame("Heat map");
-    c = new GDCanvas(w, h);
-    f.add((GDCanvas) c);
-    f.pack();
-    f.setVisible(true);
-    f.setTitle("Heat map Result");
-    f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-  }
-
+        public void gdOpen(double w, double h) {
+                c = HeatMapTask._gdc;
+        }
 }
