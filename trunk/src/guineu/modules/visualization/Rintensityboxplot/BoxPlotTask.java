@@ -97,7 +97,7 @@ public class BoxPlotTask extends AbstractTask {
                         } catch (Throwable t) {
 
                                 throw new IllegalStateException(
-                                        "Heat map requires R but it couldn't be loaded (" + t.getMessage() + ')');
+                                        "Box plot requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
 
                         finishedPercentage = 0.3f;
