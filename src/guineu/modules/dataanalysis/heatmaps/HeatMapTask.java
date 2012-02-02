@@ -41,7 +41,6 @@ public class HeatMapTask extends AbstractTask {
 
         private String outputType;
         private boolean log, scale, plegend;
-        //private double height, width, heightAvobeHM, heightHM, heightUnderHM, widthDendrogram, widthHM, columnMargin, rowMargin,  starSize, rLabelSize, cLabelSize*/;
         private File outputFile;
         private String[] rowNames, colNames;
         private Dataset dataset;
@@ -60,24 +59,6 @@ public class HeatMapTask extends AbstractTask {
                 log = parameters.getParameter(HeatMapParameters.log).getValue();
                 scale = parameters.getParameter(HeatMapParameters.scale).getValue();
                 plegend = parameters.getParameter(HeatMapParameters.plegend).getValue();
-
-                // Measures
-             /*   heightAvobeHM = parameters.getParameter(HeatMapParameters.height).getValue();
-                heightHM = parameters.getParameter(HeatMapParameters.heighthm).getValue();
-                heightUnderHM = parameters.getParameter(HeatMapParameters.heightuhm).getValue();
-                this.height = heightAvobeHM + heightHM + heightUnderHM;
-
-                widthDendrogram = parameters.getParameter(HeatMapParameters.widthdendrogram).getValue();
-                widthHM = parameters.getParameter(HeatMapParameters.widthhm).getValue();
-                this.width = widthDendrogram + widthHM;
-
-                columnMargin = parameters.getParameter(HeatMapParameters.columnMargin).getValue();
-                rowMargin = parameters.getParameter(HeatMapParameters.rowMargin).getValue();
-
-                rLabelSize = parameters.getParameter(HeatMapParameters.rlabelSize).getValue();
-                cLabelSize = parameters.getParameter(HeatMapParameters.clabelSize).getValue();
-
-                starSize = parameters.getParameter(HeatMapParameters.star).getValue();*/
 
         }
 
