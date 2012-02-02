@@ -72,6 +72,7 @@ import guineu.modules.dataanalysis.Ttest.TtestModule;
 import guineu.modules.dataanalysis.anova.AnovaTestModule;
 import guineu.modules.dataanalysis.clustering.ClusteringModule;
 import guineu.modules.dataanalysis.correlations.CorrelationModule;
+import guineu.modules.dataanalysis.enrichmenttest.EnrichmentTestModule;
 import guineu.modules.dataanalysis.foldChanges.FoldtestModule;
 import guineu.modules.dataanalysis.kstest.KSTestModule;
 import guineu.modules.dataanalysis.qvalue.QvalueModule;
@@ -169,6 +170,7 @@ public class GuineuModulesList {
                 CorrelationModule.class,
                 AnnealingModule.class,
                 KSTestModule.class,
+                EnrichmentTestModule.class,
                 HeatMapModule.class,
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,

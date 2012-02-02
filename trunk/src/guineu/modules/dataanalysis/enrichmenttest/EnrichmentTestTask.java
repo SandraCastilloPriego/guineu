@@ -15,32 +15,27 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.dataanalysis.GSEA;
+package guineu.modules.dataanalysis.enrichmenttest;
 
-import com.csvreader.CsvWriter;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author scsandra
- */
-public class GSEATask extends AbstractTask {
+
+public class EnrichmentTestTask extends AbstractTask {
 
         private Dataset dataset;
         private int progress = 0;
 
-        public GSEATask(Dataset dataset) {
+        public EnrichmentTestTask(Dataset dataset) {
                 this.dataset = dataset;
         }
 
         public String getTaskDescription() {
-                return "Performing GSEA... ";
+                return "Performing Enrichment test... ";
         }
 
         public double getFinishedPercentage() {
@@ -59,32 +54,16 @@ public class GSEATask extends AbstractTask {
                                 errorMessage = "This method can only be applied to GCxGC-MS and Expression data.";
                         }
 
-                        createGCT();
-                       // createGMT();
-                       // createCLS();
+                        
 
 
 
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
-                        Logger.getLogger(GSEATask.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(EnrichmentTestTask.class.getName()).log(Level.SEVERE, null, ex);
                         setStatus(TaskStatus.ERROR);
                 }
         }
 
-        private void createGCT() {
-                try {
-                        CsvWriter w = new CsvWriter("data.gct");
-                        w.setDelimiter("\t".charAt(0));
-                        String[] line = new String[1];
-                        line[0] = "#1.2";
-                        w.writeRecord(line);
-                        line = new String[2];
-                        line[0] = String.valueOf(dataset.getNumberRows());
-                        line[1] = String.valueOf(dataset.getNumberCols());
-                        w.writeRecord(line);
-                } catch (IOException ex) {
-                        Logger.getLogger(GSEATask.class.getName()).log(Level.SEVERE, null, ex);
-                }
-        }
+       
 }
