@@ -15,10 +15,11 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.dataanalysis.Ttest;
+package guineu.modules.dataanalysis.wilcoxontest;
 
-import guineu.data.PeakListRow;
 import guineu.data.Dataset;
+import guineu.data.PeakListRow;
+import guineu.modules.R.RUtilities;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
@@ -26,32 +27,32 @@ import guineu.util.components.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import org.apache.commons.math.MathException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math.stat.descriptive.StatisticalSummary;
-import org.apache.commons.math.stat.inference.TTestImpl;
+import org.rosuda.JRI.REXP;
+import org.rosuda.JRI.Rengine;
 
 /**
  *
  * @author scsandra
  */
-public class TTestTask extends AbstractTask {
+public class WilcoxonTestTask extends AbstractTask {
 
-        private double progress = 0.0f;
         private String[] group1, group2;
         private Dataset dataset;
         private String parameter;
+        private double progress;
 
-        public TTestTask(String[] group1, String[] group2, Dataset dataset, String parameter) {
+        public WilcoxonTestTask(String[] group1, String[] group2, Dataset dataset, String parameter) {
                 this.group1 = group1;
                 this.group2 = group2;
                 this.dataset = dataset;
                 this.parameter = parameter;
-
         }
 
         public String getTaskDescription() {
-                return "T-Test... ";
+                return "Wilcoxon signed rank test... ";
         }
 
         public double getFinishedPercentage() {
@@ -72,7 +73,7 @@ public class TTestTask extends AbstractTask {
 
                         progress = 0.5f;
 
-                        Dataset newDataset = FileUtils.getDataset(dataset, "T_Test - ");
+                        Dataset newDataset = FileUtils.getDataset(dataset, "Wilcoxon_test - ");                      
                         Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
                         for (String group : availableParameterValues) {
                                 newDataset.addColumnName("Mean of " + group);
@@ -98,12 +99,11 @@ public class TTestTask extends AbstractTask {
                 } catch (Exception e) {
                         setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
-                        e.printStackTrace();
                         return;
                 }
         }
 
-        public double[] Ttest(int mol) throws IllegalArgumentException, MathException {
+        public double[] Ttest(int mol) throws IllegalArgumentException {
                 DescriptiveStatistics stats1 = new DescriptiveStatistics();
                 DescriptiveStatistics stats2 = new DescriptiveStatistics();
                 double[] values = new double[3];
@@ -155,8 +155,42 @@ public class TTestTask extends AbstractTask {
                                 e.printStackTrace();
                         }
                 }
-                TTestImpl ttest = new TTestImpl();
-                values[0] = ttest.tTest((StatisticalSummary) stats1, (StatisticalSummary) stats2);
+                try {
+                        final Rengine rEngine;
+                        try {
+                                rEngine = RUtilities.getREngine();
+                        } catch (Throwable t) {
+
+                                throw new IllegalStateException(
+                                        "Wilcoxon test requires R but it couldn't be loaded (" + t.getMessage() + ')');
+                        }
+                        synchronized (RUtilities.R_SEMAPHORE) {
+                                long group1 = rEngine.rniPutDoubleArray(stats1.getValues());
+                                rEngine.rniAssign("x", group1, 0);
+
+                                long group2 = rEngine.rniPutDoubleArray(stats2.getValues());
+                                rEngine.rniAssign("y", group2, 0);
+                                if(mol == 1){
+                                rEngine.eval("write.csv(x, \"x.csv\")");
+                                rEngine.eval("write.csv(y, \"y.csv\")");
+                                }
+                                rEngine.eval("result <- wilcox.test(as.numeric(x),as.numeric(y))");
+                                long e = rEngine.rniParse("result$p.value", 1);
+                                long r = rEngine.rniEval(e, 0);
+                                REXP x = new REXP(rEngine, r);
+
+                                values[0] = x.asDouble();
+                        }
+
+                        rEngine.end();
+                        setStatus(TaskStatus.FINISHED);
+                } catch (Exception ex) {
+                        Logger.getLogger(WilcoxonTestTask.class.getName()).log(Level.SEVERE, null, ex);
+                        setStatus(TaskStatus.ERROR);
+                }
+
+
+
                 values[1] = stats1.getMean();
                 values[2] = stats2.getMean();
                 return values;

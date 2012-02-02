@@ -73,12 +73,14 @@ import guineu.modules.dataanalysis.anova.AnovaTestModule;
 import guineu.modules.dataanalysis.clustering.ClusteringModule;
 import guineu.modules.dataanalysis.correlations.CorrelationModule;
 import guineu.modules.dataanalysis.foldChanges.FoldtestModule;
+import guineu.modules.dataanalysis.kstest.KSTestModule;
 import guineu.modules.dataanalysis.qvalue.QvalueModule;
 import guineu.modules.dataanalysis.standardVariation.StandardVariationModule;
 import guineu.modules.dataanalysis.twowayanova.TwoWayAnovaTestModule;
 import guineu.modules.dataanalysis.variationCoefficient.VariationCoefficientModule;
 import guineu.modules.dataanalysis.variationCoefficientRow.VariationCoefficientRowModule;
 import guineu.modules.dataanalysis.variableSelection.annealing.AnnealingModule;
+import guineu.modules.dataanalysis.wilcoxontest.WilcoxonTestModule;
 import guineu.modules.dataanalysis.zeroImputation.ZeroImputationModule;
 import guineu.modules.identification.purgeIdentification.PurgeIdentificationModule;
 import guineu.modules.visualization.Rintensityboxplot.BoxPlotModule;
@@ -154,6 +156,7 @@ public class GuineuModulesList {
                 VariationCoefficientRowModule.class,                
                 mediaFilterModule.class,
                 TtestModule.class,
+                WilcoxonTestModule.class,
                 QvalueModule.class,
                 AnovaTestModule.class,
                 TwoWayAnovaTestModule.class,
@@ -165,6 +168,7 @@ public class GuineuModulesList {
                 ClusteringModule.class,
                 CorrelationModule.class,
                 AnnealingModule.class,
+                KSTestModule.class,
                 HeatMapModule.class,
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,
