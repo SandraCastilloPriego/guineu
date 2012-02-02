@@ -15,12 +15,11 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.dataanalysis.GSEA;
+package guineu.modules.dataanalysis.enrichmenttest;
 
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.taskcontrol.Task;
-import guineu.util.dialogs.ExitCode;
 import guineu.data.Dataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
@@ -29,9 +28,9 @@ import guineu.parameters.ParameterSet;
  *
  * @author scsandra
  */
-public class GSEAModule implements GuineuProcessingModule {
+public class EnrichmentTestModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "GSEA";
+        public static final String MODULE_NAME = "Enrichment test (R)";
 
         public ParameterSet getParameterSet() {
                 return null;
@@ -47,8 +46,8 @@ public class GSEAModule implements GuineuProcessingModule {
                        
                                 Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
                                 // prepare a new group of tasks
-                                Task tasks[] = new GSEATask[1];
-                                tasks[0] = new GSEATask(DataFiles[0]);
+                                Task tasks[] = new EnrichmentTestTask[1];
+                                tasks[0] = new EnrichmentTestTask(DataFiles[0]);
                                 GuineuCore.getTaskController().addTasks(tasks);
 
                                 return tasks;
