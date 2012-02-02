@@ -30,7 +30,7 @@ import guineu.taskcontrol.Task;
  */
 public class KSTestModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Kolmogorov-Smirnov Tests (R)";
+        public static final String MODULE_NAME = "Kolmogorov-Smirnov Test (R)";
 
         public ParameterSet getParameterSet() {
                 return null;
