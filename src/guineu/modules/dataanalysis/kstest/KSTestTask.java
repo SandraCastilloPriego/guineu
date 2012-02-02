@@ -42,7 +42,7 @@ public class KSTestTask extends AbstractTask {
         }
 
         public String getTaskDescription() {
-                return "Kolmogorov-Smirnov Tests... ";
+                return "Kolmogorov-Smirnov Test... ";
         }
 
         public double getFinishedPercentage() {
@@ -61,7 +61,7 @@ public class KSTestTask extends AbstractTask {
                         } catch (Throwable t) {
 
                                 throw new IllegalStateException(
-                                        "Kolmogorov-Smirnov tests requires R but it couldn't be loaded (" + t.getMessage() + ')');
+                                        "Kolmogorov-Smirnov test requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
                         synchronized (RUtilities.R_SEMAPHORE) {
 
