@@ -158,6 +158,8 @@ public class GCGCFileReader {
                                                         spectrum = parseSpectrum(curStr);
 
                                                 } catch (NumberFormatException e) {
+                                                        e.printStackTrace();
+                                                         filter = true;
                                                 }
                                         } else if (header[i].matches(GCGCColumnName.MASS.getRegularExpression())) {
                                                 try {
