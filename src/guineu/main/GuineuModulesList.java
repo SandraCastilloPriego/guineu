@@ -76,6 +76,7 @@ import guineu.modules.dataanalysis.enrichmenttest.EnrichmentTestModule;
 import guineu.modules.dataanalysis.foldChanges.FoldtestModule;
 import guineu.modules.dataanalysis.kstest.KSTestModule;
 import guineu.modules.dataanalysis.qvalue.QvalueModule;
+import guineu.modules.dataanalysis.silhouetteinfo.SilhouetteInfoModule;
 import guineu.modules.dataanalysis.standardVariation.StandardVariationModule;
 import guineu.modules.dataanalysis.twowayanova.TwoWayAnovaTestModule;
 import guineu.modules.dataanalysis.variationCoefficient.VariationCoefficientModule;
@@ -166,6 +167,7 @@ public class GuineuModulesList {
                 PCAPlotModule.class,
                 CDAPlotModule.class,
                 SammonsPlotModule.class,
+                SilhouetteInfoModule.class,
                 ClusteringModule.class,
                 CorrelationModule.class,
                 AnnealingModule.class,
