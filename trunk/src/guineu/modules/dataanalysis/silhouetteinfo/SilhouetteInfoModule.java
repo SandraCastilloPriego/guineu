@@ -15,44 +15,38 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.dataanalysis.heatmaps;
+package guineu.modules.dataanalysis.silhouetteinfo;
 
-import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
+import guineu.taskcontrol.Task;
+import guineu.data.Dataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
-import guineu.taskcontrol.Task;
 
 /**
  *
  * @author scsandra
  */
-public class HeatMapModule implements GuineuProcessingModule {
+public class SilhouetteInfoModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Heat Map (R)";
-        private HeatMapParameters parameters = new HeatMapParameters();        
+        public static final String MODULE_NAME = "Silhouette information (R)";
+        private SilhouetteInfoParameters parameters = new SilhouetteInfoParameters();
 
         public ParameterSet getParameterSet() {
                 return parameters;
         }
 
-        @Override
         public String toString() {
                 return MODULE_NAME;
         }
 
         public Task[] runModule(ParameterSet parameters) {
-                Dataset[] selectedDatasets = GuineuCore.getDesktop().getSelectedDataFiles();
-
+                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
                 // prepare a new group of tasks
-                Task tasks[] = new HeatMapTask[selectedDatasets.length];
-                for (int i = 0; i < selectedDatasets.length; i++) {
-
-                        tasks[i] = new HeatMapTask(selectedDatasets[i], parameters);
-                }
+                Task tasks[] = new SilhouetteInfoTask[1];
+                tasks[0] = new SilhouetteInfoTask(DataFiles[0], parameters);
                 GuineuCore.getTaskController().addTasks(tasks);
-
                 return tasks;
         }
 
@@ -61,7 +55,7 @@ public class HeatMapModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return "icons/heatmaps.png";
+                return null;
         }
 
         public boolean setSeparator() {
