@@ -84,6 +84,7 @@ import guineu.modules.dataanalysis.variationCoefficientRow.VariationCoefficientR
 import guineu.modules.dataanalysis.variableSelection.annealing.AnnealingModule;
 import guineu.modules.dataanalysis.wilcoxontest.WilcoxonTestModule;
 import guineu.modules.dataanalysis.zeroImputation.ZeroImputationModule;
+import guineu.modules.filter.logtransformation.LogTransformationModule;
 import guineu.modules.identification.purgeIdentification.PurgeIdentificationModule;
 import guineu.modules.visualization.Rintensityboxplot.BoxPlotModule;
 import guineu.modules.visualization.intensityboxplot.IntensityBoxPlotModule;
@@ -124,6 +125,7 @@ public class GuineuModulesList {
                 TransposeFilterModule.class,
                 SortingModule.class,
                 ZeroImputationModule.class,
+                LogTransformationModule.class,
                 DataSelectionModule.class,
 
                 // Identification
