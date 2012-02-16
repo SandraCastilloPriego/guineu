@@ -61,7 +61,7 @@ public class ZeroImputationTask extends AbstractTask {
                                         double randomVal = data.nextGaussian(zeroVal, 0.5);
                                         Double peak = (Double) row.getPeak(name);
                                         if (peak == 0) {
-                                                row.setPeak(name, randomVal);
+                                                row.setPeak(name, Math.abs(randomVal));
                                         }
                                 }
                         }
