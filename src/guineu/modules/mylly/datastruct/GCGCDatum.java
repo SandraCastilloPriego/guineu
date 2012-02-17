@@ -143,8 +143,8 @@ public class GCGCDatum implements Cloneable, Comparable<GCGCDatum>, Peak {
         private void verifyValues() {
                 StringBuilder sb = null;
                 boolean failureFound = false;
-                double[] fieldValues = {rt1, rt2, area, rti, similarity};
-                String[] fieldNames = {"rt1", "rt2", "area", "rti", "similarity"};
+                double[] fieldValues = {rt1, rt2, rti, similarity};
+                String[] fieldNames = {"rt1", "rt2", "rti", "similarity"};
                 for (int i = 0; i < fieldValues.length; i++) {
                         if (fieldValues[i] < 0) {
                                 if (!failureFound) {
