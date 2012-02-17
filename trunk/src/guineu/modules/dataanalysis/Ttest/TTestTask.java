@@ -127,7 +127,7 @@ public class TTestTask extends AbstractTask {
                 } else {
                         try {
                                 // Determine groups for selected raw data files
-                                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);                              
 
                                 int numberOfGroups = availableParameterValues.size();
 

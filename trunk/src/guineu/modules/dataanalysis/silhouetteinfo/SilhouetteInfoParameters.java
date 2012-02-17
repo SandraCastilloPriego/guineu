@@ -25,7 +25,7 @@ public class SilhouetteInfoParameters extends SimpleParameterSet {
 
       
         public static final IntegerParameter k = new IntegerParameter(
-                "P-value legend", "Adds the p-value legend", 3);
+                "Number of clusters", "Number of clusters", 3);
 
         public SilhouetteInfoParameters() {
                 super(new Parameter[]{k});
