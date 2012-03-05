@@ -17,19 +17,15 @@
  */
 package guineu.modules.dataanalysis.clustering;
 
-
-
+import Jama.Matrix;
+import dr.PCA;
+import dr.PrincipleComponent;
 import figs.treeVisualization.TreeViewJ;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import jmprojection.PCA;
-import jmprojection.Preprocess;
-import jmprojection.ProjectionStatus;
-import jmprojection.Sammons;
 
 import org.jfree.data.xy.AbstractXYDataset;
 
@@ -48,6 +44,9 @@ import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.TaskEvent;
 import guineu.taskcontrol.TaskListener;
 import guineu.taskcontrol.TaskStatus;
+import java.util.Collections;
+import jmprojection.Preprocess;
+import jmprojection.Sammons;
 
 public class ClusteringTask extends AbstractXYDataset implements
         ProjectionPlotDataset {
@@ -65,7 +64,6 @@ public class ClusteringTask extends AbstractXYDataset implements
         private String datasetTitle;
         private int xAxisDimension = 1;
         private int yAxisDimension = 2;
-        private ProjectionStatus projectionStatus;
         private ClusteringAlgorithm clusteringAlgorithm;
         private ClusteringDataType typeOfData;
         private Instances dataset;
@@ -185,7 +183,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                         progress = 50;
                         cluster = cluster.replaceAll("Newick:", "");
                         if (typeOfData == ClusteringDataType.SAMPLES) {
-                              //  cluster = addMissingSamples(cluster);
+                                //  cluster = addMissingSamples(cluster);
                         }
                         progress = 85;
                         if (cluster != null) {
@@ -247,24 +245,26 @@ public class ClusteringTask extends AbstractXYDataset implements
 
                         if (clusteringAlgorithm.getVisualizationType() == VisualizationType.PCA) {
                                 // Scale data and do PCA
-                                Preprocess.scaleToUnityVariance(rawData);
-                                PCA pcaProj = new PCA(rawData, numComponents);
-                                projectionStatus = pcaProj.getProjectionStatus();
 
-                                double[][] result = pcaProj.getState();
+                                PCA pca = new PCA(rawData.length, rawData[0].length);
+                                Matrix X = new Matrix(rawData, rawData.length, rawData[0].length);
+
+                                X = pca.center(X);
+                                X = pca.scale(X);
+                                pca.nipals(X, null, null);
+                                List<PrincipleComponent> mainComponents = pca.getPCs();
+                                Collections.sort(mainComponents);
 
                                 if (getStatus() == TaskStatus.CANCELED) {
                                         return;
                                 }
+                                component1Coords = mainComponents.get(xAxisDimension - 1).eigenVector;
+                                component2Coords = mainComponents.get(yAxisDimension - 1).eigenVector;
 
-                                component1Coords = result[xAxisDimension - 1];
-                                component2Coords = result[yAxisDimension - 1];
                         } else if (clusteringAlgorithm.getVisualizationType() == VisualizationType.SAMMONS) {
                                 // Scale data and do Sammon's mapping
                                 Preprocess.scaleToUnityVariance(rawData);
                                 Sammons sammonsProj = new Sammons(rawData);
-                                projectionStatus = sammonsProj.getProjectionStatus();
-
                                 sammonsProj.iterate(100);
 
                                 double[][] result = sammonsProj.getState();
@@ -346,7 +346,7 @@ public class ClusteringTask extends AbstractXYDataset implements
                         double[] values = new double[data.numAttributes()];
                         System.arraycopy(rawData[i], 0, values, 0, rawData[0].length);
                         if (clusteringAlgorithm.toString().equals("Hierarchical Clusterer")) {
-                                values[data.numAttributes() - 1] = data.attribute("name").addStringValue("\""+this.selectedRawDataFiles[i]+"\"");
+                                values[data.numAttributes() - 1] = data.attribute("name").addStringValue("\"" + this.selectedRawDataFiles[i] + "\"");
                         }
                         Instance inst = new SparseInstance(1.0, values);
                         data.add(inst);
@@ -389,10 +389,6 @@ public class ClusteringTask extends AbstractXYDataset implements
         }
 
         public void cancel() {
-                if (projectionStatus != null) {
-                        projectionStatus.cancel();
-                }
-
                 status = TaskStatus.CANCELED;
         }
 
@@ -451,7 +447,7 @@ public class ClusteringTask extends AbstractXYDataset implements
          * @param cluster String with the cluster result in Newick format.
          * @return String with the cluster result after adding the missing samples in Newick format.
          */
-        private String addMissingSamples(String cluster) {              
+        private String addMissingSamples(String cluster) {
                 String[] data = cluster.split(":");
                 double max = 0;
                 for (String d : data) {
@@ -494,17 +490,11 @@ public class ClusteringTask extends AbstractXYDataset implements
 
         @Override
         public double getFinishedPercentage() {
-                if (this.projectionStatus != null && progress < 99) {
-                        if (projectionStatus.getFinishedPercentage() > 1.0) {
-                                return 1.0;
-                        }
-                        return projectionStatus.getFinishedPercentage();
-                } else {
-                        if (progress > 100) {
-                                return 1.0;
-                        }
-                        progress++;
-                        return ((double) progress / 100);
+                if (progress > 100) {
+                        return 1.0;
                 }
+                progress++;
+                return ((double) progress / 100);
+
         }
 }
