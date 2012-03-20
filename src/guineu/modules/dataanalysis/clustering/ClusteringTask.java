@@ -251,7 +251,7 @@ public class ClusteringTask extends AbstractXYDataset implements
 
                                 X = pca.center(X);
                                 X = pca.scale(X);
-                                pca.nipals(X, null, null);
+                                pca.nipals(X, null, null, 2);
                                 List<PrincipleComponent> mainComponents = pca.getPCs();
                                 Collections.sort(mainComponents);
 
