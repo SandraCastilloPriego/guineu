@@ -64,6 +64,7 @@ public class PCADataset extends AbstractXYDataset implements
         private List<PrincipleComponent> mainComponents;
         private double totalVariation = 0;
         private boolean showLoadings;
+        private int components;
 
         public PCADataset(ProjectionPlotParameters parameters) {
 
@@ -79,6 +80,8 @@ public class PCADataset extends AbstractXYDataset implements
 
                 this.coloringType = parameters.getParameter(
                         ProjectionPlotParameters.coloringType).getValue();
+                this.components = parameters.getParameter(ProjectionPlotParameters.components).getValue();
+
 
                 datasetTitle = "Principal component analysis";
 
@@ -250,7 +253,7 @@ public class PCADataset extends AbstractXYDataset implements
 
                 X = pca.center(X);
                 X = pca.scale(X);
-                pca.nipals(X, this.selectedSamples, rowNames);
+                pca.nipals(X, this.selectedSamples, rowNames, this.components);
                 mainComponents = pca.getPCs();
                 Collections.sort(mainComponents);
                 if (status == TaskStatus.CANCELED) {

@@ -23,6 +23,7 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
 import guineu.parameters.parametersType.ComboParameter;
+import guineu.parameters.parametersType.IntegerParameter;
 import guineu.parameters.parametersType.MultiChoiceParameter;
 import guineu.util.dialogs.ExitCode;
 
@@ -47,9 +48,11 @@ public class ProjectionPlotParameters extends SimpleParameterSet {
                 "Peak list rows", "Peak list rows to include in calculation", new PeakListRow[0]);
         public static final BooleanParameter showLoadings = new BooleanParameter("Show loadings", "Shows the loadings of each lipid");
 
+        public static final IntegerParameter components = new IntegerParameter("Number of PC's", "Number of PC's to be computed (0 -> computes all components)", 0);
+
         public ProjectionPlotParameters() {
                 super(new UserParameter[]{dataFiles, rows, coloringType, xAxisComponent,
-                                yAxisComponent, showLoadings});
+                                yAxisComponent, showLoadings, components});
         }
 
         @Override
