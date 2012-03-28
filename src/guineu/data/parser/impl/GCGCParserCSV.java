@@ -109,7 +109,7 @@ public class GCGCParserCSV implements Parser {
                                 }
                                 boolean isfound = false;
                                 for (GCGCColumnName field : GCGCColumnName.values()) {
-                                        if (header[i].matches(field.getRegularExpression())) {                                               
+                                        if (header[i].matches(field.getRegularExpression())) {
                                                 metabolite.setVar(field.getSetFunctionName(), this.getType(sdata[i], field.getType()));
                                                 isfound = true;
                                                 break;
@@ -126,7 +126,7 @@ public class GCGCParserCSV implements Parser {
                                         metabolite.setName("Unknown");
                                 }
                         }
-                        metabolite.setSelectionMode(false);
+                      //  metabolite.setSelectionMode(false);
                         this.dataset.addAlignmentRow(metabolite);
 
                 } catch (Exception exception) {

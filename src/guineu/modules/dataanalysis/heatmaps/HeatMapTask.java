@@ -39,8 +39,8 @@ import org.rosuda.javaGD.GDCanvas;
  */
 public class HeatMapTask extends AbstractTask {
 
-        private String outputType;
-        private boolean log, scale, plegend;
+        private String outputType, strCRow, strCColumn, control;
+        private boolean log, scale, plegend, clusterRow, clusterColumn;
         private File outputFile;
         private String[] rowNames, colNames;
         private Dataset dataset;
@@ -53,13 +53,26 @@ public class HeatMapTask extends AbstractTask {
 
                 outputFile = parameters.getParameter(HeatMapParameters.fileName).getValue();
                 outputType = parameters.getParameter(HeatMapParameters.fileTypeSelection).getValue();
+                control = parameters.getParameter(HeatMapParameters.control).getValue();
                 timePoints = parameters.getParameter(HeatMapParameters.timePoints).getValue();
                 phenotype = parameters.getParameter(HeatMapParameters.phenotype).getValue();
 
                 log = parameters.getParameter(HeatMapParameters.log).getValue();
                 scale = parameters.getParameter(HeatMapParameters.scale).getValue();
                 plegend = parameters.getParameter(HeatMapParameters.plegend).getValue();
+                clusterRow = parameters.getParameter(HeatMapParameters.clusterRow).getValue();
+                clusterColumn = parameters.getParameter(HeatMapParameters.clusterCol).getValue();
+                if (clusterRow) {
+                        strCRow = "T";
+                } else {
+                        strCRow = "F";
+                }
 
+                if (clusterColumn) {
+                        strCColumn = "T";
+                } else {
+                        strCColumn = "F";
+                }
         }
 
         public String getTaskDescription() {
@@ -99,7 +112,7 @@ public class HeatMapTask extends AbstractTask {
                                         int numberOfRows = this.isAnySelected(dataset);
                                         boolean isAnySelected = true;
                                         if (numberOfRows == 0) {
-                                                numberOfRows = dataset.getNumberRows();
+                                                numberOfRows = 50;
                                                 isAnySelected = false;
                                         }
 
@@ -117,7 +130,7 @@ public class HeatMapTask extends AbstractTask {
                                         int realRowIndex = 0;
                                         for (int indexRow = 0; indexRow < dataset.getNumberRows(); indexRow++) {
                                                 PeakListRow row = dataset.getRow(indexRow);
-                                                if ((isAnySelected && row.isSelected()) || !isAnySelected) {
+                                                if ((isAnySelected && row.isSelected()) || (!isAnySelected && indexRow < 50)) {
                                                         this.rowNames[realRowIndex] = row.getID() + " - " + row.getName();
                                                         for (int indexColumn = 0; indexColumn < dataset.getNumberCols(); indexColumn++) {
 
@@ -189,15 +202,15 @@ public class HeatMapTask extends AbstractTask {
                                         if (this.getStatus() == TaskStatus.PROCESSING) {
                                                 if (!this.timePoints.contains("No time Points")) {
                                                         // Time points and T-test. There should be only two phenotypes in each time point.
-                                                        rEngine.eval("foldResult <- fold.changes.by.time(data.frame(dataset),data.frame(pheno))");
-                                                        rEngine.eval("tResult <- ttest.by.time(data.frame(dataset),data.frame(pheno))");
+                                                        rEngine.eval("foldResult <- fold.changes.by.time(data.frame(dataset),data.frame(pheno), \"Phenotype\", \"" + control + "\", \"Time\")");
+                                                        rEngine.eval("tResult <- ttest.by.time(data.frame(dataset),data.frame(pheno), \"Phenotype\" , \"" + control + "\", \"Time\")");
                                                 } else if (!this.plegend) {
                                                         // No t-test and not time points. The raw data set will be shown.
                                                         rEngine.eval("foldResult <- dataset");
                                                 } else {
                                                         // No time points but t-test. The first sample group will be consider the reference group.
-                                                        rEngine.eval("foldResult <- fold.changes.no.time(data.frame(dataset),data.frame(pheno))");
-                                                        rEngine.eval("tResult <- ttest.no.time(data.frame(dataset),data.frame(pheno))");
+                                                        rEngine.eval("foldResult <- fold.changes.by.time(data.frame(dataset),data.frame(pheno), \"Phenotype\", \"" + control + "\")");
+                                                        rEngine.eval("tResult <- ttest.by.time(data.frame(dataset),data.frame(pheno), \"Phenotype\" , \"" + control + "\")");
                                                 }
 
                                                 if (this.log && this.scale) {
@@ -208,16 +221,19 @@ public class HeatMapTask extends AbstractTask {
                                                         rEngine.eval("foldResult <- changes(foldResult, 2)");
                                                 }
 
-                                                //rEngine.eval("write.csv(foldResult, \"dataset4.csv\")");
-                                                //  rEngine.eval("write.csv(tResult, \"pvalues.csv\")");
+                                                //     rEngine.eval("write.csv(foldResult, \"dataset4.csv\")");
+                                                //    rEngine.eval("write.csv(tResult, \"pvalues.csv\")");
                                                 //Sizes
                                                 rEngine.eval("hahm <- 1");
                                                 rEngine.eval("hhm = 5*log(nrow(foldResult))");
-                                                rEngine.eval("huhm = 1.5+0.05*max(nchar(colnames(foldResult)))");
-                                                rEngine.eval("rowmargin = 0.55*max(nchar(rownames(foldResult)))");
-                                                rEngine.eval("colmargin = 0.55*max(nchar(colnames(foldResult)))");
-                                                rEngine.eval("wd=1");
                                                 rEngine.eval("whm= 5*log(ncol(foldResult))");
+                                                rEngine.eval("wd=1");
+                                                rEngine.eval("cexR = max(0.3,4*hhm/nrow(foldResult))");
+                                                rEngine.eval("cexC = max(0.3,2*whm/ncol(foldResult))");
+                                                rEngine.eval("noteCex = min(2*cexR, cexC)");
+                                                rEngine.eval("huhm = min(1, log(nrow(foldResult)))+0.02*cexC*max(nchar(colnames(foldResult)))");
+                                                rEngine.eval("rowmargin = 1+cexR*0.55*max(nchar(rownames(foldResult)))");
+                                                rEngine.eval("colmargin = 1+cexC*0.55*max(nchar(colnames(foldResult)))");
 
                                                 rEngine.eval("width <- 96*(wd+whm+0.1*rowmargin)");
                                                 rEngine.eval("height <-96*(hahm+hhm+huhm+0.1*colmargin) ");
@@ -231,7 +247,7 @@ public class HeatMapTask extends AbstractTask {
                                                 r = rEngine.rniEval(e, 0);
                                                 x = new REXP(rEngine, r);
                                                 double height = x.asDouble() * 0.5;
-                                              
+
 
                                                 // Window
                                                 _gdc = new GDCanvas(width, height);
@@ -245,27 +261,27 @@ public class HeatMapTask extends AbstractTask {
                                                 rEngine.eval("Sys.putenv('JAVAGD_CLASS_NAME'='guineu/modules/dataanalysis/heatmaps/HMFrame')");
                                                 rEngine.eval("JavaGD(width=96*(wd+whm+0.1*rowmargin), height=96*(hahm+hhm+huhm+0.1*colmargin),ps=1)");
                                                 if (this.plegend) {
-                                                        rEngine.eval("final.hm(foldResult, tResult)");
+                                                        rEngine.eval("final.hm(foldResult, tResult, clusterColumns= " + this.strCColumn + ", clusterRows= " + this.strCRow + ", na.omit = T )");
                                                 } else {
-                                                        rEngine.eval("final.hm(foldResult, NULL)");
+                                                        rEngine.eval("final.hm(foldResult, clusterColumns= " + this.strCColumn + ", clusterRows= " + this.strCRow + ", na.omit = T )");
                                                 }
 
-                                                //    rEngine.eval("write.csv(foldResult, \"results.csv\")");
-                                                //    rEngine.eval("write.csv(tResult, \"pvalues.csv\")");
+                                                //  rEngine.eval("write.csv(foldResult, \"results.csv\")");
+                                                //   rEngine.eval("write.csv(tResult, \"pvalues.csv\")");
 
                                                 if (!outputType.contains("No export")) {
+                                                        String path = this.outputFile.getAbsolutePath();
+                                                        path = path.replaceAll("\\\\", "/");
                                                         if (this.plegend) {
-                                                                rEngine.eval("final.hm(foldResult, tResult, xlas=1, device = \"" + this.outputType + "\", OutputFileName=\"" + this.outputFile.getAbsolutePath() + "\")");
+                                                                rEngine.eval("final.hm(foldResult, tResult, clusterColumns= " + this.strCColumn + ", clusterRows= " + this.strCRow + ", na.omit = T, device = \"" + this.outputType + "\", OutputFileName=\"" + path + "\")");
                                                         } else {
-                                                                rEngine.eval("final.hm(foldResult, NULL, xlas=1, device = \"" + this.outputType + "\", OutputFileName=\"" + this.outputFile.getAbsolutePath() + "\")");
+                                                                rEngine.eval("final.hm(foldResult, NULL, clusterColumns= " + this.strCColumn + ", clusterRows= " + this.strCRow + ", na.omit = T,device = \"" + this.outputType + "\", OutputFileName=\"" + path + "\")");
                                                         }
                                                 }
 
                                                 _gdc.setSize(new Dimension((int) width, (int) height));
                                                 _gdc.initRefresh();
-
-                                                //rEngine.eval("dev.off()", false);
-
+                                               
                                         }
                                         rEngine.end();
                                         finishedPercentage = 1.0f;

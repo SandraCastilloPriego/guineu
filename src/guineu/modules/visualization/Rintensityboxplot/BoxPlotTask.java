@@ -59,7 +59,7 @@ public class BoxPlotTask extends AbstractTask {
 
                 this.colorSource = (String) parameters.getParameter(
                         BoxPlotParameters.colorValueSource).getValue();
-               
+
                 this.selectedFiles = parameters.getParameter(
                         BoxPlotParameters.samples).getValue();
 
@@ -180,7 +180,7 @@ public class BoxPlotTask extends AbstractTask {
                                 rEngine.eval("colnames(dataset)<- columnNames");
 
                                 rEngine.eval("source(\"conf/boxPlot.R\")");
-                                
+
                                 _gdc = new GDCanvas(this.width, this.height);
                                 JInternalFrame f = new JInternalFrame(this.plotName, true, true, true, true);
                                 f.getContentPane().setLayout(new BorderLayout());
@@ -197,15 +197,18 @@ public class BoxPlotTask extends AbstractTask {
 
                                 finishedPercentage = 0.8f;
 
+
                                 if (!this.fileType.equals("No export")) {
+                                        String path = this.fileName;
+                                        path = path.replaceAll("\\\\", "/");
                                         try {
-                                                rEngine.eval("my.boxplot2(as.data.frame(dataset), factor(factors), colors=factor(colors), title=\"" + this.plotName + "\", device =\"" + this.fileType + "\", OutputFileName=\"" + this.fileName + "\"  )");
+                                                rEngine.eval("my.boxplot2(as.data.frame(dataset), factor(factors), colors=factor(colors), title=\"" + this.plotName + "\", device =\"" + this.fileType + "\", OutputFileName=\"" + path + "\"  )");
 
                                         } catch (Exception e) {
                                         }
-                                }                               
+                                }
                                 _gdc.setSize(new Dimension(this.width, this.height));
-                                _gdc.initRefresh();                               
+                                _gdc.initRefresh();
 
                         }
                         rEngine.end();
@@ -219,5 +222,5 @@ public class BoxPlotTask extends AbstractTask {
                         errorMessage = e.toString();
                         return;
                 }
-        }       
+        }
 }

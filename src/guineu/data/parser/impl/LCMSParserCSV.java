@@ -139,7 +139,7 @@ public class LCMSParserCSV implements Parser {
                 }
                 // lipid.setLipidClass(this.LipidClassLib.get_class(lipid.getName()));
             }
-            lipid.setSelectionMode(false);
+          //  lipid.setSelectionMode(false);
             this.dataset.addRow(lipid);
 
         } catch (Exception exception) {
