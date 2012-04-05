@@ -79,7 +79,7 @@ public class BoxPlotParameters extends SimpleParameterSet {
                         getParameter(selectedRows).setChoices(plRows);
                         if (selRows != null && selRows.length > 0) {
                                 getParameter(selectedRows).setValue(selRows);
-                                getParameter(name).setValue(selRows[0].getName());
+                                getParameter(name).setValue(selRows[0].getID() + " - " + selRows[0].getName());
                         } else {
                                 getParameter(name).setValue("Box and whisker plot of concentrations in each group");
                         }

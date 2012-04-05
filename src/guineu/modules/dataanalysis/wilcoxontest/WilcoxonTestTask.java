@@ -165,16 +165,20 @@ public class WilcoxonTestTask extends AbstractTask {
                                         "Wilcoxon test requires R but it couldn't be loaded (" + t.getMessage() + ')');
                         }
                         synchronized (RUtilities.R_SEMAPHORE) {
+                                rEngine.eval("x <- 0");
+                                rEngine.eval("y <- 0");
                                 long group1 = rEngine.rniPutDoubleArray(stats1.getValues());
                                 rEngine.rniAssign("x", group1, 0);
 
                                 long group2 = rEngine.rniPutDoubleArray(stats2.getValues());
                                 rEngine.rniAssign("y", group2, 0);
-                                if(mol == 1){
+                               /* if(mol == 1){
                                 rEngine.eval("write.csv(x, \"x.csv\")");
                                 rEngine.eval("write.csv(y, \"y.csv\")");
-                                }
-                                rEngine.eval("result <- wilcox.test(as.numeric(x),as.numeric(y))");
+                                }*/
+                                rEngine.eval("result <- 0");
+
+                                rEngine.eval("result <- wilcox.test(as.numeric(t(x)),as.numeric(t(y)))");
                                 long e = rEngine.rniParse("result$p.value", 1);
                                 long r = rEngine.rniEval(e, 0);
                                 REXP x = new REXP(rEngine, r);

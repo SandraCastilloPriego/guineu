@@ -26,6 +26,8 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JInternalFrame;
 import org.rosuda.JRI.Rengine;
 import org.rosuda.javaGD.GDCanvas;
@@ -38,6 +40,7 @@ public class BoxPlotTask extends AbstractTask {
 
         private String selectedFiles[], rowNames[], factors[], colors[];
         private PeakListRow selectedRows[];
+        private List<String> realSelectedFiles, realFactors;
         private String xAxisValueSource, colorSource;
         private double finishedPercentage = 0.0f;
         private Dataset dataset;
@@ -76,6 +79,8 @@ public class BoxPlotTask extends AbstractTask {
                         BoxPlotParameters.width).getValue();
 
                 this.dataset = dataset;
+                this.realFactors = new ArrayList<String>();
+                this.realSelectedFiles = new ArrayList<String>();
 
         }
 
@@ -114,10 +119,16 @@ public class BoxPlotTask extends AbstractTask {
                                 } else {
                                         this.factors = new String[this.selectedFiles.length];
                                         for (int i = 0; i < this.selectedFiles.length; i++) {
-                                                this.factors[i] = dataset.getParametersValue(this.selectedFiles[i], this.xAxisValueSource);
+                                                String parameter = dataset.getParametersValue(this.selectedFiles[i], this.xAxisValueSource);
+                                                if(!parameter.isEmpty()){
+                                                        this.realSelectedFiles.add(this.selectedFiles[i]);
+                                                        this.realFactors.add(parameter);
+                                                }
                                         }
                                 }
 
+                                this.selectedFiles = this.realSelectedFiles.toArray(new String[0]);
+                                this.factors = this.realFactors.toArray(new String[0]);
 
                                 if (this.xAxisValueSource.equals("No color")) {
                                         this.colors = this.selectedFiles;
