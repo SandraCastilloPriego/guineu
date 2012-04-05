@@ -411,7 +411,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
 
         @Override
         public String toString() {
-                return this.Name;
+                return this.ID + " - " + this.Name;
         }
 
         @Override

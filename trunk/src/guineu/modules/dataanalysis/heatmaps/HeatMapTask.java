@@ -112,7 +112,11 @@ public class HeatMapTask extends AbstractTask {
                                         int numberOfRows = this.isAnySelected(dataset);
                                         boolean isAnySelected = true;
                                         if (numberOfRows == 0) {
-                                                numberOfRows = 50;
+                                                if (this.dataset.getNumberRows() < 50) {
+                                                        numberOfRows = this.dataset.getNumberRows();
+                                                } else {
+                                                        numberOfRows = 50;
+                                                }
                                                 isAnySelected = false;
                                         }
 
@@ -130,7 +134,7 @@ public class HeatMapTask extends AbstractTask {
                                         int realRowIndex = 0;
                                         for (int indexRow = 0; indexRow < dataset.getNumberRows(); indexRow++) {
                                                 PeakListRow row = dataset.getRow(indexRow);
-                                                if ((isAnySelected && row.isSelected()) || (!isAnySelected && indexRow < 50)) {
+                                                if ((isAnySelected && row.isSelected()) || (!isAnySelected && indexRow < numberOfRows)) {
                                                         this.rowNames[realRowIndex] = row.getID() + " - " + row.getName();
                                                         for (int indexColumn = 0; indexColumn < dataset.getNumberCols(); indexColumn++) {
 
@@ -195,8 +199,8 @@ public class HeatMapTask extends AbstractTask {
                                         // Remove the rows with too many NA's. The distances between rows can't be calculated if the rows don't have
                                         // at least one sample in common.
                                         rEngine.eval("dataset <- remove.na(dataset)");
-                                        // rEngine.eval("write.csv(dataset, \"dataset2.csv\")");
-                                        // rEngine.eval("write.csv(pheno, \"pheno2.csv\")");
+                                        rEngine.eval("write.csv(dataset, \"dataset2.csv\")");
+                                        rEngine.eval("write.csv(pheno, \"pheno2.csv\")");
 
                                         finishedPercentage = 0.8f;
                                         if (this.getStatus() == TaskStatus.PROCESSING) {
@@ -209,8 +213,8 @@ public class HeatMapTask extends AbstractTask {
                                                         rEngine.eval("foldResult <- dataset");
                                                 } else {
                                                         // No time points but t-test. The first sample group will be consider the reference group.
-                                                        rEngine.eval("foldResult <- fold.changes.by.time(data.frame(dataset),data.frame(pheno), \"Phenotype\", \"" + control + "\")");
-                                                        rEngine.eval("tResult <- ttest.by.time(data.frame(dataset),data.frame(pheno), \"Phenotype\" , \"" + control + "\")");
+                                                        rEngine.eval("foldResult <- fold.changes.by.time(data.frame(dataset, check.names=F),data.frame(pheno, check.names=F), \"Phenotype\", \"" + control + "\")");
+                                                        rEngine.eval("tResult <- ttest.by.time(data.frame(dataset, check.names=F),data.frame(pheno, check.names=F), \"Phenotype\" , \"" + control + "\")");
                                                 }
 
                                                 if (this.log && this.scale) {
@@ -281,7 +285,7 @@ public class HeatMapTask extends AbstractTask {
 
                                                 _gdc.setSize(new Dimension((int) width, (int) height));
                                                 _gdc.initRefresh();
-                                               
+
                                         }
                                         rEngine.end();
                                         finishedPercentage = 1.0f;

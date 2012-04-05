@@ -15,9 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.modules.visualization.Rintensityboxplot;
-
 
 import org.rosuda.javaGD.GDInterface;
 
@@ -27,17 +25,9 @@ import org.rosuda.javaGD.GDInterface;
  * and tells the program to exit when it is closed.
  */
 public class BoxFrame extends GDInterface {
-  //public JFrame f;
 
-  public void gdOpen(double w, double h) {
-   /* f = new JFrame("Box Plot");
-    c = new GDCanvas(w, h);
-    f.add((GDCanvas) c);
-    f.pack();
-    f.setVisible(true);
-    f.setTitle("Box plot Result");
-    f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);*/
-          c = BoxPlotTask._gdc;
-  }
+        public void gdOpen(double w, double h) {
 
+                c = BoxPlotTask._gdc;
+        }
 }

@@ -140,11 +140,13 @@ public class TTestTask extends AbstractTask {
                                                         try {
                                                                 stats1.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
                                                         } catch (Exception e) {
+                                                                e.printStackTrace();
                                                         }
                                                 } else if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter2)) {
                                                         try {
                                                                 stats2.addValue((Double) this.dataset.getRow(mol).getPeak(sampleName));
                                                         } catch (Exception e) {
+                                                                e.printStackTrace();
                                                         }
                                                 }
                                         }
