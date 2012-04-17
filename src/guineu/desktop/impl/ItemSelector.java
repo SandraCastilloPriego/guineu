@@ -26,7 +26,7 @@ import guineu.main.GuineuCore;
 import guineu.modules.GuineuModule;
 import guineu.modules.database.saveDatasetDB.SaveFileDBModule;
 import guineu.modules.database.saveQualityControFileDB.SaveQualityControlFileDB;
-import guineu.modules.file.saveExpressionFile.SaveExpressionFile;
+import guineu.modules.file.saveExpressionFile.SaveExpressionFileModule;
 import guineu.modules.file.saveGCGCFile.SaveGCGCFileModule;
 import guineu.modules.file.saveLCMSFile.SaveLCMSFileModule;
 import guineu.modules.file.saveOtherFile.SaveOtherFileModule;
@@ -203,13 +203,13 @@ public class ItemSelector extends JPanel implements ActionListener,
                         } else if (selectedFiles[0].getType() == DatasetType.EXPRESSION) {
                                ParameterSet parameters = null;
                                 for (GuineuModule module : GuineuCore.getAllModules()) {
-                                        if (module.toString().matches("Save Expression Data set")) {
+                                        if (module.toString().matches("Save Expression Data set")) {                                             
                                                 parameters = module.getParameterSet();
                                                 break;
                                         }
                                 }
-                                SaveExpressionFile save = new SaveExpressionFile(selectedFiles, parameters);
-                                save.initModule();
+                                SaveExpressionFileModule save = new SaveExpressionFileModule();
+                                save.initModule(selectedFiles, parameters);
                         } else {                               
                                 SaveOtherFileModule save = new SaveOtherFileModule();
                                 save.initModule(selectedFiles);

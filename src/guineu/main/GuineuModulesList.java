@@ -84,6 +84,7 @@ import guineu.modules.dataanalysis.variationCoefficientRow.VariationCoefficientR
 import guineu.modules.dataanalysis.variableSelection.annealing.AnnealingModule;
 import guineu.modules.dataanalysis.wilcoxontest.WilcoxonTestModule;
 import guineu.modules.dataanalysis.zeroImputation.ZeroImputationModule;
+import guineu.modules.file.saveExpressionFile.SaveExpressionFileModule;
 import guineu.modules.filter.logtransformation.LogTransformationModule;
 import guineu.modules.identification.purgeIdentification.PurgeIdentificationModule;
 import guineu.modules.visualization.Rintensityboxplot.BoxPlotModule;
@@ -105,6 +106,7 @@ public class GuineuModulesList {
                 SaveLCMSFileModule.class,
                 SaveGCGCFileModule.class,
                 SaveOtherFileModule.class,
+                SaveExpressionFileModule.class,
                 ExitProgram.class,
 
                 // Configuration
