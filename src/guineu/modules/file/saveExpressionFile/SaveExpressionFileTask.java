@@ -65,7 +65,7 @@ public class SaveExpressionFileTask extends AbstractTask {
                                 } else if (type.matches(".*csv.*")) {
                                         db.WriteCommaSeparatedFile(dataset, path, parameters);
                                 } else {
-                                        db.WriteExpressionData(dataset, path, null);
+                                        db.WriteExpressionData(dataset, path, parameters);
                                 }
                         }
                         setStatus(TaskStatus.FINISHED);

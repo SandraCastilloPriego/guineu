@@ -21,6 +21,7 @@ package guineu.main;
 import guineu.modules.dataanalysis.heatmaps.HeatMapModule;
 import guineu.modules.configuration.general.GeneralConfiguration;
 import guineu.modules.configuration.parameters.ParameterConfiguration;
+import guineu.modules.configuration.tables.Expression.ExpressionColumnsView;
 import guineu.modules.configuration.tables.GCGC.GCGCColumnsView;
 import guineu.modules.configuration.tables.LCMS.LCMSColumnsView;
 import guineu.modules.database.deleteDataDB.DeleteDatasetDBModule;
@@ -114,6 +115,7 @@ public class GuineuModulesList {
                 ParameterConfiguration.class,
                 GCGCColumnsView.class,
                 LCMSColumnsView.class,
+                ExpressionColumnsView.class,
 
                 // Ransac alignment and centering
                 RansacAlignerModule.class,

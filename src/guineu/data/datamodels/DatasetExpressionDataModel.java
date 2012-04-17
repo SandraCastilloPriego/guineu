@@ -19,9 +19,12 @@ package guineu.data.datamodels;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
+import guineu.data.ExpressionDataColumnName;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleExpressionDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowExpression;
+import guineu.desktop.preferences.ColumnsGeneExpressionParameters;
+import guineu.main.GuineuCore;
 import guineu.util.Tables.DataTableModel;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -32,13 +35,13 @@ import javax.swing.table.AbstractTableModel;
 public class DatasetExpressionDataModel extends AbstractTableModel implements DataTableModel {
 
         private SimpleExpressionDataset dataset;
-        private int fixNumberColumns;
-        private List<String> columns;
+        private int fixNumberColumns = 0;
+        private List<ExpressionDataColumnName> columns;
+        private ExpressionDataColumnName[] elements;
         private Color[] rowColor;
 
         public DatasetExpressionDataModel(Dataset dataset) {
                 this.dataset = (SimpleExpressionDataset) dataset;
-                this.columns = new ArrayList<String>();
                 rowColor = new Color[dataset.getNumberRows()];
                 this.setParameters();
                 this.writeData();
@@ -57,9 +60,10 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
         }
 
         public void setParameters() {
-                fixNumberColumns = 0;
-                Vector<String> metadata = ((SimpleExpressionDataset) dataset).getMetaDataNames();
-                for (String column : metadata) {
+                this.columns = new ArrayList<ExpressionDataColumnName>();
+                fixNumberColumns = 0;               
+                elements = GuineuCore.getExpressionColumnsParameters().getParameter(ColumnsGeneExpressionParameters.ExpressionData).getValue();
+                for (ExpressionDataColumnName column : elements) {
                         columns.add(column);
                         fixNumberColumns++;
                 }
@@ -108,7 +112,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                         SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) this.dataset.getRow(row);
 
                         if (column < this.fixNumberColumns) {
-                                Object value = peakRow.getMetaData(this.dataset.getMetaDataNames().elementAt(column));
+                                Object value = peakRow.getVar(columns.get(column).getGetFunctionName());
                                 return value;
                         }
                         return peakRow.getPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns));
@@ -140,7 +144,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
         public void setValueAt(Object aValue, int row, int column) {
                 SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) this.dataset.getRow(row);
                 if (column < this.fixNumberColumns) {
-                        peakRow.setMetaData(this.columns.get(column), aValue);
+                        peakRow.setVar(this.columns.get(column).getSetFunctionName(), aValue);
                 } else {
                         peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns), (Double) aValue);
                 }
@@ -177,4 +181,6 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
         public Color getCellColor(int row, int column) {
                 return this.dataset.getCellColor(row, column);
         }
+
+
 }

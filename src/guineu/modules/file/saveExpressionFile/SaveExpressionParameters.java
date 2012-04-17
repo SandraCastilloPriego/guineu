@@ -17,10 +17,12 @@
  */
 package guineu.modules.file.saveExpressionFile;
 
+import guineu.data.ExpressionDataColumnName;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.ComboParameter;
 import guineu.parameters.parametersType.FileNameParameter;
+import guineu.parameters.parametersType.MultiChoiceParameter;
 import guineu.parameters.parametersType.StringParameter;
 
 public class SaveExpressionParameters extends SimpleParameterSet {
@@ -32,11 +34,14 @@ public class SaveExpressionParameters extends SimpleParameterSet {
         public static final StringParameter fieldSeparator = new StringParameter(
                 "Field separator",
                 "Character(s) used to separate fields in the exported file");
+        public static final MultiChoiceParameter<ExpressionDataColumnName> exportExpression = new MultiChoiceParameter<ExpressionDataColumnName>(
+                "Export elements",
+                "Multiple selection of row's elements to export", ExpressionDataColumnName.values());
         public static final ComboParameter<String> type = new ComboParameter<String>(
                 "Type",
                 "Type of file", objects);
 
         public SaveExpressionParameters() {
-                super(new UserParameter[]{Expressionfilename, type});
+                super(new UserParameter[]{Expressionfilename, type, exportExpression});
         }
 }
