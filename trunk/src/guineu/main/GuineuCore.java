@@ -55,6 +55,7 @@ import guineu.desktop.impl.helpsystem.HelpImpl;
 import guineu.desktop.numberFormat.RTFormatter;
 import guineu.desktop.numberFormat.RTFormatterType;
 import guineu.desktop.preferences.ColumnsGCGCParameters;
+import guineu.desktop.preferences.ColumnsGeneExpressionParameters;
 import guineu.desktop.preferences.ColumnsLCMSParameters;
 import guineu.modules.GuineuModule;
 import guineu.modules.GuineuProcessingModule;
@@ -86,6 +87,7 @@ public class GuineuCore implements Runnable {
         private static GeneralconfigurationParameters preferences;
         private static ColumnsLCMSParameters LCMSColumns;
         private static ColumnsGCGCParameters GCGCColumns;
+        private static ColumnsGeneExpressionParameters genEColumns;
         private static TaskControllerImpl taskController;
         private static GuineuModule[] initializedModules;
         private static HelpImpl help;
@@ -184,6 +186,8 @@ public class GuineuCore implements Runnable {
                 LCMSColumns = new ColumnsLCMSParameters();
 
                 GCGCColumns = new ColumnsGCGCParameters();
+
+                genEColumns = new ColumnsGeneExpressionParameters();
 
                 // create instances of core modules
 
@@ -432,5 +436,9 @@ public class GuineuCore implements Runnable {
 
         public static ColumnsGCGCParameters getGCGCColumnsParameters() {
                 return GCGCColumns;
+        }
+
+        public static ColumnsGeneExpressionParameters getExpressionColumnsParameters() {
+                return genEColumns;
         }
 }

@@ -41,6 +41,7 @@ public class ExpressionParserTSV implements Parser {
     private SimpleExpressionDataset dataset;
     private int rowsNumber;
     private int rowsReaded;
+    private int ID = 0;
 
     public ExpressionParserTSV(String assayPath, String featurePath, String phenoPath, String datasetName) {
         this.rowsNumber = 0;
@@ -118,7 +119,7 @@ public class ExpressionParserTSV implements Parser {
 
     private void getData(String[] sdata, String[] header, Hashtable<String, List<String>> features) {
         try {
-            SimplePeakListRowExpression row = new SimplePeakListRowExpression();
+            SimplePeakListRowExpression row = new SimplePeakListRowExpression(ID++,features.get(sdata[0]).get(0), 0.0, 0.0);
             for (int i = 0; i < sdata.length; i++) {
                 if (i == 0 && features != null) {
                     List<String> data = features.get(sdata[i]);
