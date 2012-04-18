@@ -39,6 +39,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
         private List<ExpressionDataColumnName> columns;
         private ExpressionDataColumnName[] elements;
         private Color[] rowColor;
+        private ColumnsGeneExpressionParameters parameters;
 
         public DatasetExpressionDataModel(Dataset dataset) {
                 this.dataset = (SimpleExpressionDataset) dataset;
@@ -54,18 +55,26 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                         return null;
                 }
         }
-        
+
         public void addRowColor(Color[] color) {
                 this.rowColor = color;
         }
 
         public void setParameters() {
                 this.columns = new ArrayList<ExpressionDataColumnName>();
-                fixNumberColumns = 0;               
-                elements = GuineuCore.getExpressionColumnsParameters().getParameter(ColumnsGeneExpressionParameters.ExpressionData).getValue();
-                for (ExpressionDataColumnName column : elements) {
-                        columns.add(column);
-                        fixNumberColumns++;
+                fixNumberColumns = 0;
+                parameters = GuineuCore.getExpressionColumnsParameters();
+                elements = parameters.getParameter(ColumnsGeneExpressionParameters.ExpressionData).getValue();
+                if (elements != null) {
+                        for (ExpressionDataColumnName column : elements) {
+                                columns.add(column);
+                                fixNumberColumns++;
+                        }
+                } else {
+                        for (ExpressionDataColumnName column : ExpressionDataColumnName.values()) {
+                                columns.add(column);
+                                fixNumberColumns++;
+                        }
                 }
         }
 
@@ -181,6 +190,4 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
         public Color getCellColor(int row, int column) {
                 return this.dataset.getCellColor(row, column);
         }
-
-
 }

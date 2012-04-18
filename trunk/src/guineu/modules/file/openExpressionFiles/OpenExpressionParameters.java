@@ -21,6 +21,8 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.StringParameter;
+import guineu.util.dialogs.ExitCode;
+import guineu.util.dialogs.ParameterSetupDialog;
 
 public class OpenExpressionParameters extends SimpleParameterSet {
 
@@ -39,5 +41,14 @@ public class OpenExpressionParameters extends SimpleParameterSet {
 
         public OpenExpressionParameters() {
                 super(new UserParameter[]{datasetName, assayfilename, featurefilename, phenofilename});
+        }
+
+        @Override
+        public ExitCode showSetupDialog() {
+                
+                ParameterSetupDialog dialog = new ParameterSetupDialog(this, null);
+                dialog.setVisible(true);
+                return dialog.getExitCode();
+
         }
 }
