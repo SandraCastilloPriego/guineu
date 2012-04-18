@@ -20,6 +20,7 @@ package guineu.database.intro.impl;
 import com.csvreader.CsvWriter;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
+import guineu.data.ExpressionDataColumnName;
 import guineu.data.GCGCColumnName;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
@@ -28,6 +29,7 @@ import guineu.data.impl.peaklists.SimplePeakListRowExpression;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
+import guineu.modules.file.saveExpressionFile.SaveExpressionParameters;
 import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
 import guineu.modules.file.saveLCMSFile.SaveLCMSParameters;
 import guineu.parameters.SimpleParameterSet;
@@ -226,34 +228,45 @@ public class WriteFile {
          * @param dataset expression data set
          * @param path Path where the new file will be created
          */
-        public void WriteCommaSeparatedExpressionSetDataset(Dataset dataset, String path) {
+        public void WriteCommaSeparatedExpressionSetDataset(Dataset dataset, String path, SimpleParameterSet parameters) {
+
                 try {
-                        CsvWriter w = new CsvWriter(path);
-                        Vector<String> metadata = ((SimpleExpressionDataset) dataset).getMetaDataNames();
-                        String[] data = new String[dataset.getNumberCols() + metadata.size()];
-                        int c = 0;
-                        for (String experimentName : metadata) {
-                                data[c++] = experimentName;
+                        ExpressionDataColumnName elementsObjects[] = null;
+                        if (parameters == null) {
+                                elementsObjects = ExpressionDataColumnName.values();
+                        } else {
+                                elementsObjects = parameters.getParameter(SaveExpressionParameters.exportExpression).getValue();
                         }
+
+                        CsvWriter w = new CsvWriter(path);
+
+                        //write head
+                        int fieldsNumber = elementsObjects.length;
+                        String[] data = new String[dataset.getNumberCols() + fieldsNumber];
+                        int cont = 0;
+                        for (ExpressionDataColumnName p : elementsObjects) {
+                                data[cont++] = p.getColumnName();
+                        }
+                        int c = fieldsNumber;
                         for (String experimentName : dataset.getAllColumnNames()) {
                                 data[c++] = experimentName;
                         }
                         w.writeRecord(data);
 
-
+                        //write content
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
-                                SimplePeakListRowExpression peakRow = (SimplePeakListRowExpression) dataset.getRow(i);
-                                c = 0;
-                                for (String experimentName : metadata) {
-                                        data[c++] = (String) peakRow.getMetaData(experimentName);
-                                }
+                                SimplePeakListRowExpression lipid = (SimplePeakListRowExpression) dataset.getRow(i);
 
-                                for (String experimentName : dataset.getAllColumnNames()) {
-                                        if (peakRow.getPeak(experimentName) == null) {
-                                                data[c++] = "";
-                                        } else {
-                                                data[c++] = String.valueOf(peakRow.getPeak(experimentName));
+                                cont = 0;
+                                for (ExpressionDataColumnName p : elementsObjects) {
+                                        try {
+                                                data[cont++] = String.valueOf(lipid.getVar(p.getGetFunctionName()));
+                                        } catch (Exception ee) {
                                         }
+                                }
+                                c = fieldsNumber;
+                                for (String experimentName : dataset.getAllColumnNames()) {
+                                        data[c++] = String.valueOf(lipid.getPeak(experimentName));
                                 }
                                 w.writeRecord(data);
                         }
@@ -326,7 +339,7 @@ public class WriteFile {
                                                 row = sheet.createRow(i + 1);
                                         }
                                         for (int j = 0; j < names.size(); j++) {
-                                                Color c = dataset.getCellColor(i, j+1);
+                                                Color c = dataset.getCellColor(i, j + 1);
                                                 HSSFColor mycolor = null;
                                                 if (c != null) {
                                                         mycolor = palette.findColor((byte) c.getRed(), (byte) c.getGreen(), (byte) c.getBlue());
@@ -361,9 +374,9 @@ public class WriteFile {
                 if (cell == null) {
                         cell = row.createCell(Index);
                 }
-                if (data.getClass().toString().contains("String")) {
+                if (data.getClass().toString().contains("String") || data.getClass().toString().contains("Boolean")) {
                         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue((String) data);
+                        cell.setCellValue(String.valueOf(data));
                 } else if (data.getClass().toString().contains("Double")) {
                         cell.setCellValue((Double) data);
                 } else if (data.getClass().toString().contains("Integer")) {
@@ -373,16 +386,16 @@ public class WriteFile {
                         HSSFCellStyle style1 = wb.createCellStyle();
                         style1.setFillForegroundColor(color.getIndex());
                         style1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-                        for(HSSFCellStyle style : styles){
-                                if(style.getFillForegroundColor() == style1.getFillForegroundColor()){
+                        for (HSSFCellStyle style : styles) {
+                                if (style.getFillForegroundColor() == style1.getFillForegroundColor()) {
                                         style1 = style;
                                 }
                         }
-                        if(!styles.contains(style1)){
+                        if (!styles.contains(style1)) {
                                 this.styles.add(style1);
                         }
                         cell.setCellStyle(style1);
-                } else {                       
+                } else {
                 }
         }
 
@@ -565,27 +578,46 @@ public class WriteFile {
                         w.setDelimiter('\t');
 
                         if (dataset.getType() == DatasetType.EXPRESSION) {
-                                rowString = new String[((SimpleExpressionDataset) dataset).getMetaDataNames().size() + 1];
+                                ExpressionDataColumnName elementsObjects[] = parameters.getParameter(SaveExpressionParameters.exportExpression).getValue();
+                                rowString = new String[((SimpleExpressionDataset) dataset).getMetaDataNames().size() + elementsObjects.length + 1];
 
                                 // Write Feature file header
                                 rowString[0] = "feature.id";
                                 cont = 1;
+                                boolean isName = false;
+                
                                 for (String metaData : ((SimpleExpressionDataset) dataset).getMetaDataNames()) {
                                         rowString[cont++] = metaData;
+                                        if (metaData.contains("featurenames")) {
+                                                isName = true;
+                                        }
                                 }
+                  
+                                for (ExpressionDataColumnName data : elementsObjects) {
+                                        if (data != ExpressionDataColumnName.NAME || !isName) {
+                                                rowString[cont++] = data.getColumnName();
+                                        }
+                                }
+        
                                 w.writeRecord(rowString);
 
                                 // Write Feature file body
                                 int contId = 0;
                                 for (PeakListRow row : dataset.getRows()) {
-                                        rowString = new String[((SimpleExpressionDataset) dataset).getMetaDataNames().size() + 1];
+                                        rowString = new String[((SimpleExpressionDataset) dataset).getMetaDataNames().size() + elementsObjects.length + 1];
                                         rowString[0] = ids.get(contId++);
                                         cont = 1;
                                         for (String metaData : ((SimpleExpressionDataset) dataset).getMetaDataNames()) {
                                                 rowString[cont++] = (String) ((SimplePeakListRowExpression) row).getMetaData(metaData);
                                         }
+                                        for (ExpressionDataColumnName data : elementsObjects) {
+                                                if (data != ExpressionDataColumnName.NAME || !isName) {
+                                                        rowString[cont++] = String.valueOf(row.getVar(data.getGetFunctionName()));
+                                                }
+                                        }
                                         w.writeRecord(rowString);
                                 }
+                     
                         } else if (dataset.getType() == DatasetType.LCMS) {
                                 LCMSColumnName elementsObjects[] = parameters.getParameter(SaveLCMSParameters.exportLCMS).getValue();
 
@@ -672,7 +704,70 @@ public class WriteFile {
 
         }
 
-        void WriteExcelExpressionSetDataset(Dataset dataset, String path) {
-                throw new UnsupportedOperationException("Not yet implemented");
+        void WriteExcelExpressionSetDataset(Dataset dataset, String path, SimpleParameterSet parameters) {
+                FileOutputStream fileOut = null;
+                try {
+                        // Prepares sheet
+                        HSSFSheet sheet;
+                        try {
+                                FileInputStream fileIn = new FileInputStream(path);
+                                POIFSFileSystem fs = new POIFSFileSystem(fileIn);
+                                wb = new HSSFWorkbook(fs);
+                                int NumberOfSheets = wb.getNumberOfSheets();
+                                sheet = wb.createSheet(String.valueOf(NumberOfSheets));
+                        } catch (Exception exception) {
+                                wb = new HSSFWorkbook();
+                                sheet = wb.createSheet("Normalized");
+                        }
+                        HSSFRow row = sheet.getRow(0);
+                        if (row == null) {
+                                row = sheet.createRow(0);
+                        }
+
+                        ExpressionDataColumnName elementsObjects[] = parameters.getParameter(SaveExpressionParameters.exportExpression).getValue();
+
+
+                        // Writes head
+                        int fieldsNumber = elementsObjects.length;
+                        int cont = 0;
+                        for (ExpressionDataColumnName p : elementsObjects) {
+                                this.setCell(row, cont++, p.getColumnName(), null);
+                        }
+                        int c = fieldsNumber;
+                        for (String experimentName : dataset.getAllColumnNames()) {
+                                this.setCell(row, c++, experimentName, null);
+                        }
+
+                        // Writes content
+                        for (int i = 0; i < dataset.getNumberRows(); i++) {
+                                SimplePeakListRowExpression lipid = (SimplePeakListRowExpression) dataset.getRow(i);
+                                row = sheet.getRow(i + 1);
+                                if (row == null) {
+                                        row = sheet.createRow(i + 1);
+                                }
+
+                                cont = 0;
+                                for (ExpressionDataColumnName p : elementsObjects) {
+                                        try {
+                                                if (cont == 0) {
+                                                        System.out.println(lipid.getVar(p.getGetFunctionName()));
+                                                }
+                                                this.setCell(row, cont++, lipid.getVar(p.getGetFunctionName()), null);
+                                        } catch (Exception ee) {
+                                        }
+
+                                }
+                                c = fieldsNumber;
+                                for (String experimentName : dataset.getAllColumnNames()) {
+                                        this.setCell(row, c++, lipid.getPeak(experimentName), null);
+                                }
+                        }
+                        //Writes the output to a file
+                        fileOut = new FileOutputStream(path);
+                        wb.write(fileOut);
+                        fileOut.close();
+                } catch (Exception exception) {
+                        exception.printStackTrace();
+                }
         }
 }
