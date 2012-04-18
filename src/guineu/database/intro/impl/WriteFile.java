@@ -585,20 +585,18 @@ public class WriteFile {
                                 rowString[0] = "feature.id";
                                 cont = 1;
                                 boolean isName = false;
-                
-                                for (String metaData : ((SimpleExpressionDataset) dataset).getMetaDataNames()) {
-                                        rowString[cont++] = metaData;
-                                        if (metaData.contains("featurenames")) {
-                                                isName = true;
-                                        }
-                                }
-                  
                                 for (ExpressionDataColumnName data : elementsObjects) {
-                                        if (data != ExpressionDataColumnName.NAME || !isName) {
-                                                rowString[cont++] = data.getColumnName();
+                                        rowString[cont++] = data.getColumnName();
+                                }
+                                for (String metaData : ((SimpleExpressionDataset) dataset).getMetaDataNames()) {
+                                        if (!metaData.contains(ExpressionDataColumnName.NAME.getColumnName())
+                                                && !metaData.contains(ExpressionDataColumnName.SELECTION.getColumnName())
+                                                && !metaData.contains(ExpressionDataColumnName.P.getColumnName())
+                                                && !metaData.contains(ExpressionDataColumnName.Q.getColumnName())) {
+                                                rowString[cont++] = metaData;
                                         }
                                 }
-        
+
                                 w.writeRecord(rowString);
 
                                 // Write Feature file body
@@ -607,17 +605,15 @@ public class WriteFile {
                                         rowString = new String[((SimpleExpressionDataset) dataset).getMetaDataNames().size() + elementsObjects.length + 1];
                                         rowString[0] = ids.get(contId++);
                                         cont = 1;
+                                        for (ExpressionDataColumnName data : elementsObjects) {
+                                                rowString[cont++] = String.valueOf(row.getVar(data.getGetFunctionName()));
+                                        }
                                         for (String metaData : ((SimpleExpressionDataset) dataset).getMetaDataNames()) {
                                                 rowString[cont++] = (String) ((SimplePeakListRowExpression) row).getMetaData(metaData);
                                         }
-                                        for (ExpressionDataColumnName data : elementsObjects) {
-                                                if (data != ExpressionDataColumnName.NAME || !isName) {
-                                                        rowString[cont++] = String.valueOf(row.getVar(data.getGetFunctionName()));
-                                                }
-                                        }
                                         w.writeRecord(rowString);
                                 }
-                     
+
                         } else if (dataset.getType() == DatasetType.LCMS) {
                                 LCMSColumnName elementsObjects[] = parameters.getParameter(SaveLCMSParameters.exportLCMS).getValue();
 

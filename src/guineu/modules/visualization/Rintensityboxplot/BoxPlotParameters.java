@@ -63,14 +63,14 @@ public class BoxPlotParameters extends SimpleParameterSet {
         @Override
         public ExitCode showSetupDialog() {
                 try {
-                        String selectedPeakLists[] = getParameter(samples).getValue();
+                        /*String selectedPeakLists[] = getParameter(samples).getValue();
                         if (selectedPeakLists != null && selectedPeakLists.length > 0) {
                                 getParameter(samples).setValue(selectedPeakLists);
-                        } else {
+                        } else {*/
                                 String plDataFiles[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getAllColumnNames().toArray(new String[0]);
                                 getParameter(samples).setChoices(plDataFiles);
                                 getParameter(samples).setValue(plDataFiles);
-                        }
+                       // }
 
 
                         PeakListRow plRows[] = GuineuCore.getDesktop().getSelectedDataFiles()[0].getRows().toArray(new PeakListRow[0]);
