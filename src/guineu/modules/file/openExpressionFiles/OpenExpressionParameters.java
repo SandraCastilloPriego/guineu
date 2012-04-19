@@ -22,7 +22,6 @@ import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.StringParameter;
 import guineu.util.dialogs.ExitCode;
-import guineu.util.dialogs.ParameterSetupDialog;
 
 public class OpenExpressionParameters extends SimpleParameterSet {
 
