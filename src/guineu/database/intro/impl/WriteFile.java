@@ -582,7 +582,7 @@ public class WriteFile {
                                 rowString = new String[((SimpleExpressionDataset) dataset).getMetaDataNames().size() + elementsObjects.length + 1];
 
                                 // Write Feature file header
-                                rowString[0] = "feature.id";
+                                rowString[0] = "label";
                                 cont = 1;
                                 boolean isName = false;
                                 for (ExpressionDataColumnName data : elementsObjects) {
