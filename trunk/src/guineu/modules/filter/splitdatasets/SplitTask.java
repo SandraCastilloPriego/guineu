@@ -23,6 +23,7 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -91,6 +92,13 @@ public class SplitTask extends AbstractTask {
                         newRow.removeNoSamplePeaks(group);
                         datasetSplit.addRow(newRow);
                 }
+                List<String> parameters = dataset.getParametersName();
+                for(String p: parameters){
+                        for(String sample: datasetSplit.getAllColumnNames()){
+                                datasetSplit.addParameterValue(sample, p, dataset.getParametersValue(sample, p));
+                        }
+                }
+
                 GUIUtils.showNewTable(datasetSplit, true);
         }
 
