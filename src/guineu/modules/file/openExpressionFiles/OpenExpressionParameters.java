@@ -17,8 +17,8 @@
  */
 package guineu.modules.file.openExpressionFiles;
 
+import guineu.parameters.Parameter;
 import guineu.parameters.SimpleParameterSet;
-import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.StringParameter;
 import guineu.util.dialogs.ExitCode;
@@ -40,15 +40,13 @@ public class OpenExpressionParameters extends SimpleParameterSet {
                 "Path of the Pheno file.");
 
         public OpenExpressionParameters() {
-                super(new UserParameter[]{datasetName, assayfilename, featurefilename, phenofilename});
+                super(new Parameter[]{datasetName, assayfilename, featurefilename, phenofilename});
         }
 
         @Override
         public ExitCode showSetupDialog() {
-                
-                ParameterSetupDialog dialog = new ParameterSetupDialog(this, null);
+                OpenExpressionFileSetupDialog dialog = new OpenExpressionFileSetupDialog(this);
                 dialog.setVisible(true);
                 return dialog.getExitCode();
-
         }
 }

@@ -37,6 +37,7 @@ public class FileNameComponent extends JPanel implements ActionListener {
         public static final Font smallFont = new Font("SansSerif", Font.PLAIN, 10);
         private JTextField txtFilename;
         private boolean multiSelection = false;
+        private String path;
 
         public FileNameComponent(boolean MultiSelection) {
 
@@ -73,6 +74,10 @@ public class FileNameComponent extends JPanel implements ActionListener {
                 txtFilename.setText(value.getPath());
         }
 
+        public void setPath(String path) {
+                this.path = path;
+        }
+
         public void setValues(File[] value) {
                 String files = "";
                 for (File file : value) {
@@ -86,7 +91,13 @@ public class FileNameComponent extends JPanel implements ActionListener {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setMultiSelectionEnabled(this.multiSelection);
 
+
                 String[] currentPath = txtFilename.getText().split(";");
+                if (path != null && path.length() > 0) {
+                        fileChooser.setCurrentDirectory(new File(path));
+                        currentPath[0] = path;
+                }
+
                 if (currentPath[0].length() > 0) {
                         File currentFile = new File(currentPath[0]);
                         File currentDir = currentFile.getParentFile();
@@ -104,10 +115,10 @@ public class FileNameComponent extends JPanel implements ActionListener {
                                 for (File file : files) {
                                         text += file.getAbsolutePath() + ";";
                                 }
-                                txtFilename.setText(text);                                 
+                                txtFilename.setText(text);
                         } else {
                                 String selectedPath = fileChooser.getSelectedFile().getPath();
-                                txtFilename.setText(selectedPath);                                
+                                txtFilename.setText(selectedPath);
                         }
                 }
         }
