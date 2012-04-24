@@ -58,7 +58,7 @@ public class KSTestModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/kolmogorov.png";
         }
 
         public boolean setSeparator() {

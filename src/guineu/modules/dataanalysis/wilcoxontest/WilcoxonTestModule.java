@@ -81,7 +81,7 @@ public class WilcoxonTestModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/wilcoxon.png";
         }
 
         public boolean setSeparator() {

@@ -55,7 +55,7 @@ public class SilhouetteInfoModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/Silhouette.png";
         }
 
         public boolean setSeparator() {
