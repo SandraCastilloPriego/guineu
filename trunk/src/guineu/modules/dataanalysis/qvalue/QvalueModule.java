@@ -54,7 +54,7 @@ public class QvalueModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/FDR.png";
         }
 
         public boolean setSeparator() {

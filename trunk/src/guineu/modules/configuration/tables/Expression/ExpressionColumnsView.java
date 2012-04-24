@@ -78,7 +78,7 @@ public class ExpressionColumnsView implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/tablesconfexpr.png";
         }
 
         public boolean setSeparator() {

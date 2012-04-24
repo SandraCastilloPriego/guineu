@@ -28,9 +28,7 @@ import org.jfree.data.xy.XYZDataset;
  *
  */
 public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
-
-        private ParameterSet parameters;
-
+      
         private enum LabelMode {
 
                 FileName, FileNameAndParameterValue
@@ -38,8 +36,7 @@ public class ProjectionPlotToolTipGenerator implements XYZToolTipGenerator {
         private LabelMode labelMode;
 
         ProjectionPlotToolTipGenerator(ParameterSet parameters) {
-
-                this.parameters = parameters;
+               
                 try {
                         if (parameters.getParameter(ProjectionPlotParameters.coloringType).getValue() == ColoringType.NOCOLORING) {
                                 labelMode = LabelMode.FileName;
