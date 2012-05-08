@@ -135,7 +135,7 @@ public class GuineuModulesList {
                 CustomDBSearchModule.class,
                 RelatedPeaksFilterModule.class,
                 AdductSearchModule.class,
-                PurgeIdentificationModule.class,
+               // PurgeIdentificationModule.class,
 
                 // Normalization
                 LinearNormalizerModule.class,
@@ -175,7 +175,7 @@ public class GuineuModulesList {
                 SilhouetteInfoModule.class,
                 ClusteringModule.class,
                 CorrelationModule.class,
-                AnnealingModule.class,
+               // AnnealingModule.class,
                 KSTestModule.class,
                 HeatMapModule.class,
                 IntensityPlotModule.class,

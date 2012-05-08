@@ -57,7 +57,7 @@ public class LogTransformationModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/log.png";
         }
 
         public boolean setSeparator() {

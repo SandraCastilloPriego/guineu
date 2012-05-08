@@ -58,7 +58,7 @@ public class ZeroImputationModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/zeroImputation.png";
         }
 
         public boolean setSeparator() {
