@@ -17,12 +17,12 @@
  */
 package guineu.modules.dataanalysis.correlations;
 
+import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
-import guineu.taskcontrol.Task;
-import guineu.data.Dataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.Task;
 
 /**
  *
@@ -60,7 +60,7 @@ public class CorrelationModule implements GuineuProcessingModule {
         }
 
         public String getIcon() {
-                return null;
+                return "icons/correlations.png";
         }
 
         public boolean setSeparator() {
