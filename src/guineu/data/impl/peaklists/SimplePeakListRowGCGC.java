@@ -722,7 +722,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                                 }
                         }
                 }
-                return 0.0;
+                return null;
         }
 
         public void setPeak(String columnName, Double value) {

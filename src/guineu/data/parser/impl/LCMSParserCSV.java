@@ -128,7 +128,7 @@ public class LCMSParserCSV implements Parser {
                         lipid.setPeak(header[i], Double.valueOf(sdata[i]));
                     } catch (Exception e) {
                         if (sdata[i].matches(".*null.*|.*NA.*|.*N/A.*")) {
-                            lipid.setPeak(header[i], 0.0);
+                            lipid.setPeak(header[i], "NA");
                         } else if (sdata[i] != null) {
                             lipid.setPeak(header[i], sdata[i].toString());
                         }

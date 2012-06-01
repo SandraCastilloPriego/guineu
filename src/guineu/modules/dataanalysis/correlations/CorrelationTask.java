@@ -25,6 +25,8 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,6 +84,9 @@ public class CorrelationTask extends AbstractTask {
                         for (PeakListRow row : data1.getRows()) {
                                 String name = row.getID() + " - " + row.getName();
                                 newDataset.addColumnName(name);
+                                if (this.showPvalue) {
+                                        newDataset.addColumnName(name + " - pValue");
+                                }
                         }
 
                         // Row names from the second dataset
@@ -94,6 +99,7 @@ public class CorrelationTask extends AbstractTask {
 
                         for (PeakListRow row : data1.getRows()) {
                                 String name = row.getID() + " - " + row.getName();
+                                String pValueName = name + " - pValue";
                                 for (int i = 0; i < data2.getNumberRows(); i++) {
                                         RealMatrix matrix = getCorrelation(row, data2.getRow(i), data1.getAllColumnNames());
                                         PearsonsCorrelation correlation = null;
@@ -107,25 +113,34 @@ public class CorrelationTask extends AbstractTask {
                                                 double c = correlation.getCorrelationMatrix().getEntry(1, 0);
                                                 double p = correlation.getCorrelationPValues().getEntry(1, 0);
                                                 String cp = String.valueOf(c);
-                                                if(this.showPvalue){
-                                                        cp += " (" + String.valueOf(p) + ")";
-                                                }
-                                                newDataset.getRow(i).setPeak(name, String.valueOf(cp));
+
+                                                Color cell = Color.WHITE;
                                                 if (p < cutoff) {
                                                         if (c < 0) {
-                                                                newDataset.setCellColor(Color.green, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                                                cell = Color.green;
                                                         } else {
-                                                                newDataset.setCellColor(Color.red, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+                                                                cell = Color.red;
                                                         }
-                                                } else {
-                                                        newDataset.setCellColor(null, i, (newDataset.getAllColumnNames().indexOf(name) + 2));
+
                                                 }
+                                                int pColumnIndex = 0;
+                                                if (this.showPvalue) {
+                                                        newDataset.getRow(i).setPeak(pValueName, String.valueOf(p));
+                                                        pColumnIndex = newDataset.getAllColumnNames().indexOf(pValueName) + 2;
+                                                        newDataset.setCellColor(cell, i, pColumnIndex);
+                                                }
+
+                                                pColumnIndex = newDataset.getAllColumnNames().indexOf(name) + 2;
+                                                newDataset.getRow(i).setPeak(name, cp);
+
+                                                newDataset.setCellColor(cell, i, pColumnIndex);
+
                                         }
 
-                                        if(this.correlationType.contains("Covariance")){
-                                               Covariance covariance = new Covariance(matrix);
-                                               double c = covariance.getCovarianceMatrix().getEntry(1, 0);
-                                               newDataset.getRow(i).setPeak(name, String.valueOf(c));
+                                        if (this.correlationType.contains("Covariance")) {
+                                                Covariance covariance = new Covariance(matrix);
+                                                double c = covariance.getCovarianceMatrix().getEntry(1, 0);
+                                                newDataset.getRow(i).setPeak(name, String.valueOf(c));
                                         }
                                 }
                         }
@@ -140,15 +155,29 @@ public class CorrelationTask extends AbstractTask {
 
         private RealMatrix getCorrelation(PeakListRow row, PeakListRow row2, Vector<String> sampleNames) {
 
-                double[][] dataMatrix = new double[sampleNames.size()][2];
+                List<Double[]> data = new ArrayList<Double[]>();
                 for (int i = 0; i < sampleNames.size(); i++) {
                         try {
-                                dataMatrix[i][0] = (Double) row.getPeak(sampleNames.elementAt(i));
-                                dataMatrix[i][1] = (Double) row2.getPeak(sampleNames.elementAt(i));
+                                if ((Double) row.getPeak(sampleNames.elementAt(i)) != Double.NaN && (Double) row2.getPeak(sampleNames.elementAt(i)) != Double.NaN
+                                        && (Double) row.getPeak(sampleNames.elementAt(i)) != 0.0 && (Double) row2.getPeak(sampleNames.elementAt(i)) != 0.0) {
+                                        Double[] dat = new Double[2];
+                                        dat[0] = (Double) row.getPeak(sampleNames.elementAt(i));
+                                        dat[1] = (Double) row2.getPeak(sampleNames.elementAt(i));
+                                        data.add(dat);
+                                       // System.out.println(sampleNames.elementAt(i) + " - " + row.getPeak(sampleNames.elementAt(i)) + " - " + row2.getPeak(sampleNames.elementAt(i)));
+
+                                }
                         } catch (Exception e) {
-                                // System.out.println(row.getPeak(sampleNames.elementAt(i)) + " - " + row2.getPeak(sampleNames.elementAt(i)));
-                                //  e.printStackTrace();
+                                //System.out.println(row.getPeak(sampleNames.elementAt(i)) + " - " + row2.getPeak(sampleNames.elementAt(i)));
+                                //e.printStackTrace();
                         }
+                }
+
+                double[][] dataMatrix = new double[data.size()][2];
+                int count = 0;
+                for (Double[] dat : data) {
+                        dataMatrix[count][0] = dat[0];
+                        dataMatrix[count++][1] = dat[1];
                 }
                 RealMatrix matrix = new BlockRealMatrix(dataMatrix);
                 return matrix;

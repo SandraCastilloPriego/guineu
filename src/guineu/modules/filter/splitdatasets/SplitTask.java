@@ -108,7 +108,7 @@ public class SplitTask extends AbstractTask {
                 for (String parameterVal : availableParameterValues) {
                         Vector<String> group = new Vector<String>();
                         for (String rawDataFile : dataset.getAllColumnNames()) {
-                                if (dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
+                                if (dataset.getParametersValue(rawDataFile, parameter)!=null && dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
                                         group.addElement(rawDataFile);
                                 }
                         }

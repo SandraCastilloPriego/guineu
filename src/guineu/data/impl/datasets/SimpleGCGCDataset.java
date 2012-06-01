@@ -353,7 +353,7 @@ public class SimpleGCGCDataset implements Dataset {
                 Vector<String> availableParameterValues = new Vector<String>();
                 for (String rawDataFile : this.getAllColumnNames()) {
                         String paramValue = this.getParametersValue(rawDataFile, parameter);
-                        if (!availableParameterValues.contains(paramValue) && !paramValue.isEmpty()) {
+                        if (paramValue != null && !paramValue.isEmpty() &&!availableParameterValues.contains(paramValue)) {
                                 availableParameterValues.add(paramValue);
                         }
                 }
