@@ -163,7 +163,8 @@ public class RTIFileTask extends AbstractTask {
                         xmlW.writeCloseTag("Metabolite");
                         xmlW.endBlock();
                 }
-
+                xmlW.writeCloseTag("Data");
+                xmlW.endBlock();
                 xmlW.endBlock();
 
                 xmlW.close();
