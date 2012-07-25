@@ -71,10 +71,12 @@ import guineu.modules.dataanalysis.PCA.PCAPlotModule;
 import guineu.modules.dataanalysis.PCA.SammonsPlotModule;
 import guineu.modules.dataanalysis.Ttest.TtestModule;
 import guineu.modules.dataanalysis.anova.AnovaTestModule;
+import guineu.modules.dataanalysis.clinical.zeroImputation.ClinicalKNNImputationModule;
 import guineu.modules.dataanalysis.clustering.ClusteringModule;
 import guineu.modules.dataanalysis.correlations.CorrelationModule;
 import guineu.modules.dataanalysis.foldChanges.FoldtestModule;
 import guineu.modules.dataanalysis.kstest.KSTestModule;
+import guineu.modules.dataanalysis.patternrecognition.PatternRecognitionModule;
 import guineu.modules.dataanalysis.qvalue.QvalueModule;
 import guineu.modules.dataanalysis.silhouetteinfo.SilhouetteInfoModule;
 import guineu.modules.dataanalysis.standardVariation.StandardVariationModule;
@@ -128,6 +130,7 @@ public class GuineuModulesList {
                 TransposeFilterModule.class,
                 SortingModule.class,
                 ZeroImputationModule.class,
+                ClinicalKNNImputationModule.class,
                 LogTransformationModule.class,
                 DataSelectionModule.class,
 
@@ -135,7 +138,7 @@ public class GuineuModulesList {
                 CustomDBSearchModule.class,
                 RelatedPeaksFilterModule.class,
                 AdductSearchModule.class,
-               // PurgeIdentificationModule.class,
+                PurgeIdentificationModule.class,
 
                 // Normalization
                 LinearNormalizerModule.class,
@@ -181,6 +184,7 @@ public class GuineuModulesList {
                 IntensityPlotModule.class,
                 IntensityBoxPlotModule.class,
                 BoxPlotModule.class,
+                PatternRecognitionModule.class,                
 
                 // Database
                 SaveFileDBModule.class,                
