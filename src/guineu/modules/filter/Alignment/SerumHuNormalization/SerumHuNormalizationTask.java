@@ -54,7 +54,7 @@ class SerumHuNormalizationTask extends AbstractTask {
         private int iterations;
         private File fileName, informationFile;
         private boolean extrapolation;
-        HashMap<Integer, PolynomialSplineFunction> functions;
+        HashMap<Integer, List<PolynomialSplineFunction>> functions;
         HashMap<Integer, Integer> correlated;
         private String message = "Human serum normalization";
 
@@ -66,7 +66,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                 this.fileName = parameters.getParameter(SerumHuNormalizationParameters.filename).getValue();
                 this.informationFile = parameters.getParameter(SerumHuNormalizationParameters.infoFilename).getValue();
                 this.extrapolation = parameters.getParameter(SerumHuNormalizationParameters.extrapolation).getValue();
-                this.functions = new HashMap<Integer, PolynomialSplineFunction>();
+                this.functions = new HashMap<Integer, List<PolynomialSplineFunction>>();
                 this.correlated = new HashMap<Integer, Integer>();
 
         }
@@ -102,89 +102,120 @@ class SerumHuNormalizationTask extends AbstractTask {
         }
 
         private void normalize(Dataset data, Dataset newData) {
+                // First row => ids of the samples ( 0 == standard serum, 1 == normal sample)
                 PeakListRow ids = data.getRow(0);
+                // Second row => run order
                 PeakListRow runOrder = data.getRow(1);
-                this.createCurves(data, runOrder, ids);
-                plotInterpolations(data);
-                message = "Normalizing";
-                this.totalRows = data.getNumberRows() - 2;
-                this.processedRows = 0;
-                Vector<String> names = data.getAllColumnNames();
-                for (int i = 2; i < data.getNumberRows(); i++) {
-                        this.processedRows++;
-                        PeakListRow row = data.getRow(i);
-                        PeakListRow newrow = newData.getRow(i);
+                // Third row => different data sets
+                PeakListRow batches = data.getRow(2);
 
-                        // Get the interpolation of all the human serum points using Loess 
-                        PolynomialSplineFunction function = null;
-                        try {
-                                fillData(ids, runOrder, row, names);
-                                if (yval.length > 2) {
-                                        function = createCurve();
-                                } else {
-                                        // If the molecule doesn't have the same molecule in the standard serum tries to find the best match from the others
-                                        function = searchBestFunction(data, ids, runOrder, names, row);
-                                }
-                        } catch (ClassCastException ex) {
-                                System.out.println(row.getID());
+                //  plotInterpolations(data);
+
+                int numBatches = 1;
+                double n = (Double) batches.getPeak(data.getAllColumnNames().elementAt(0));
+
+                for (String name : data.getAllColumnNames()) {
+                        if ((Double) batches.getPeak(name) > n) {
+                                numBatches++;
+                                n = (Double) batches.getPeak(name);
                         }
+                }
 
-                        if (function != null) {
-                                // Prepare the points for the extrapolation
-                                PolynomialFunction extrapolationFunction = null;
-                                if (this.extrapolation) {
-                                        List<Double> points = new ArrayList<Double>();
-                                        for (int e = 0; e
-                                                < row.getNumberPeaks(); e++) {
-                                                try {
-                                                        points.add(function.value((Double) runOrder.getPeak(names.elementAt(e))));
-                                                } catch (ArgumentOutsideDomainException ex) {
-                                                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE,
-                                                                null, ex);
+                this.createCurves(data, numBatches);
+                for (int batch = 0; batch < numBatches; batch++) {
+                        message = "Normalizing";
+                        this.totalRows = data.getNumberRows() - 3;
+                        this.processedRows = 0;
+                        Vector<String> names = data.getAllColumnNames();
+                        for (int i = 3; i < data.getNumberRows(); i++) {
+                                this.processedRows++;
+                                PeakListRow row = data.getRow(i);
+                                PeakListRow newrow = newData.getRow(i);
+
+                                // Get the interpolation of all the human serum points using Loess 
+                                PolynomialSplineFunction function = functions.get(row.getID()).get(batch);
+
+                                if (function != null) {
+                                        // Prepare the points for the extrapolation
+                                        PolynomialFunction extrapolationFunction = null;
+                                        if (this.extrapolation) {
+                                                List<Double> points = new ArrayList<Double>();
+                                                for (int e = 0; e < row.getNumberPeaks(); e++) {
+                                                        if ((Double) batches.getPeak(names.elementAt(e)) == batch) {
+                                                                try {
+                                                                        points.add(function.value((Double) runOrder.getPeak(names.elementAt(e))));
+                                                                } catch (ArgumentOutsideDomainException ex) {
+                                                                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE,
+                                                                                null, ex);
+                                                                }
+                                                        }
+                                                }
+
+                                                // Extrapolation function
+                                                extrapolationFunction = this.fittPolinomialFunction(batches, runOrder, names, batch, points);
+                                        }
+                                        double lastPoint = 0;
+                                        for (int e = 0; e < row.getNumberPeaks(); e++) {
+                                                String sampleName = names.elementAt(e);
+                                                if ((Double) batches.getPeak(sampleName) == batch) {
+                                                        try {
+
+                                                                if ((Double) ids.getPeak(sampleName) == 0) {
+                                                                        lastPoint = function.value((Double) runOrder.getPeak(sampleName));
+                                                                }
+                                                                double value = 0;
+                                                                try {
+                                                                        value = (Double) row.getPeak(sampleName) / function.value((Double) runOrder.getPeak(names.elementAt(e)));
+                                                                } catch (ClassCastException exception) {
+                                                                        value = -100;
+                                                                }
+                                                                newrow.setPeak(names.elementAt(e), value);
+                                                        } catch (ArgumentOutsideDomainException ex) {
+                                                                //if the value has to be extrapolated
+                                                                if (extrapolation && extrapolationFunction != null) {
+                                                                        double value = 0;
+                                                                        try {
+                                                                                value = (Double) row.getPeak(sampleName) / extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
+                                                                        } catch (ClassCastException exception) {
+                                                                                value = -100;
+                                                                        }
+                                                                        newrow.setPeak(sampleName, value);
+                                                                } else {
+                                                                        double value = 0;
+                                                                        try {
+                                                                                value = (Double) row.getPeak(sampleName) / lastPoint;//extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
+                                                                        } catch (ClassCastException exception) {
+                                                                                value = -100;
+                                                                        }
+                                                                        newrow.setPeak(sampleName, value);
+                                                                }
+
+                                                        }
                                                 }
                                         }
-
-                                        // Extrapolation function
-                                        extrapolationFunction = this.fittPolinomialFunction(runOrder, names, points);
-                                }
-                                double lastPoint = 0;
-                                for (int e = 0; e < row.getNumberPeaks(); e++) {
-                                        String sampleName = names.elementAt(e);
-                                        try {
-
-                                                if ((Double) ids.getPeak(sampleName) == 0) {
-                                                        lastPoint = function.value((Double) runOrder.getPeak(sampleName));
-                                                }
-                                                double value = (Double) row.getPeak(sampleName) / function.value((Double) runOrder.getPeak(names.elementAt(e)));
-                                                newrow.setPeak(names.elementAt(e), value);
-                                        } catch (ArgumentOutsideDomainException ex) {
-                                                //if the value has to be extrapolated
-                                                if (extrapolation && extrapolationFunction != null) {
-                                                        double value = (Double) row.getPeak(sampleName) / extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
-                                                        newrow.setPeak(sampleName, value);
-                                                } else {
-                                                        double value = (Double) row.getPeak(sampleName) / lastPoint;//extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
-                                                        newrow.setPeak(sampleName, value);
-                                                }
-
-                                        }
+                                } else {
+                                        System.out.println(row.getID());
                                 }
                         }
                 }
 
         }
 
-        private void fillData(PeakListRow ids, PeakListRow runOrder, PeakListRow row, Vector<String> sampleNames) throws ClassCastException {
+        private void fillData(PeakListRow batches, PeakListRow ids, PeakListRow runOrder, PeakListRow row, int batch, Vector<String> sampleNames) throws ClassCastException {
                 List<Double> yvalList = new ArrayList<Double>();
                 List<Double> xvalList = new ArrayList<Double>();
                 for (int i = 0; i < row.getNumberPeaks(); i++) {
                         String name = sampleNames.elementAt(i);
-                        if ((Double) ids.getPeak(name) == 0 && (Double) row.getPeak(name) > 0) {
-                                xvalList.add((Double) runOrder.getPeak(name));
-                                yvalList.add((Double) row.getPeak(name));
+                        if ((Double) batches.getPeak(name) == batch) {
+                                try {
+                                        if ((Double) ids.getPeak(name) == 0 && (Double) row.getPeak(name) > 0) {
+                                                xvalList.add((Double) runOrder.getPeak(name));
+                                                yvalList.add((Double) row.getPeak(name));
+                                        }
+                                } catch (Exception e) {
+                                }
                         }
                 }
-
                 xval = new double[xvalList.size()];
                 yval = new double[yvalList.size()];
                 for (int i = 0; i < xvalList.size(); i++) {
@@ -199,7 +230,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                 try {
                         // if there are more than 2 points in the model
                         LoessInterpolator loess = null;
-                        if (this.loessBandwidth == 0) {
+                        if (this.loessBandwidth == 0 && this.iterations == 0) {
                                 loess = new LoessInterpolator();
                         } else {
                                 loess = new LoessInterpolator(this.loessBandwidth, this.iterations);
@@ -208,8 +239,9 @@ class SerumHuNormalizationTask extends AbstractTask {
                         return function;
 
                 } catch (MathException ex) {
+                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE, null, ex);
                         try {
-                                LoessInterpolator loess = new LoessInterpolator(0.7, 4);
+                                LoessInterpolator loess = new LoessInterpolator(0.7, 1);
                                 PolynomialSplineFunction function = loess.interpolate(xval, yval);
                                 return function;
                         } catch (MathException ex1) {
@@ -219,30 +251,59 @@ class SerumHuNormalizationTask extends AbstractTask {
                 }
         }
 
-        private void createCurves(Dataset data, PeakListRow runOrder, PeakListRow ids) {
+        private void createCurves(Dataset data, int numBatches) {
+                // First row => ids of the samples ( 0 == standard serum, 1 == normal sample)
+                PeakListRow ids = data.getRow(0);
+                // Second row => run order
+                PeakListRow runOrder = data.getRow(1);
+                // Third row => different data sets
+                PeakListRow batches = data.getRow(2);
+
+                this.totalRows = data.getNumberRows() - 3;
+                this.processedRows = 0;
+                this.message = "Fitting the standard curves";
+
                 Vector<String> names = data.getAllColumnNames();
-                for (int i = 2; i < data.getNumberRows(); i++) {
-                        PolynomialSplineFunction function = null;
+                for (int i = 3; i < data.getNumberRows(); i++) {
+                        this.processedRows++;
                         PeakListRow row = data.getRow(i);
-                        try {
-                                fillData(ids, runOrder, row, names);
-                                if (yval.length > 2) {
-                                        function = createCurve();
-                                        this.functions.put(new Integer(row.getID()), function);
+                        for (int batch = 0; batch < numBatches; batch++) {
+                                PolynomialSplineFunction function = null;
+                                try {
+                                        fillData(batches, ids, runOrder, row, batch, names);
+                                        if (yval.length > 2) {
+                                                function = createCurve();
+                                                if (function == null) {
+                                                        System.out.println("nulllll");
+                                                }
+                                                if (this.functions.containsKey(row.getID())) {
+                                                        List<PolynomialSplineFunction> functionList = this.functions.get(row.getID());
+                                                        functionList.add(batch, function);
+                                                        this.functions.put(row.getID(), functionList);
+                                                } else {
+                                                        List<PolynomialSplineFunction> functionList = new ArrayList<PolynomialSplineFunction>();
+                                                        functionList.add(function);
+                                                        this.functions.put(new Integer(row.getID()), functionList);
+                                                }
+                                        } else {
+                                                this.searchBestFunction(data, row, numBatches);
+                                        }
+                                } catch (ClassCastException ex) {
+                                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                        } catch (ClassCastException ex) {
-                                System.out.println(row.getID());
                         }
                 }
         }
 
-        private PolynomialFunction fittPolinomialFunction(PeakListRow runOrder, Vector<String> names, List<Double> data) {
+        private PolynomialFunction fittPolinomialFunction(PeakListRow batches, PeakListRow runOrder, Vector<String> names, int batch, List<Double> data) {
                 // Add the maximun number of iterations in GaussNewtonOptimizer
                 GaussNewtonOptimizer optimizer = new GaussNewtonOptimizer(false);
                 PolynomialFitter fitter = new PolynomialFitter(5, optimizer);
                 for (int i = 0; i < data.size(); i++) {
-                        Double point = data.get(i);
-                        fitter.addObservedPoint(1, (Double) runOrder.getPeak(names.elementAt(i)), point);
+                        if ((Double) batches.getPeak(names.elementAt(i)) == batch) {
+                                Double point = data.get(i);
+                                fitter.addObservedPoint(1, (Double) runOrder.getPeak(names.elementAt(i)), point);
+                        }
                 }
                 try {
                         PolynomialFunction function = fitter.fit();
@@ -253,11 +314,11 @@ class SerumHuNormalizationTask extends AbstractTask {
                 }
         }
 
-        private PolynomialSplineFunction searchBestFunction(Dataset data, PeakListRow ids, PeakListRow runOrder, Vector<String> names, PeakListRow comparedRow) {
-                PolynomialSplineFunction bestFunction = null;
+        private void searchBestFunction(Dataset data, PeakListRow comparedRow, int numBatches) {
                 double bestValue = 0;
-                int bestID = 0;
-                for (int i = 2; i < data.getNumberRows(); i++) {
+                int bestID = -1;
+                Vector<String> names = data.getAllColumnNames();
+                for (int i = 3; i < data.getNumberRows(); i++) {
                         PeakListRow row = data.getRow(i);
 
                         RealMatrix m = this.getMatrix(comparedRow, row, names);
@@ -266,17 +327,22 @@ class SerumHuNormalizationTask extends AbstractTask {
                                 PearsonsCorrelation correlation = scorrelation.getRankCorrelation();
                                 double value = correlation.getCorrelationMatrix().getEntry(1, 0);
                                 if (value > bestValue && functions.get(row.getID()) != null) {
-                                        bestValue = value;
-                                        bestID = row.getID();
-                                        bestFunction = functions.get(row.getID());
+                                        List<PolynomialSplineFunction> functionList = functions.get(row.getID());
+                                        if (functionList.size() == numBatches) {
+                                                bestValue = value;
+                                                bestID = row.getID();
+                                        }
                                 }
-                        } else {
-                                return null;
                         }
 
                 }
+                if (bestID > -1) {
+                        List<PolynomialSplineFunction> functionList = functions.get(bestID);
+                        functions.put(comparedRow.getID(), functionList);
+
+                }
+
                 this.correlated.put(comparedRow.getID(), bestID);
-                return bestFunction;
         }
 
         private RealMatrix getMatrix(PeakListRow row, PeakListRow row2, Vector<String> sampleNames) {
@@ -315,7 +381,7 @@ class SerumHuNormalizationTask extends AbstractTask {
 
                         for (Map.Entry<Integer, Integer> entry : correlated.entrySet()) {
                                 Integer key = entry.getKey();
-                                Integer value = entry.getValue();   
+                                Integer value = entry.getValue();
                                 out.println(String.valueOf(key) + " - " + String.valueOf(value));
                         }
                 } catch (IOException ex) {
@@ -341,31 +407,35 @@ class SerumHuNormalizationTask extends AbstractTask {
                                 "q-value test requires R but it couldn't be loaded (" + t.getMessage() + ')');
                 }
                 synchronized (RUtilities.R_SEMAPHORE) {
-                        this.totalRows = data.getNumberRows() - 2;
+                        this.totalRows = data.getNumberRows() - 3;
                         Vector<String> names = data.getAllColumnNames();
                         // assing the values to the matrix
                         String path = this.fileName.getAbsolutePath();
                         path = path.replaceAll("\\\\", "/");
                         rEngine.eval("pdf(\"" + path + "\")");
-                        for (int row = 2; row < data.getNumberRows(); row++) {
+                        for (int row = 3; row < data.getNumberRows(); row++) {
                                 rEngine.eval("p <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
                                 rEngine.eval("loess <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
                                 rEngine.eval("time <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
                                 rEngine.eval("color <- vector(mode=\"numeric\",length=" + data.getNumberCols() * 2 + ")");
-                                PolynomialSplineFunction function = this.functions.get(data.getRow(row).getID());
+                                //   PolynomialSplineFunction function = this.functions.get(data.getRow(row).getID());
                                 double lastPoint = 0;
                                 for (int col = 0; col < data.getNumberCols(); col++) {
                                         int r = col + 1;
                                         rEngine.eval("p[" + r + "] <- " + data.getRow(row).getPeak(names.elementAt(col)));
 
-                                        if (function != null) {
-                                                try {
-                                                        rEngine.eval("loess[" + r + "] <- " + function.value((Double) runOrder.getPeak(names.elementAt(col))));
-                                                        lastPoint = function.value((Double) runOrder.getPeak(names.elementAt(col)));
-                                                } catch (ArgumentOutsideDomainException ex) {
-                                                        rEngine.eval("loess[" + r + "] <- " + lastPoint);
-                                                }
-                                        }
+                                        /*
+                                         * if (function != null) { try {
+                                         * rEngine.eval("loess[" + r + "] <- " +
+                                         * function.value((Double)
+                                         * runOrder.getPeak(names.elementAt(col))));
+                                         * lastPoint = function.value((Double)
+                                         * runOrder.getPeak(names.elementAt(col)));
+                                         * } catch
+                                         * (ArgumentOutsideDomainException ex) {
+                                         * rEngine.eval("loess[" + r + "] <- " +
+                                         * lastPoint); } }
+                                         */
                                         rEngine.eval("time[" + r + "] <- " + runOrder.getPeak(names.elementAt(col)));
 
                                 }
