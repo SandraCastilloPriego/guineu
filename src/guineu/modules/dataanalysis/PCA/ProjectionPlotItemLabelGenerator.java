@@ -91,6 +91,7 @@ public class ProjectionPlotItemLabelGenerator extends StandardXYItemLabelGenerat
 
         }
 
+        @Override
         public String generateLabel(XYDataset dataset, int series, int item) {
                 if (dataset instanceof ProjectionPlotDataset) {
                         return generateLabel((ProjectionPlotDataset) dataset, series, item);

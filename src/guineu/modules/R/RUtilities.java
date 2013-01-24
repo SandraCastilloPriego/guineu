@@ -22,10 +22,10 @@
 
 package guineu.modules.R;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.rosuda.JRI.RMainLoopCallbacks;
 import org.rosuda.JRI.Rengine;
-
-import java.util.logging.Logger;
 
 /**
  * Utilities for interfacing with R.
@@ -91,7 +91,7 @@ public class RUtilities {
 
         @Override
         public void rBusy(final Rengine re, final int which) {
-            LOG.finest("rBusy(" + which + ')');
+            LOG.log(Level.FINEST, "rBusy({0})", which);
         }
 
         @Override
@@ -101,7 +101,7 @@ public class RUtilities {
 
         @Override
         public void rShowMessage(final Rengine re, final String message) {
-            LOG.finest("rShowMessage \"" + message + '\"');
+            LOG.log(Level.FINEST, "rShowMessage \"{0}\"", message);
         }
 
         @Override

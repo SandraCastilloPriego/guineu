@@ -16,7 +16,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.preferences;
 
 import guineu.desktop.impl.MainWindow;
@@ -26,9 +25,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.util.Collection;
-
-
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,97 +34,99 @@ import org.w3c.dom.NodeList;
  */
 public class WindowStateParameter implements Parameter {
 
-	@Override
-	public String getName() {
-		return "Guineu window state";
-	}
+        @Override
+        public String getName() {
+                return "Guineu window state";
+        }
 
-	@Override
-	public WindowStateParameter clone() {
-		return this;
-	}
+        @Override
+        public WindowStateParameter clone() {
+                return this;
+        }
 
-	@Override
-	public void loadValueFromXML(Element xmlElement) {
+        @Override
+        public void loadValueFromXML(Element xmlElement) {
 
-		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
+                MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
 
-		// Set window position
-		NodeList posElement = xmlElement.getElementsByTagName("position");
-		if (posElement.getLength() == 1) {
-			String posString = posElement.item(0).getTextContent();
-			String posArray[] = posString.split(":");
-			int posX = Integer.valueOf(posArray[0]);
-			int posY = Integer.valueOf(posArray[1]);
-			mainWindow.setLocation(posX, posY);
-		}
+                // Set window position
+                NodeList posElement = xmlElement.getElementsByTagName("position");
+                if (posElement.getLength() == 1) {
+                        String posString = posElement.item(0).getTextContent();
+                        String posArray[] = posString.split(":");
+                        int posX = Integer.valueOf(posArray[0]);
+                        int posY = Integer.valueOf(posArray[1]);
+                        mainWindow.setLocation(posX, posY);
+                }
 
-		// Set window size
-		NodeList sizeElement = xmlElement.getElementsByTagName("size");
-		if (sizeElement.getLength() == 1) {
-			String sizeString = sizeElement.item(0).getTextContent();
-			String sizeArray[] = sizeString.split(":");
+                // Set window size
+                NodeList sizeElement = xmlElement.getElementsByTagName("size");
+                if (sizeElement.getLength() == 1) {
+                        String sizeString = sizeElement.item(0).getTextContent();
+                        String sizeArray[] = sizeString.split(":");
 
-			int newState = Frame.NORMAL;
+                        int newState = Frame.NORMAL;
 
-			int width = 800, height = 600;
-			if (sizeArray[0].equals("maximized"))
-				newState |= Frame.MAXIMIZED_HORIZ;
-			else
-				width = Integer.parseInt(sizeArray[0]);
+                        int width = 800, height = 600;
+                        if (sizeArray[0].equals("maximized")) {
+                                newState |= Frame.MAXIMIZED_HORIZ;
+                        } else {
+                                width = Integer.parseInt(sizeArray[0]);
+                        }
 
-			if (sizeArray[1].equals("maximized"))
-				newState |= Frame.MAXIMIZED_VERT;
-			else
-				height = Integer.parseInt(sizeArray[1]);
+                        if (sizeArray[1].equals("maximized")) {
+                                newState |= Frame.MAXIMIZED_VERT;
+                        } else {
+                                height = Integer.parseInt(sizeArray[1]);
+                        }
 
-			mainWindow.setSize(width, height);
-			mainWindow.setExtendedState(newState);
-		}
+                        mainWindow.setSize(width, height);
+                        mainWindow.setExtendedState(newState);
+                }
 
-	}
+        }
 
-	@Override
-	public void saveValueToXML(Element xmlElement) {
+        @Override
+        public void saveValueToXML(Element xmlElement) {
 
-		Document doc = xmlElement.getOwnerDocument();
+                Document doc = xmlElement.getOwnerDocument();
 
-		// Get window properties
-		MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
-		Point position = mainWindow.getLocation();
-		int state = mainWindow.getExtendedState();
-		Dimension size = mainWindow.getSize();
-		String mainWindowWidth, mainWindowHeight;
-		if ((state & Frame.MAXIMIZED_HORIZ) != 0)
-			mainWindowWidth = "maximized";
-		else
-			mainWindowWidth = String.valueOf(size.width);
-		if ((state & Frame.MAXIMIZED_VERT) != 0)
-			mainWindowHeight = "maximized";
-		else
-			mainWindowHeight = String.valueOf(size.height);
+                // Get window properties
+                MainWindow mainWindow = (MainWindow) GuineuCore.getDesktop();
+                Point position = mainWindow.getLocation();
+                int state = mainWindow.getExtendedState();
+                Dimension size = mainWindow.getSize();
+                String mainWindowWidth, mainWindowHeight;
+                if ((state & Frame.MAXIMIZED_HORIZ) != 0) {
+                        mainWindowWidth = "maximized";
+                } else {
+                        mainWindowWidth = String.valueOf(size.width);
+                }
+                if ((state & Frame.MAXIMIZED_VERT) != 0) {
+                        mainWindowHeight = "maximized";
+                } else {
+                        mainWindowHeight = String.valueOf(size.height);
+                }
 
-		// Add elements
-		Element positionElement = doc.createElement("position");
-		xmlElement.appendChild(positionElement);
-		positionElement.setTextContent(position.x + ":" + position.y);
+                // Add elements
+                Element positionElement = doc.createElement("position");
+                xmlElement.appendChild(positionElement);
+                positionElement.setTextContent(position.x + ":" + position.y);
 
-		Element sizeElement = doc.createElement("size");
-		xmlElement.appendChild(sizeElement);
-		sizeElement.setTextContent(mainWindowWidth + ":" + mainWindowHeight);
+                Element sizeElement = doc.createElement("size");
+                xmlElement.appendChild(sizeElement);
+                sizeElement.setTextContent(mainWindowWidth + ":" + mainWindowHeight);
 
-	}
+        }
 
         public Object getValue() {
                 return null;
         }
 
         public void setValue(Object newValue) {
-                
         }
 
         public boolean checkValue(Collection errorMessages) {
                 return true;
         }
-
 }

@@ -19,9 +19,9 @@ package guineu.data.parser.impl;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
-import guineu.data.ParameterType;
-import guineu.data.LCMSColumnName;
 import guineu.data.DatasetType;
+import guineu.data.LCMSColumnName;
+import guineu.data.ParameterType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.parser.Parser;
@@ -81,14 +81,13 @@ public class LCMSParserCSV implements Parser {
             setExperimentsName(header);
             reader.close();
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     private Object getType(String data, ParameterType type) {
         switch (type) {
             case BOOLEAN:
-                return new Boolean(data);
+                return Boolean.valueOf(data);
             case INTEGER:
                 return Integer.valueOf(data);
             case DOUBLE:
@@ -143,7 +142,6 @@ public class LCMSParserCSV implements Parser {
             this.dataset.addRow(lipid);
 
         } catch (Exception exception) {
-            exception.printStackTrace();
         }
     }
 
@@ -176,7 +174,6 @@ public class LCMSParserCSV implements Parser {
             }
             reader.close();
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

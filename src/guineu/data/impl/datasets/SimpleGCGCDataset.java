@@ -64,9 +64,7 @@ public class SimpleGCGCDataset implements Dataset {
         public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
 
                 this.nameExperiments = new ArrayList<String>();
-                for (String experimentName : names) {
-                        this.nameExperiments.add(experimentName);
-                }
+                this.nameExperiments.addAll(Arrays.asList(names));
                 this.rowColor = new ArrayList<Color>();
 
                 this.params = parameters;

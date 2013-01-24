@@ -18,9 +18,9 @@
 package guineu.database.intro;
 
 import guineu.data.Dataset;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.parameters.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;

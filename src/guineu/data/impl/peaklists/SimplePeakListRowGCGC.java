@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -516,9 +517,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
          */
         public void setDatum(GCGCDatum[] peaks) {
                 this.row = new ArrayList<GCGCDatum>();
-                for (GCGCDatum datum : peaks) {
-                        this.row.add(datum);
-                }
+                this.row.addAll(Arrays.asList(peaks));
         }
 
         public List<GCGCDatum> getDatumArray() {
@@ -574,7 +573,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
 
                         public Iter(List<GCGCDatum> row) {
                                 ownArray = row;
-                                if (row == null || row.size() == 0) {
+                                if (row == null || row.isEmpty()) {
                                         iterationFinished = true;
                                 } else {
                                         iterationFinished = false;

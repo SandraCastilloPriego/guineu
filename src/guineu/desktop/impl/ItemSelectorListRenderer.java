@@ -19,8 +19,6 @@ package guineu.desktop.impl;
 
 import java.awt.Component;
 import java.awt.Dimension;
-
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;

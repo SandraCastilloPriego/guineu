@@ -18,7 +18,6 @@
 package guineu.desktop.impl.helpsystem;
 
 import java.util.Comparator;
-
 import javax.help.TOCItem;
 
 /**

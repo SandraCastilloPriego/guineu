@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.*;
 import javax.help.HelpSet;
 import javax.help.Map;
+import org.apache.commons.collections.iterators.IteratorEnumeration;
 
 /**
  * @author Taken from MZmine2
@@ -30,11 +31,11 @@ import javax.help.Map;
 public class GuineuHelpMap implements Map {
 
         private HelpSet helpset; // the top HelpSet
-        private Hashtable<String, String> lookup = null;
+        private HashMap<String, String> lookup = null;
         private boolean test;
 
         public GuineuHelpMap(boolean test) {
-                lookup = new Hashtable<String, String>();
+                lookup = new HashMap<String, String>();
                 this.helpset = new HelpSet();
                 this.test = test;
         }
@@ -82,7 +83,7 @@ public class GuineuHelpMap implements Map {
          */
         public Enumeration<String> getAllIDs() {
                 //return new FlatEnumeration(lookup.keys(), helpset);
-                return lookup.keys();
+                return new IteratorEnumeration(lookup.keySet().iterator());
         }
 
         /**
@@ -120,7 +121,7 @@ public class GuineuHelpMap implements Map {
          */
         public boolean isID(URL url) {
                 URL tmp;
-                for (Enumeration<String> e = lookup.keys(); e.hasMoreElements();) {
+                for (Enumeration<String> e = getAllIDs(); e.hasMoreElements();) {
                         try {
                                 String key = (String) e.nextElement();
                                 tmp = new URL((String) lookup.get(key));
@@ -148,7 +149,7 @@ public class GuineuHelpMap implements Map {
                         return null;
                 }
                 String urlString = url.toExternalForm();
-                for (Enumeration<String> e = lookup.keys(); e.hasMoreElements();) {
+                for (Enumeration<String> e = getAllIDs(); e.hasMoreElements();) {
                         String key = (String) e.nextElement();
                         try {
                                 tmp = (String) lookup.get(key);
@@ -194,7 +195,7 @@ public class GuineuHelpMap implements Map {
                 String tmp = null;
                 URL tmpURL = null;
                 List<String> ids = new ArrayList<String>();
-                for (Enumeration<String> e = lookup.keys(); e.hasMoreElements();) {
+                for (Enumeration<String> e = getAllIDs(); e.hasMoreElements();) {
                         String key = (String) e.nextElement();
                         try {
                                 tmp = (String) lookup.get(key);

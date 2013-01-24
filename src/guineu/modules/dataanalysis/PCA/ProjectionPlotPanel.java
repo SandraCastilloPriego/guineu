@@ -38,8 +38,7 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.RectangleInsets;
 
 /**
- * @author Taken from MZmine2
- * http://mzmine.sourceforge.net/
+ * @author Taken from MZmine2 http://mzmine.sourceforge.net/
  *
  */
 public class ProjectionPlotPanel extends ChartPanel {
@@ -50,7 +49,7 @@ public class ProjectionPlotPanel extends ChartPanel {
         private JFreeChart chart;
         private XYPlot plot;
         private ProjectionPlotItemLabelGenerator itemLabelGenerator;
-        private ProjectionPlotRenderer spotRenderer;        
+        private ProjectionPlotRenderer spotRenderer;
 
         public ProjectionPlotPanel(ProjectionPlotWindow masterFrame,
                 ProjectionPlotDataset dataset, ParameterSet parameters) {
@@ -107,42 +106,44 @@ public class ProjectionPlotPanel extends ChartPanel {
                 plot.setDataset(dataset);
 
                 spotRenderer = new ProjectionPlotRenderer(plot, dataset);
-		itemLabelGenerator = new ProjectionPlotItemLabelGenerator(parameters);
-		spotRenderer.setBaseItemLabelGenerator(itemLabelGenerator);
-		spotRenderer.setBaseItemLabelsVisible(true);
-		spotRenderer.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
-						parameters));
-		plot.setRenderer(spotRenderer);
+                itemLabelGenerator = new ProjectionPlotItemLabelGenerator(parameters);
+                spotRenderer.setBaseItemLabelGenerator(itemLabelGenerator);
+                spotRenderer.setBaseItemLabelsVisible(true);
+                spotRenderer.setBaseToolTipGenerator(new ProjectionPlotToolTipGenerator(
+                        parameters));
+                plot.setRenderer(spotRenderer);
 
                 // Setup legend
-                if (createLegend) {                        
+                if (createLegend) {
                         LegendItemCollection legendItemsCollection = new LegendItemCollection();
-			for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
-				Object paramValue = dataset.getGroupParameterValue(groupNumber);                                
-				if (paramValue == null) {
-					// No parameter value available: search for raw data files
-					// within this group, and use their names as group's name
-					String fileNames = new String();
-					for (int itemNumber = 0; itemNumber < dataset
-							.getItemCount(0); itemNumber++) {
-						String rawDataFile = dataset
-								.getRawDataFile(itemNumber);
-						if (dataset.getGroupNumber(itemNumber) == groupNumber)
-							fileNames = fileNames
-									.concat(rawDataFile);
-					}
-					if (fileNames.length() == 0)
-						fileNames = "Empty group";
+                        for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
+                                Object paramValue = dataset.getGroupParameterValue(groupNumber);
+                                if (paramValue == null) {
+                                        // No parameter value available: search for raw data files
+                                        // within this group, and use their names as group's name
+                                        String fileNames = new String();
+                                        for (int itemNumber = 0; itemNumber < dataset
+                                                .getItemCount(0); itemNumber++) {
+                                                String rawDataFile = dataset
+                                                        .getRawDataFile(itemNumber);
+                                                if (dataset.getGroupNumber(itemNumber) == groupNumber) {
+                                                        fileNames = fileNames
+                                                                .concat(rawDataFile);
+                                                }
+                                        }
+                                        if (fileNames.length() == 0) {
+                                                fileNames = "Empty group";
+                                        }
 
-					paramValue = fileNames;
-				}
-				Color nextColor = (Color)spotRenderer.getGroupPaint(groupNumber);
-				Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int)Math.round(255*dataPointAlpha));
-				legendItemsCollection.add(new LegendItem(paramValue.toString(),
-						"-", null, null, spotRenderer.getDataPointsShape(),
-						groupColor));
-			}
-                       plot.setFixedLegendItems(legendItemsCollection);                       
+                                        paramValue = fileNames;
+                                }
+                                Color nextColor = (Color) spotRenderer.getGroupPaint(groupNumber);
+                                Color groupColor = new Color(nextColor.getRed(), nextColor.getGreen(), nextColor.getBlue(), (int) Math.round(255 * dataPointAlpha));
+                                legendItemsCollection.add(new LegendItem(paramValue.toString(),
+                                        "-", null, null, spotRenderer.getDataPointsShape(),
+                                        groupColor));
+                        }
+                        plot.setFixedLegendItems(legendItemsCollection);
                 } else {
 
                         Dataset legends = new SimpleBasicDataset("Legends");

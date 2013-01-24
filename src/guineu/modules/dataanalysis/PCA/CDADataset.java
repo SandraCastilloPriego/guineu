@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import jmprojection.CDA;
 import jmprojection.Preprocess;
 import jmprojection.ProjectionStatus;
-
 import org.jfree.data.xy.AbstractXYDataset;
 
 /**
@@ -115,6 +114,7 @@ public class CDADataset extends AbstractXYDataset implements
 
         }
 
+        @Override
         public String toString() {
                 return datasetTitle;
         }

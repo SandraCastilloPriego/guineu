@@ -45,6 +45,7 @@ class MeanCenteringTask extends AbstractTask {
                 return (double) processedRows / (double) totalRows;
         }
 
+        @Override
         public void cancel() {
                 setStatus(TaskStatus.CANCELED);
         }

@@ -22,10 +22,7 @@ package guineu.desktop.numberFormat;
 import guineu.parameters.UserParameter;
 import java.text.DecimalFormat;
 import java.util.Collection;
-
 import javax.swing.JTextField;
-
-
 import org.w3c.dom.Element;
 
 /**

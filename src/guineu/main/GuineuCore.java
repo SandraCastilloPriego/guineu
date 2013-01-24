@@ -165,7 +165,7 @@ public class GuineuCore implements Runnable {
          * @see java.lang.Runnable#run()
          */
         public void run() {
-                logger.info("Starting Guineu " + getGuineuVersion());
+                logger.log(Level.INFO, "Starting Guineu {0}", getGuineuVersion());
 
                 logger.fine("Loading core classes..");
 
@@ -203,7 +203,7 @@ public class GuineuCore implements Runnable {
 
                         try {
 
-                                logger.finest("Loading module " + moduleClass.getName());
+                                logger.log(Level.FINEST, "Loading module {0}", moduleClass.getName());
 
                                 // create instance and init module
                                 GuineuModule moduleInstance = (GuineuModule) moduleClass.newInstance();
@@ -220,7 +220,6 @@ public class GuineuCore implements Runnable {
                         } catch (Throwable e) {
                                 logger.log(Level.SEVERE,
                                         "Could not load module " + moduleClass, e);
-                                e.printStackTrace();
                                 continue;
                         }
 
@@ -232,7 +231,6 @@ public class GuineuCore implements Runnable {
                         try {
                                 loadConfiguration(CONFIG_FILE);
                         } catch (Exception e) {
-                                e.printStackTrace();
                         }
                 }
 
@@ -322,7 +320,7 @@ public class GuineuCore implements Runnable {
                 DOMSource source = new DOMSource(configuration);
                 transformer.transform(source, result);
 
-                logger.info("Saved configuration to file " + file);
+                logger.log(Level.INFO, "Saved configuration to file {0}", file);
 
         }
 
@@ -354,7 +352,6 @@ public class GuineuCore implements Runnable {
                                         Range r = new Range(Double.valueOf(range[0]), Double.valueOf(range[1]));
                                         standards.put(paramName, r);
                                 } catch (Exception e) {
-                                        e.printStackTrace();
                                 }
 
                         }
@@ -391,7 +388,7 @@ public class GuineuCore implements Runnable {
                         GuineuCore.getDesktop().loadParameterPathFromXML(moduleElement);
                 }
 
-                logger.info("Loaded configuration from file " + file);
+                logger.log(Level.INFO, "Loaded configuration from file {0}", file);
         }
 
         // Number formatting functions

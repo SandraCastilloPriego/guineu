@@ -19,7 +19,6 @@ package guineu.desktop.impl;
 
 import java.awt.Font;
 import java.util.Enumeration;
-
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 

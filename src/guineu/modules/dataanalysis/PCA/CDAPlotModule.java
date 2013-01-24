@@ -27,6 +27,7 @@ public class CDAPlotModule implements GuineuProcessingModule {
 
         private ProjectionPlotParameters parameters = new ProjectionPlotParameters();
 
+        @Override
         public String toString() {
                 return "Curvilinear distance analysis (CDA)";
         }

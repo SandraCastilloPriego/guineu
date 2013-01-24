@@ -21,7 +21,6 @@ package guineu.modules.dataanalysis.PCA;
 import guineu.util.GUIUtils;
 import java.awt.Color;
 import java.awt.Insets;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JToolBar;

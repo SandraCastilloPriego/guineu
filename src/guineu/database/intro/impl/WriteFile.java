@@ -102,7 +102,6 @@ public class WriteFile {
                         w.endRecord();
                         w.close();
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -173,7 +172,6 @@ public class WriteFile {
                         wb.write(fileOut);
                         fileOut.close();
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -207,7 +205,6 @@ public class WriteFile {
                         w.endRecord();
                         w.close();
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -262,7 +259,6 @@ public class WriteFile {
                         w.endRecord();
                         w.close();
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -347,7 +343,6 @@ public class WriteFile {
                         wb.write(fileOut);
                         fileOut.close();
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -752,7 +747,6 @@ public class WriteFile {
                         wb.write(fileOut);
                         fileOut.close();
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 }

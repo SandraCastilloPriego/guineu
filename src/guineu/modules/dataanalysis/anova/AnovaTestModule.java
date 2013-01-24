@@ -17,13 +17,13 @@
  */
 package guineu.modules.dataanalysis.anova;
 
+import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
-import guineu.taskcontrol.Task;
-import guineu.util.dialogs.ExitCode;
-import guineu.data.Dataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.Task;
+import guineu.util.dialogs.ExitCode;
 
 /**
  *

@@ -87,7 +87,6 @@ public class ExpressionParserTSV implements Parser {
 
                         reader.close();
                 } catch (Exception e) {
-                        e.printStackTrace();
                 }
         }
 
@@ -99,14 +98,13 @@ public class ExpressionParserTSV implements Parser {
                         }
                         reader.close();
                 } catch (Exception e) {
-                        e.printStackTrace();
                 }
         }
 
         private Object getType(String data, ParameterType type) {
                 switch (type) {
                         case BOOLEAN:
-                                return new Boolean(data);
+                                return Boolean.valueOf(data);
                         case INTEGER:
                                 return Integer.valueOf(data);
                         case DOUBLE:
@@ -136,7 +134,6 @@ public class ExpressionParserTSV implements Parser {
 
 
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -151,7 +148,6 @@ public class ExpressionParserTSV implements Parser {
                         }
 
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -198,7 +194,6 @@ public class ExpressionParserTSV implements Parser {
                                 this.dataset.addRow(row);
                         }
                 } catch (IOException ex) {
-                        ex.printStackTrace();
                 }
         }
 
@@ -208,17 +203,16 @@ public class ExpressionParserTSV implements Parser {
                         CsvReader reader = new CsvReader(new FileReader(phenoPath));
                         reader.setDelimiter('\t');
                         reader.readHeaders();
-                        String[] header = reader.getHeaders();
+                        String[] phenoHeader = reader.getHeaders();
 
                         while (reader.readRecord()) {
                                 String[] data = reader.getValues();
                                 String sampleName = data[0];
-                                for (int i = 1; i < header.length; i++) {
-                                        dataset.addParameterValue(sampleName, header[i], data[i]);
+                                for (int i = 1; i < phenoHeader.length; i++) {
+                                        dataset.addParameterValue(sampleName, phenoHeader[i], data[i]);
                                 }
                         }
                 } catch (IOException ex) {
-                        ex.printStackTrace();
                 }
         }
 }

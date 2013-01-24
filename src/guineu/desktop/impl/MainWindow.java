@@ -75,7 +75,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                         desktopPane.add(frame);
                         frame.setVisible(true);
                 } catch (Exception e) {
-                        e.printStackTrace();
                 }
         }
 
@@ -192,7 +191,6 @@ public class MainWindow extends JFrame implements GuineuModule, Desktop,
                                 "icons/GuineuIcon.png"));
                         setIconImage(GuineuIcon);
                 } catch (IOException e) {
-                        e.printStackTrace();
                 }
 
                 // Initialize item selector

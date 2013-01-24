@@ -20,7 +20,6 @@ package guineu.modules;
 
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
-import javax.swing.Icon;
 
 
 

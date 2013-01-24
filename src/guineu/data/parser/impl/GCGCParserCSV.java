@@ -18,13 +18,13 @@
 package guineu.data.parser.impl;
 
 import com.csvreader.CsvReader;
-import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.ParameterType;
-import guineu.data.GCGCColumnName;
 import guineu.data.DatasetType;
+import guineu.data.GCGCColumnName;
+import guineu.data.ParameterType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.parser.Parser;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,7 +87,7 @@ public class GCGCParserCSV implements Parser {
                 try {
                         switch (type) {
                                 case BOOLEAN:
-                                        return new Boolean(data);
+                                        return Boolean.valueOf(data);
                                 case INTEGER:
                                         return Integer.valueOf(data);
                                 case DOUBLE:
@@ -130,7 +130,6 @@ public class GCGCParserCSV implements Parser {
                         this.dataset.addAlignmentRow(metabolite);
 
                 } catch (Exception exception) {
-                        exception.printStackTrace();
                 }
         }
 
@@ -163,7 +162,6 @@ public class GCGCParserCSV implements Parser {
                         }
                         reader.close();
                 } catch (Exception e) {
-                        e.printStackTrace();
                 }
         }
 }

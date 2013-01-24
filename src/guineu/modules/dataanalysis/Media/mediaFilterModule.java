@@ -36,6 +36,7 @@ public class mediaFilterModule implements GuineuProcessingModule {
                 return null;
         }
 
+        @Override
         public String toString() {
                 return MODULE_NAME;
         }

@@ -16,7 +16,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.desktop.numberFormat;
 
 import java.text.DecimalFormat;
@@ -34,121 +33,124 @@ import java.util.TimeZone;
  */
 public class RTFormatter extends NumberFormat implements Cloneable {
 
-	private RTFormatterType embeddedNumberFormatterType;
-	private Format embeddedFormatter;
+        private RTFormatterType embeddedNumberFormatterType;
+        private Format embeddedFormatter;
 
-	public RTFormatter(RTFormatterType type, String pattern) {
-		setFormat(type, pattern);
-	}
+        public RTFormatter(RTFormatterType type, String pattern) {
+                setFormat(type, pattern);
+        }
 
-	public void setFormat(RTFormatterType type, String pattern) {
-		
-		assert type != null;
-		
-		this.embeddedNumberFormatterType = type;
-		
-		switch (type) {
-		case Time:
+        public void setFormat(RTFormatterType type, String pattern) {
 
-			// We want to avoid the 12-hour format ('h') and use 24-hour format
-			// starting with 0 instead ('H')
-			pattern = pattern.replace('h', 'H');
+                assert type != null;
 
-			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-			// important for handling low values, otherwise in different Time
-			// zones we may get to negative numbers
-			sdf.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
-			embeddedFormatter = sdf;
+                this.embeddedNumberFormatterType = type;
 
-			break;
-		case NumberInMin:
-		case NumberInSec:
-			embeddedFormatter = new DecimalFormat(pattern);
-			break;
-		}
-	}
+                switch (type) {
+                        case Time:
 
-	public RTFormatterType getType() {
-		return embeddedNumberFormatterType;
-	}
+                                // We want to avoid the 12-hour format ('h') and use 24-hour format
+                                // starting with 0 instead ('H')
+                                pattern = pattern.replace('h', 'H');
 
-	public String getPattern() {
-		switch (embeddedNumberFormatterType) {
-		case Time:
-			return ((SimpleDateFormat) embeddedFormatter).toPattern();
-		case NumberInMin:
-		case NumberInSec:
-			return ((DecimalFormat) embeddedFormatter).toPattern();
-		}
-		return null;
-	}
+                                SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                                // important for handling low values, otherwise in different Time
+                                // zones we may get to negative numbers
+                                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+                                embeddedFormatter = sdf;
 
-	/**
-	 * @see java.text.NumberFormat#format(double, java.lang.StringBuffer,
-	 *      java.text.FieldPosition)
-	 */
-	public synchronized StringBuffer format(double arg0, StringBuffer arg1,
-			FieldPosition arg2) {
+                                break;
+                        case NumberInMin:
+                        case NumberInSec:
+                                embeddedFormatter = new DecimalFormat(pattern);
+                                break;
+                }
+        }
 
-		// conversion to msec
-		if (embeddedNumberFormatterType == RTFormatterType.Time)
-			arg0 *= 1000;
+        public RTFormatterType getType() {
+                return embeddedNumberFormatterType;
+        }
 
-		// conversion to min
-		if (embeddedNumberFormatterType == RTFormatterType.NumberInMin)
-			arg0 /= 60;
+        public String getPattern() {
+                switch (embeddedNumberFormatterType) {
+                        case Time:
+                                return ((SimpleDateFormat) embeddedFormatter).toPattern();
+                        case NumberInMin:
+                        case NumberInSec:
+                                return ((DecimalFormat) embeddedFormatter).toPattern();
+                }
+                return null;
+        }
 
-		return embeddedFormatter.format(arg0, arg1, arg2);
-	}
+        /**
+         * @see java.text.NumberFormat#format(double, java.lang.StringBuffer,
+         * java.text.FieldPosition)
+         */
+        public synchronized StringBuffer format(double arg0, StringBuffer arg1,
+                FieldPosition arg2) {
 
-	/**
-	 * @see java.text.NumberFormat#format(long, java.lang.StringBuffer,
-	 *      java.text.FieldPosition)
-	 */
-	public synchronized StringBuffer format(long arg0, StringBuffer arg1,
-			FieldPosition arg2) {
+                // conversion to msec
+                if (embeddedNumberFormatterType == RTFormatterType.Time) {
+                        arg0 *= 1000;
+                }
 
-		// conversion to msec
-		if (embeddedNumberFormatterType == RTFormatterType.Time)
-			arg0 *= 1000;
+                // conversion to min
+                if (embeddedNumberFormatterType == RTFormatterType.NumberInMin) {
+                        arg0 /= 60;
+                }
 
-		// conversion to min
-		if (embeddedNumberFormatterType == RTFormatterType.NumberInMin)
-			arg0 /= 60;
+                return embeddedFormatter.format(arg0, arg1, arg2);
+        }
 
-		return embeddedFormatter.format(arg0, arg1, arg2);
-	}
+        /**
+         * @see java.text.NumberFormat#format(long, java.lang.StringBuffer,
+         * java.text.FieldPosition)
+         */
+        public synchronized StringBuffer format(long arg0, StringBuffer arg1,
+                FieldPosition arg2) {
 
-	/**
-	 * @see java.text.NumberFormat#parse(java.lang.String,
-	 *      java.text.ParsePosition)
-	 */
-	public synchronized Number parse(String str, ParsePosition pos) {
-		try {
-			switch (embeddedNumberFormatterType) {
-			case Time:
-				SimpleDateFormat sdf = (SimpleDateFormat) embeddedFormatter;
-				double result = ((sdf.parse(str, pos).getTime()) / 1000.0);
-				return result;
-			case NumberInMin:
-				DecimalFormat df = (DecimalFormat) embeddedFormatter;
-				result = df.parse(str, pos).doubleValue() * 60;
-				return result;
-			case NumberInSec:
-				df = (DecimalFormat) embeddedFormatter;
-				return df.parse(str, pos);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+                // conversion to msec
+                if (embeddedNumberFormatterType == RTFormatterType.Time) {
+                        arg0 *= 1000;
+                }
 
-	/**
-	 * @see java.text.NumberFormat#clone()
-	 */
-	public RTFormatter clone() {
-		return new RTFormatter(embeddedNumberFormatterType, getPattern());
-	}
+                // conversion to min
+                if (embeddedNumberFormatterType == RTFormatterType.NumberInMin) {
+                        arg0 /= 60;
+                }
 
+                return embeddedFormatter.format(arg0, arg1, arg2);
+        }
+
+        /**
+         * @see java.text.NumberFormat#parse(java.lang.String,
+         * java.text.ParsePosition)
+         */
+        public synchronized Number parse(String str, ParsePosition pos) {
+                try {
+                        switch (embeddedNumberFormatterType) {
+                                case Time:
+                                        SimpleDateFormat sdf = (SimpleDateFormat) embeddedFormatter;
+                                        double result = ((sdf.parse(str, pos).getTime()) / 1000.0);
+                                        return result;
+                                case NumberInMin:
+                                        DecimalFormat df = (DecimalFormat) embeddedFormatter;
+                                        result = df.parse(str, pos).doubleValue() * 60;
+                                        return result;
+                                case NumberInSec:
+                                        df = (DecimalFormat) embeddedFormatter;
+                                        return df.parse(str, pos);
+                        }
+                } catch (Exception e) {
+                }
+                return null;
+        }
+
+        /**
+         * @see java.text.NumberFormat#clone()
+         */
+        @Override
+        public RTFormatter clone() {
+                return new RTFormatter(embeddedNumberFormatterType, getPattern());
+        }
 }

@@ -145,9 +145,7 @@ public class ParameterDataModel extends AbstractTableModel {
                 Object[][] oldRows = o.clone();
                 o = new Object[oldRows.length][oldRows[0].length + 1];
                 for (int i = 0; i < oldRows.length; i++) {
-                        for (int j = 0; j < oldRows[0].length; j++) {
-                                o[i][j] = oldRows[i][j];
-                        }
+                        System.arraycopy(oldRows[i], 0, o[i], 0, oldRows[0].length);
                         o[i][oldRows[0].length] = " ";
                 }
         }
@@ -156,9 +154,7 @@ public class ParameterDataModel extends AbstractTableModel {
                 int[][] oldRows = o.clone();
                 o = new int[oldRows.length][oldRows[0].length + 1];
                 for (int i = 0; i < oldRows.length; i++) {
-                        for (int j = 0; j < oldRows[0].length; j++) {
-                                o[i][j] = oldRows[i][j];
-                        }
+                        System.arraycopy(oldRows[i], 0, o[i], 0, oldRows[0].length);
                         o[i][oldRows[0].length] = 0;
                 }
         }
