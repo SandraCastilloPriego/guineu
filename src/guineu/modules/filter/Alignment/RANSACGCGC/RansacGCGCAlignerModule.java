@@ -57,7 +57,7 @@ public class RansacGCGCAlignerModule implements GuineuProcessingModule {
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.ALIGNMENT;
+                return GuineuModuleCategory.MYLLY;
         }
 
         public String getIcon() {
@@ -65,6 +65,6 @@ public class RansacGCGCAlignerModule implements GuineuProcessingModule {
         }
 
         public boolean setSeparator() {
-                return true;
+                return false;
         }
 }

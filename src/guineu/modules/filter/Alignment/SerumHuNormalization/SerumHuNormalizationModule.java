@@ -26,7 +26,7 @@ import guineu.taskcontrol.Task;
 
 public class SerumHuNormalizationModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Human Serum Normalization";
+        public static final String MODULE_NAME = "Control samples Normalization";
         private SerumHuNormalizationParameters parameters = new SerumHuNormalizationParameters();
         
         public String toString() {
@@ -55,7 +55,7 @@ public class SerumHuNormalizationModule implements GuineuProcessingModule {
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.ALIGNMENT;
+                return GuineuModuleCategory.NORMALIZATION;
         }
 
         public String getIcon() {
