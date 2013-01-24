@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -23,9 +23,8 @@ import guineu.data.PeakListRow;
 import guineu.data.impl.SampleDescription;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Transcriptomics data set implementation.
@@ -36,16 +35,16 @@ public class SimpleExpressionDataset implements Dataset {
 
         private String datasetName;
         private List<PeakListRow> peakList;
-        private Vector<String> sampleNames;
-        private Vector<String> parameterNames;
-        private Vector<String> metaDataNames;
-        private Hashtable<String, SampleDescription> parameters;
+        private List<String> sampleNames;
+        private List<String> parameterNames;
+        private List<String> metaDataNames;
+        private HashMap<String, SampleDescription> parameters;
         private DatasetType type;
         private String infoDataset = "";
         private int ID;
         private int numberRows = 0;
-        Hashtable<String, String> sampleType;
-        private List<Color> rowColor; 
+        HashMap<String, String> sampleType;
+        private List<Color> rowColor;
 
         /**
          *
@@ -54,12 +53,12 @@ public class SimpleExpressionDataset implements Dataset {
         public SimpleExpressionDataset(String datasetName) {
                 this.datasetName = datasetName;
                 this.peakList = new ArrayList<PeakListRow>();
-                this.sampleNames = new Vector<String>();
-                this.metaDataNames = new Vector<String>();
-                this.parameters = new Hashtable<String, SampleDescription>();
-                this.parameterNames = new Vector<String>();
-                this.sampleType = new Hashtable<String, String>();
-                this.rowColor = new ArrayList<Color>(); 
+                this.sampleNames = new ArrayList<String>();
+                this.metaDataNames = new ArrayList<String>();
+                this.parameters = new HashMap<String, SampleDescription>();
+                this.parameterNames = new ArrayList<String>();
+                this.sampleType = new HashMap<String, String>();
+                this.rowColor = new ArrayList<Color>();
                 type = DatasetType.EXPRESSION;
         }
 
@@ -81,7 +80,7 @@ public class SimpleExpressionDataset implements Dataset {
                         parameters.put(experimentName, p);
                 }
                 if (!this.parameterNames.contains(parameterName)) {
-                        parameterNames.addElement(parameterName);
+                        parameterNames.add(parameterName);
                 }
         }
 
@@ -104,8 +103,8 @@ public class SimpleExpressionDataset implements Dataset {
                 }
         }
 
-        public Vector<String> getParameterAvailableValues(String parameter) {
-                Vector<String> availableParameterValues = new Vector<String>();
+        public List<String> getParameterAvailableValues(String parameter) {
+                List<String> availableParameterValues = new ArrayList<String>();
                 for (String rawDataFile : this.getAllColumnNames()) {
                         String paramValue = this.getParametersValue(rawDataFile, parameter);
                         if (!availableParameterValues.contains(paramValue) && !paramValue.isEmpty()) {
@@ -115,7 +114,7 @@ public class SimpleExpressionDataset implements Dataset {
                 return availableParameterValues;
         }
 
-        public Vector<String> getParametersName() {
+        public List<String> getParametersName() {
                 return parameterNames;
         }
 
@@ -132,14 +131,14 @@ public class SimpleExpressionDataset implements Dataset {
         }
 
         public void addColumnName(String sampleName) {
-                this.sampleNames.addElement(sampleName);
+                this.sampleNames.add(sampleName);
         }
 
         public void addColumnName(String columnName, int position) {
-                this.sampleNames.insertElementAt(columnName, position);
+                this.sampleNames.set(position, columnName);
         }
 
-        public Vector<String> getAllColumnNames() {
+        public List<String> getAllColumnNames() {
                 return this.sampleNames;
         }
 
@@ -224,7 +223,7 @@ public class SimpleExpressionDataset implements Dataset {
                 return sampleType.get(sampleName);
         }
 
-        public Vector<String> getMetaDataNames() {
+        public List<String> getMetaDataNames() {
                 return this.metaDataNames;
         }
 
@@ -249,7 +248,7 @@ public class SimpleExpressionDataset implements Dataset {
         public Color[] getRowColor() {
                 return this.rowColor.toArray(new Color[0]);
         }
-        
+
         public void addRowColor(Color rowColor) {
                 this.rowColor.add(rowColor);
         }

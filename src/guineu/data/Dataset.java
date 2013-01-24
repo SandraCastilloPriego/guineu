@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,7 +19,6 @@ package guineu.data;
 
 import java.awt.Color;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Interface for data set
@@ -64,7 +63,7 @@ public interface Dataset {
          *
          * @return Column's name
          */
-        public Vector<String> getAllColumnNames();
+        public List<String> getAllColumnNames();
 
         /**
          * Returns number of columns. It doesn't take into account the columns corresponding
@@ -216,20 +215,41 @@ public interface Dataset {
          * Returns a list of all possible values of one parameter in the columns.
          *
          * @param parameter Parameter's name
-         * @return Vector of All possible values of this parameter
+         * @return List of All possible values of this parameter
          */
-        public Vector<String> getParameterAvailableValues(String parameter);
+        public List<String> getParameterAvailableValues(String parameter);
 
         /**
          * Remove the sample names.
          */
-        public void removeSampleNames();       
+        public void removeSampleNames();
 
+
+        /**
+         * Returns the color of each row. It is used to export the colors into the file.
+         * @return
+         */
         public Color[] getRowColor();
-        
+
+        /**
+         * Adds a new color to the color row list.
+         * @param rowColor
+         */
         public void addRowColor(Color rowColor);
 
+        /**
+         * Used to obtain the color of a specific cell.
+         * @param row Row where the cell is.
+         * @param column Column where the cell is.
+         * @return Color of a specific cell.
+         */
         public Color getCellColor(int row, int column);
 
+        /**
+         * Changes the color of a specific cell.
+         * @param cellColor Color assigned to the cell.
+         * @param row Row where the cell is.
+         * @param column Column where the cell is.
+         */
         public void setCellColor(Color cellColor, int row, int column);
 }

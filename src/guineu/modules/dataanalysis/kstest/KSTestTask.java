@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -73,7 +73,7 @@ public class KSTestTask extends AbstractTask {
                                         PeakListRow peakListRow = dataset.getRow(row);
                                         for (int c = 0; c < dataset.getNumberCols(); c++) {
                                                 int r = c + 1;
-                                                double value = (Double) peakListRow.getPeak(dataset.getAllColumnNames().elementAt(c));
+                                                double value = (Double) peakListRow.getPeak(dataset.getAllColumnNames().get(c));
                                                 rEngine.eval("x[" + r + "] <- " + value);
                                                 stats.addValue(value);
                                         }

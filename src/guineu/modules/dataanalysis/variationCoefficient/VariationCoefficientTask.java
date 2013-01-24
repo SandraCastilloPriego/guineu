@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -29,7 +29,8 @@ import guineu.util.Tables.DataTableModel;
 import guineu.util.Tables.impl.PushableTable;
 import guineu.util.internalframe.DataInternalFrame;
 import java.awt.Dimension;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -71,7 +72,7 @@ public class VariationCoefficientTask extends AbstractTask {
                 setStatus(TaskStatus.PROCESSING);
                 try {
                         progress = 0.0f;
-                        Vector<VariationCoefficientData> data = new Vector<VariationCoefficientData>();
+                        List<VariationCoefficientData> data = new ArrayList<VariationCoefficientData>();
                         for (Dataset dataset : datasets) {
                                 VariationCoefficientData vcdata = new VariationCoefficientData();
                                 vcdata.variationCoefficient = getvariationCoefficient(dataset);
@@ -79,7 +80,7 @@ public class VariationCoefficientTask extends AbstractTask {
                                 vcdata.datasetName = dataset.getDatasetName();
                                 vcdata.numberMol = dataset.getNumberRows();
                                 vcdata.numberExperiments = dataset.getNumberCols();
-                                data.addElement(vcdata);
+                                data.add(vcdata);
                         }
 
                         DataTableModel model = new VariationCoefficientDataModel(data);

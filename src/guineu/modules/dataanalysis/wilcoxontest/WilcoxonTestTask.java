@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -26,7 +26,6 @@ import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
@@ -74,7 +73,7 @@ public class WilcoxonTestTask extends AbstractTask {
                         progress = 0.5f;
 
                         Dataset newDataset = FileUtils.getDataset(dataset, "Wilcoxon_test - ");                      
-                        Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                        List<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
                         for (String group : availableParameterValues) {
                                 newDataset.addColumnName("Mean of " + group);
                         }
@@ -127,13 +126,13 @@ public class WilcoxonTestTask extends AbstractTask {
                 } else {
                         try {
                                 // Determine groups for selected raw data files
-                                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                                List<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
 
                                 int numberOfGroups = availableParameterValues.size();
 
                                 if (numberOfGroups > 1) {
-                                        parameter1 = availableParameterValues.firstElement();
-                                        String parameter2 = availableParameterValues.elementAt(1);
+                                        parameter1 = availableParameterValues.get(0);
+                                        String parameter2 = availableParameterValues.get(1);
 
                                         for (String sampleName : dataset.getAllColumnNames()) {
                                                 if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {

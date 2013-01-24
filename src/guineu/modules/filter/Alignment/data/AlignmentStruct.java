@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,7 +19,7 @@
 package guineu.modules.filter.Alignment.data;
 
 import java.util.Comparator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  *
@@ -29,13 +29,13 @@ public class AlignmentStruct {
     public double Score;
     public int ID1;
     public int ID2;
-    public Vector<AlignStructMol> v;
+    public List<AlignStructMol> v;
     public AlignmentStruct(){};
-    public AlignmentStruct(Vector<AlignStructMol> v){
+    public AlignmentStruct(List<AlignStructMol> v){
         this.v = v;
     }
     public void addLipids(AlignStructMol struct){
-        this.v.addElement(struct);
+        this.v.add(struct);
     }
 }
 class chromComparator implements Comparator<AlignmentStruct> {

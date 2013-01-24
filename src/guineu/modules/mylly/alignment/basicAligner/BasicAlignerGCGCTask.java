@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -25,7 +25,7 @@ import guineu.main.GuineuCore;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -145,7 +145,7 @@ public class BasicAlignerGCGCTask extends AbstractTask {
                         }
 
                         // Create a table of mappings for best scores
-                        Hashtable<PeakListRow, PeakListRow> alignmentMapping = new Hashtable<PeakListRow, PeakListRow>();
+                        HashMap<PeakListRow, PeakListRow> alignmentMapping = new HashMap<PeakListRow, PeakListRow>();
 
                         // Iterate scores by descending order
                         Iterator<RowVsRowScore> scoreIterator = scoreSet.iterator();

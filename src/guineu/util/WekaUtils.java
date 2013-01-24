@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,11 +19,7 @@ package guineu.util;
 
 import guineu.data.Dataset;
 import guineu.data.PeakListRow;
-import weka.core.Attribute;
-import weka.core.FastVector;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SparseInstance;
+import weka.core.*;
 
 public class WekaUtils {
 
@@ -50,7 +46,7 @@ public class WekaUtils {
 
                 for (int i = 0; i < dataset.getNumberCols(); i++) {
 
-                    String sampleName = dataset.getAllColumnNames().elementAt(i);
+                    String sampleName = dataset.getAllColumnNames().get(i);
 
                     double[] values = new double[data.numAttributes()];
                     cont = 0;
@@ -77,7 +73,7 @@ public class WekaUtils {
                     double[] values = new double[data.numAttributes()];
                     cont = 0;
                     for (int i = 0; i < dataset.getNumberCols(); i++) {
-                        String sampleName = dataset.getAllColumnNames().elementAt(i);
+                        String sampleName = dataset.getAllColumnNames().get(i);
                         values[cont++] = (Double) row.getPeak(sampleName);
                     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,17 +21,19 @@ import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
-import guineu.database.retrieve.*;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.database.retrieve.DataBase;
 import guineu.main.GuineuCore;
 import guineu.modules.database.openQualityControlFileDB.SampleInfo;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javax.swing.JOptionPane;
 import oracle.jdbc.pool.OracleDataSource;
 
@@ -44,7 +46,6 @@ public class OracleRetrievement implements DataBase {
     private int totalRows;
     private int completedRows;
     private Connection conn;
-    private static int passes = 0;
     private String password = "sandra";
 
     public OracleRetrievement() {
@@ -105,7 +106,7 @@ public class OracleRetrievement implements DataBase {
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM DATASET ORDER BY DATASETID asc");
 
-            Vector<String[]> vt = new Vector<String[]>();
+            List<String[]> vt = new ArrayList<String[]>();
             while (r.next()) {
                 String[] data = new String[7];
                 data[0] = r.getString("DATASETID");
@@ -120,7 +121,7 @@ public class OracleRetrievement implements DataBase {
             }
             String[][] datafinal = new String[vt.size()][7];
             for (int i = 0; i < vt.size(); i++) {
-                String[] data = (String[]) vt.elementAt(i);
+                String[] data = (String[]) vt.get(i);
                 for (int e = 0; e < 7; e++) {
                     datafinal[i][e] = data[e];
                 }
@@ -158,13 +159,13 @@ public class OracleRetrievement implements DataBase {
 
     }
 
-    public Vector<String> getSampleNames(int datasetID) {
+    public List<String> getSampleNames(int datasetID) {
         Statement st = null;
         try {
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + datasetID + "'ORDER BY EXPERIMENT_ID asc");
 
-            Vector<String> vt = new Vector<String>();
+            List<String> vt = new ArrayList<String>();
             while (r.next()) {
                 vt.add(r.getString("NAME"));
             }
@@ -195,13 +196,13 @@ public class OracleRetrievement implements DataBase {
     return null;
     }
     }*/
-    private synchronized Hashtable<Integer, String> getExperimentsID(Dataset dataset, Connection conn) {
+    private synchronized HashMap<Integer, String> getExperimentsID(Dataset dataset, Connection conn) {
         Statement st = null;
         try {
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM DATASET_COLUMNS WHERE DATASET_ID = '" + dataset.getID() + "'ORDER BY EXPERIMENT_ID asc");
 
-            Hashtable<Integer, String> vt = new Hashtable<Integer, String>();
+            HashMap<Integer, String> vt = new HashMap<Integer, String>();
             while (r.next()) {
                 try {
                     if (dataset.getAllColumnNames().contains(r.getString("NAME"))) {
@@ -302,7 +303,7 @@ public class OracleRetrievement implements DataBase {
 
         try {
 
-            Hashtable<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
+            HashMap<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
 
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM MOL_LCMS WHERE EPID = '" + dataset.getID() + "'");
@@ -334,7 +335,7 @@ public class OracleRetrievement implements DataBase {
         }
     }
 
-    private synchronized void setPeaks(Hashtable<Integer, String> experimentIDs, PeakListRow peakListRow, int molID, Connection conn, DatasetType type) {
+    private synchronized void setPeaks(HashMap<Integer, String> experimentIDs, PeakListRow peakListRow, int molID, Connection conn, DatasetType type) {
         Statement st = null;
         try {
 
@@ -391,7 +392,7 @@ public class OracleRetrievement implements DataBase {
         try {
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM QBIXSTUDIES ORDER BY ID asc");
-            Hashtable<String, String[]> studies = new Hashtable<String, String[]>();
+            HashMap<String, String[]> studies = new HashMap<String, String[]>();
 
             String[] studiesNames = getStudies();
 
@@ -492,9 +493,6 @@ public class OracleRetrievement implements DataBase {
             turn++;
 
         }
-
-        passes = turn;
-
     }
 
     private static <T extends Comparable<T>> boolean isSorted(ArrayList<T> arg) {
@@ -515,7 +513,7 @@ public class OracleRetrievement implements DataBase {
 
         try {
 
-            Hashtable<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
+            HashMap<Integer, String> experimentIDs = this.getExperimentsID(dataset, conn);
 
             st = conn.createStatement();
             ResultSet r = st.executeQuery("SELECT * FROM MOL_GCGCTOF WHERE EPID = '" + dataset.getID() + "'");

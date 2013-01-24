@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -37,8 +37,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         private int standard, ID, aligment;
         private boolean control, selection;
         private String VTTid = "", VTTAllIDs = "";
-        private Hashtable<String, Double> peaks;
-        private Hashtable<String, String> peaksString;
+        private HashMap<String, Double> peaks;
+        private HashMap<String, String> peaksString;
         private String pubchemID = "", comment, formula, url;
         private String identificationType = IdentificationType.UNKNOWN.toString();
         private List<Color> colors;
@@ -55,8 +55,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
                 this.Name = Name;
                 this.allNames = allNames;
                 this.identificationType = identificationType;
-                this.peaks = new Hashtable<String, Double>();
-                this.peaksString = new Hashtable<String, String>();
+                this.peaks = new HashMap<String, Double>();
+                this.peaksString = new HashMap<String, String>();
                 this.aligment = -1;
                 this.colors = new ArrayList<Color>();
                 this.comment = comment;
@@ -65,8 +65,8 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         }
 
         public SimplePeakListRowLCMS() {
-                this.peaks = new Hashtable<String, Double>();
-                this.peaksString = new Hashtable<String, String>();
+                this.peaks = new HashMap<String, Double>();
+                this.peaksString = new HashMap<String, String>();
                 this.colors = new ArrayList<Color>();
                 this.ID = -1;
                 this.aligment = -1;
@@ -224,7 +224,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         }
 
         public void removePeaks() {
-                this.peaks = new Hashtable<String, Double>();
+                this.peaks = new HashMap<String, Double>();
         }
 
         public Double[] getPeaks(String[] columnNames) {
@@ -259,7 +259,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         }
 
         public void removeNoSamplePeaks(String[] group) {
-                Hashtable<String, Double> newPeaks = new Hashtable<String, Double>();
+                HashMap<String, Double> newPeaks = new HashMap<String, Double>();
                 for (String name : group) {
                         if (this.peaks.containsKey(name)) {
                                 newPeaks.put(name, this.peaks.get(name));
@@ -341,7 +341,7 @@ public class SimplePeakListRowLCMS implements PeakListRow {
         }
 
 
-        public Hashtable<String, Double> getPeaksTable() {
+        public HashMap<String, Double> getPeaksTable() {
                 return this.peaks;
         }
 

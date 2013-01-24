@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -26,7 +26,7 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -84,9 +84,9 @@ class LinearNormalizerTask extends AbstractTask {
                 }
 
 
-                // This hashtable maps rows from original alignment result to rows of
+                // This HashMap maps rows from original alignment result to rows of
                 // the normalized alignment
-                Hashtable<PeakListRow, PeakListRow> rowMap = new Hashtable<PeakListRow, PeakListRow>();
+                HashMap<PeakListRow, PeakListRow> rowMap = new HashMap<PeakListRow, PeakListRow>();
 
                 // Create new peak list
                 //	normalizedPeakList = new Dataset(

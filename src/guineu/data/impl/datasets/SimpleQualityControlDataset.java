@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,9 +17,10 @@
  */
 package guineu.data.impl.datasets;
 
-import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import java.util.Vector;
+import guineu.data.PeakListRow;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -29,13 +30,13 @@ public class SimpleQualityControlDataset extends SimpleBasicDataset {
 
     private String date, sampleSet, ionMode, sampleType, comments = "", injection;
     
-    Vector<PeakListRow> PeakListDB;
-    Vector<String> nameExperimentsDB;
+    List<PeakListRow> PeakListDB;
+    List<String> nameExperimentsDB;
 
     public SimpleQualityControlDataset(String datasetName) {
         super(datasetName);
-        this.PeakListDB = new Vector<PeakListRow>();
-        this.nameExperimentsDB = new Vector<String>();
+        this.PeakListDB = new ArrayList<PeakListRow>();
+        this.nameExperimentsDB = new ArrayList<String>();
         type = DatasetType.QUALITYCONTROL;
     }
 
@@ -65,7 +66,7 @@ public class SimpleQualityControlDataset extends SimpleBasicDataset {
         }
     }
     
-    public Vector<PeakListRow> getRowsDB(){
+    public List<PeakListRow> getRowsDB(){
         return this.PeakListDB;
     }
 

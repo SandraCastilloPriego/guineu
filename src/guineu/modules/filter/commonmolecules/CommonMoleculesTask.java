@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -25,7 +25,8 @@ import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -36,11 +37,11 @@ class CommonMoleculesTask extends AbstractTask {
         private String[][] databaseValues;
         private int finishedLines = 0;
         private String dataBaseFile;
-        Vector<lipid> commonNames;
+        List<lipid> commonNames;
 
         CommonMoleculesTask(Dataset[] peakList) {
                 this.peakLists = peakList;
-                commonNames = new Vector<lipid>();
+                commonNames = new ArrayList<lipid>();
         }
 
         public void cancel() {
@@ -78,7 +79,7 @@ class CommonMoleculesTask extends AbstractTask {
                                         } else {
                                                 mol.sumApears();
                                                 mol.addDatasetName(dataset.getDatasetName());
-                                                commonNames.addElement(mol);
+                                                commonNames.add(mol);
                                         }
                                 }
                         }

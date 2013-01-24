@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -20,17 +20,11 @@ package guineu.modules.mylly.alignment.scoreAligner.functions;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
 import guineu.modules.mylly.alignment.scoreAligner.scorer.ScoreCalculator;
-import guineu.modules.mylly.datastruct.ConsensusSpectrum;
-import guineu.modules.mylly.datastruct.GCGCDatum;
-import guineu.modules.mylly.datastruct.GCGCDatumWithConcentration;
-import guineu.modules.mylly.datastruct.Peak;
-import guineu.modules.mylly.datastruct.Spectrum;
-
+import guineu.modules.mylly.datastruct.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * @author jmjarkko
@@ -55,7 +49,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
         private String CAS;
         private GCGCDatum base;
         private Set<String> names;
-        private Vector<String> CASes;
+        private List<String> CASes;
         private ConsensusSpectrum spectrum;
 
         @Override
@@ -73,7 +67,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
                 p.base = base;
                 p.CAS = CAS;
                 p.names = new HashSet<String>(names);
-                p.CASes = new Vector<String>(CASes);
+                p.CASes = new ArrayList<String>(CASes);
                 p.spectrum = spectrum;
                 p.maxSimiliarity = maxSimiliarity;
                 p.meanRT1 = meanRT1;
@@ -89,7 +83,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
                 peaks = new GCGCDatum[n];
                 isEmpty = true;
                 names = new HashSet<String>();
-                CASes = new Vector<String>();
+                CASes = new ArrayList<String>();
         }
 
         /**
@@ -140,7 +134,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
                 }
                 if (peak.isIdentified()) {
                         names.add(peak.getName());
-                        CASes.addElement(peak.getCAS());
+                        CASes.add(peak.getCAS());
                         identified = true;
                 }
                 if (peak.getSimilarity() > maxSimiliarity) {
@@ -181,7 +175,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
                 return CAS;
         }
 
-        public Vector<String> getCASes() {
+        public List<String> getCASes() {
                 return CASes;
         }
 

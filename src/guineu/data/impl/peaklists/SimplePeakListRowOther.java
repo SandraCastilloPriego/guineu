@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -22,7 +22,7 @@ import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -37,11 +37,11 @@ public class SimplePeakListRowOther implements PeakListRow {
 
         private int ID;
         private boolean selection;
-        private Hashtable<String, String> peaks;
+        private HashMap<String, String> peaks;
         private List<Color> colors;
 
         public SimplePeakListRowOther() {
-                this.peaks = new Hashtable<String, String>();
+                this.peaks = new HashMap<String, String>();
                 this.ID = -1;
                 this.colors = new ArrayList<Color>();
 
@@ -83,7 +83,7 @@ public class SimplePeakListRowOther implements PeakListRow {
         }
 
         public void removePeaks() {
-                this.peaks = new Hashtable<String, String>();
+                this.peaks = new HashMap<String, String>();
         }
 
         public String[] getPeaks(String[] columnNames) {

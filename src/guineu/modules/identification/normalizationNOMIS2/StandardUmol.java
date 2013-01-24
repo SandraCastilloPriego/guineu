@@ -1,51 +1,53 @@
 /*
-    Copyright 2007-2012 VTT Biotechnology
-
-    This file is part of MULLU.
-
-    MULLU is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation.
-
-    MULLU is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with MULLU; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * Copyright 2007-2013 VTT Biotechnology
+ * This file is part of Guineu.
+ *
+ * Guineu is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * Guineu is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+ * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 package guineu.modules.identification.normalizationNOMIS2;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.Vector;
+
+
 
 /**
  *
  * @author scsandra
  */
 public class StandardUmol {
-    Vector<StandardData> data;
+    List<StandardData> data;
     
     
     public StandardUmol(){
-        this.data = new Vector<StandardData>();
+        this.data = new ArrayList<StandardData>();
     }
     
     public int getStandardNumber(){
         return data.size();
     }    
    
-    public void addStandard(String Name, Vector standard){
+    public void addStandard(String Name, List standard){
         data.add(new StandardData(Name, standard));
     }
     
     public int getIndexOfStandard(String Name){
         try{
             for(int i = 0; i < this.data.size(); i++){                
-                if(this.data.elementAt(i).Name.matches("^"+Name+".*")){
+                if(this.data.get(i).Name.matches("^"+Name+".*")){
                     return i;
                 }
             }
@@ -56,11 +58,11 @@ public class StandardUmol {
     }
     
     public double getM(int index){
-        return this.data.elementAt(index).M;
+        return this.data.get(index).M;
     }
     
     public double getValue(int index, int e){
-        return this.data.elementAt(index).standard.elementAt(e);
+        return this.data.get(index).standard.get(e);
     }
     
     public int getNameType(){
@@ -71,14 +73,14 @@ public class StandardUmol {
 class StandardData{
     double M;
     String Name;
-    Vector<Double> standard;
-    public StandardData(String Name, Vector<Double> standard){
+    List<Double> standard;
+    public StandardData(String Name, List<Double> standard){
         this.Name = Name;
         this.standard = standard;
         this.M = this.setM(standard);
     }
     
-    public double setM(Vector<Double> standard){
+    public double setM(List<Double> standard){
         double sum = 0;
         for(Double Z : standard){
             sum += Math.log10(Z);

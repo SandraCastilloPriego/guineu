@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -36,9 +36,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -66,13 +67,13 @@ public class ParameterDialog extends JDialog implements ActionListener {
         private Clipboard system;
         private StringSelection stsel;
         private String rowstring, value;
-        private Vector<register> registers;
+        private List<register> registers;
         private Dataset dataset;
         int indexRegister = 0;
 
         /** Creates new form ParameterDialog */
         public ParameterDialog(String title, String helpID, Dataset dataset) {
-                registers = new Vector<register>();
+                registers = new ArrayList<register>();
                 this.dataset = dataset;
 
                 initComponents();
@@ -81,7 +82,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 this.addParameterButton.addActionListener(this);
                 this.saveButton.addActionListener(this);
                 this.deleteParameterButton.addActionListener(this);
-
+                this.CleanTableButton.addActionListener(this);
                 // The first column is a list of samples taken from the data set
                 if (dataset != null) {
                         model = new ParameterDataModel(dataset, table);
@@ -114,7 +115,6 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 table = new javax.swing.JTable();
                 btnPanel = new javax.swing.JPanel();
                 deleteParameterButton = new javax.swing.JButton();
-                loadFileButton = new javax.swing.JButton();
                 jPanel1 = new javax.swing.JPanel();
                 saveButton = new javax.swing.JButton();
                 cancelButton = new javax.swing.JButton();
@@ -122,17 +122,20 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 jLabel1 = new javax.swing.JLabel();
                 parameterNameTF = new javax.swing.JTextField();
                 addParameterButton = new javax.swing.JButton();
+                jPanel4 = new javax.swing.JPanel();
+                loadFileButton = new javax.swing.JButton();
+                CleanTableButton = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
                 setMinimumSize(new java.awt.Dimension(700, 500));
+                setResizable(false);
+                getContentPane().setLayout(new java.awt.FlowLayout());
 
                 jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.PAGE_AXIS));
 
                 jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
                 jLabel2.setText("Parameters list:");
                 jPanel3.add(jLabel2);
-
-                jScrollPane1.setPreferredSize(new java.awt.Dimension(800, 502));
 
                 table.setModel(new javax.swing.table.DefaultTableModel(
                         new Object [][] {
@@ -162,18 +165,6 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
                 btnPanel.add(deleteParameterButton, gridBagConstraints);
 
-                loadFileButton.setText("Load parameter file");
-                loadFileButton.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                loadFileButtonActionPerformed(evt);
-                        }
-                });
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 2;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-                btnPanel.add(loadFileButton, gridBagConstraints);
-
                 saveButton.setText("Save");
                 jPanel1.add(saveButton);
 
@@ -202,22 +193,25 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
                 btnPanel.add(jPanel2, gridBagConstraints);
 
+                loadFileButton.setText("Load parameter file");
+                loadFileButton.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                loadFileButtonActionPerformed(evt);
+                        }
+                });
+                jPanel4.add(loadFileButton);
+
+                CleanTableButton.setText("Clean complete table");
+                jPanel4.add(CleanTableButton);
+
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 2;
+                btnPanel.add(jPanel4, gridBagConstraints);
+
                 jPanel3.add(btnPanel);
 
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-                getContentPane().setLayout(layout);
-                layout.setHorizontalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                );
-                layout.setVerticalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                );
+                getContentPane().add(jPanel3);
 
                 pack();
         }// </editor-fold>//GEN-END:initComponents
@@ -226,6 +220,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 openSelectionFile();
         }//GEN-LAST:event_loadFileButtonActionPerformed
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JButton CleanTableButton;
         private javax.swing.JButton addParameterButton;
         private javax.swing.JPanel btnPanel;
         private javax.swing.JButton cancelButton;
@@ -235,12 +230,14 @@ public class ParameterDialog extends JDialog implements ActionListener {
         private javax.swing.JPanel jPanel1;
         private javax.swing.JPanel jPanel2;
         private javax.swing.JPanel jPanel3;
+        private javax.swing.JPanel jPanel4;
         private javax.swing.JScrollPane jScrollPane1;
         private javax.swing.JButton loadFileButton;
         private javax.swing.JTextField parameterNameTF;
         private javax.swing.JButton saveButton;
         private javax.swing.JTable table;
         // End of variables declaration//GEN-END:variables
+        private javax.swing.JButton deleteAllParameters;
 
         public void actionPerformed(ActionEvent e) {
 
@@ -274,6 +271,22 @@ public class ParameterDialog extends JDialog implements ActionListener {
                 if (src == deleteParameterButton) {
                         model.addParameters(dataset);
                         dataset.deleteParameter(table.getColumnName(table.getSelectedColumn()));
+                        model = new ParameterDataModel(dataset, table);
+                        table.setModel(model);
+
+                        // Size of the firts column which corresponds to the sample list column
+                        table.getColumnModel().getColumn(0).setMinWidth(300);
+
+                        table.validate();
+                }
+                
+                // Deletes all the columns
+                if(src == CleanTableButton){
+                        model.addParameters(dataset);
+                        for(int i = 1; i < table.getColumnCount(); i++){
+                                String name = table.getColumnName(i);
+                                dataset.deleteParameter(name);
+                        }
                         model = new ParameterDataModel(dataset, table);
                         table.setModel(model);
 
@@ -368,7 +381,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
                         }
 
                         newRegister.getNewValues();
-                        this.registers.addElement(newRegister);
+                        this.registers.add(newRegister);
                         this.indexRegister = this.registers.size() - 1;
                         table.validate();
                 }
@@ -392,14 +405,14 @@ public class ParameterDialog extends JDialog implements ActionListener {
                         }
 
                         newRegister.getNewValues();
-                        this.registers.addElement(newRegister);
+                        this.registers.add(newRegister);
                         this.indexRegister = this.registers.size() - 1;
                         table.validate();
                 }
 
                 // Undo
                 if (e.getActionCommand().compareTo("Undo") == 0) {
-                        this.registers.elementAt(indexRegister).undo();
+                        this.registers.get(indexRegister).undo();
                         if (indexRegister > 0) {
                                 indexRegister--;
                         }
@@ -408,7 +421,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
 
                 // Redo
                 if (e.getActionCommand().compareTo("Redo") == 0) {
-                        this.registers.elementAt(indexRegister).redo();
+                        this.registers.get(indexRegister).redo();
                         if (indexRegister < this.registers.size() - 1) {
                                 indexRegister++;
                         }

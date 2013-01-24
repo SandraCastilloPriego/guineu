@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -29,7 +29,6 @@ import guineu.util.Tables.DataTableModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 public class DatasetExpressionDataModel extends AbstractTableModel implements DataTableModel {
@@ -60,7 +59,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                 this.rowColor = color;
         }
 
-        public void setParameters() {
+        public final void setParameters() {
                 this.columns = new ArrayList<ExpressionDataColumnName>();
                 fixNumberColumns = 0;
                 parameters = GuineuCore.getExpressionColumnsParameters();
@@ -124,7 +123,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                                 Object value = peakRow.getVar(columns.get(column).getGetFunctionName());
                                 return value;
                         }
-                        return peakRow.getPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns));
+                        return peakRow.getPeak(this.dataset.getAllColumnNames().get(column - this.fixNumberColumns));
                 } catch (Exception e) {
                         return null;
                 }
@@ -135,7 +134,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                 if (columnIndex < this.fixNumberColumns) {
                         return (String) this.columns.get(columnIndex).toString();
                 } else {
-                        return this.dataset.getAllColumnNames().elementAt(columnIndex - this.fixNumberColumns);
+                        return this.dataset.getAllColumnNames().get(columnIndex - this.fixNumberColumns);
                 }
         }
 
@@ -155,7 +154,7 @@ public class DatasetExpressionDataModel extends AbstractTableModel implements Da
                 if (column < this.fixNumberColumns) {
                         peakRow.setVar(this.columns.get(column).getSetFunctionName(), aValue);
                 } else {
-                        peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns), (Double) aValue);
+                        peakRow.setPeak(this.dataset.getAllColumnNames().get(column - this.fixNumberColumns), (Double) aValue);
                 }
                 fireTableCellUpdated(row, column);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -23,7 +23,6 @@ import guineu.modules.database.openQualityControlFileDB.SampleInfo;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Functions for retrievement of data from the database.
@@ -52,7 +51,7 @@ public interface DataBase {
      * @param ID Data set ID
      * @return List of sample names
      */
-    public Vector<String> getSampleNames(int ID);
+    public List<String> getSampleNames(int ID);
 
     /**
      * Loads every row information of one LC-MS data set from the database.

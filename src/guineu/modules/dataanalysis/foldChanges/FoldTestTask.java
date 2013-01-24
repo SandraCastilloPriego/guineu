@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,13 +17,13 @@
  */
 package guineu.modules.dataanalysis.foldChanges;
 
-import guineu.data.PeakListRow;
 import guineu.data.Dataset;
+import guineu.data.PeakListRow;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
-import java.util.Vector;
+import java.util.List;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
@@ -45,18 +45,22 @@ public class FoldTestTask extends AbstractTask {
                 this.parameter = parameter;
         }
 
+        @Override
         public String getTaskDescription() {
                 return "Fold Changes... ";
         }
 
+        @Override
         public double getFinishedPercentage() {
                 return progress;
         }
 
+        @Override
         public void cancel() {
                 setStatus(TaskStatus.CANCELED);
         }
 
+        @Override
         public void run() {
                 try {
                         setStatus(TaskStatus.PROCESSING);
@@ -119,13 +123,13 @@ public class FoldTestTask extends AbstractTask {
                 } else {
                         try {
                                 // Determine groups for selected raw data files
-                                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                                List<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
 
                                 int numberOfGroups = availableParameterValues.size();
 
                                 if (numberOfGroups > 1) {
-                                        parameter1 = availableParameterValues.firstElement();
-                                        String parameter2 = availableParameterValues.elementAt(1);
+                                        parameter1 = availableParameterValues.get(0);
+                                        String parameter2 = availableParameterValues.get(1);
 
                                         for (String sampleName : dataset.getAllColumnNames()) {
                                                 if (dataset.getParametersValue(sampleName, parameter) != null && dataset.getParametersValue(sampleName, parameter).equals(parameter1)) {

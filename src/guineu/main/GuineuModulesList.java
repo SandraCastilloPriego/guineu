@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  *
  * This file is part of Guineu.
  *
@@ -87,8 +87,10 @@ import guineu.modules.dataanalysis.variableSelection.annealing.AnnealingModule;
 import guineu.modules.dataanalysis.wilcoxontest.WilcoxonTestModule;
 import guineu.modules.dataanalysis.zeroImputation.ZeroImputationModule;
 import guineu.modules.file.saveExpressionFile.SaveExpressionFileModule;
+import guineu.modules.filter.Alignment.RANSACGCGC.RansacGCGCAlignerModule;
+import guineu.modules.filter.Alignment.SerumHuNormalization.SerumHuNormalizationModule;
 import guineu.modules.filter.logtransformation.LogTransformationModule;
-import guineu.modules.identification.purgeIdentification.PurgeIdentificationModule;
+//import guineu.modules.identification.purgeIdentification.PurgeIdentificationModule;
 import guineu.modules.visualization.Rintensityboxplot.BoxPlotModule;
 import guineu.modules.visualization.intensityboxplot.IntensityBoxPlotModule;
 import guineu.modules.visualization.intensityplot.IntensityPlotModule;
@@ -120,9 +122,11 @@ public class GuineuModulesList {
 
                 // Ransac alignment and centering
                 RansacAlignerModule.class,
+                RansacGCGCAlignerModule.class,
                 MeanCenteringModule.class,
                 MedianCenteringModule.class,
                 STDNormalizationModule.class,
+                SerumHuNormalizationModule.class,
 
                 // Filtering
                 UnitsChangeFilterModule.class,
@@ -138,7 +142,7 @@ public class GuineuModulesList {
                 CustomDBSearchModule.class,
                 RelatedPeaksFilterModule.class,
                 AdductSearchModule.class,
-                PurgeIdentificationModule.class,
+              //  PurgeIdentificationModule.class,
 
                 // Normalization
                 LinearNormalizerModule.class,

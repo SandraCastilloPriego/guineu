@@ -4,8 +4,7 @@ package guineu.modules.dataanalysis.standardVariation;
 
 import java.awt.Color;
 import java.awt.Dimension;
-
-import java.util.Vector;
+import java.util.List;
 import javax.swing.JInternalFrame;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -17,7 +16,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 
 public class RegressionChart extends JInternalFrame {
-	public RegressionChart(Vector data, String Name, String Y){
+	public RegressionChart(List data, String Name, String Y){
             super(Name, 
                   true, //resizable
                   true, //closable
@@ -26,7 +25,7 @@ public class RegressionChart extends JInternalFrame {
             this.setSize(500, 500);
             final XYSeries s1 = new XYSeries("Series 1");    
             for(int i = 0; i < data.size(); i++){
-                s1.add((Double)data.elementAt(i), new Double(i));	    	
+                s1.add((Double)data.get(i), new Double(i));	    	
             }
 
             final XYSeriesCollection dataset = new XYSeriesCollection();

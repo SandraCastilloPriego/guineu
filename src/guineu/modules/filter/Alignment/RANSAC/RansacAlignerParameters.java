@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,13 +19,7 @@ package guineu.modules.filter.Alignment.RANSAC;
 
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
-import guineu.parameters.parametersType.BooleanParameter;
-import guineu.parameters.parametersType.DoubleParameter;
-import guineu.parameters.parametersType.IntegerParameter;
-import guineu.parameters.parametersType.MZToleranceParameter;
-import guineu.parameters.parametersType.PercentParameter;
-import guineu.parameters.parametersType.RTToleranceParameter;
-import guineu.parameters.parametersType.StringParameter;
+import guineu.parameters.parametersType.*;
 import guineu.util.dialogs.ExitCode;
 import java.text.NumberFormat;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -32,7 +32,7 @@ import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.util.dialogs.ExitCode;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -52,7 +52,7 @@ public class MainMenu extends JMenuBar implements ActionListener {
                 reportMenu*/, visualizationMenu;
         private JWindowsMenu windowsMenu;
         private JMenuItem showAbout;
-        private Map<JMenuItem, GuineuProcessingModule> moduleMenuItems = new Hashtable<JMenuItem, GuineuProcessingModule>();
+        private Map<JMenuItem, GuineuProcessingModule> moduleMenuItems = new HashMap<JMenuItem, GuineuProcessingModule>();
 
         MainMenu() {
 

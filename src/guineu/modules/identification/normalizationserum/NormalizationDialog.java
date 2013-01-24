@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -22,7 +22,7 @@ import guineu.util.components.HelpButton;
 import guineu.util.dialogs.ExitCode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -33,13 +33,13 @@ import javax.swing.JOptionPane;
  */
 public class NormalizationDialog extends javax.swing.JDialog implements ActionListener {
 
-    private Vector<StandardUmol> standards;
+    private List<StandardUmol> standards;
     private ExitCode exit = ExitCode.UNKNOWN;
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private JButton btnHelp;
 
     /** Creates new form NormalizationDialog */
-    public NormalizationDialog(Vector<StandardUmol> standards, String helpID) {
+    public NormalizationDialog(List<StandardUmol> standards, String helpID) {
         super(GuineuCore.getDesktop().getMainFrame(),
                 "Please fill the standards...", true);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,15 +17,15 @@
  */
 package guineu.modules.database.openDataDB;
 
-import guineu.modules.database.tools.CheckNode;
-import guineu.modules.database.tools.CheckRenderer;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
-import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.main.GuineuCore;
+import guineu.modules.database.tools.CheckNode;
+import guineu.modules.database.tools.CheckRenderer;
 import guineu.util.dialogs.ExitCode;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -33,12 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import javax.swing.JDialog;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -56,15 +51,15 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
     private List<newParameterDialog> parameters;
     private List<Dataset> datasets;
     private JTree tree;
-    private Hashtable<CheckNode, String[]> nodeTable;
-    private Hashtable<CheckNode, NodeInfo> nodeInfoTable;
+    private HashMap<CheckNode, String[]> nodeTable;
+    private HashMap<CheckNode, NodeInfo> nodeInfoTable;
 
     /** Creates new form DatasetOpenDialog */
     public DatasetOpenDialog() {
         super(GuineuCore.getDesktop().getMainFrame(), "Opening Database...", true);
         initComponents();
-        nodeTable = new Hashtable<CheckNode, String[]>();
-        nodeInfoTable = new Hashtable<CheckNode, NodeInfo>();
+        nodeTable = new HashMap<CheckNode, String[]>();
+        nodeInfoTable = new HashMap<CheckNode, NodeInfo>();
         parameters = new ArrayList<newParameterDialog>();
         datasets = new ArrayList<Dataset>();
         tree = createTree();
@@ -257,7 +252,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
                 if (node.isSelected && dataset.getNumberCols() == 0) {
                     try {
                         DataBase db = new OracleRetrievement();
-                        Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
+                        List<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
                         for (String sampleName : sampleNames) {
                             dataset.addColumnName(sampleName);
                         }
@@ -614,7 +609,7 @@ public class DatasetOpenDialog extends JDialog implements ActionListener {
         if (node.getChildCount() == 0 && data != null) {
             try {
                 DataBase db = new OracleRetrievement();
-                Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
+                List<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
                 for (String sampleName : sampleNames) {
                     String[] param = db.getParameters(sampleName);
 

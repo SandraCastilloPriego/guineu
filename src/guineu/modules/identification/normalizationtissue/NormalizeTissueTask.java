@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,8 +21,8 @@ import guineu.data.Dataset;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -33,7 +33,7 @@ public class NormalizeTissueTask extends AbstractTask {
         private Dataset dataset;
         private NormalizeTissue serum;
 
-        public NormalizeTissueTask(Dataset simpleDataset, Vector<StandardUmol> standards, Hashtable<String, Double> weights) {
+        public NormalizeTissueTask(Dataset simpleDataset, List<StandardUmol> standards, HashMap<String, Double> weights) {
                 this.dataset = simpleDataset.clone();
                 this.serum = new NormalizeTissue(dataset, standards, weights);
         }

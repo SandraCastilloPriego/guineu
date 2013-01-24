@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,8 @@
  */
 package guineu.modules.identification.normalizationtissue;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -26,85 +27,85 @@ import javax.swing.table.AbstractTableModel;
  */
 public class StandardsDataModel extends AbstractTableModel {
 
-    private String[] columns;
-    private Vector<String> name;
-    private Vector<Double> value;//content all data
-    private int numColumns;
-    private int numRows;
-    Vector<StandardUmol> standards;
+        private String[] columns;
+        private List<String> name;
+        private List<Double> value;//content all data
+        private int numColumns;
+        private int numRows;
+        List<StandardUmol> standards;
 
-    public StandardsDataModel(Vector<StandardUmol> standards) {
+        public StandardsDataModel(List<StandardUmol> standards) {
 
-        this.standards = standards;
+                this.standards = standards;
 
-        columns = new String[2];
-        columns[0] = "Standard Name";
-        columns[1] = "Amount";
-        name = new Vector<String>();
-        value = new Vector<Double>();
-        for (StandardUmol std : standards) {
-            name.addElement(std.getName());
-            value.addElement(std.getRealAmount());
-        }
-        numRows = name.size();
-        numColumns = 2;
-    }
-
-    public int getRowCount() {
-        return numRows;
-    }
-
-    public int getColumnCount() {
-        return numColumns;
-    }
-
-    @Override
-    public String getColumnName(int columnIndex) {
-        return columns[columnIndex];
-    }
-
-    @Override
-    public void setValueAt(Object aValue, int row, int column) {
-        if (column == 0) {
-            name.setElementAt((String) aValue, row);
-        } else {
-            value.setElementAt((Double) aValue, row);
+                columns = new String[2];
+                columns[0] = "Standard Name";
+                columns[1] = "Amount";
+                name = new ArrayList<String>();
+                value = new ArrayList<Double>();
+                for (StandardUmol std : standards) {
+                        name.add(std.getName());
+                        value.add(std.getRealAmount());
+                }
+                numRows = name.size();
+                numColumns = 2;
         }
 
-    }
-
-    @Override
-    public Class<?> getColumnClass(int c) {
-        if (getValueAt(0, c) != null) {
-            return getValueAt(0, c).getClass();
-        } else {
-            return Object.class;
+        public int getRowCount() {
+                return numRows;
         }
-    }
 
-    @Override
-    public boolean isCellEditable(int row, int column) {
-        return true;
-    }
-
-    public Object getValueAt(int row, int column) {
-        if (column == 0) {
-            return name.elementAt(row);
-        } else {
-            return value.elementAt(row);
+        public int getColumnCount() {
+                return numColumns;
         }
-    }
 
-    public void fillStandards() {
-        for (int i = 0; i < this.name.size(); i++) {
-            this.standards.elementAt(i).setRealAmount(value.elementAt(i));
+        @Override
+        public String getColumnName(int columnIndex) {
+                return columns[columnIndex];
         }
-    }
 
-    public void resetStandards() {
-        for (int i = 0; i < this.value.size(); i++) {
-            this.value.set(i, 0.0);
+        @Override
+        public void setValueAt(Object aValue, int row, int column) {
+                if (column == 0) {
+                        name.add(row, (String) aValue);
+                } else {
+                        value.add(row, (Double) aValue);
+                }
+
         }
-        this.fireTableDataChanged();
-    }
+
+        @Override
+        public Class<?> getColumnClass(int c) {
+                if (getValueAt(0, c) != null) {
+                        return getValueAt(0, c).getClass();
+                } else {
+                        return Object.class;
+                }
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+                return true;
+        }
+
+        public Object getValueAt(int row, int column) {
+                if (column == 0) {
+                        return name.get(row);
+                } else {
+                        return value.get(row);
+                }
+        }
+
+        public void fillStandards() {
+                for (int i = 0; i < this.name.size(); i++) {
+                        this.standards.get(i).setRealAmount(value.get(i));
+                }
+        }
+
+        public void resetStandards() {
+                for (int i = 0; i < this.value.size(); i++) {
+                        this.value.set(i, 0.0);
+                }
+                this.fireTableDataChanged();
+        }
 }

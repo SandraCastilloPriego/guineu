@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,7 +18,6 @@
 package guineu.modules.filter.Alignment.RANSAC;
 
 import guineu.data.Dataset;
-import guineu.data.DatasetType;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
@@ -29,13 +28,7 @@ import guineu.parameters.parametersType.RTTolerance;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.Range;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.*;
 import org.apache.commons.math.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math.optimization.fitting.PolynomialFitter;
 import org.apache.commons.math.optimization.general.GaussNewtonOptimizer;
@@ -124,7 +117,7 @@ public class RansacAlignerTask extends AbstractTask {
                 // Iterate source peak lists
                 for (Dataset peakList : peakLists) {
                         if (peakList != peakLists[0]) {
-                                Hashtable<PeakListRow, PeakListRow> alignmentMapping = this.getAlignmentMap(peakList);
+                                HashMap<PeakListRow, PeakListRow> alignmentMapping = this.getAlignmentMap(peakList);
 
                                 // Align all rows using mapping
                                 for (PeakListRow row : peakList.getRows()) {
@@ -201,11 +194,11 @@ public class RansacAlignerTask extends AbstractTask {
          * @param peakList
          * @return
          */
-        private Hashtable<PeakListRow, PeakListRow> getAlignmentMap(
+        private HashMap<PeakListRow, PeakListRow> getAlignmentMap(
                 Dataset peakList) {
 
                 // Create a table of mappings for best scores
-                Hashtable<PeakListRow, PeakListRow> alignmentMapping = new Hashtable<PeakListRow, PeakListRow>();
+                HashMap<PeakListRow, PeakListRow> alignmentMapping = new HashMap<PeakListRow, PeakListRow>();
 
                 if (alignedPeakList.getNumberRows() < 1) {
                         return alignmentMapping;
@@ -215,7 +208,7 @@ public class RansacAlignerTask extends AbstractTask {
                 TreeSet<RowVsRowScore> scoreSet = new TreeSet<RowVsRowScore>();
 
                 // RANSAC algorithm
-                Vector<AlignStructMol> list = ransacPeakLists(alignedPeakList, peakList);
+                List<AlignStructMol> list = ransacPeakLists(alignedPeakList, peakList);
                 PolynomialFunction function = this.getPolynomialFunction(list, ((SimpleLCMSDataset) alignedPeakList).getRowsRTRange());
 
                 PeakListRow allRows[] = peakList.getRows().toArray(new PeakListRow[0]);
@@ -281,9 +274,9 @@ public class RansacAlignerTask extends AbstractTask {
          * @param peakList
          * @return
          */
-        private Vector<AlignStructMol> ransacPeakLists(Dataset alignedPeakList,
+        private List<AlignStructMol> ransacPeakLists(Dataset alignedPeakList,
                 Dataset peakList) {
-                Vector<AlignStructMol> list = this.getVectorAlignment(alignedPeakList,
+                List<AlignStructMol> list = this.getVectorAlignment(alignedPeakList,
                         peakList);
                 ransac = new RANSAC(parameters);
                 ransac.alignment(list);
@@ -297,7 +290,7 @@ public class RansacAlignerTask extends AbstractTask {
          * @param list
          * @return
          */
-        private PolynomialFunction getPolynomialFunction(Vector<AlignStructMol> list, Range RTrange) {
+        private PolynomialFunction getPolynomialFunction(List<AlignStructMol> list, Range RTrange) {
                 List<RTs> data = new ArrayList<RTs>();
                 for (AlignStructMol m : list) {
                         if (m.Aligned) {
@@ -377,10 +370,10 @@ public class RansacAlignerTask extends AbstractTask {
          * @param peakListY
          * @return vector which contains all the possible aligned peaks.
          */
-        private Vector<AlignStructMol> getVectorAlignment(Dataset peakListX,
+        private List<AlignStructMol> getVectorAlignment(Dataset peakListX,
                 Dataset peakListY) {
 
-                Vector<AlignStructMol> alignMol = new Vector<AlignStructMol>();
+                List<AlignStructMol> alignMol = new ArrayList<AlignStructMol>();
                 for (PeakListRow row : peakListX.getRows()) {
 
                         if (getStatus() == TaskStatus.CANCELED) {
@@ -394,7 +387,7 @@ public class RansacAlignerTask extends AbstractTask {
                         PeakListRow candidateRows[] = ((SimpleLCMSDataset) peakListY).getRowsInsideRTAndMZRange(rtRange, mzRange);
 
                         for (PeakListRow candidateRow : candidateRows) {
-                                alignMol.addElement(new AlignStructMol((SimplePeakListRowLCMS) row, (SimplePeakListRowLCMS) candidateRow));
+                                alignMol.add(new AlignStructMol((SimplePeakListRowLCMS) row, (SimplePeakListRowLCMS) candidateRow));
                         }
                 }
 

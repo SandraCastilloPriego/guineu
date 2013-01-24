@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,11 +19,7 @@ package guineu.desktop.impl.helpsystem;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.MissingResourceException;
-import java.util.Vector;
-
+import java.util.*;
 import javax.help.HelpSet;
 import javax.help.Map;
 
@@ -193,42 +189,43 @@ public class GuineuHelpMap implements Map {
          *            The URL to compare the Map IDs to.
          * @return Enumeration of Map.IDs
          */
+        @Override
         public Enumeration<Object> getIDs(URL url) {
                 String tmp = null;
                 URL tmpURL = null;
-                Vector<String> ids = new Vector<String>();
+                List<String> ids = new ArrayList<String>();
                 for (Enumeration<String> e = lookup.keys(); e.hasMoreElements();) {
                         String key = (String) e.nextElement();
                         try {
                                 tmp = (String) lookup.get(key);
                                 tmpURL = new URL(tmp);
                                 if (url.sameFile(tmpURL) == true) {
-                                        ids.addElement(key);
+                                        ids.add(key);
                                 }
                         } catch (Exception ex) {
                         }
                 }
-                return new FlatEnumeration(ids.elements(), helpset);
+                return new FlatEnumeration(ids.listIterator(), helpset);
         }
 
         private static class FlatEnumeration implements Enumeration<Object> {
 
-                private Enumeration<String> e;
+                private ListIterator<String> e;
                 private HelpSet hs;
 
-                public FlatEnumeration(Enumeration<String> e, HelpSet hs) {
+                public FlatEnumeration(ListIterator<String> e, HelpSet hs) {
                         this.e = e;
                         this.hs = hs;
                 }
 
                 public boolean hasMoreElements() {
-                        return e.hasMoreElements();
+                        return e.hasNext();
                 }
 
                 public Object nextElement() {
                         Object back = null;
                         try {
-                                back = ID.create((String) e.nextElement(), hs);
+                                back = ID.create((String) e.next(), hs);
                         } catch (Exception ex) {
                         }
                         return back;

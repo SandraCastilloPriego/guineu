@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -30,8 +30,8 @@ public class RTs implements Comparator<RTs> {
 	}
 
 	public RTs(double RT, double RT2) {
-		this.RT = RT + 0.001 / Math.random();
-		this.RT2 = RT2 + 0.001 / Math.random();
+		this.RT = RT + (0.001 / Math.random());
+		this.RT2 = RT2 + (0.001 / Math.random());
 	}
 
 	public int compare(RTs arg0, RTs arg1) {

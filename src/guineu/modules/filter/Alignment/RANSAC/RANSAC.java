@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,12 +18,11 @@
 package guineu.modules.filter.Alignment.RANSAC;
 
 import guineu.util.Range;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
 import org.apache.commons.math.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math.optimization.fitting.PolynomialFitter;
 import org.apache.commons.math.optimization.general.GaussNewtonOptimizer;
@@ -32,15 +31,13 @@ import org.apache.commons.math.stat.regression.SimpleRegression;
 public class RANSAC {
 
         /**
-         * input:
-         * data - a set of observed data points
-         * n - the minimum number of data values required to fit the model
-         * k - the maximum number of iterations allowed in the algorithm
-         * t - a threshold value for determining when a data point fits a model
-         * d - the number of close data values required to assert that a model fits well to data
+         * input: data - a set of observed data points n - the minimum number of
+         * data values required to fit the model k - the maximum number of
+         * iterations allowed in the algorithm t - a threshold value for
+         * determining when a data point fits a model d - the number of close
+         * data values required to assert that a model fits well to data
          *
-         * output:
-         * model which best fit the data
+         * output: model which best fit the data
          */
         private int n;
         private double d = 1;
@@ -68,9 +65,11 @@ public class RANSAC {
 
         /**
          * Set all parameters and start ransac.
-         * @param data vector with the points which represent all possible alignments.
+         *
+         * @param data vector with the points which represent all possible
+         * alignments.
          */
-        public void alignment(Vector<AlignStructMol> data) {
+        public void alignment(List<AlignStructMol> data) {
                 try {
                         // If the model is non linear 4 points are taken to build the model,
                         // if it is linear only 2 points are taken.
@@ -100,7 +99,9 @@ public class RANSAC {
 
         /**
          * Calculate k (number of trials)
-         * @return number of trials "k" required to select a subset of n good data points.
+         *
+         * @return number of trials "k" required to select a subset of n good
+         * data points.
          */
         private double getK() {
                 double w = numRatePoints;
@@ -110,9 +111,11 @@ public class RANSAC {
 
         /**
          * RANSAC algorithm
-         * @param data vector with the points which represent all possible alignments.
+         *
+         * @param data vector with the points which represent all possible
+         * alignments.
          */
-        public void ransac(Vector<AlignStructMol> data) {
+        public void ransac(List<AlignStructMol> data) {
                 double besterr = 9.9E99;
 
                 for (int iterations = 0; iterations < k; iterations++, iterationsDone++) {
@@ -144,7 +147,7 @@ public class RANSAC {
                                 if (error < besterr) {
                                         besterr = error;
                                         for (int i = 0; i < data.size(); i++) {
-                                                AlignStructMol alignStruct = data.elementAt(i);
+                                                AlignStructMol alignStruct = data.get(i);
                                                 if (alignStruct.ransacAlsoInLiers || alignStruct.ransacMaybeInLiers) {
                                                         alignStruct.Aligned = true;
                                                 } else {
@@ -159,7 +162,7 @@ public class RANSAC {
                         }
                         // remove the model
                         for (int i = 0; i < data.size(); i++) {
-                                AlignStructMol alignStruct = data.elementAt(i);
+                                AlignStructMol alignStruct = data.get(i);
                                 alignStruct.ransacAlsoInLiers = false;
                                 alignStruct.ransacMaybeInLiers = false;
                         }
@@ -169,17 +172,19 @@ public class RANSAC {
         }
 
         /**
-         * Take the initial points ramdoly. The points are divided by the initial number
-         * of points. If the fractions contain enough number of points took one point
-         * from each part.
-         * @param data vector with the points which represent all possible alignments.
+         * Take the initial points ramdoly. The points are divided by the
+         * initial number of points. If the fractions contain enough number of
+         * points took one point from each part.
+         *
+         * @param data vector with the points which represent all possible
+         * alignments.
          * @return false if there is any problem.
          */
-        private boolean getInitN(Vector<AlignStructMol> data) {
+        private boolean getInitN(List<AlignStructMol> data) {
                 if (data.size() > n) {
                         Collections.sort(data, new AlignStructMol());
-                        double min = data.firstElement().RT;
-                        double max = data.lastElement().RT;
+                        double min = data.get(0).RT;
+                        double max = data.get(data.size() - 1).RT;
 
                         Range rtRange = new Range(min, ((max - min) / 2) + min);
 
@@ -187,8 +192,8 @@ public class RANSAC {
                         int cont = 0, bucle = 0;
                         while (cont < n / 2 && bucle < 1000) {
                                 int index = (int) (data.size() * Math.random());
-                                if (!data.elementAt(index).ransacMaybeInLiers && rtRange.contains(data.elementAt(index).RT)) {
-                                        data.elementAt(index).ransacMaybeInLiers = true;
+                                if (!data.get(index).ransacMaybeInLiers && rtRange.contains(data.get(index).RT)) {
+                                        data.get(index).ransacMaybeInLiers = true;
                                         cont++;
 
                                 }
@@ -205,8 +210,8 @@ public class RANSAC {
                         while (cont < n && bucle < 1000) {
 
                                 int index = (int) (data.size() * Math.random());
-                                if (!data.elementAt(index).ransacMaybeInLiers && rtRange.contains(data.elementAt(index).RT)) {
-                                        data.elementAt(index).ransacMaybeInLiers = true;
+                                if (!data.get(index).ransacMaybeInLiers && rtRange.contains(data.get(index).RT)) {
+                                        data.get(index).ransacMaybeInLiers = true;
                                         cont++;
                                 }
                                 bucle++;
@@ -220,15 +225,15 @@ public class RANSAC {
                 }
         }
 
-        private void getN(Vector<AlignStructMol> data, int newN) {
+        private void getN(List<AlignStructMol> data, int newN) {
                 if (newN < 1) {
                         return;
                 }
                 int cont = 0;
                 while (cont < newN) {
                         int index = (int) (data.size() * Math.random());
-                        if (!data.elementAt(index).ransacMaybeInLiers) {
-                                data.elementAt(index).ransacMaybeInLiers = true;
+                        if (!data.get(index).ransacMaybeInLiers) {
+                                data.get(index).ransacMaybeInLiers = true;
                                 cont++;
                         }
                 }
@@ -236,15 +241,17 @@ public class RANSAC {
 
         /**
          * Build the model creating a line with the 2 points
-         * @param data vector with the points which represent all possible alignments.
+         *
+         * @param data vector with the points which represent all possible
+         * alignments.
          */
-        private void getAllModelPoints(Vector<AlignStructMol> data) {
+        private void getAllModelPoints(List<AlignStructMol> data) {
 
                 // Create the regression line using the two points
                 SimpleRegression regression = new SimpleRegression();
 
                 for (int i = 0; i < data.size(); i++) {
-                        AlignStructMol point = data.elementAt(i);
+                        AlignStructMol point = data.get(i);
                         if (point.ransacMaybeInLiers) {
                                 regression.addData(point.RT, point.RT2);
                         }
@@ -265,12 +272,12 @@ public class RANSAC {
 
         }
 
-        private void fittPolinomialFunction(Vector<AlignStructMol> data) {
-                Vector<AlignStructMol> points = new Vector<AlignStructMol>();
+        private void fittPolinomialFunction(List<AlignStructMol> data) {
+                List<AlignStructMol> points = new ArrayList<AlignStructMol>();
 
                 PolynomialFitter fitter = new PolynomialFitter(3, new GaussNewtonOptimizer(true));
                 for (int i = 0; i < data.size(); i++) {
-                        AlignStructMol point = data.elementAt(i);
+                        AlignStructMol point = data.get(i);
                         if (point.ransacMaybeInLiers) {
                                 points.add(point);
                                 fitter.addObservedPoint(1, point.RT, point.RT2);
@@ -294,15 +301,17 @@ public class RANSAC {
 
         /**
          * calculate the error in the model
-         * @param data vector with the points which represent all possible alignments.
+         *
+         * @param data vector with the points which represent all possible
+         * alignments.
          * @param regression regression of the alignment points
          * @return the error in the model
          */
-        private double newError(Vector<AlignStructMol> data) throws Exception {
+        private double newError(List<AlignStructMol> data) throws Exception {
 
                 double numT = 1;
                 for (int i = 0; i < data.size(); i++) {
-                        if (data.elementAt(i).ransacAlsoInLiers || data.elementAt(i).ransacMaybeInLiers) {
+                        if (data.get(i).ransacAlsoInLiers || data.get(i).ransacMaybeInLiers) {
                                 numT++;
                         }
                 }

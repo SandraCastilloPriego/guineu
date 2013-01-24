@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -23,10 +23,10 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math.MathException;
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math.stat.inference.TestUtils;
 
 /**
@@ -59,11 +59,11 @@ public class AnovaTestTask extends AbstractTask {
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
-                        Vector<String> groups = dataset.getParameterAvailableValues(parameter);
+                        List<String> groups = dataset.getParameterAvailableValues(parameter);
                         for (PeakListRow row : dataset.getRows()) {
                                 row.setVar("setPValue", anova(groups, row));
                                 progress++;
-                        }
+                        }                        
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception ex) {
                         Logger.getLogger(AnovaTestTask.class.getName()).log(Level.SEVERE, null, ex);
@@ -71,15 +71,17 @@ public class AnovaTestTask extends AbstractTask {
                 }
         }
 
-        private double anova(Vector<String> groups, PeakListRow row) {
+        private double anova(List<String> groups, PeakListRow row) {
                 try {
-                        List classes = new ArrayList();
+                        DescriptiveStatistics stats1 = new DescriptiveStatistics();
+                        List<double[]> classes = new ArrayList<double[]>();
                         for (String group : groups) {
-                                Vector<Double> values = new Vector<Double>();
+                                List<Double> values = new ArrayList<Double>();
                                 for (String name : dataset.getAllColumnNames()) {
                                         if (dataset.getParametersValue(name, parameter) != null && dataset.getParametersValue(name, parameter).equals(group)) {
                                                 try {
-                                                        values.addElement((Double) row.getPeak(name));
+                                                        values.add((Double) row.getPeak(name));
+                                                        stats1.addValue((Double) row.getPeak(name));
                                                 } catch (Exception e) {
                                                         System.out.println(row.getPeak(name));
                                                 }
@@ -88,10 +90,13 @@ public class AnovaTestTask extends AbstractTask {
                                 }
                                 double[] valuesArray = new double[values.size()];
                                 for (int i = 0; i < values.size(); i++) {
-                                        valuesArray[i] = values.elementAt(i).doubleValue();
+                                        valuesArray[i] = values.get(i).doubleValue();
                                 }
+                               
                                 classes.add(valuesArray);
                         }
+                       
+                        if(stats1.getVariance() == 0) return -1;
                         return TestUtils.oneWayAnovaPValue(classes);
                 } catch (IllegalArgumentException ex) {
                         ex.printStackTrace();

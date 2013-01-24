@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -27,8 +27,9 @@ import guineu.taskcontrol.Task;
 import guineu.util.GUIUtils;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -37,14 +38,14 @@ import java.util.Vector;
 public class NormalizeSerumModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "Serum Normalization Filter";
-        private Vector<StandardUmol> standards;
+        private List<StandardUmol> standards;
         final String helpID = GUIUtils.generateHelpID(this);
 
         public ExitCode setupParameters() {
-                this.standards = new Vector<StandardUmol>();
+                this.standards = new ArrayList<StandardUmol>();
                 Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
                 if (datasets.length > 0) {
-                        Hashtable<String, Range> stdRanges = GuineuCore.getStandards();
+                        HashMap<String, Range> stdRanges = GuineuCore.getStandards();
                         for (PeakListRow row : datasets[0].getRows()) {
                                 if (row.isSelected() || (Integer) row.getVar("getStandard") == 1) {
                                         StandardUmol std = new StandardUmol(row);
@@ -90,10 +91,10 @@ public class NormalizeSerumModule implements GuineuProcessingModule {
         }
 
         private void purge() {
-                Vector<StandardUmol> remove = new Vector<StandardUmol>();
+                List<StandardUmol> remove = new ArrayList<StandardUmol>();
                 for (StandardUmol std : this.standards) {
                         if (!std.isSelect()) {
-                                remove.addElement(std);
+                                remove.add(std);
                         }
                 }
 

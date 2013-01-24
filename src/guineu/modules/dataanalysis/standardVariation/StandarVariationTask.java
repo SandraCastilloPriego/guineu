@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -23,7 +23,7 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
-import java.util.Vector;
+import java.util.List;
 
 /**
  *
@@ -90,7 +90,7 @@ public class StandarVariationTask extends AbstractTask {
                         }
                 }
                 std.run();
-                Vector<PeakListRow> mols = std.getMols();
+                List<PeakListRow> mols = std.getMols();
                 for (PeakListRow mol : mols) {
                         newDataset.addRow(mol);
                 }

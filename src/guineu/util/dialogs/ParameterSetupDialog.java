@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  *
  * This file is part of Guineu.
  *
@@ -16,7 +16,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.util.dialogs;
 
 import guineu.main.GuineuCore;
@@ -32,324 +31,312 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-
 
 /**
  * This class represents the parameter setup dialog to set the values of
  * SimpleParameterSet. Each Parameter is represented by a component. The
  * component can be obtained by calling getComponentForParameter(). Type of
  * component depends on parameter type:
- * 
- * 
- * 
+ *
+ *
+ *
  */
 public class ParameterSetupDialog extends JDialog implements ActionListener,
-		DocumentListener {
+        DocumentListener {
 
-	private ExitCode exitCode = ExitCode.UNKNOWN;
+        private ExitCode exitCode = ExitCode.UNKNOWN;
+        private String helpID;
+        // Parameters and their representation in the dialog
+        protected ParameterSet parameterSet;
+        public Map<String, JComponent> parametersAndComponents;
+        private Map<UserParameter, Object> autoValues;
+        // Buttons
+        private JButton btnOK, btnCancel, btnAuto, btnHelp;
+        /**
+         * This single panel contains a grid of all the components of this
+         * dialog (see GridBagPanel). First three columns of the grid are title
+         * (JLabel), parameter component (JFormattedTextField or other) and
+         * units (JLabel), one row for each parameter. Row number 100 contains
+         * all the buttons of the dialog. Derived classes may add their own
+         * components such as previews to the unused cells of the grid.
+         */
+        protected GridBagPanel mainPanel;
 
-	private String helpID;
+        /**
+         * Constructor
+         */
+        public ParameterSetupDialog(ParameterSet parameters,
+                Map<UserParameter, Object> autoValues) {
 
-	// Parameters and their representation in the dialog
-	protected ParameterSet parameterSet;
-	private Map<String, JComponent> parametersAndComponents;
-	private Map<UserParameter, Object> autoValues;
+                // Make dialog modal
+                super(GuineuCore.getDesktop().getMainFrame(), "Please set parameters",
+                        true);
 
-	// Buttons
-	private JButton btnOK, btnCancel, btnAuto, btnHelp;
+                this.parameterSet = parameters;
+                this.autoValues = autoValues;
+                this.helpID = GUIUtils.generateHelpID(parameters);
 
-	/**
-	 * This single panel contains a grid of all the components of this dialog
-	 * (see GridBagPanel). First three columns of the grid are title (JLabel),
-	 * parameter component (JFormattedTextField or other) and units (JLabel),
-	 * one row for each parameter. Row number 100 contains all the buttons of
-	 * the dialog. Derived classes may add their own components such as previews
-	 * to the unused cells of the grid.
-	 */
-	protected GridBagPanel mainPanel;
+                parametersAndComponents = new HashMap<String, JComponent>();
 
-	/**
-	 * Constructor
-	 */
-	public ParameterSetupDialog(ParameterSet parameters,
-			Map<UserParameter, Object> autoValues) {
+                addDialogComponents();
 
-		// Make dialog modal
-		super(GuineuCore.getDesktop().getMainFrame(), "Please set parameters",
-				true);
+                updateMinimumSize();
+                pack();
 
-		this.parameterSet = parameters;
-		this.autoValues = autoValues;
-		this.helpID = GUIUtils.generateHelpID(parameters);
+                setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
 
-		parametersAndComponents = new Hashtable<String, JComponent>();
+        }
 
-		addDialogComponents();
+        /**
+         * This method must be called each time when a component is added to
+         * mainPanel. It will ensure the minimal size of the dialog is set to
+         * the minimum size of the mainPanel plus a little extra, so user cannot
+         * resize the dialog window smaller.
+         */
+        protected void updateMinimumSize() {
+                Dimension panelSize = mainPanel.getMinimumSize();
+                Dimension minimumSize = new Dimension(panelSize.width + 50,
+                        panelSize.height + 50);
+                setMinimumSize(minimumSize);
+        }
 
-		updateMinimumSize();
-		pack();
+        /**
+         * Constructs all components of the dialog
+         */
+        @SuppressWarnings("unchecked")
+        protected void addDialogComponents() {
 
-		setLocationRelativeTo(GuineuCore.getDesktop().getMainFrame());
+                // Main panel which holds all the components in a grid
+                mainPanel = new GridBagPanel();
 
-	}
+                int rowCounter = 0;
+                int vertWeightSum = 0;
 
-	/**
-	 * This method must be called each time when a component is added to
-	 * mainPanel. It will ensure the minimal size of the dialog is set to the
-	 * minimum size of the mainPanel plus a little extra, so user cannot resize
-	 * the dialog window smaller.
-	 */
-	protected void updateMinimumSize() {
-		Dimension panelSize = mainPanel.getMinimumSize();
-		Dimension minimumSize = new Dimension(panelSize.width + 50,
-				panelSize.height + 50);
-		setMinimumSize(minimumSize);
-	}
+                // Create labels and components for each parameter
+                for (Parameter p : parameterSet.getParameters()) {
 
-	/**
-	 * Constructs all components of the dialog
-	 */
-	@SuppressWarnings("unchecked")
-	protected void addDialogComponents() {
+                        if (!(p instanceof UserParameter)) {
+                                continue;
+                        }
+                        UserParameter up = (UserParameter) p;
 
-		// Main panel which holds all the components in a grid
-		mainPanel = new GridBagPanel();
+                        JComponent comp = up.createEditingComponent();
+                        comp.setToolTipText(up.getDescription());
 
-		int rowCounter = 0;
-		int vertWeightSum = 0;
+                        // Set the initial value
+                        Object value = up.getValue();
+                        if (value != null) {
+                                up.setValueToComponent(comp, value);
+                        }
 
-		// Create labels and components for each parameter
-		for (Parameter p : parameterSet.getParameters()) {
+                        // Add listeners so we are notified about any change in the values
+                        addListenersToComponent(comp);
 
-			if (!(p instanceof UserParameter))
-				continue;
-			UserParameter up = (UserParameter) p;
+                        // By calling this we make sure the components will never be resized
+                        // smaller than their optimal size
+                        comp.setMinimumSize(comp.getPreferredSize());
 
-			JComponent comp = up.createEditingComponent();
-			comp.setToolTipText(up.getDescription());
+                        comp.setToolTipText(up.getDescription());
 
-			// Set the initial value
-			Object value = up.getValue();
-			if (value != null)
-				up.setValueToComponent(comp, value);
+                        JLabel label = new JLabel(p.getName());
+                        mainPanel.add(label, 0, rowCounter);
+                        label.setLabelFor(comp);
 
-			// Add listeners so we are notified about any change in the values
-			addListenersToComponent(comp);
+                        parametersAndComponents.put(p.getName(), comp);
 
-			// By calling this we make sure the components will never be resized
-			// smaller than their optimal size
-			comp.setMinimumSize(comp.getPreferredSize());
+                        JComboBox t = new JComboBox();
+                        int comboh = t.getPreferredSize().height;
+                        int comph = comp.getPreferredSize().height;
 
-			comp.setToolTipText(up.getDescription());
+                        // Multiple selection will be expandable, other components not
+                        int verticalWeight = comph > 2 * comboh ? 1 : 0;
+                        vertWeightSum += verticalWeight;
 
-			JLabel label = new JLabel(p.getName());
-			mainPanel.add(label, 0, rowCounter);
-			label.setLabelFor(comp);
+                        mainPanel.add(comp, 1, rowCounter, 1, 1, 1, verticalWeight,
+                                GridBagConstraints.VERTICAL);
 
-			parametersAndComponents.put(p.getName(), comp);
+                        rowCounter++;
 
-			JComboBox t = new JComboBox();
-			int comboh = t.getPreferredSize().height;
-			int comph = comp.getPreferredSize().height;
+                }
 
-			// Multiple selection will be expandable, other components not
-			int verticalWeight = comph > 2 * comboh ? 1 : 0;
-			vertWeightSum += verticalWeight;
+                // Add a single empty cell to the 99th row. This cell is expandable
+                // (weightY is 1), therefore the other components will be
+                // aligned to the top, which is what we want
+                // JComponent emptySpace = (JComponent) Box.createVerticalStrut(1);
+                // mainPanel.add(emptySpace, 0, 99, 3, 1, 0, 1);
 
-			mainPanel.add(comp, 1, rowCounter, 1, 1, 1, verticalWeight,
-					GridBagConstraints.VERTICAL);
+                // Create a separate panel for the buttons
+                JPanel pnlButtons = new JPanel();
 
-			rowCounter++;
+                btnOK = GUIUtils.addButton(pnlButtons, "OK", null, this);
+                btnCancel = GUIUtils.addButton(pnlButtons, "Cancel", null, this);
 
-		}
+                if (autoValues != null) {
+                        btnAuto = GUIUtils.addButton(pnlButtons, "Set automatically", null,
+                                this);
+                }
 
-		// Add a single empty cell to the 99th row. This cell is expandable
-		// (weightY is 1), therefore the other components will be
-		// aligned to the top, which is what we want
-		// JComponent emptySpace = (JComponent) Box.createVerticalStrut(1);
-		// mainPanel.add(emptySpace, 0, 99, 3, 1, 0, 1);
+                if (helpID != null) {
+                        btnHelp = new HelpButton(helpID);
+                        pnlButtons.add(btnHelp);
+                }
 
-		// Create a separate panel for the buttons
-		JPanel pnlButtons = new JPanel();
+                /*
+                 * Last row in the table will be occupied by the buttons. We set
+                 * the row number to 100 and width to 3, spanning the 3
+                 * component columns defined above.
+                 */
+                if (vertWeightSum == 0) {
+                        mainPanel.add(Box.createGlue(), 0, 99, 3, 1, 1, 1);
+                }
+                mainPanel.addCenter(pnlButtons, 0, 100, 3, 1);
 
-		btnOK = GUIUtils.addButton(pnlButtons, "OK", null, this);
-		btnCancel = GUIUtils.addButton(pnlButtons, "Cancel", null, this);
+                // Add some space around the widgets
+                GUIUtils.addMargin(mainPanel, 10);
 
-		if (autoValues != null) {
-			btnAuto = GUIUtils.addButton(pnlButtons, "Set automatically", null,
-					this);
-		}
+                // Add the main panel as the only component of this dialog
+                add(mainPanel);
 
-		if (helpID != null) {
-			btnHelp = new HelpButton(helpID);
-			pnlButtons.add(btnHelp);
-		}
+                pack();
 
-		/*
-		 * Last row in the table will be occupied by the buttons. We set the row
-		 * number to 100 and width to 3, spanning the 3 component columns
-		 * defined above.
-		 */
-		if (vertWeightSum == 0) {
-			mainPanel.add(Box.createGlue(), 0, 99, 3, 1, 1, 1);
-		}
-		mainPanel.addCenter(pnlButtons, 0, 100, 3, 1);
+        }
 
-		// Add some space around the widgets
-		GUIUtils.addMargin(mainPanel, 10);
+        /**
+         * Implementation for ActionListener interface
+         */
+        @SuppressWarnings("unchecked")
+        public void actionPerformed(ActionEvent ae) {
 
-		// Add the main panel as the only component of this dialog
-		add(mainPanel);
+                Object src = ae.getSource();
 
-		pack();
+                if (src == btnOK) {
+                        closeDialog(ExitCode.OK);
+                }
 
-	}
+                if (src == btnCancel) {
+                        closeDialog(ExitCode.CANCEL);
+                }
 
-	/**
-	 * Implementation for ActionListener interface
-	 */
-	@SuppressWarnings("unchecked")
-	public void actionPerformed(ActionEvent ae) {
+                if (src == btnAuto) {
+                        for (UserParameter p : autoValues.keySet()) {
+                                Object value = autoValues.get(p);
+                                JComponent component = getComponentForParameter(p);
+                                p.setValueToComponent(component, value);
+                        }
+                }
 
-		Object src = ae.getSource();
+                if ((src instanceof JCheckBox) || (src instanceof JComboBox)) {
+                        parametersChanged();
+                }
 
-		if (src == btnOK) {
-			closeDialog(ExitCode.OK);
-		}
+        }
 
-		if (src == btnCancel) {
-			closeDialog(ExitCode.CANCEL);
-		}
+        /**
+         * Method for reading exit code
+         */
+        public ExitCode getExitCode() {
+                return exitCode;
+        }
 
-		if (src == btnAuto) {
-			for (UserParameter p : autoValues.keySet()) {
-				Object value = autoValues.get(p);
-				JComponent component = getComponentForParameter(p);
-				p.setValueToComponent(component, value);
-			}
-		}
+        protected JComponent getComponentForParameter(Parameter p) {
+                return parametersAndComponents.get(p.getName());
+        }
 
-		if ((src instanceof JCheckBox) || (src instanceof JComboBox)) {
-			parametersChanged();
-		}
+        @SuppressWarnings("unchecked")
+        protected void updateParameterSetFromComponents() {
+                for (Parameter p : parameterSet.getParameters()) {
+                        if (!(p instanceof UserParameter)) {
+                                continue;
+                        }
+                        UserParameter up = (UserParameter) p;
+                        JComponent component = parametersAndComponents.get(p.getName());
+                        up.setValueFromComponent(component);
+                }
+        }
 
-	}
+        protected int getNumberOfParameters() {
+                return parameterSet.getParameters().length;
+        }
 
-	/**
-	 * Method for reading exit code
-	 */
-	public ExitCode getExitCode() {
-		return exitCode;
-	}
+        /**
+         * This method may be called by some of the dialog components, for
+         * example as a result of double-click by user
+         */
+        public void closeDialog(ExitCode exitCode) {
+                if (exitCode == ExitCode.OK) {
+                        // commit the changes to the parameter set
+                        updateParameterSetFromComponents();
 
-	protected JComponent getComponentForParameter(Parameter p) {
-		return parametersAndComponents.get(p.getName());
-	}
+                        ArrayList<String> messages = new ArrayList<String>();
+                        boolean allParametersOK = parameterSet.checkUserParameterValues(messages);
 
-	@SuppressWarnings("unchecked")
-	protected void updateParameterSetFromComponents() {
-		for (Parameter p : parameterSet.getParameters()) {
-			if (!(p instanceof UserParameter))
-				continue;
-			UserParameter up = (UserParameter) p;
-			JComponent component = parametersAndComponents.get(p.getName());
-			up.setValueFromComponent(component);
-		}
-	}
+                        if (!allParametersOK) {
+                                StringBuilder message = new StringBuilder(
+                                        "Please check the parameter settings:\n\n");
+                                for (String m : messages) {
+                                        message.append(m);
+                                        message.append("\n");
+                                }
+                                GuineuCore.getDesktop().displayMessage(message.toString());
+                                return;
+                        }
+                }
+                this.exitCode = exitCode;
+                dispose();
 
-	protected int getNumberOfParameters() {
-		return parameterSet.getParameters().length;
-	}
+        }
 
-	/**
-	 * This method may be called by some of the dialog components, for example
-	 * as a result of double-click by user
-	 */
-	public void closeDialog(ExitCode exitCode) {
-		if (exitCode == ExitCode.OK) {
-			// commit the changes to the parameter set
-			updateParameterSetFromComponents();
+        /**
+         * This method does nothing, but it is called whenever user changes the
+         * parameters. It can be overridden in extending classes to update the
+         * preview components, for example.
+         */
+        protected void parametersChanged() {
+        }
 
-			ArrayList<String> messages = new ArrayList<String>();
-			boolean allParametersOK = parameterSet
-					.checkUserParameterValues(messages);
+        private void addListenersToComponent(JComponent comp) {
+                if (comp instanceof JTextComponent) {
+                        JTextComponent textComp = (JTextComponent) comp;
+                        textComp.getDocument().addDocumentListener(this);
+                }
+                if (comp instanceof JComboBox) {
+                        JComboBox comboComp = (JComboBox) comp;
+                        comboComp.addActionListener(this);
+                }
+                if (comp instanceof JCheckBox) {
+                        JCheckBox checkComp = (JCheckBox) comp;
+                        checkComp.addActionListener(this);
+                }
+                if (comp instanceof JPanel) {
+                        JPanel panelComp = (JPanel) comp;
+                        for (int i = 0; i < panelComp.getComponentCount(); i++) {
+                                Component child = panelComp.getComponent(i);
+                                if (!(child instanceof JComponent)) {
+                                        continue;
+                                }
+                                addListenersToComponent((JComponent) child);
+                        }
+                }
+        }
 
-			if (!allParametersOK) {
-				StringBuilder message = new StringBuilder(
-						"Please check the parameter settings:\n\n");
-				for (String m : messages) {
-					message.append(m);
-					message.append("\n");
-				}
-				GuineuCore.getDesktop().displayMessage(message.toString());
-				return;
-			}
-		}
-		this.exitCode = exitCode;
-		dispose();
+        @Override
+        public void changedUpdate(DocumentEvent event) {
+                parametersChanged();
+        }
 
-	}
+        @Override
+        public void insertUpdate(DocumentEvent event) {
+                parametersChanged();
+        }
 
-	/**
-	 * This method does nothing, but it is called whenever user changes the
-	 * parameters. It can be overridden in extending classes to update the
-	 * preview components, for example.
-	 */
-	protected void parametersChanged() {
-
-	}
-
-	private void addListenersToComponent(JComponent comp) {
-		if (comp instanceof JTextComponent) {
-			JTextComponent textComp = (JTextComponent) comp;
-			textComp.getDocument().addDocumentListener(this);
-		}
-		if (comp instanceof JComboBox) {
-			JComboBox comboComp = (JComboBox) comp;
-			comboComp.addActionListener(this);
-		}
-		if (comp instanceof JCheckBox) {
-			JCheckBox checkComp = (JCheckBox) comp;
-			checkComp.addActionListener(this);
-		}
-		if (comp instanceof JPanel) {
-			JPanel panelComp = (JPanel) comp;
-			for (int i = 0; i < panelComp.getComponentCount(); i++) {
-				Component child = panelComp.getComponent(i);
-				if (!(child instanceof JComponent))
-					continue;
-				addListenersToComponent((JComponent) child);
-			}
-		}
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent event) {
-		parametersChanged();
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent event) {
-		parametersChanged();
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent event) {
-		parametersChanged();
-	}
-
+        @Override
+        public void removeUpdate(DocumentEvent event) {
+                parametersChanged();
+        }
 }

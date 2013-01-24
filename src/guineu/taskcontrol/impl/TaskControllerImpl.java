@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -20,16 +20,11 @@ package guineu.taskcontrol.impl;
 import guineu.desktop.preferences.NumOfThreadsParameter;
 import guineu.main.GuineuCore;
 import guineu.modules.configuration.general.GeneralconfigurationParameters;
-import guineu.taskcontrol.Task;
-import guineu.taskcontrol.TaskControlListener;
-import guineu.taskcontrol.TaskController;
-import guineu.taskcontrol.TaskPriority;
-import guineu.taskcontrol.TaskStatus;
+import guineu.taskcontrol.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Logger;
-
 import javax.swing.SwingUtilities;
 
 /**
@@ -54,7 +49,7 @@ public class TaskControllerImpl implements TaskController, Runnable {
          * priority. Maximum number of concurrent threads is specified in the
          * preferences dialog.
          */
-        private Vector<WorkerThread> runningThreads;
+        private List<WorkerThread> runningThreads;
 
         /**
          * Initialize the task controller
@@ -63,7 +58,7 @@ public class TaskControllerImpl implements TaskController, Runnable {
 
                 taskQueue = new TaskQueue();
 
-                runningThreads = new Vector<WorkerThread>();
+                runningThreads = new ArrayList<WorkerThread>();
 
                 // Create a low-priority thread that will manage the queue and start
                 // worker threads for tasks

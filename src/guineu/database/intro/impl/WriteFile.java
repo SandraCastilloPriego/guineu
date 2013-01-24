@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,16 +18,11 @@
 package guineu.database.intro.impl;
 
 import com.csvreader.CsvWriter;
-import guineu.data.Dataset;
-import guineu.data.DatasetType;
-import guineu.data.ExpressionDataColumnName;
-import guineu.data.GCGCColumnName;
-import guineu.data.LCMSColumnName;
-import guineu.data.PeakListRow;
+import guineu.data.*;
 import guineu.data.impl.datasets.SimpleExpressionDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowExpression;
-import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.modules.file.saveExpressionFile.SaveExpressionParameters;
 import guineu.modules.file.saveGCGCFile.SaveGCGCParameters;
@@ -40,15 +35,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFPalette;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
@@ -331,7 +320,7 @@ public class WriteFile {
                                 }
                         } else {
 
-                                Vector<String> names = dataset.getAllColumnNames();
+                                List<String> names = dataset.getAllColumnNames();
                                 for (int i = 0; i < dataset.getNumberRows(); i++) {
                                         SimplePeakListRowOther lipid = (SimplePeakListRowOther) dataset.getRow(i);
                                         row = sheet.getRow(i + 1);
@@ -344,10 +333,10 @@ public class WriteFile {
                                                 if (c != null) {
                                                         mycolor = palette.findColor((byte) c.getRed(), (byte) c.getGreen(), (byte) c.getBlue());
                                                 }
-                                                if (lipid.getPeak(names.elementAt(j)) == null) {
+                                                if (lipid.getPeak(names.get(j)) == null) {
                                                         this.setCell(row, j, "", null);
                                                 } else {
-                                                        this.setCell(row, j, lipid.getPeak(names.elementAt(j)), mycolor);
+                                                        this.setCell(row, j, lipid.getPeak(names.get(j)), mycolor);
                                                 }
                                         }
                                 }
