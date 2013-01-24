@@ -169,9 +169,9 @@ public class SimplePeakListRowExpression implements PeakListRow {
 
         public void removeNoSamplePeaks(String[] group) {
                 HashMap<String, Double> newPeaks = new HashMap<String, Double>();
-                for (String name : group) {
-                        if (this.peaks.containsKey(name)) {
-                                newPeaks.put(name, this.peaks.get(name));
+                for (String sname : group) {
+                        if (this.peaks.containsKey(sname)) {
+                                newPeaks.put(sname, this.peaks.get(sname));
                         }
                 }
                 this.peaks = newPeaks;

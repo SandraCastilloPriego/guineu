@@ -104,7 +104,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 try {
                         switch (type) {
                                 case BOOLEAN:
-                                        return new Boolean(data);
+                                        return Boolean.valueOf(data);
                                 case INTEGER:
                                         return Integer.valueOf(data);
                                 case DOUBLE:
@@ -148,7 +148,6 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                                         try {
                                                 metabolite.setPeak(title, cell.getNumericCellValue());
                                         } catch (Exception e) {
-                                                e.printStackTrace();
                                                 metabolite.setPeak(title, 0.0);
                                         }
                                 }

@@ -31,6 +31,7 @@ public enum RTFormatterType {
 		this.type = type;
 	}
 
+        @Override
 	public String toString() {
 		return type;
 	}

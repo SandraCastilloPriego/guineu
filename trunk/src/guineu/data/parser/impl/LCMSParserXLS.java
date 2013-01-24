@@ -103,7 +103,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 	private Object getType(String data, ParameterType type) {
 		switch (type) {
 			case BOOLEAN:
-				return new Boolean(data);
+				return Boolean.valueOf(data);
 			case INTEGER:
 				return Integer.valueOf(data);
 			case DOUBLE:

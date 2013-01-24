@@ -17,13 +17,13 @@
  */
 package guineu.database.intro.impl;
 
-import guineu.database.intro.*;
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
-import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.datasets.SimpleBasicDataset;
+import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.datasets.SimpleQualityControlDataset;
+import guineu.database.intro.*;
 import guineu.parameters.SimpleParameterSet;
 import java.io.IOException;
 import java.sql.Connection;

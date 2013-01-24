@@ -20,7 +20,6 @@ package guineu.desktop;
 import guineu.data.Dataset;
 import guineu.modules.GuineuModule;
 import java.awt.Color;
-
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -28,9 +27,8 @@ import org.w3c.dom.Element;
 
 /**
  * This interface represents the application GUI
- * 
- * @author Taken from MZmine2
- * http://mzmine.sourceforge.net/
+ *
+ * @author Taken from MZmine2 http://mzmine.sourceforge.net/
  */
 public interface Desktop extends GuineuModule {
 

@@ -242,7 +242,7 @@ public class RInterface {
                 currentVarBuf = new StringBuffer();
             } else {
                 if (currentVarName != null) {
-                    currentVarBuf.append("\n" + line);
+                        currentVarBuf.append("\n").append(line);
                 }
             }
         }

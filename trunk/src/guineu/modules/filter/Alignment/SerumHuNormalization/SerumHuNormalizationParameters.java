@@ -17,21 +17,35 @@
  */
 package guineu.modules.filter.Alignment.SerumHuNormalization;
 
+import guineu.main.GuineuCore;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
 import guineu.parameters.parametersType.BooleanParameter;
+import guineu.parameters.parametersType.ComboParameter;
 import guineu.parameters.parametersType.DoubleParameter;
 import guineu.parameters.parametersType.FileNameParameter;
 import guineu.parameters.parametersType.IntegerParameter;
+import guineu.parameters.parametersType.StringParameter;
 
 public class SerumHuNormalizationParameters extends SimpleParameterSet {
-
+        private static String[] parameters = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
+       
+        
         public static final FileNameParameter filename = new FileNameParameter(
                 "Plots filename",
                 "Name of plot file. If the file exists, it won't be overwritten.");
         public static final FileNameParameter infoFilename = new FileNameParameter(
                 "Information filename",
                 "Name of information file. If the file exists, it won't be overwritten.");
+        public static final ComboParameter<String>  order = new ComboParameter<String>(
+                "Running order parameter",
+                "Name of the running order parameter", parameters);
+        public static final ComboParameter<String> identifier = new ComboParameter<String>(
+                "Sample identification parameter",
+                "Name of the parameter that contains the sample indentification. 0 if the sample is a control sample or 1 otherwise.", parameters);
+        public static final ComboParameter<String> batches = new ComboParameter<String>(
+                "Batch parameter",
+                "Name of the parameter that contains bacth indentification.", parameters);
         public static final DoubleParameter loessBand = new DoubleParameter(
                 "Loess Bandwidth",
                 "Loess Bandwidth", new Double(0.0));
@@ -44,6 +58,10 @@ public class SerumHuNormalizationParameters extends SimpleParameterSet {
                 new Boolean(false));
 
         public SerumHuNormalizationParameters() {
-                super(new UserParameter[]{filename, infoFilename, loessBand, iterations, extrapolation});
-        }
+                super(new UserParameter[]{filename, infoFilename, order, identifier, batches, loessBand, iterations, extrapolation});
+                order.setChoices(parameters);
+                identifier.setChoices(parameters);
+                batches.setChoices(parameters);
+        }        
+        
 }

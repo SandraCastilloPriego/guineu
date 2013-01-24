@@ -21,7 +21,6 @@ package guineu.desktop.preferences;
 
 import java.awt.BorderLayout;
 import java.text.NumberFormat;
-
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;

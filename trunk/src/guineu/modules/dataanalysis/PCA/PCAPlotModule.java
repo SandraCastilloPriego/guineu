@@ -30,6 +30,7 @@ public class PCAPlotModule implements GuineuProcessingModule {
 
 	private ProjectionPlotParameters parameters = new ProjectionPlotParameters();
 
+        @Override
 	public String toString() {
 		return "Principal component analysis (PCA)";
 	}

@@ -33,6 +33,7 @@ public interface GuineuModule {
      * 
      * @return Module name
      */
+        @Override
     public String toString();
     
     /**

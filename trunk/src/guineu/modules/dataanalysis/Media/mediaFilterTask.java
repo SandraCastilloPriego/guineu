@@ -48,6 +48,7 @@ public class mediaFilterTask extends AbstractTask {
                 return progress;
         }
 
+        @Override
         public void cancel() {
                 setStatus(TaskStatus.CANCELED);
         }
@@ -58,7 +59,6 @@ public class mediaFilterTask extends AbstractTask {
                 } catch (Exception e) {
                         setStatus(TaskStatus.ERROR);
                         errorMessage = e.toString();
-                        return;
                 }
         }
 

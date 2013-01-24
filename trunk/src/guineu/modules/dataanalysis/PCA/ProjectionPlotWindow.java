@@ -24,7 +24,6 @@ import guineu.util.dialogs.AxesSetupDialog;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JInternalFrame;
 
 /**
@@ -48,10 +47,10 @@ public class ProjectionPlotWindow extends JInternalFrame implements
 		plot = new ProjectionPlotPanel(this, dataset, parameters);
 		add(plot, BorderLayout.CENTER);
 
-		String title = peakList;
-		title = title.concat(" : ");
-		title = title.concat(dataset.toString());
-                this.setTitle(title);
+		String peakTitle = peakList;
+		peakTitle = peakTitle.concat(" : ");
+		peakTitle = peakTitle.concat(dataset.toString());
+                this.setTitle(peakTitle);
 
 		pack();
 

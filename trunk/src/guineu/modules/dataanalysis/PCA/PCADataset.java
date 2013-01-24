@@ -261,8 +261,8 @@ public class PCADataset extends AbstractXYDataset implements
                 }
                 this.progress = 0.75f;
 
-                for (PrincipleComponent components : mainComponents) {
-                        this.totalVariation += components.eigenValue;
+                for (PrincipleComponent comp : mainComponents) {
+                        this.totalVariation += comp.eigenValue;
                 }
 
                 if (mainComponents.size() > yAxisPC - 1) {

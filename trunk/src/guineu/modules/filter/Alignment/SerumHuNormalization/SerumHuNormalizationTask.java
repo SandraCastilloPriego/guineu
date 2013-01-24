@@ -58,9 +58,12 @@ class SerumHuNormalizationTask extends AbstractTask {
         private int iterations;
         private File fileName, informationFile;
         private boolean extrapolation;
+        private String order, id, batchesName;
         HashMap<Integer, List<PolynomialSplineFunction>> functions;
         HashMap<Integer, Integer> correlated;
         private String message = "Human serum normalization";
+        
+        private PeakListRow ids, runOrder, batches;
 
         public SerumHuNormalizationTask(Dataset[] peakLists, ParameterSet parameters) {
 
@@ -70,6 +73,11 @@ class SerumHuNormalizationTask extends AbstractTask {
                 this.fileName = parameters.getParameter(SerumHuNormalizationParameters.filename).getValue();
                 this.informationFile = parameters.getParameter(SerumHuNormalizationParameters.infoFilename).getValue();
                 this.extrapolation = parameters.getParameter(SerumHuNormalizationParameters.extrapolation).getValue();
+
+                this.order = parameters.getParameter(SerumHuNormalizationParameters.order).getValue();
+                this.id = parameters.getParameter(SerumHuNormalizationParameters.identifier).getValue();
+                this.batchesName = parameters.getParameter(SerumHuNormalizationParameters.batches).getValue();
+
                 this.functions = new HashMap<Integer, List<PolynomialSplineFunction>>();
                 this.correlated = new HashMap<Integer, Integer>();
 
@@ -100,20 +108,27 @@ class SerumHuNormalizationTask extends AbstractTask {
                         Dataset newData = data.clone();
                         GUIUtils.showNewTable(newData, true);
                         normalize(data, newData);
-                        writeInfo();
-                        plotInterpolations(data);
+                        //writeInfo();
+                       // plotInterpolations(data);
                 }
                 setStatus(TaskStatus.FINISHED);
         }
 
         private void normalize(Dataset data, Dataset newData) {
                 // First row => ids of the samples ( 0 == standard serum, 1 == normal sample)
-                PeakListRow ids = data.getRow(0);
-                // Second row => run order
-                PeakListRow runOrder = data.getRow(1);
-                // Third row => different data sets
-                PeakListRow batches = data.getRow(2);
+                this.ids = data.getRow(0).clone();     
 
+                // Second row => run order
+                this.runOrder = data.getRow(0).clone();
+
+                // Third row => different data sets
+                this.batches = data.getRow(0).clone();
+                
+                for (String name : data.getAllColumnNames()) {
+                        ids.setPeak(name, data.getParametersValue(name, this.id));
+                        runOrder.setPeak(name, data.getParametersValue(name, this.order));
+                        batches.setPeak(name, data.getParametersValue(name, this.batchesName));
+                }
 
 
                 int numBatches = 1;
@@ -129,10 +144,10 @@ class SerumHuNormalizationTask extends AbstractTask {
                 this.createCurves(data, numBatches);
                 for (int batch = 0; batch < numBatches; batch++) {
                         message = "Normalizing";
-                        this.totalRows = data.getNumberRows() - 3;
+                        this.totalRows = data.getNumberRows();
                         this.processedRows = 0;
                         List<String> names = data.getAllColumnNames();
-                        for (int i = 3; i < data.getNumberRows(); i++) {
+                        for (int i = 0; i < data.getNumberRows(); i++) {
                                 this.processedRows++;
                                 PeakListRow row = data.getRow(i);
                                 PeakListRow newrow = newData.getRow(i);
@@ -225,9 +240,10 @@ class SerumHuNormalizationTask extends AbstractTask {
                                                         }
                                                 }
                                         } else {
-                                                System.out.println(row.getID());
+                                                System.out.println("Function is null" + row.getID());
                                         }
                                 } catch (Exception exception) {
+                                        exception.printStackTrace();
                                         System.out.println(row.getID());
 
                                 }
@@ -288,19 +304,12 @@ class SerumHuNormalizationTask extends AbstractTask {
         }
 
         private void createCurves(Dataset data, int numBatches) {
-                // First row => ids of the samples ( 0 == standard serum, 1 == normal sample)
-                PeakListRow ids = data.getRow(0);
-                // Second row => run order
-                PeakListRow runOrder = data.getRow(1);
-                // Third row => different data sets
-                PeakListRow batches = data.getRow(2);
-
-                this.totalRows = data.getNumberRows() - 3;
+                this.totalRows = data.getNumberRows();
                 this.processedRows = 0;
                 this.message = "Fitting the standard curves";
 
                 List<String> names = data.getAllColumnNames();
-                for (int i = 3; i < data.getNumberRows(); i++) {
+                for (int i = 0; i < data.getNumberRows(); i++) {
                         this.processedRows++;
                         PeakListRow row = data.getRow(i);
                         for (int batch = 0; batch < numBatches; batch++) {
@@ -361,7 +370,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                 double bestValue = 0;
                 int bestID = -1;
                 List<String> names = data.getAllColumnNames();
-                for (int i = 3; i < data.getNumberRows(); i++) {
+                for (int i = 0; i < data.getNumberRows(); i++) {
                         PeakListRow row = data.getRow(i);
 
                         RealMatrix m = this.getMatrix(comparedRow, row, names);
@@ -444,8 +453,6 @@ class SerumHuNormalizationTask extends AbstractTask {
 
         private void plotInterpolations(Dataset data) {
                 this.message = "Creating Plots";
-                PeakListRow runOrder = data.getRow(1);
-                PeakListRow batch = data.getRow(2);
                 final Rengine rEngine;
                 try {
                         rEngine = RUtilities.getREngine();
@@ -455,7 +462,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                                 "Plotting requires R but it couldn't be loaded (" + t.getMessage() + ')');
                 }
                 synchronized (RUtilities.R_SEMAPHORE) {
-                        this.totalRows = data.getNumberRows() - 3;
+                        this.totalRows = data.getNumberRows();
                         this.processedRows = 0;
                         message = "Plotting curves";
                         List<String> names = data.getAllColumnNames();
@@ -470,7 +477,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                         rEngine.eval("time <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
                         rEngine.eval("color <- vector(mode=\"numeric\",length=" + data.getNumberCols() * 2 + ")");
 
-                        for (int row = 3; row < data.getNumberRows(); row++) {
+                        for (int row = 0; row < data.getNumberRows(); row++) {
 
                                 List<PolynomialSplineFunction> functions = this.functions.get(data.getRow(row).getID());
                                 double lastPoint = 0;
@@ -480,7 +487,7 @@ class SerumHuNormalizationTask extends AbstractTask {
 
 
                                         if (functions != null) {
-                                                PolynomialSplineFunction function = functions.get(Double.valueOf((Double) batch.getPeak(names.get(col))).intValue());
+                                                PolynomialSplineFunction function = functions.get(Double.valueOf((Double) batches.getPeak(names.get(col))).intValue());
                                                 if (function != null) {
                                                         try {
                                                                 rEngine.eval("loess[" + r + "] <- "
@@ -525,7 +532,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                 }
 
                 if (!ok) {
-                        System.out.println(row.getID());
+                        System.out.println("values are zero, negative or nan " + row.getID());
                 }
         }
 

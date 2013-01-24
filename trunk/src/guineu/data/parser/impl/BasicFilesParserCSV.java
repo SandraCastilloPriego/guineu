@@ -19,8 +19,8 @@ package guineu.data.parser.impl;
 
 import com.csvreader.CsvReader;
 import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
+import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
 import guineu.data.parser.Parser;
@@ -77,7 +77,6 @@ public class BasicFilesParserCSV implements Parser {
             setExperimentsName(header);
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -95,7 +94,6 @@ public class BasicFilesParserCSV implements Parser {
             this.dataset.addRow(lipid);
 
         } catch (Exception exception) {
-            exception.printStackTrace();
         }
     }
 
@@ -109,7 +107,6 @@ public class BasicFilesParserCSV implements Parser {
                 this.dataset.addColumnName(header[i]);
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
         }
     }
 
@@ -120,7 +117,6 @@ public class BasicFilesParserCSV implements Parser {
                 this.rowsNumber++;
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

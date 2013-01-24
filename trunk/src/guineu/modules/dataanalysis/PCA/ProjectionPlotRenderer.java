@@ -15,77 +15,72 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 package guineu.modules.dataanalysis.PCA;
 
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-
 import org.jfree.chart.plot.DrawingSupplier;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 /**
- * @author Taken from MZmine2
- * http://mzmine.sourceforge.net/
+ * @author Taken from MZmine2 http://mzmine.sourceforge.net/
  *
  */
 public class ProjectionPlotRenderer extends XYLineAndShapeRenderer {
 
-	private Paint[] paintsForGroups;
+        private Paint[] paintsForGroups;
+        private final Color[] avoidColors = {new Color(255, 255, 85)};
+        private static final Shape dataPointsShape = new Ellipse2D.Double(-6, -6,
+                12, 12);
+        private ProjectionPlotDataset dataset;
 
-	private final Color[] avoidColors = { new Color(255, 255, 85)};
+        private boolean isAvoidColor(Color color) {
+                for (Color c : avoidColors) {
+                        if ((color.getRed() >= c.getRed())
+                                && (color.getGreen() >= c.getGreen())
+                                && (color.getBlue() >= c.getBlue())) {
+                                return true;
+                        }
+                }
 
-	private static final Shape dataPointsShape = new Ellipse2D.Double(-6, -6,
-			12, 12);
+                return false;
+        }
 
-	private ProjectionPlotDataset dataset;
+        public ProjectionPlotRenderer(XYPlot plot, ProjectionPlotDataset dataset) {
+                super(false, true);
+                this.dataset = dataset;
+                this.setSeriesShape(0, dataPointsShape);
 
-	private boolean isAvoidColor(Color color) {
-		for (Color c : avoidColors) {
-			if (	(color.getRed() >= c.getRed()) &&
-					(color.getGreen() >= c.getGreen()) &&
-					(color.getBlue() >= c.getBlue())	)
-				return true;
-		}
+                paintsForGroups = new Paint[dataset.getNumberOfGroups()];
+                DrawingSupplier drawSupp = plot.getDrawingSupplier();
+                for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
 
-		return false;
-	}
+                        Paint nextPaint = drawSupp.getNextPaint();
+                        while (isAvoidColor((Color) nextPaint)) {
+                                nextPaint = drawSupp.getNextPaint();
+                        }
 
-	public ProjectionPlotRenderer(XYPlot plot, ProjectionPlotDataset dataset) {
-		super(false, true);
-		this.dataset = dataset;
-		this.setSeriesShape(0, dataPointsShape);
+                        paintsForGroups[groupNumber] = nextPaint;
 
-		paintsForGroups = new Paint[dataset.getNumberOfGroups()];
-		DrawingSupplier drawSupp = plot.getDrawingSupplier();
-		for (int groupNumber = 0; groupNumber < dataset.getNumberOfGroups(); groupNumber++) {
+                }
 
-			Paint nextPaint = drawSupp.getNextPaint();
-			while (isAvoidColor((Color) nextPaint))
-				nextPaint = drawSupp.getNextPaint();
+        }
 
-			paintsForGroups[groupNumber] = nextPaint;
+        @Override
+        public Paint getItemPaint(int series, int item) {
 
-		}
+                int groupNumber = dataset.getGroupNumber(item);
+                return paintsForGroups[groupNumber];
+        }
 
-	}
+        public Paint getGroupPaint(int groupNumber) {
+                return paintsForGroups[groupNumber];
+        }
 
-	public Paint getItemPaint(int series, int item) {
-
-		int groupNumber = dataset.getGroupNumber(item);
-		return paintsForGroups[groupNumber];
-	}
-
-	public Paint getGroupPaint(int groupNumber) {
-		return paintsForGroups[groupNumber];
-	}
-
-	protected Shape getDataPointsShape() {
-		return dataPointsShape;
-	}
-
+        protected Shape getDataPointsShape() {
+                return dataPointsShape;
+        }
 }

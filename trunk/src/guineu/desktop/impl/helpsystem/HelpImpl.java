@@ -74,7 +74,6 @@ public class HelpImpl {
             hs.addTOCView(myTOC);
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

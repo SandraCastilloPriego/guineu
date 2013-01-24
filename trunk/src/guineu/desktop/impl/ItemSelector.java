@@ -18,7 +18,6 @@
 package guineu.desktop.impl;
 
 import guineu.data.Dataset;
-
 import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.desktop.Desktop;
@@ -40,7 +39,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;

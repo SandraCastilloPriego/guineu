@@ -23,9 +23,7 @@ import guineu.parameters.UserParameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.swing.JComboBox;
-
 import org.w3c.dom.Element;
 
 /**

@@ -30,6 +30,7 @@ public class SammonsPlotModule implements GuineuProcessingModule {
 
 	private ProjectionPlotParameters parameters = new ProjectionPlotParameters();
 
+        @Override
 	public String toString() {
 		return "Sammon's projection";
 	}

@@ -18,14 +18,14 @@
 package guineu.database.intro.impl;
 
 import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
-import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
+import guineu.data.impl.datasets.SimpleLCMSDataset;
+import guineu.data.impl.datasets.SimpleQualityControlDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.database.retrieve.impl.OracleRetrievement;
-import guineu.data.impl.datasets.SimpleQualityControlDataset;
 import guineu.modules.mylly.datastruct.Spectrum;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -38,7 +38,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -154,7 +153,6 @@ public class WriteDataBase {
                     }
                     statement.executeUpdate("INSERT INTO DATASET (EXCEL_NAME,D_TYPE,AUTHOR,D_DATE,UNITS,PARAMETERS, STUDY,INFORMATION, NUMBER_ROWS) VALUES ('" + excelName + "', '" + type + "', '" + author + "', to_date(sysdate,'dd/MM/yyyy'),'µl', bfilename('" + dir + "', '" + file + "'), '" + OracleRetrievement.getStudyID(study, conn) + "', '" + info + "', '" + numberRows + "')");
                 } catch (SQLException sqlexception) {
-                    sqlexception.printStackTrace();
                 }
 
                 ResultSet r = statement.executeQuery("SELECT * FROM DATASET WHERE EXCEL_NAME = '" + excelName + "' ORDER BY DATASETID desc");
@@ -168,7 +166,6 @@ public class WriteDataBase {
             return -1;
         } catch (Exception exception) {
             System.out.println("ERROR : " + exception);
-            exception.printStackTrace();
             return -1;
         }
     }
@@ -227,7 +224,6 @@ public class WriteDataBase {
                     }
                 } catch (SQLException se) {
                     System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
-                    se.printStackTrace();
                 }
                 progressDone++;
                 progress = progressDone / dataset.getNumberRows();
@@ -236,8 +232,6 @@ public class WriteDataBase {
             statement.close();
             return mol_ID;
         } catch (SQLException ex) {
-
-            ex.printStackTrace();
             Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -358,7 +352,6 @@ public class WriteDataBase {
                     r.close();
                 } catch (SQLException se) {
                     System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
-                    se.printStackTrace();
                 }
                 progressDone++;
                 progress = progressDone / dataset.getNumberRows();
@@ -408,7 +401,6 @@ public class WriteDataBase {
                         st.executeUpdate("INSERT INTO SPECTRUMS (MOL_ID, MASS, INTENSITY) VALUES ( '" + (float) metabolitesID[i] + "', '" + (float) spectrum.getPeakList().get(e).getFirst() + "', '" + (float) spectrum.getPeakList().get(e).getSecond() + "') ");
                     } catch (SQLException se) {
                         System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
-                        se.printStackTrace();
                     }
                 }
                 progressDone++;
@@ -505,7 +497,6 @@ public class WriteDataBase {
             statement.close();
             return QC_ID;
         } catch (SQLException ex) {
-            ex.printStackTrace();
             Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         }
@@ -578,7 +569,6 @@ public class WriteDataBase {
 
                 } catch (Exception se) {
                     System.out.println("We got an exception while preparing a statement:" + "Probably bad SQL.");
-                    se.printStackTrace();
                 }
                 progressDone++;
                 progress = progressDone / QCDataset.getRowsDB().size();
@@ -586,7 +576,6 @@ public class WriteDataBase {
             }
             statement.close();
         } catch (SQLException ex) {
-            ex.printStackTrace();
             Logger.getLogger(InOracle.class.getName()).log(Level.SEVERE, null, ex);
 
         }

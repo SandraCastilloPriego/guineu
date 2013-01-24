@@ -18,11 +18,11 @@
  */
 package guineu.modules.configuration.general;
 
-import guineu.desktop.preferences.*;
 import guineu.desktop.numberFormat.NumberFormatParameter;
 import guineu.desktop.numberFormat.RTFormatParameter;
 import guineu.desktop.numberFormat.RTFormatter;
 import guineu.desktop.numberFormat.RTFormatterType;
+import guineu.desktop.preferences.*;
 import guineu.main.GuineuCore;
 import guineu.parameters.Parameter;
 import guineu.parameters.ParameterSet;

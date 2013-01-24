@@ -23,12 +23,13 @@ import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
+import guineu.util.dialogs.ExitCode;
 
 public class SerumHuNormalizationModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "Control samples Normalization";
-        private SerumHuNormalizationParameters parameters = new SerumHuNormalizationParameters();
-        
+        private SerumHuNormalizationParameters parameters;
+
         public String toString() {
                 return MODULE_NAME;
         }
@@ -39,19 +40,23 @@ public class SerumHuNormalizationModule implements GuineuProcessingModule {
 
         public Task[] runModule(ParameterSet parameters) {
                 Dataset[] peakLists = GuineuCore.getDesktop().getSelectedDataFiles();
+                parameters = new SerumHuNormalizationParameters();
+                ExitCode exitCode = parameters.showSetupDialog();
+                if (exitCode == ExitCode.OK) {
+                        // check peak lists
+                        if ((peakLists == null) || (peakLists.length == 0)) {
+                                GuineuCore.getDesktop().displayErrorMessage("Please select peak lists for Human Serum Normalization");
+                                return null;
+                        }
 
-                // check peak lists
-                if ((peakLists == null) || (peakLists.length == 0)) {
-                        GuineuCore.getDesktop().displayErrorMessage("Please select peak lists for Human Serum Normalization");
-                        return null;
+                        // prepare a new group with just one task
+                        Task task = new SerumHuNormalizationTask(peakLists, parameters);
+
+                        GuineuCore.getTaskController().addTask(task);
+                        return new Task[]{task};
                 }
+                return null;
 
-                // prepare a new group with just one task
-                Task task = new SerumHuNormalizationTask(peakLists, parameters);
-
-                GuineuCore.getTaskController().addTask(task);
-
-                return new Task[]{task};
         }
 
         public GuineuModuleCategory getModuleCategory() {

@@ -28,14 +28,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.jar.JarFile;
-
 import javax.help.BadIDException;
 import javax.help.HelpSet;
 import javax.help.Map;
+import javax.help.Map.ID;
 import javax.help.TOCItem;
 import javax.help.TOCView;
 import javax.help.TreeItem;
-import javax.help.Map.ID;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**

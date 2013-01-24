@@ -27,13 +27,13 @@ package guineu.main;
  */
 class ShutDownHook extends Thread {
 
+        @Override
 	public void start() {
 
 		// Save configuration
 		try {
 			GuineuCore.saveConfiguration(GuineuCore.CONFIG_FILE);
 		} catch (Exception e) {
-			e.printStackTrace();
 		}		
 
 	}

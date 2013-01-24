@@ -17,10 +17,10 @@
  */
 package guineu.modules.R;
 
-import guineu.modules.R.utils.RInterface;
 import guineu.data.Dataset;
 import guineu.database.intro.InDataBase;
 import guineu.database.intro.impl.InOracle;
+import guineu.modules.R.utils.RInterface;
 import java.io.File;
 
 /**
