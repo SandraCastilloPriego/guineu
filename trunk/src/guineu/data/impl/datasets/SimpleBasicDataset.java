@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,15 +17,14 @@
  */
 package guineu.data.impl.datasets;
 
-import guineu.data.impl.*;
-import guineu.data.DatasetType;
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.PeakListRow;
+import guineu.data.impl.SampleDescription;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Basic data set implementation.
@@ -35,12 +34,12 @@ import java.util.Vector;
 public class SimpleBasicDataset implements Dataset {
 
         String datasetName;
-        Vector<PeakListRow> peakList;
-        Vector<String> columnNames;
+        List<PeakListRow> peakList;
+        List<String> columnNames;
         protected DatasetType type;
         String infoDataset = "";
-        private Hashtable<String, SampleDescription> parameters;
-        private Vector<String> parameterNames;
+        private HashMap<String, SampleDescription> parameters;
+        private List<String> parameterNames;
         private int ID;
         private int numberRows = 0;
         private List<Color> rowColor;
@@ -51,19 +50,21 @@ public class SimpleBasicDataset implements Dataset {
          */
         public SimpleBasicDataset(String datasetName) {
                 this.datasetName = datasetName;
-                this.peakList = new Vector<PeakListRow>();
-                this.columnNames = new Vector<String>();
-                this.parameters = new Hashtable<String, SampleDescription>();
-                this.parameterNames = new Vector<String>();
+                this.peakList = new ArrayList<PeakListRow>();
+                this.columnNames = new ArrayList<String>();
+                this.parameters = new HashMap<String, SampleDescription>();
+                this.parameterNames = new ArrayList<String>();
                 this.rowColor = new ArrayList<Color>();
                 type = DatasetType.BASIC;
         }
 
         /**
-         * Returns true when the list of column names contain the parameter <b>columnName</b>.
+         * Returns true when the list of column names contain the parameter
+         * <b>columnName</b>.
          *
          * @param columnName Name of the column to be searched
-         * @return true or false depending if the parameter <b>columnName</b> is in the name of any column
+         * @return true or false depending if the parameter <b>columnName</b> is
+         * in the name of any column
          */
         public boolean containtName(String columnName) {
                 for (String name : this.columnNames) {
@@ -81,11 +82,12 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         /**
-         * Returns true when any row of the data set contains the String <b>str</b> into a
-         * column called "Name"
+         * Returns true when any row of the data set contains the String
+         * <b>str</b> into a column called "Name"
          *
          * @param str
-         * @return true or false depending if the parameter <b>str</b> is in the column called "Name"
+         * @return true or false depending if the parameter <b>str</b> is in the
+         * column called "Name"
          */
         public boolean containRowName(String srt) {
                 for (PeakListRow row : this.getRows()) {
@@ -114,7 +116,7 @@ public class SimpleBasicDataset implements Dataset {
                         parameters.put(experimentName, p);
                 }
                 if (!this.parameterNames.contains(parameterName)) {
-                        parameterNames.addElement(parameterName);
+                        parameterNames.add(parameterName);
                 }
         }
 
@@ -137,8 +139,8 @@ public class SimpleBasicDataset implements Dataset {
                 }
         }
 
-        public Vector<String> getParameterAvailableValues(String parameter) {
-                Vector<String> availableParameterValues = new Vector<String>();
+        public List<String> getParameterAvailableValues(String parameter) {
+                List<String> availableParameterValues = new ArrayList<String>();
                 for (String rawDataFile : this.getAllColumnNames()) {
                         String paramValue = this.getParametersValue(rawDataFile, parameter);
                         if (!availableParameterValues.contains(paramValue)) {
@@ -148,7 +150,7 @@ public class SimpleBasicDataset implements Dataset {
                 return availableParameterValues;
         }
 
-        public Vector<String> getParametersName() {
+        public List<String> getParametersName() {
                 return parameterNames;
         }
 
@@ -161,18 +163,18 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         public void addRow(PeakListRow peakListRow) {
-                this.peakList.addElement(peakListRow);
+                this.peakList.add(peakListRow);
         }
 
         public void addColumnName(String nameExperiment) {
-                this.columnNames.addElement(nameExperiment);
+                this.columnNames.add(nameExperiment);
         }
 
         public PeakListRow getRow(int i) {
-                return (PeakListRow) this.peakList.elementAt(i);
+                return (PeakListRow) this.peakList.get(i);
         }
 
-        public Vector<PeakListRow> getRows() {
+        public List<PeakListRow> getRows() {
                 return this.peakList;
         }
 
@@ -192,11 +194,11 @@ public class SimpleBasicDataset implements Dataset {
                 return this.columnNames.size();
         }
 
-        public Vector<String> getAllColumnNames() {
+        public List<String> getAllColumnNames() {
                 return this.columnNames;
         }
 
-        public void setNameExperiments(Vector<String> experimentNames) {
+        public void setNameExperiments(List<String> experimentNames) {
                 this.columnNames = experimentNames;
         }
 
@@ -210,7 +212,7 @@ public class SimpleBasicDataset implements Dataset {
 
         public void removeRow(PeakListRow row) {
                 try {
-                        this.peakList.removeElement(row);
+                        this.peakList.remove(row);
 
                 } catch (Exception e) {
                         System.out.println("No row found");
@@ -218,7 +220,7 @@ public class SimpleBasicDataset implements Dataset {
         }
 
         public void addColumnName(String nameExperiment, int position) {
-                this.columnNames.insertElementAt(datasetName, position);
+                this.columnNames.set(position, datasetName);
         }
 
         public String getInfo() {
@@ -266,7 +268,7 @@ public class SimpleBasicDataset implements Dataset {
 
         @Override
         public Color getCellColor(int row, int column) {
-                return this.getRow(row).getColor(column-2);
+                return this.getRow(row).getColor(column - 2);
         }
 
         @Override

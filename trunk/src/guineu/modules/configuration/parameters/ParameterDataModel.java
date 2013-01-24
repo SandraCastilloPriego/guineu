@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,7 +18,8 @@
 package guineu.modules.configuration.parameters;
 
 import guineu.data.Dataset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
@@ -60,7 +61,7 @@ public class ParameterDataModel extends AbstractTableModel {
                         col = new String[dataset.getAllColumnNames().size()];
 
                         for (int e = 0; e < dataset.getAllColumnNames().size(); e++) {
-                                String experimentName = dataset.getAllColumnNames().elementAt(e);
+                                String experimentName = dataset.getAllColumnNames().get(e);
                                 col[e] = dataset.getParametersValue(experimentName, parameterName);
                         }
                         rows.add(col);
@@ -111,7 +112,7 @@ public class ParameterDataModel extends AbstractTableModel {
 
         @Override
         public void setValueAt(Object aValue, int row, int column) {
-                try {                  
+                try {
                         for (int trow : table.getSelectedRows()) {
                                 for (int tcolumn : table.getSelectedColumns()) {
                                         rows.get(tcolumn)[trow] = aValue.toString();
@@ -176,4 +177,5 @@ public class ParameterDataModel extends AbstractTableModel {
                         }
                 }
         }
+        
 }

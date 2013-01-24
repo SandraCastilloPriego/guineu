@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,15 +17,16 @@
  */
 package guineu.data.parser.impl;
 
-import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.ParameterType;
 import guineu.data.LCMSColumnName;
+import guineu.data.ParameterType;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
+import guineu.data.parser.Parser;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -37,7 +38,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
 	private String DatasetName;
 	private SimpleLCMSDataset dataset;
-	private Vector<String> head;
+	private List<String> head;
 	private Lipidclass LipidClassLib;
 	private HSSFWorkbook book;
 	private String sheetName;
@@ -49,7 +50,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 		this.DatasetName = DatasetName;
 		this.sheetName = sheetName;
 		this.dataset = new SimpleLCMSDataset(this.getDatasetName());
-		this.head = new Vector<String>();
+		this.head = new ArrayList<String>();
 		this.LipidClassLib = new Lipidclass();
 	}
 
@@ -71,7 +72,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 
 				for (int i = 0; i < row.getLastCellNum(); i++) {
 					HSSFCell cell = row.getCell((short) i);
-					this.head.addElement(cell.toString());
+					this.head.add(cell.toString());
 				}
 				this.readLipids(initRow + 1, numberRows, sheet);
 
@@ -125,7 +126,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 		SimplePeakListRowLCMS lipid = new SimplePeakListRowLCMS();
 		for (int i = 0; i < row.getLastCellNum(); i++) {
 			try {
-				String title = head.elementAt(i);
+				String title = head.get(i);
 				if (title == null) {
 					continue;
 				}
@@ -223,7 +224,7 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 		return sheetsNames;
 	}
 
-	private void setExperimentsName(Vector<String> header) {
+	private void setExperimentsName(List<String> header) {
 		try {
 
 			String regExpression = "";
@@ -232,8 +233,8 @@ public class LCMSParserXLS extends ParserXLS implements Parser {
 			}
 
 			for (int i = 0; i < header.size(); i++) {
-				if (!header.elementAt(i).matches(regExpression)) {
-					this.dataset.addColumnName(header.elementAt(i));
+				if (!header.get(i).matches(regExpression)) {
+					this.dataset.addColumnName(header.get(i));
 				}
 			}
 

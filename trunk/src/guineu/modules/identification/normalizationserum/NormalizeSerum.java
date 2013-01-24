@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,11 +18,11 @@
 package guineu.modules.identification.normalizationserum;
 
 import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
+import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Vector;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,9 +34,9 @@ public class NormalizeSerum {
 
         private Dataset dataset;
         private double cont = 0;
-        private Vector<StandardUmol> stdMol;
+        private List<StandardUmol> stdMol;
 
-        public NormalizeSerum(Dataset dataset, Vector<StandardUmol> stdMol) {
+        public NormalizeSerum(Dataset dataset, List<StandardUmol> stdMol) {
                 this.dataset = dataset;
                 this.stdMol = stdMol;
         }

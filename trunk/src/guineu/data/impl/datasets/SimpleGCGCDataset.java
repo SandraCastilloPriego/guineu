@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,24 +17,21 @@
  */
 package guineu.data.impl.datasets;
 
-import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.data.impl.*;
-import guineu.data.DatasetType;
-import guineu.modules.mylly.alignment.scoreAligner.functions.*;
-import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
-import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory.SORT_MODE;
-import guineu.modules.mylly.datastruct.GCGCDatum;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Collections;
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.GCGCColumnName;
 import guineu.data.PeakListRow;
+import guineu.data.impl.SampleDescription;
+import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.modules.mylly.alignment.scoreAligner.ScoreAlignmentParameters;
+import guineu.modules.mylly.alignment.scoreAligner.functions.Aligner;
+import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory;
+import guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory.SORT_MODE;
+import guineu.modules.mylly.alignment.scoreAligner.functions.DistValue;
+import guineu.modules.mylly.datastruct.GCGCDatum;
 import guineu.util.Range;
 import java.awt.Color;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * GCxGC-MS data set implementation.
@@ -44,32 +41,33 @@ import java.util.Vector;
 public class SimpleGCGCDataset implements Dataset {
 
         private List<PeakListRow> peakList;
-        private Vector<String> nameExperiments;
+        private List<String> nameExperiments;
         private AlignmentSorterFactory.SORT_MODE lastSortMode;
         private ScoreAlignmentParameters params;
         private Aligner aligner;
         private String datasetName;
         private DatasetType type;
         private String infoDataset = "";
-        private Hashtable<String, SampleDescription> parameters;
-        private Vector<String> parameterNames;
+        private HashMap<String, SampleDescription> parameters;
+        private List<String> parameterNames;
         private int ID;
         private int numberRows = 0;
         private List<Color> rowColor;
 
         /**
-         *     
+         *
          * @param names Sample Names
          * @param parameters Alignment parameters
-         * @param aligner Class which performed the alignment of the sample files to create this data set
+         * @param aligner Class which performed the alignment of the sample
+         * files to create this data set
          */
         public SimpleGCGCDataset(String[] names, ScoreAlignmentParameters parameters, Aligner aligner) {
 
-                this.nameExperiments = new Vector<String>();
+                this.nameExperiments = new ArrayList<String>();
                 for (String experimentName : names) {
-                        this.nameExperiments.addElement(experimentName);
+                        this.nameExperiments.add(experimentName);
                 }
-                this.rowColor = new ArrayList<Color>(); 
+                this.rowColor = new ArrayList<Color>();
 
                 this.params = parameters;
 
@@ -85,23 +83,23 @@ public class SimpleGCGCDataset implements Dataset {
 
 
                 // SampleDescription to describe the samples from guineu.modules.configuration.parameters
-                this.parameters = new Hashtable<String, SampleDescription>();
-                this.parameterNames = new Vector<String>();
+                this.parameters = new HashMap<String, SampleDescription>();
+                this.parameterNames = new ArrayList<String>();
         }
 
         /**
-         * 
+         *
          * @param datasetName Name of data set
          */
         public SimpleGCGCDataset(String datasetName) {
-                this.nameExperiments = new Vector<String>();
+                this.nameExperiments = new ArrayList<String>();
                 peakList = new ArrayList<PeakListRow>();
                 lastSortMode = SORT_MODE.none;
                 this.datasetName = datasetName;
                 this.type = DatasetType.GCGCTOF;
                 // SampleDescription to describe the samples from guineu.modules.configuration.parameters
-                this.parameters = new Hashtable<String, SampleDescription>();
-                this.parameterNames = new Vector<String>();
+                this.parameters = new HashMap<String, SampleDescription>();
+                this.parameterNames = new ArrayList<String>();
         }
 
         /**
@@ -123,8 +121,9 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * Returns the class which performed the alignment to create this data set.
-         * 
+         * Returns the class which performed the alignment to create this data
+         * set.
+         *
          * @return Aligner
          */
         public Aligner getAligner() {
@@ -132,12 +131,13 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * It sets for each class GCGCDatum inside the data set the option "setUseConcentration()" as true or
-         * false depending on the alignemnt parameters and the amount of concentration.
+         * It sets for each class GCGCDatum inside the data set the option
+         * "setUseConcentration()" as true or false depending on the alignemnt
+         * parameters and the amount of concentration.
          *
-         * When the check box int he alignment parameters is checked the data set will show
-         * concentrations instead areas. It only will use concentrations when the amount is
-         * larger than 0.
+         * When the check box int he alignment parameters is checked the data
+         * set will show concentrations instead areas. It only will use
+         * concentrations when the amount is larger than 0.
          *
          * @see guineu.modules.mylly.datastruct.GCGCDatum
          *
@@ -164,7 +164,9 @@ public class SimpleGCGCDataset implements Dataset {
 
         /**
          * Defines the order of the rows in the data set.
-         * @see guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory
+         *
+         * @see
+         * guineu.modules.mylly.alignment.scoreAligner.functions.AlignmentSorterFactory
          *
          * @param mode Sort mode
          */
@@ -177,7 +179,7 @@ public class SimpleGCGCDataset implements Dataset {
 
         /**
          * Returns a list of every row in the data set.
-         * 
+         *
          * @return List containing the AlignmentRows in this Alignment
          */
         public List<PeakListRow> getAlignment() {
@@ -185,9 +187,9 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * The rows are lists of GCGCDatum. One GCGCDatum represents a "peak". Returns and array
-         * bidimensional of peaks where the first dimension represents each row and the second
-         * each peak.
+         * The rows are lists of GCGCDatum. One GCGCDatum represents a "peak".
+         * Returns and array bidimensional of peaks where the first dimension
+         * represents each row and the second each peak.
          *
          * @see guineu.modules.mylly.datastruct.GCGCDatum
          *
@@ -229,10 +231,11 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * True or False depending on the distance value.
-         * Returns true when the distance value of the compound in any row is not null.
+         * True or False depending on the distance value. Returns true when the
+         * distance value of the compound in any row is not null.
          *
-         * @return Returns true when the distance value of the compound in any row is not null
+         * @return Returns true when the distance value of the compound in any
+         * row is not null
          */
         public boolean containsMainPeaks() {
                 boolean contains = false;
@@ -262,7 +265,8 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * Returns the peak in the described position with the indexes rowIx and colIx.
+         * Returns the peak in the described position with the indexes rowIx and
+         * colIx.
          *
          * @param rowIx row index
          * @param colIx column index
@@ -298,7 +302,8 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         /**
-         * Add new rows into the data set. The rows can be in any kind of Collection class.
+         * Add new rows into the data set. The rows can be in any kind of
+         * Collection class.
          *
          * @param rows Rows to be added.
          */
@@ -326,7 +331,7 @@ public class SimpleGCGCDataset implements Dataset {
                         parameters.put(experimentName, p);
                 }
                 if (!this.parameterNames.contains(parameterName)) {
-                        parameterNames.addElement(parameterName);
+                        parameterNames.add(parameterName);
                 }
         }
 
@@ -349,18 +354,18 @@ public class SimpleGCGCDataset implements Dataset {
                 }
         }
 
-        public Vector<String> getParameterAvailableValues(String parameter) {
-                Vector<String> availableParameterValues = new Vector<String>();
+        public List<String> getParameterAvailableValues(String parameter) {
+                List<String> availableParameterValues = new ArrayList<String>();
                 for (String rawDataFile : this.getAllColumnNames()) {
                         String paramValue = this.getParametersValue(rawDataFile, parameter);
-                        if (paramValue != null && !paramValue.isEmpty() &&!availableParameterValues.contains(paramValue)) {
+                        if (paramValue != null && !paramValue.isEmpty() && !availableParameterValues.contains(paramValue)) {
                                 availableParameterValues.add(paramValue);
                         }
                 }
                 return availableParameterValues;
         }
 
-        public Vector<String> getParametersName() {
+        public List<String> getParametersName() {
                 return parameterNames;
         }
 
@@ -373,7 +378,7 @@ public class SimpleGCGCDataset implements Dataset {
                 return datasetName;
         }
 
-        public Vector<String> getAllColumnNames() {
+        public List<String> getAllColumnNames() {
                 return nameExperiments;
         }
 
@@ -418,7 +423,7 @@ public class SimpleGCGCDataset implements Dataset {
         }
 
         public void addColumnName(String nameExperiment, int position) {
-                this.nameExperiments.insertElementAt(nameExperiment, position);
+                this.nameExperiments.set(position, nameExperiment);
         }
 
         public List<PeakListRow> getRows() {
@@ -528,12 +533,12 @@ public class SimpleGCGCDataset implements Dataset {
         public Color[] getRowColor() {
                 return this.rowColor.toArray(new Color[0]);
         }
-        
+
         public void addRowColor(Color rowColor) {
                 this.rowColor.add(rowColor);
         }
 
-       @Override
+        @Override
         public Color getCellColor(int row, int column) {
                 return this.getRow(row).getColor(column);
         }
@@ -541,5 +546,62 @@ public class SimpleGCGCDataset implements Dataset {
         @Override
         public void setCellColor(Color cellColor, int row, int column) {
                 this.getRow(row).setColor(cellColor, column);
+        }
+
+        /**
+         * Returns the rows inside the RT and m/z range given as a parameter.
+         *
+         * @param rtRange Retention time range
+         * @param rtiRange m/z range
+         * @return Array with the rows inside this RT and m/z range
+         */
+        public PeakListRow[] getRowsInsideRT1RT2RTIRange(Range rtRange, Range rt2Range, Range rtiRange) {
+                List<PeakListRow> rows = new ArrayList<PeakListRow>();
+
+                for (PeakListRow row : this.peakList) {
+                        if ((Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName()) > 0) {
+                                if (rtRange.contains((Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName()))
+                                        && rtiRange.contains((Double) row.getVar(GCGCColumnName.RTI.getGetFunctionName()))
+                                        && rt2Range.contains((Double) row.getVar(GCGCColumnName.RT2.getGetFunctionName()))) {
+                                        rows.add(row);
+                                }
+                        } else {
+                                if (rtiRange.contains((Double) row.getVar(GCGCColumnName.RTI.getGetFunctionName()))) {
+                                        rows.add(row);
+                                }
+                        }
+                }
+                return rows.toArray(new PeakListRow[0]);
+        }
+
+        public PeakListRow[] getRowsInsideRT1RT2RTIRange(Range rtiRange) {
+                List<PeakListRow> rows = new ArrayList<PeakListRow>();
+
+                for (PeakListRow row : this.peakList) {
+                        if (rtiRange.contains((Double) row.getVar(GCGCColumnName.RTI.getGetFunctionName()))) {
+                                rows.add(row);
+                        }
+                }
+                return rows.toArray(new PeakListRow[0]);
+        }
+
+        public Range getRowsRTRange() {
+                double min = Double.MAX_VALUE;
+                double max = 0;
+
+                for (PeakListRow row : this.peakList) {
+                        double RTvalue = (Double) row.getVar(GCGCColumnName.RT1.getGetFunctionName());
+                        if (RTvalue <= 0) {
+                                RTvalue = (Double) row.getVar(GCGCColumnName.RTI.getGetFunctionName());
+                        }
+                        if (RTvalue < min) {
+                                min = RTvalue;
+                        }
+                        if (RTvalue > max) {
+                                max = RTvalue;
+                        }
+                }
+
+                return new Range(min, max);
         }
 }

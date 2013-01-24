@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,7 +21,7 @@ import guineu.taskcontrol.Task;
 import guineu.taskcontrol.TaskPriority;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.components.LabeledProgressBar;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
@@ -50,12 +50,12 @@ class TaskQueue extends AbstractTableModel {
 	 */
 	private int size;
 
-	private Hashtable<Integer, LabeledProgressBar> progressBars;
+	private HashMap<Integer, LabeledProgressBar> progressBars;
 
 	TaskQueue() {
 		size = 0;
 		queue = new WrappedTask[DEFAULT_CAPACITY];
-		progressBars = new Hashtable<Integer, LabeledProgressBar>();
+		progressBars = new HashMap<Integer, LabeledProgressBar>();
 	}
 
 	synchronized int getNumOfWaitingTasks() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -25,7 +25,7 @@ import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.awt.BorderLayout;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
@@ -90,7 +90,7 @@ public class SilhouetteInfoTask extends AbstractTask {
 
                                 rEngine.eval("dataset<- matrix(\"\",nrow =" + numberOfRows + ",ncol=" + dataset.getNumberCols() + ")");
 
-                                Vector<String> columnNames = dataset.getAllColumnNames();
+                                List<String> columnNames = dataset.getAllColumnNames();
 
                                 // assing the values to the matrix
                                 int realRowIndex = 0;
@@ -102,7 +102,7 @@ public class SilhouetteInfoTask extends AbstractTask {
                                                         int r = realRowIndex + 1;
                                                         int c = indexColumn + 1;
 
-                                                        double value = (Double) row.getPeak(columnNames.elementAt(indexColumn));
+                                                        double value = (Double) row.getPeak(columnNames.get(indexColumn));
 
                                                         if (!Double.isInfinite(value) && !Double.isNaN(value)) {
 

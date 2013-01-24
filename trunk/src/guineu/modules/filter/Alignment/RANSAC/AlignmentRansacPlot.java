@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -27,7 +27,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import org.apache.commons.math.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math.optimization.OptimizationException;
 import org.apache.commons.math.optimization.fitting.PolynomialFitter;
@@ -37,7 +36,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
@@ -154,7 +152,7 @@ public class AlignmentRansacPlot extends ChartPanel {
          * @param v Vector with the alignments
          * @param Name Name of the type of lipids in this alignment
          */
-        public void addSeries(Vector<AlignStructMol> data, String title, boolean linear) {
+        public void addSeries(List<AlignStructMol> data, String title, boolean linear) {
                 try {
                         chart.setTitle(title);
                         XYSeries s1 = new XYSeries("Aligned pairs");
@@ -185,7 +183,7 @@ public class AlignmentRansacPlot extends ChartPanel {
                 }
         }
 
-        private PolynomialFunction getPolynomialFunction(Vector<AlignStructMol> list, boolean linear) {
+        private PolynomialFunction getPolynomialFunction(List<AlignStructMol> list, boolean linear) {
                 List<RTs> data = new ArrayList<RTs>();
                 for (AlignStructMol m : list) {
                         if (m.Aligned) {

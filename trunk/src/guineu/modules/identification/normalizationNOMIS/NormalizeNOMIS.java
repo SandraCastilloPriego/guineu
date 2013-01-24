@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2012 VTT Biotechnology
+    Copyright 2007-2013 VTT Biotechnology
 
     This file is part of MULLU.
 
@@ -21,7 +21,7 @@ package guineu.modules.identification.normalizationNOMIS;
 
 import flanagan.math.Matrix;
 import guineu.data.impl.datasets.SimpleLCMSDataset;
-import java.util.Vector;
+
 
 
 /**

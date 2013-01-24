@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -32,12 +32,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
-
 import javax.swing.JInternalFrame;
-
-
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -107,7 +103,7 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                 final CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
 
                 final JFreeChart chart = new JFreeChart(
-                        "Box-and-Whisker Demo",
+                        "Intensity Box plot",
                         new Font("SansSerif", Font.BOLD, 14),
                         plot,
                         true);
@@ -160,7 +156,7 @@ public class IntensityBoxPlotFrame extends JInternalFrame {
                 final List list = new ArrayList();
                 if (!xAxisValueSource.equals("Sample")) {
                         Dataset data = GuineuCore.getDesktop().getSelectedDataFiles()[0];
-                        Vector<String> parameterValues = data.getParameterAvailableValues((String) xAxisValueSource);
+                        List<String> parameterValues = data.getParameterAvailableValues((String) xAxisValueSource);
                         for (int i = 0; i < parameterValues.size(); i++) {
                                 for (String sampleName : this.selectedFiles) {
                                         if (parameterValues.get(i).equals(data.getParametersValue(sampleName, (String) xAxisValueSource))) {

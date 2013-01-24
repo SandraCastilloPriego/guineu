@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -28,12 +28,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math.ArgumentOutsideDomainException;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.analysis.interpolation.LoessInterpolator;
+import org.apache.commons.math.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math.linear.BlockRealMatrix;
@@ -97,6 +101,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                         GUIUtils.showNewTable(newData, true);
                         normalize(data, newData);
                         writeInfo();
+                        plotInterpolations(data);
                 }
                 setStatus(TaskStatus.FINISHED);
         }
@@ -109,10 +114,10 @@ class SerumHuNormalizationTask extends AbstractTask {
                 // Third row => different data sets
                 PeakListRow batches = data.getRow(2);
 
-                //  plotInterpolations(data);
+
 
                 int numBatches = 1;
-                double n = (Double) batches.getPeak(data.getAllColumnNames().elementAt(0));
+                double n = (Double) batches.getPeak(data.getAllColumnNames().get(0));
 
                 for (String name : data.getAllColumnNames()) {
                         if ((Double) batches.getPeak(name) > n) {
@@ -126,86 +131,117 @@ class SerumHuNormalizationTask extends AbstractTask {
                         message = "Normalizing";
                         this.totalRows = data.getNumberRows() - 3;
                         this.processedRows = 0;
-                        Vector<String> names = data.getAllColumnNames();
+                        List<String> names = data.getAllColumnNames();
                         for (int i = 3; i < data.getNumberRows(); i++) {
                                 this.processedRows++;
                                 PeakListRow row = data.getRow(i);
                                 PeakListRow newrow = newData.getRow(i);
+                                try {
+                                        // Get the interpolation of all the human serum points using Loess 
+                                        PolynomialSplineFunction function = functions.get(row.getID()).get(batch);
 
-                                // Get the interpolation of all the human serum points using Loess 
-                                PolynomialSplineFunction function = functions.get(row.getID()).get(batch);
+                                        if (function != null) {
+                                                // Prepare the points for the extrapolation
+                                                PolynomialFunction extrapolationFunction = null;
+                                                if (this.extrapolation) {
+                                                        List<Double> points = new ArrayList<Double>();
+                                                        for (int e = 0; e < row.getNumberPeaks(); e++) {
+                                                                if ((Double) batches.getPeak(names.get(e)) == batch) {
+                                                                        try {
+                                                                                points.add(function.value((Double) runOrder.getPeak(names.get(e))));
+                                                                        } catch (ArgumentOutsideDomainException ex) {
+                                                                                Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE,
+                                                                                        null, ex);
+                                                                        }
+                                                                }
+                                                        }
 
-                                if (function != null) {
-                                        // Prepare the points for the extrapolation
-                                        PolynomialFunction extrapolationFunction = null;
-                                        if (this.extrapolation) {
-                                                List<Double> points = new ArrayList<Double>();
+                                                        // Extrapolation function
+                                                        extrapolationFunction = this.fittPolinomialFunction(batches, runOrder, names, batch, points);
+                                                }
+                                                double lastPoint = 0;
                                                 for (int e = 0; e < row.getNumberPeaks(); e++) {
-                                                        if ((Double) batches.getPeak(names.elementAt(e)) == batch) {
-                                                                try {
-                                                                        points.add(function.value((Double) runOrder.getPeak(names.elementAt(e))));
-                                                                } catch (ArgumentOutsideDomainException ex) {
-                                                                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE,
-                                                                                null, ex);
+                                                        String sampleName = names.get(e);
+                                                        if ((Double) ids.getPeak(sampleName) > 0.0) {
+                                                                if ((Double) batches.getPeak(sampleName) == batch) {
+                                                                        try {
+
+                                                                                if ((Double) ids.getPeak(sampleName) == 0) {
+                                                                                        lastPoint = function.value((Double) runOrder.getPeak(sampleName));
+                                                                                }
+                                                                                double value = 0;
+                                                                                try {
+                                                                                        Double controlMol = function.value((Double) runOrder.getPeak(names.get(e)));
+                                                                                        if (controlMol < 0.0 || controlMol == Double.NaN || controlMol == Double.POSITIVE_INFINITY || controlMol == Double.NEGATIVE_INFINITY) {
+                                                                                                controlMol = getAverage(ids, row, e, names);
+                                                                                        }
+
+
+                                                                                        value = (Double) row.getPeak(sampleName) / controlMol;
+
+                                                                                        if (value < 0.0 || value == Double.NaN || value == Double.POSITIVE_INFINITY || value == Double.NEGATIVE_INFINITY) {
+                                                                                                controlMol = getAverage(ids, row, e, names);
+                                                                                        }
+
+                                                                                        value = (Double) row.getPeak(sampleName) / controlMol;
+                                                                                } catch (ClassCastException exception) {
+                                                                                        value = -100;
+                                                                                }
+                                                                                newrow.setPeak(sampleName, value);
+                                                                        } catch (ArgumentOutsideDomainException ex) {
+                                                                                // ex.printStackTrace();
+                                                                                //if the value has to be extrapolated
+                                                                                if (extrapolation && extrapolationFunction != null) {
+                                                                                        double value = 0;
+                                                                                        try {
+
+                                                                                                Double controlMol = extrapolationFunction.value((Double) runOrder.getPeak(names.get(e)));
+                                                                                                if (controlMol < 0.0 || controlMol == Double.NaN || controlMol == Double.POSITIVE_INFINITY || controlMol == Double.NEGATIVE_INFINITY) {
+                                                                                                        controlMol = getAverage(ids, row, e, names);
+                                                                                                }
+                                                                                                value = (Double) row.getPeak(sampleName) / controlMol;
+
+                                                                                                if (value < 0.0 || value == Double.NaN || value == Double.POSITIVE_INFINITY || value == Double.NEGATIVE_INFINITY) {
+                                                                                                        controlMol = getAverage(ids, row, e, names);
+                                                                                                }
+
+                                                                                                value = (Double) row.getPeak(sampleName) / controlMol;
+                                                                                        } catch (ClassCastException exception) {
+                                                                                                value = -100;
+                                                                                        }
+                                                                                        newrow.setPeak(sampleName, value);
+                                                                                } else {
+                                                                                        double value = 0;
+                                                                                        try {
+                                                                                                value = (Double) row.getPeak(sampleName) / lastPoint;//extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
+                                                                                        } catch (ClassCastException exception) {
+                                                                                                value = -100;
+                                                                                        }
+                                                                                        newrow.setPeak(sampleName, value);
+                                                                                }
+
+                                                                        }
                                                                 }
                                                         }
                                                 }
-
-                                                // Extrapolation function
-                                                extrapolationFunction = this.fittPolinomialFunction(batches, runOrder, names, batch, points);
+                                        } else {
+                                                System.out.println(row.getID());
                                         }
-                                        double lastPoint = 0;
-                                        for (int e = 0; e < row.getNumberPeaks(); e++) {
-                                                String sampleName = names.elementAt(e);
-                                                if ((Double) batches.getPeak(sampleName) == batch) {
-                                                        try {
-
-                                                                if ((Double) ids.getPeak(sampleName) == 0) {
-                                                                        lastPoint = function.value((Double) runOrder.getPeak(sampleName));
-                                                                }
-                                                                double value = 0;
-                                                                try {
-                                                                        value = (Double) row.getPeak(sampleName) / function.value((Double) runOrder.getPeak(names.elementAt(e)));
-                                                                } catch (ClassCastException exception) {
-                                                                        value = -100;
-                                                                }
-                                                                newrow.setPeak(names.elementAt(e), value);
-                                                        } catch (ArgumentOutsideDomainException ex) {
-                                                                //if the value has to be extrapolated
-                                                                if (extrapolation && extrapolationFunction != null) {
-                                                                        double value = 0;
-                                                                        try {
-                                                                                value = (Double) row.getPeak(sampleName) / extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
-                                                                        } catch (ClassCastException exception) {
-                                                                                value = -100;
-                                                                        }
-                                                                        newrow.setPeak(sampleName, value);
-                                                                } else {
-                                                                        double value = 0;
-                                                                        try {
-                                                                                value = (Double) row.getPeak(sampleName) / lastPoint;//extrapolationFunction.value((Double) runOrder.getPeak(names.elementAt(e)));
-                                                                        } catch (ClassCastException exception) {
-                                                                                value = -100;
-                                                                        }
-                                                                        newrow.setPeak(sampleName, value);
-                                                                }
-
-                                                        }
-                                                }
-                                        }
-                                } else {
+                                } catch (Exception exception) {
                                         System.out.println(row.getID());
+
                                 }
                         }
                 }
 
         }
 
-        private void fillData(PeakListRow batches, PeakListRow ids, PeakListRow runOrder, PeakListRow row, int batch, Vector<String> sampleNames) throws ClassCastException {
+        private void fillData(PeakListRow batches, PeakListRow ids, PeakListRow runOrder, PeakListRow row, int batch, List<String> sampleNames) throws ClassCastException {
                 List<Double> yvalList = new ArrayList<Double>();
                 List<Double> xvalList = new ArrayList<Double>();
                 for (int i = 0; i < row.getNumberPeaks(); i++) {
-                        String name = sampleNames.elementAt(i);
+                        String name = sampleNames.get(i);
+
                         if ((Double) batches.getPeak(name) == batch) {
                                 try {
                                         if ((Double) ids.getPeak(name) == 0 && (Double) row.getPeak(name) > 0) {
@@ -213,6 +249,8 @@ class SerumHuNormalizationTask extends AbstractTask {
                                                 yvalList.add((Double) row.getPeak(name));
                                         }
                                 } catch (Exception e) {
+                                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE, null, e);
+                                        System.out.println(name);
                                 }
                         }
                 }
@@ -235,19 +273,17 @@ class SerumHuNormalizationTask extends AbstractTask {
                         } else {
                                 loess = new LoessInterpolator(this.loessBandwidth, this.iterations);
                         }
-                        PolynomialSplineFunction function = loess.interpolate(xval, yval);
+                        double[] newy = loess.smooth(xval, yval);
+                        PolynomialSplineFunction function = loess.interpolate(xval, newy);
                         return function;
 
                 } catch (MathException ex) {
                         Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE, null, ex);
-                        try {
-                                LoessInterpolator loess = new LoessInterpolator(0.7, 1);
-                                PolynomialSplineFunction function = loess.interpolate(xval, yval);
-                                return function;
-                        } catch (MathException ex1) {
-                                Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE, null, ex1);
-                                return null;
-                        }
+
+                        SplineInterpolator loess = new SplineInterpolator();
+                        PolynomialSplineFunction function = loess.interpolate(xval, yval);
+                        return function;
+
                 }
         }
 
@@ -263,7 +299,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                 this.processedRows = 0;
                 this.message = "Fitting the standard curves";
 
-                Vector<String> names = data.getAllColumnNames();
+                List<String> names = data.getAllColumnNames();
                 for (int i = 3; i < data.getNumberRows(); i++) {
                         this.processedRows++;
                         PeakListRow row = data.getRow(i);
@@ -273,6 +309,13 @@ class SerumHuNormalizationTask extends AbstractTask {
                                         fillData(batches, ids, runOrder, row, batch, names);
                                         if (yval.length > 2) {
                                                 function = createCurve();
+
+
+                                                //Checkin loess curve
+                                                checkFunction(function, row, batch, batches, runOrder, names);
+
+
+
                                                 if (function == null) {
                                                         System.out.println("nulllll");
                                                 }
@@ -295,14 +338,14 @@ class SerumHuNormalizationTask extends AbstractTask {
                 }
         }
 
-        private PolynomialFunction fittPolinomialFunction(PeakListRow batches, PeakListRow runOrder, Vector<String> names, int batch, List<Double> data) {
+        private PolynomialFunction fittPolinomialFunction(PeakListRow batches, PeakListRow runOrder, List<String> names, int batch, List<Double> data) {
                 // Add the maximun number of iterations in GaussNewtonOptimizer
                 GaussNewtonOptimizer optimizer = new GaussNewtonOptimizer(false);
                 PolynomialFitter fitter = new PolynomialFitter(5, optimizer);
                 for (int i = 0; i < data.size(); i++) {
-                        if ((Double) batches.getPeak(names.elementAt(i)) == batch) {
+                        if ((Double) batches.getPeak(names.get(i)) == batch) {
                                 Double point = data.get(i);
-                                fitter.addObservedPoint(1, (Double) runOrder.getPeak(names.elementAt(i)), point);
+                                fitter.addObservedPoint(1, (Double) runOrder.getPeak(names.get(i)), point);
                         }
                 }
                 try {
@@ -317,16 +360,16 @@ class SerumHuNormalizationTask extends AbstractTask {
         private void searchBestFunction(Dataset data, PeakListRow comparedRow, int numBatches) {
                 double bestValue = 0;
                 int bestID = -1;
-                Vector<String> names = data.getAllColumnNames();
+                List<String> names = data.getAllColumnNames();
                 for (int i = 3; i < data.getNumberRows(); i++) {
                         PeakListRow row = data.getRow(i);
 
                         RealMatrix m = this.getMatrix(comparedRow, row, names);
-                        if (m.getData().length > 3) {
+                        if (m != null && m.getData().length > 3) {
                                 SpearmansCorrelation scorrelation = new SpearmansCorrelation(m);
                                 PearsonsCorrelation correlation = scorrelation.getRankCorrelation();
                                 double value = correlation.getCorrelationMatrix().getEntry(1, 0);
-                                if (value > bestValue && functions.get(row.getID()) != null) {
+                                if (value > bestValue && functions.get(row.getID()) != null && row.getID() != comparedRow.getID()) {
                                         List<PolynomialSplineFunction> functionList = functions.get(row.getID());
                                         if (functionList.size() == numBatches) {
                                                 bestValue = value;
@@ -345,30 +388,34 @@ class SerumHuNormalizationTask extends AbstractTask {
                 this.correlated.put(comparedRow.getID(), bestID);
         }
 
-        private RealMatrix getMatrix(PeakListRow row, PeakListRow row2, Vector<String> sampleNames) {
+        private RealMatrix getMatrix(PeakListRow row, PeakListRow row2, List<String> sampleNames) {
 
                 List<Double[]> data = new ArrayList<Double[]>();
                 for (int i = 0; i < sampleNames.size(); i++) {
                         try {
-                                if ((Double) row.getPeak(sampleNames.elementAt(i)) != Double.NaN && (Double) row2.getPeak(sampleNames.elementAt(i)) != Double.NaN
-                                        && (Double) row.getPeak(sampleNames.elementAt(i)) != 0.0 && (Double) row2.getPeak(sampleNames.elementAt(i)) != 0.0) {
+                                if ((Double) row.getPeak(sampleNames.get(i)) != Double.NaN && (Double) row2.getPeak(sampleNames.get(i)) != Double.NaN
+                                        && (Double) row.getPeak(sampleNames.get(i)) != 0.0 && (Double) row2.getPeak(sampleNames.get(i)) != 0.0) {
                                         Double[] dat = new Double[2];
-                                        dat[0] = (Double) row.getPeak(sampleNames.elementAt(i));
-                                        dat[1] = (Double) row2.getPeak(sampleNames.elementAt(i));
+                                        dat[0] = (Double) row.getPeak(sampleNames.get(i));
+                                        dat[1] = (Double) row2.getPeak(sampleNames.get(i));
                                         data.add(dat);
                                 }
                         } catch (Exception e) {
                         }
                 }
 
-                double[][] dataMatrix = new double[data.size()][2];
-                int count = 0;
-                for (Double[] dat : data) {
-                        dataMatrix[count][0] = dat[0];
-                        dataMatrix[count++][1] = dat[1];
+                if (data.size() > 0) {
+                        double[][] dataMatrix = new double[data.size()][2];
+                        int count = 0;
+                        for (Double[] dat : data) {
+                                dataMatrix[count][0] = dat[0];
+                                dataMatrix[count++][1] = dat[1];
+                        }
+                        RealMatrix matrix = new BlockRealMatrix(dataMatrix);
+                        return matrix;
+                } else {
+                        return null;
                 }
-                RealMatrix matrix = new BlockRealMatrix(dataMatrix);
-                return matrix;
 
         }
 
@@ -398,55 +445,110 @@ class SerumHuNormalizationTask extends AbstractTask {
         private void plotInterpolations(Dataset data) {
                 this.message = "Creating Plots";
                 PeakListRow runOrder = data.getRow(1);
+                PeakListRow batch = data.getRow(2);
                 final Rengine rEngine;
                 try {
                         rEngine = RUtilities.getREngine();
                 } catch (Throwable t) {
 
                         throw new IllegalStateException(
-                                "q-value test requires R but it couldn't be loaded (" + t.getMessage() + ')');
+                                "Plotting requires R but it couldn't be loaded (" + t.getMessage() + ')');
                 }
                 synchronized (RUtilities.R_SEMAPHORE) {
                         this.totalRows = data.getNumberRows() - 3;
-                        Vector<String> names = data.getAllColumnNames();
+                        this.processedRows = 0;
+                        message = "Plotting curves";
+                        List<String> names = data.getAllColumnNames();
                         // assing the values to the matrix
                         String path = this.fileName.getAbsolutePath();
+
+
                         path = path.replaceAll("\\\\", "/");
                         rEngine.eval("pdf(\"" + path + "\")");
+                        rEngine.eval("p <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
+                        rEngine.eval("loess <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
+                        rEngine.eval("time <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
+                        rEngine.eval("color <- vector(mode=\"numeric\",length=" + data.getNumberCols() * 2 + ")");
+
                         for (int row = 3; row < data.getNumberRows(); row++) {
-                                rEngine.eval("p <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
-                                rEngine.eval("loess <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
-                                rEngine.eval("time <- vector(mode=\"numeric\",length=" + data.getNumberCols() + ")");
-                                rEngine.eval("color <- vector(mode=\"numeric\",length=" + data.getNumberCols() * 2 + ")");
-                                //   PolynomialSplineFunction function = this.functions.get(data.getRow(row).getID());
+
+                                List<PolynomialSplineFunction> functions = this.functions.get(data.getRow(row).getID());
                                 double lastPoint = 0;
                                 for (int col = 0; col < data.getNumberCols(); col++) {
                                         int r = col + 1;
-                                        rEngine.eval("p[" + r + "] <- " + data.getRow(row).getPeak(names.elementAt(col)));
+                                        rEngine.eval("p[" + r + "] <- " + data.getRow(row).getPeak(names.get(col)));
 
-                                        /*
-                                         * if (function != null) { try {
-                                         * rEngine.eval("loess[" + r + "] <- " +
-                                         * function.value((Double)
-                                         * runOrder.getPeak(names.elementAt(col))));
-                                         * lastPoint = function.value((Double)
-                                         * runOrder.getPeak(names.elementAt(col)));
-                                         * } catch
-                                         * (ArgumentOutsideDomainException ex) {
-                                         * rEngine.eval("loess[" + r + "] <- " +
-                                         * lastPoint); } }
-                                         */
-                                        rEngine.eval("time[" + r + "] <- " + runOrder.getPeak(names.elementAt(col)));
+
+                                        if (functions != null) {
+                                                PolynomialSplineFunction function = functions.get(Double.valueOf((Double) batch.getPeak(names.get(col))).intValue());
+                                                if (function != null) {
+                                                        try {
+                                                                rEngine.eval("loess[" + r + "] <- "
+                                                                        + function.value((Double) runOrder.getPeak(names.get(col))));
+                                                                lastPoint = function.value((Double) runOrder.getPeak(names.get(col)));
+                                                        } catch (ArgumentOutsideDomainException ex) {
+                                                                rEngine.eval("loess[" + r + "] <- "
+                                                                        + lastPoint);
+                                                        }
+                                                }
+                                        }
+
+                                        rEngine.eval("time[" + r + "] <- " + col);
 
                                 }
 
                                 rEngine.eval("plot(p~time, xlab=\"Running time\", ylab=\"Intensity\")");
                                 rEngine.eval("lines(loess~time)");
-                                rEngine.eval("title(main = " + data.getRow(row).getID() + ")");
+                                String name = data.getRow(row).getID() + "-" + data.getRow(row).getName();
+                                rEngine.eval("title(main = \"" + name + "\")");
                                 this.processedRows++;
                         }
                         rEngine.eval("dev.off()");
 
                 }
+        }
+
+        private void checkFunction(PolynomialSplineFunction function, PeakListRow row, int batch, PeakListRow batches, PeakListRow runOrder, List<String> names) {
+                boolean ok = true;
+
+                for (String sampleNames : names) {
+                        if (batch == batches.getPeak(sampleNames)) {
+                                try {
+                                        double value = function.value((Double) runOrder.getPeak(sampleNames));
+                                        if (value <= 0.0 || value == Double.NaN) {
+                                                ok = false;
+                                        }
+                                } catch (ArgumentOutsideDomainException ex) {
+                                        Logger.getLogger(SerumHuNormalizationTask.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                        }
+                }
+
+                if (!ok) {
+                        System.out.println(row.getID());
+                }
+        }
+
+        private Double getAverage(PeakListRow ids, PeakListRow row, int e, List<String> names) {
+                String actualName = names.get(e);
+                boolean passedName = false;
+                double initValue = 1;
+                double lastValue = 1;
+                for (String name : names) {
+                        if ((Double) ids.getPeak(name) == 0.0) {
+                                if (!passedName) {
+                                        initValue = (Double) row.getPeak(name);
+                                } else {
+                                        lastValue = (Double) row.getPeak(name);
+                                        break;
+                                }
+
+                        }
+                        if (name.equals(actualName)) {
+                                passedName = true;
+                        }
+                }
+
+                return (initValue + lastValue) / 2;
         }
 }

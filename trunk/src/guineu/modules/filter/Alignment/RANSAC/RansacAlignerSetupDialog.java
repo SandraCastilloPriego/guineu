@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -29,17 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
@@ -101,7 +91,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
 
 
                         // Ransac Alignment
-                        Vector<AlignStructMol> list = this.getVectorAlignment(peakListX, peakListY);
+                        List<AlignStructMol> list = this.getVectorAlignment(peakListX, peakListY);
                         super.updateParameterSetFromComponents();
                         RANSAC ransac = new RANSAC(parameters);
                         ransac.alignment(list);
@@ -186,9 +176,9 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
          * Create the vector which contains all the possible aligned peaks.
          * @return vector which contains all the possible aligned peaks.
          */
-        private Vector<AlignStructMol> getVectorAlignment(Dataset peakListX, Dataset peakListY) {
+        private List<AlignStructMol> getVectorAlignment(Dataset peakListX, Dataset peakListY) {
 
-                Vector<AlignStructMol> alignMol = new Vector<AlignStructMol>();
+                List<AlignStructMol> alignMol = new ArrayList<AlignStructMol>();
 
                 for (PeakListRow row : peakListX.getRows()) {
 
@@ -207,7 +197,7 @@ public class RansacAlignerSetupDialog extends ParameterSetupDialog implements
                                 new Range(rtMin, rtMax), new Range(mzMin, mzMax));
 
                         for (PeakListRow candidateRow : candidateRows) {
-                                alignMol.addElement(new AlignStructMol((SimplePeakListRowLCMS) row, (SimplePeakListRowLCMS) candidateRow));
+                                alignMol.add(new AlignStructMol((SimplePeakListRowLCMS) row, (SimplePeakListRowLCMS) candidateRow));
                         }
                 }
                 return alignMol;

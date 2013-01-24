@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -22,7 +22,7 @@ import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -39,17 +39,17 @@ public class SimplePeakListRowExpression implements PeakListRow {
         private boolean control, selection;
         private String name;
         private double pValue, qValue;
-        private Hashtable<String, Double> peaks;
-        private Hashtable<String, String> peaksString;
-        private Hashtable<String, Object> metaData;
+        private HashMap<String, Double> peaks;
+        private HashMap<String, String> peaksString;
+        private HashMap<String, Object> metaData;
         private List<Color> colors;
 
         public SimplePeakListRowExpression() {}
 
         public SimplePeakListRowExpression(int ID, String name, double pValue, double qValue) {
-                this.peaks = new Hashtable<String, Double>();
-                this.peaksString = new Hashtable<String, String>();
-                this.metaData = new Hashtable<String, Object>();
+                this.peaks = new HashMap<String, Double>();
+                this.peaksString = new HashMap<String, String>();
+                this.metaData = new HashMap<String, Object>();
                 this.colors = new ArrayList<Color>();
                 this.name = name;
                 this.pValue = pValue;
@@ -89,7 +89,7 @@ public class SimplePeakListRowExpression implements PeakListRow {
                 return peakListRow;
         }
 
-        public Hashtable<String, Object> getMetaData() {
+        public HashMap<String, Object> getMetaData() {
                 return this.metaData;
         }
 
@@ -139,7 +139,7 @@ public class SimplePeakListRowExpression implements PeakListRow {
         }
 
         public void removePeaks() {
-                this.peaks = new Hashtable<String, Double>();
+                this.peaks = new HashMap<String, Double>();
         }
 
         public Double[] getPeaks(String[] columnName) {
@@ -168,7 +168,7 @@ public class SimplePeakListRowExpression implements PeakListRow {
         }
 
         public void removeNoSamplePeaks(String[] group) {
-                Hashtable<String, Double> newPeaks = new Hashtable<String, Double>();
+                HashMap<String, Double> newPeaks = new HashMap<String, Double>();
                 for (String name : group) {
                         if (this.peaks.containsKey(name)) {
                                 newPeaks.put(name, this.peaks.get(name));
@@ -177,7 +177,7 @@ public class SimplePeakListRowExpression implements PeakListRow {
                 this.peaks = newPeaks;
         }
 
-        public Hashtable<String, Double> getPeaksTable() {
+        public HashMap<String, Double> getPeaksTable() {
                 return this.peaks;
         }     
 

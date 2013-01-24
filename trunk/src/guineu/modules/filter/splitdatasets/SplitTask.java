@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -23,8 +23,8 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
 import guineu.util.components.FileUtils;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  *
@@ -33,15 +33,13 @@ import java.util.Vector;
 public class SplitTask extends AbstractTask {
 
         private double progress = 0.0f;
-        private String[] group1, group2;
         private Dataset dataset;
         private String parameter;
 
-        public SplitTask(String[] group1, String[] group2, Dataset dataset, String parameter) {
-                this.group1 = group1;
-                this.group2 = group2;
+        public SplitTask(Dataset dataset, SplitParameters parameters) {
                 this.dataset = dataset;
-                this.parameter = parameter;
+                parameter = (String) parameters.getParameter(SplitParameters.ValueSource).getValue();
+                System.out.println(parameter);
         }
 
         public String getTaskDescription() {
@@ -59,14 +57,10 @@ public class SplitTask extends AbstractTask {
         public void run() {
                 try {
                         setStatus(TaskStatus.PROCESSING);
+                        System.out.println("1");
                         progress = 0.5f;
-
-                        Split(group1, "1");
-                        Split(group2, "2");
-
-                        if (parameter != null) {
-                                SplitFromParameter();
-                        }
+                        SplitFromParameter();
+                        System.out.println("2");
                         progress = 1f;
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
@@ -93,8 +87,8 @@ public class SplitTask extends AbstractTask {
                         datasetSplit.addRow(newRow);
                 }
                 List<String> parameters = dataset.getParametersName();
-                for(String p: parameters){
-                        for(String sample: datasetSplit.getAllColumnNames()){
+                for (String p : parameters) {
+                        for (String sample : datasetSplit.getAllColumnNames()) {
                                 datasetSplit.addParameterValue(sample, p, dataset.getParametersValue(sample, p));
                         }
                 }
@@ -103,13 +97,15 @@ public class SplitTask extends AbstractTask {
         }
 
         private void SplitFromParameter() {
-                Vector<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
-
+                System.out.println("1.5" + dataset.getType());
+                List<String> availableParameterValues = dataset.getParameterAvailableValues(parameter);
+                System.out.println(availableParameterValues.size());
                 for (String parameterVal : availableParameterValues) {
-                        Vector<String> group = new Vector<String>();
+                        System.out.println(parameterVal);
+                        List<String> group = new ArrayList<String>();
                         for (String rawDataFile : dataset.getAllColumnNames()) {
-                                if (dataset.getParametersValue(rawDataFile, parameter)!=null && dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
-                                        group.addElement(rawDataFile);
+                                if (dataset.getParametersValue(rawDataFile, parameter) != null && dataset.getParametersValue(rawDataFile, parameter).equals(parameterVal)) {
+                                        group.add(rawDataFile);
                                 }
                         }
                         Split(group.toArray(new String[0]), parameterVal);

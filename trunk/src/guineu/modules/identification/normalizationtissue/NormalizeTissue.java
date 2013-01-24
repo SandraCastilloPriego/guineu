@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,12 +18,12 @@
 package guineu.modules.identification.normalizationtissue;
 
 import guineu.data.Dataset;
-import guineu.data.PeakListRow;
 import guineu.data.DatasetType;
+import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,10 +35,10 @@ public class NormalizeTissue {
 
         private Dataset dataset;
         private double cont = 0;
-        private Vector<StandardUmol> stdMol;
-        Hashtable<String, Double> weights;
+        private List<StandardUmol> stdMol;
+        HashMap<String, Double> weights;
 
-        public NormalizeTissue(Dataset dataset, Vector<StandardUmol> stdMol, Hashtable<String, Double> weights) {
+        public NormalizeTissue(Dataset dataset, List<StandardUmol> stdMol, HashMap<String, Double> weights) {
                 this.dataset = dataset;
                 this.stdMol = stdMol;
                 this.weights = weights;

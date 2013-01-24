@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,8 +17,8 @@
  */
 package guineu.modules.database.deleteDataDB;
 
-import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.database.retrieve.DataBase;
+import guineu.database.retrieve.impl.OracleRetrievement;
 import guineu.main.GuineuCore;
 import guineu.modules.database.tools.CheckNode;
 import guineu.modules.database.tools.CheckRenderer;
@@ -29,12 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import javax.swing.JDialog;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -52,16 +47,16 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
     private List<newParameterDialog> parameters;
     private List<String> datasets;
     private JTree tree;
-    private Hashtable<CheckNode, String[]> nodeTable;
-    private Hashtable<CheckNode, NodeInfo> nodeInfoTable;
+    private HashMap<CheckNode, String[]> nodeTable;
+    private HashMap<CheckNode, NodeInfo> nodeInfoTable;
     private String password;
 
     /** Creates new form DatasetOpenDialog */
     public DatasetDeleteDialog() {
         super(GuineuCore.getDesktop().getMainFrame(), "Deleting Data Set from Database...", true);
 
-        nodeTable = new Hashtable<CheckNode, String[]>();
-        nodeInfoTable = new Hashtable<CheckNode, NodeInfo>();
+        nodeTable = new HashMap<CheckNode, String[]>();
+        nodeInfoTable = new HashMap<CheckNode, NodeInfo>();
         parameters = new ArrayList<newParameterDialog>();
         datasets = new ArrayList<String>();
         initComponents();        
@@ -543,7 +538,7 @@ public class DatasetDeleteDialog extends JDialog implements ActionListener {
         if (node.getChildCount() == 0 && data != null) {
             try {
                 DataBase db = new OracleRetrievement();
-                Vector<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
+                List<String> sampleNames = db.getSampleNames(Integer.valueOf(data[0]));
                 for (String sampleName : sampleNames) {
                     String[] param = db.getParameters(sampleName);
 

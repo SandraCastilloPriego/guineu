@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,11 +17,11 @@
  */
 package guineu.data.datamodels;
 
+import guineu.data.Dataset;
+import guineu.data.DatasetType;
+import guineu.data.PeakListRow;
 import guineu.data.impl.datasets.SimpleBasicDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowOther;
-import guineu.data.Dataset;
-import guineu.data.PeakListRow;
-import guineu.data.DatasetType;
 import guineu.util.Tables.DataTableModel;
 import java.awt.Color;
 import javax.swing.table.AbstractTableModel;
@@ -76,7 +76,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
                         return (Boolean) this.dataset.getRow(row).isSelected();
                 } else {
                         int index = column - this.getFixColumns();
-                        return (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(this.dataset.getAllColumnNames().elementAt(index));
+                        return (String) ((SimplePeakListRowOther) this.dataset.getRow(row)).getPeak(this.dataset.getAllColumnNames().get(index));
                 }
         }
 
@@ -85,7 +85,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
                 if (columnIndex == 0) {
                         return "Selection";
                 } else {
-                        return this.dataset.getAllColumnNames().elementAt(columnIndex - this.getFixColumns());
+                        return this.dataset.getAllColumnNames().get(columnIndex - this.getFixColumns());
                 }
         }
 
@@ -105,7 +105,7 @@ public class OtherDataModel extends AbstractTableModel implements DataTableModel
                 if (column == 0) {
                         peakRow.setSelectionMode((Boolean) aValue);
                 } else {
-                        peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.getFixColumns()), aValue.toString());
+                        peakRow.setPeak(this.dataset.getAllColumnNames().get(column - this.getFixColumns()), aValue.toString());
                 }
                 fireTableCellUpdated(row, column);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,16 +17,17 @@
  */
 package guineu.data.parser.impl;
 
-import guineu.data.parser.Parser;
 import guineu.data.Dataset;
-import guineu.data.ParameterType;
-import guineu.data.GCGCColumnName;
 import guineu.data.DatasetType;
+import guineu.data.GCGCColumnName;
+import guineu.data.ParameterType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
+import guineu.data.parser.Parser;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -38,7 +39,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 
         private String DatasetName;
         private SimpleGCGCDataset dataset;
-        private Vector<String> head;
+        private List<String> head;
         private HSSFWorkbook book;
         private String sheetName;
         private int numberRows, rowsReaded;
@@ -50,7 +51,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 this.sheetName = sheetName;
                 this.dataset = new SimpleGCGCDataset(this.getDatasetName());
                 this.dataset.setType(DatasetType.GCGCTOF);
-                this.head = new Vector<String>();
+                this.head = new ArrayList<String>();
         }
 
         public void fillData() {
@@ -71,7 +72,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
 
                                 for (int i = 0; i < row.getLastCellNum(); i++) {
                                         HSSFCell cell = row.getCell(i);
-                                        this.head.addElement(cell.toString());
+                                        this.head.add(cell.toString());
                                 }
                                 this.readMetabolites(initRow + 1, numberRows, sheet);
 
@@ -128,7 +129,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 SimplePeakListRowGCGC metabolite = new SimplePeakListRowGCGC();
                 for (int i = 0; i < row.getLastCellNum(); i++) {
                         try {
-                                String title = head.elementAt(i);
+                                String title = head.get(i);
                                 if (title == null) {
                                         continue;
                                 }
@@ -202,7 +203,7 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                 return sheetsNames;
         }
 
-        private void setExperimentsName(Vector<String> header) {
+        private void setExperimentsName(List<String> header) {
                 try {
 
                         String regExpression = "";
@@ -211,8 +212,8 @@ public class GCGCParserXLS extends ParserXLS implements Parser {
                         }
 
                         for (int i = 0; i < header.size(); i++) {
-                                if (!header.elementAt(i).matches(regExpression)) {
-                                        this.dataset.addColumnName(header.elementAt(i));
+                                if (!header.get(i).matches(regExpression)) {
+                                        this.dataset.addColumnName(header.get(i));
                                 }
                         }
 

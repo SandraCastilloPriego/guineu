@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.data.PeakListRow;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Vector;
+import java.util.List;
 import org.apache.commons.math.random.RandomDataImpl;
 
 /**
@@ -74,7 +74,7 @@ public class ZeroImputationTask extends AbstractTask {
                 }
         }
 
-        private double getMinimun(PeakListRow row, Vector<String> columnName) {
+        private double getMinimun(PeakListRow row, List<String> columnName) {
                 double min = Double.MAX_VALUE;
                 for (String name : columnName) {
                         double value = (Double) row.getPeak(name);

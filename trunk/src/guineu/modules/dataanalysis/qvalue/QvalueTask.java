@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -24,8 +24,8 @@ import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.rosuda.JRI.Rengine;
 import org.rosuda.JRI.REXP;
+import org.rosuda.JRI.Rengine;
 
 /**
  *

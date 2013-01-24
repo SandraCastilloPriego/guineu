@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * 
  * This file is part of Guineu.
  * 
@@ -16,7 +16,6 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 package guineu.parameters;
 
 import guineu.main.GuineuCore;
@@ -27,14 +26,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * @author Taken from MZmine2
- * http://mzmine.sourceforge.net/
+ * @author Taken from MZmine2 http://mzmine.sourceforge.net/
  */
 /**
  * Simple storage for the parameters. A typical MZmine module will inherit this
@@ -42,149 +39,153 @@ import org.w3c.dom.NodeList;
  */
 public class SimpleParameterSet implements ParameterSet {
 
-	private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
+        private static Logger logger = Logger.getLogger(GuineuCore.class.getName());
+        private static final String parameterElement = "parameter";
+        private static final String nameAttribute = "name";
+        private Parameter<?> parameters[];
 
-	private static final String parameterElement = "parameter";
-	private static final String nameAttribute = "name";
+        public SimpleParameterSet(Parameter parameters[]) {
+                this.parameters = parameters;
+        }
 
-	private Parameter<?> parameters[];
+        public Parameter[] getParameters() {
+                return parameters;
+        }
 
-	public SimpleParameterSet(Parameter parameters[]) {
-		this.parameters = parameters;
-	}
+        public void loadValuesFromXML(Element xmlElement) {
+                NodeList list = xmlElement.getElementsByTagName(parameterElement);
+                for (int i = 0; i < list.getLength(); i++) {
+                        Element nextElement = (Element) list.item(i);
+                        String paramName = nextElement.getAttribute(nameAttribute);
+                        for (Parameter param : parameters) {
+                                if (param.getName().equals(paramName)) {
+                                        try {
+                                                param.loadValueFromXML(nextElement);
+                                        } catch (Exception e) {
+                                                logger.log(Level.WARNING,
+                                                        "Error while loading parameter values for "
+                                                        + param.getName(), e);
+                                        }
+                                }
+                        }
+                }
+        }
 
-	public Parameter[] getParameters() {
-		return parameters;
-	}
+        public void saveValuesToXML(Element xmlElement) {
+                Document parentDocument = xmlElement.getOwnerDocument();
+                for (Parameter param : parameters) {
+                        Element paramElement = parentDocument.createElement(parameterElement);
+                        paramElement.setAttribute(nameAttribute, param.getName());
+                        xmlElement.appendChild(paramElement);
+                        param.saveValueToXML(paramElement);
+                }
+        }
 
-	public void loadValuesFromXML(Element xmlElement) {
-		NodeList list = xmlElement.getElementsByTagName(parameterElement);
-		for (int i = 0; i < list.getLength(); i++) {
-			Element nextElement = (Element) list.item(i);
-			String paramName = nextElement.getAttribute(nameAttribute);
-			for (Parameter param : parameters) {
-				if (param.getName().equals(paramName)) {
-					try {
-						param.loadValueFromXML(nextElement);
-					} catch (Exception e) {
-						logger.log(Level.WARNING,
-								"Error while loading parameter values for "
-										+ param.getName(), e);
-					}
-				}
-			}
-		}
-	}
+        /**
+         * Represent method's parameters and their values in human-readable
+         * format
+         */
+        public String toString() {
 
-	public void saveValuesToXML(Element xmlElement) {
-		Document parentDocument = xmlElement.getOwnerDocument();
-		for (Parameter param : parameters) {
-			Element paramElement = parentDocument
-					.createElement(parameterElement);
-			paramElement.setAttribute(nameAttribute, param.getName());
-			xmlElement.appendChild(paramElement);
-			param.saveValueToXML(paramElement);
-		}
-	}
+                StringBuilder s = new StringBuilder();
+                for (int i = 0; i < parameters.length; i++) {
 
-	/**
-	 * Represent method's parameters and their values in human-readable format
-	 */
-	public String toString() {
+                        Parameter param = parameters[i];
+                        Object value = param.getValue();
 
-		StringBuilder s = new StringBuilder();
-		for (int i = 0; i < parameters.length; i++) {
+                        if (value == null) {
+                                continue;
+                        }
 
-			Parameter param = parameters[i];
-			Object value = param.getValue();
+                        s.append(param.getName());
+                        s.append(": ");
+                        if (value.getClass().isArray()) {
+                                s.append(Arrays.toString((Object[]) value));
+                        } else {
+                                s.append(value.toString());
+                        }
+                        if (i < parameters.length - 1) {
+                                s.append(", ");
+                        }
+                }
+                return s.toString();
+        }
 
-			if (value == null)
-				continue;
+        /**
+         * Make a deep copy
+         */
+        public ParameterSet clone() {
 
-			s.append(param.getName());
-			s.append(": ");
-			if (value.getClass().isArray()) {
-				s.append(Arrays.toString((Object[]) value));
-			} else {
-				s.append(value.toString());
-			}
-			if (i < parameters.length - 1)
-				s.append(", ");
-		}
-		return s.toString();
-	}
+                // Make a deep copy of the parameters
+                Parameter newParameters[] = new Parameter[parameters.length];
+                for (int i = 0; i < parameters.length; i++) {
+                        newParameters[i] = parameters[i].clone();
+                }
 
-	/**
-	 * Make a deep copy
-	 */
-	public ParameterSet clone() {
+                try {
+                        // Do not make a new instance of SimpleParameterSet, but instead
+                        // clone the runtime class of this instance - runtime type may be
+                        // inherited class. This is important in order to keep the proper
+                        // behavior of showSetupDialog() method for cloned classes
 
-		// Make a deep copy of the parameters
-		Parameter newParameters[] = new Parameter[parameters.length];
-		for (int i = 0; i < parameters.length; i++) {
-			newParameters[i] = parameters[i].clone();
-		}
+                        SimpleParameterSet newSet = this.getClass().newInstance();
+                        newSet.parameters = newParameters;
+                        return newSet;
+                } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                }
+        }
 
-		try {
-			// Do not make a new instance of SimpleParameterSet, but instead
-			// clone the runtime class of this instance - runtime type may be
-			// inherited class. This is important in order to keep the proper
-			// behavior of showSetupDialog() method for cloned classes
+        @SuppressWarnings("unchecked")
+        public <T extends Parameter> T getParameter(T parameter) {
+                for (Parameter p : parameters) {
+                        if (p.getName().equals(parameter.getName())) {
+                                return (T) p;
+                        }
+                }
+                throw new IllegalArgumentException("Parameter " + parameter.getName()
+                        + " does not exist");
+        }
 
-			SimpleParameterSet newSet = this.getClass().newInstance();
-			newSet.parameters = newParameters;
-			return newSet;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+        @Override
+        public ExitCode showSetupDialog() {
+                return showSetupDialog(null);
+        }
 
-	@SuppressWarnings("unchecked")
-	public <T extends Parameter> T getParameter(T parameter) {
-		for (Parameter p : parameters) {
-			if (p.getName().equals(parameter.getName()))
-				return (T) p;
-		}
-		throw new IllegalArgumentException("Parameter " + parameter.getName()
-				+ " does not exist");
-	}
+        protected ExitCode showSetupDialog(Map<UserParameter, Object> autoValues) {
+                ParameterSetupDialog dialog = new ParameterSetupDialog(this, autoValues);
+                dialog.setVisible(true);
+                return dialog.getExitCode();
+        }
 
-	@Override
-	public ExitCode showSetupDialog() {
-		return showSetupDialog(null);
-	}
+        @Override
+        public boolean checkUserParameterValues(Collection<String> errorMessages) {
+                boolean allParametersOK = true;
+                for (Parameter<?> p : parameters) {
+                        // Only check UserParameter instances, because other parameters
+                        // cannot be influenced by the dialog
+                        if (!(p instanceof UserParameter)) {
+                                continue;
+                        }
+                        boolean pOK = p.checkValue(errorMessages);
+                        if (!pOK) {
+                                allParametersOK = false;
+                        }
+                }
+                return allParametersOK;
+        }
 
-	protected ExitCode showSetupDialog(Map<UserParameter, Object> autoValues) {
-		ParameterSetupDialog dialog = new ParameterSetupDialog(this, autoValues);
-		dialog.setVisible(true);
-		return dialog.getExitCode();
-	}
-
-	@Override
-	public boolean checkUserParameterValues(Collection<String> errorMessages) {
-		boolean allParametersOK = true;
-		for (Parameter<?> p : parameters) {
-			// Only check UserParameter instances, because other parameters
-			// cannot be influenced by the dialog
-			if (!(p instanceof UserParameter))
-				continue;
-			boolean pOK = p.checkValue(errorMessages);
-			if (!pOK)
-				allParametersOK = false;
-		}
-		return allParametersOK;
-	}
-
-	@Override
-	public boolean checkAllParameterValues(Collection<String> errorMessages) {
-		boolean allParametersOK = true;
-		for (Parameter<?> p : parameters) {
-			boolean pOK = p.checkValue(errorMessages);
-			if (!pOK)
-				allParametersOK = false;
-		}
-		return allParametersOK;
-	}
-
+        @Override
+        public boolean checkAllParameterValues(Collection<String> errorMessages) {
+                boolean allParametersOK = true;
+                for (Parameter<?> p : parameters) {
+                        boolean pOK = p.checkValue(errorMessages);
+                        if (!pOK) {
+                                allParametersOK = false;
+                        }
+                }
+                return allParametersOK;
+        }
+       
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -140,8 +140,18 @@ public interface PeakListRow {
          */
         public String getName();
 
+        /**
+         * Gets the color of specific cell in the row. For that the column index has to be specified.
+         * @param column Column index where the cell is.
+         * @return Color of the specified cell.
+         */
         public Color getColor(int column);
 
+        /**
+         * Sets the color of specific cell in the row. Color and the column index where the cell is has to be specified.
+         * @param color Color to be assigned to the cell.
+         * @param column Column index where the cell is.
+         */
         public void setColor(Color color, int column);
 
 }

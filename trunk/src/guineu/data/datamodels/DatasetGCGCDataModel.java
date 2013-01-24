@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,19 +17,19 @@
  */
 package guineu.data.datamodels;
 
+import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.GCGCColumnName;
 import guineu.data.PeakListRow;
-import guineu.data.DatasetType;
 import guineu.data.impl.datasets.SimpleGCGCDataset;
 import guineu.data.impl.peaklists.SimplePeakListRowGCGC;
-import guineu.util.Tables.DataTableModel;
-import javax.swing.table.AbstractTableModel;
-import guineu.data.Dataset;
 import guineu.desktop.preferences.ColumnsGCGCParameters;
 import guineu.main.GuineuCore;
+import guineu.util.Tables.DataTableModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.AbstractTableModel;
 
 /**
  * Data model for GCxGC-MS tables
@@ -125,7 +125,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
                                 }
                                 return value;
                         }
-                        return peakRow.getPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns));
+                        return peakRow.getPeak(this.dataset.getAllColumnNames().get(column - this.fixNumberColumns));
                 } catch (Exception e) {
                         return null;
                 }
@@ -136,7 +136,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
                 if (columnIndex < this.fixNumberColumns) {
                         return (String) this.columns.get(columnIndex).toString();
                 } else {
-                        return this.dataset.getAllColumnNames().elementAt(columnIndex - this.fixNumberColumns);
+                        return this.dataset.getAllColumnNames().get(columnIndex - this.fixNumberColumns);
                 }
         }
 
@@ -155,7 +155,7 @@ public class DatasetGCGCDataModel extends AbstractTableModel implements DataTabl
                 if (column < this.fixNumberColumns) {
                         peakRow.setVar(this.columns.get(column).getSetFunctionName(), aValue);
                 } else {
-                        peakRow.setPeak(this.dataset.getAllColumnNames().elementAt(column - this.fixNumberColumns), (Double) aValue);
+                        peakRow.setPeak(this.dataset.getAllColumnNames().get(column - this.fixNumberColumns), (Double) aValue);
                 }
                 fireTableCellUpdated(row, column);
         }

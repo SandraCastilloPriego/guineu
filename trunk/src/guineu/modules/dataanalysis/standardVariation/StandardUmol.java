@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -19,8 +19,9 @@ package guineu.modules.dataanalysis.standardVariation;
 
 import guineu.data.PeakListRow;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -28,24 +29,24 @@ import java.util.Vector;
  */
 public class StandardUmol {
 
-    Hashtable<String, PeakListRow> standards;
-    Vector<PeakListRow> mols;
+    HashMap<String, PeakListRow> standards;
+    List<PeakListRow> mols;
     String[] groupExperimentName;
-    Vector<String> standardsNames;
+    List<String> standardsNames;
 
     public StandardUmol(String[] groupExperimentName) {
-        this.standards = new Hashtable<String, PeakListRow>();
+        this.standards = new HashMap<String, PeakListRow>();
         this.groupExperimentName = groupExperimentName;
-        this.mols = new Vector<PeakListRow>();
-        this.standardsNames = new Vector<String>();
+        this.mols = new ArrayList<PeakListRow>();
+        this.standardsNames = new ArrayList<String>();
     }
 
     public void setStandard(PeakListRow mol, String name) {
         this.standards.put(name, mol);
-        this.standardsNames.addElement(name);
+        this.standardsNames.add(name);
     }
 
-    public Vector<PeakListRow> getMols() {
+    public List<PeakListRow> getMols() {
         return mols;
     }
 
@@ -65,7 +66,7 @@ public class StandardUmol {
                         } catch (Exception e) {
                         }
                     }
-                    mols.addElement(newRow);
+                    mols.add(newRow);
                 }
             }
         }

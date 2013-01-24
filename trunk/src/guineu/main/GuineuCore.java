@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  *
  * This file is part of Guineu.
  *
@@ -18,37 +18,6 @@
  */
 package guineu.main;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import guineu.desktop.Desktop;
 import guineu.desktop.impl.MainWindow;
 import guineu.desktop.impl.helpsystem.HelpImpl;
@@ -65,11 +34,31 @@ import guineu.taskcontrol.TaskController;
 import guineu.taskcontrol.impl.TaskControllerImpl;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * This interface represents Guineu core modules - I/O, task controller and GUI.
@@ -91,14 +80,14 @@ public class GuineuCore implements Runnable {
         private static TaskControllerImpl taskController;
         private static GuineuModule[] initializedModules;
         private static HelpImpl help;
-        private static Hashtable<String, Range> standards;
+        private static HashMap<String, Range> standards;
         private static MainWindow desktop;
 
         public static void setStandard(String name, Range range) {
                 standards.put(name, range);
         }
 
-        public static Hashtable getStandards() {
+        public static HashMap getStandards() {
                 return standards;
         }
 
@@ -168,7 +157,7 @@ public class GuineuCore implements Runnable {
                 // create the GUI in the event-dispatching thread
                 GuineuCore core = new GuineuCore();
                 SwingUtilities.invokeLater(core);
-                standards = new Hashtable<String, Range>();
+                standards = new HashMap<String, Range>();
 
         }
 
@@ -208,7 +197,7 @@ public class GuineuCore implements Runnable {
 
                 logger.fine("Loading modules");
 
-                Vector<GuineuModule> moduleSet = new Vector<GuineuModule>();
+                List<GuineuModule> moduleSet = new ArrayList<GuineuModule>();
 
                 for (Class<?> moduleClass : GuineuModulesList.MODULES) {
 

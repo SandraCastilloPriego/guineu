@@ -4,8 +4,9 @@ import guineu.data.DatasetType;
 import guineu.data.impl.VariationCoefficientData;
 import guineu.util.Tables.DataTableModel;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import java.util.*;
 
 public class VariationCoefficientDataModel extends AbstractTableModel implements DataTableModel {
 
@@ -14,10 +15,10 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
         private Object[][] rows; //content all data
         private int numColumns;
         private int numRows;
-        private Vector<String> columns_mol = new Vector<String>();
+        private List<String> columns_mol = new ArrayList<String>();
         private Color[] rowColor;
 
-        public VariationCoefficientDataModel(Vector<VariationCoefficientData> data) {
+        public VariationCoefficientDataModel(List<VariationCoefficientData> data) {
                 rowColor = new Color[data.size()];
                 columns_mol.add("DatasetName");
                 columns_mol.add("Coefficient variation");
@@ -43,7 +44,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
          * Makes a new rows[][] with the new data. First it adds the column names with "writeSamplesNames(x)", and then
          * rewrites all data (rows[][]).
          */
-        public void set_samples(Vector<VariationCoefficientData> data) {
+        public void set_samples(List<VariationCoefficientData> data) {
                 this.writeSamplesName();
                 numColumns = columns.length;
                 this.writeData(data);
@@ -66,7 +67,7 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
         public void writeSamplesName() {
                 columns = new String[columns_mol.size()];
                 for (int i = 0; i < columns_mol.size(); i++) {
-                        columns[i] = (String) columns_mol.elementAt(i);
+                        columns[i] = (String) columns_mol.get(i);
                 }
         }
 
@@ -75,11 +76,11 @@ public class VariationCoefficientDataModel extends AbstractTableModel implements
          *
          * @param data VariationCoefficientData type
          */
-        public void writeData(Vector<VariationCoefficientData> data) {
+        public void writeData(List<VariationCoefficientData> data) {
                 rows = new Object[data.size()][this.columns.length];
 
                 for (int i = 0; i < data.size(); i++) {
-                        VariationCoefficientData vcdata = data.elementAt(i);
+                        VariationCoefficientData vcdata = data.get(i);
                         rows[i][0] = vcdata.datasetName;
                         rows[i][1] = vcdata.variationCoefficient;
                         rows[i][2] = vcdata.numberMol;

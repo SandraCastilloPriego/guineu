@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -35,7 +35,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JTree;
@@ -52,7 +52,7 @@ public class DatasetOpenDialog extends JDialog {
     private ExitCode exitCode = ExitCode.UNKNOWN;
     private List<Dataset> datasets;
     private JTree tree;
-    private Hashtable<CheckNode, String[]> nodeTable;
+    private HashMap<CheckNode, String[]> nodeTable;
     private DescriptiveStatistics Stats[], superStats[];
     private DataBase db;
 
@@ -60,7 +60,7 @@ public class DatasetOpenDialog extends JDialog {
     public DatasetOpenDialog() {
         super(GuineuCore.getDesktop().getMainFrame(), "Opening Database...", true);
         initComponents();
-        nodeTable = new Hashtable<CheckNode, String[]>();
+        nodeTable = new HashMap<CheckNode, String[]>();
         datasets = new ArrayList<Dataset>();
         tree = createTree();
 

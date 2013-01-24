@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -22,11 +22,11 @@ import guineu.data.PeakListRow;
 import guineu.modules.R.RUtilities;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.rosuda.JRI.Rengine;
 import org.rosuda.JRI.REXP;
+import org.rosuda.JRI.Rengine;
 
 /**
  *
@@ -75,7 +75,7 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                                 rEngine.eval("pheno <- matrix(nrow =" + dataset.getNumberCols() + ",ncol=" + 3 + ")");
 
 
-                                Vector<String> columnNames = dataset.getAllColumnNames();
+                                List<String> columnNames = dataset.getAllColumnNames();
                                 String dataColNames = "c(";
 
                                 // assing the values to the matrix
@@ -85,7 +85,7 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                                         for (int column = 0; column < dataset.getNumberCols(); column++) {
                                                 int c = column + 1;
 
-                                                String colName = columnNames.elementAt(column);
+                                                String colName = columnNames.get(column);
                                                 double value = 0.0;
                                                 try {
                                                         value = (Double) peakRow.getPeak(colName);
@@ -104,7 +104,7 @@ public class TwoWayAnovaTestTask extends AbstractTask {
                                 }
                                 for (int column = 0; column < dataset.getNumberCols(); column++) {
                                         int c = column + 1;
-                                        String colName = columnNames.elementAt(column);
+                                        String colName = columnNames.get(column);
                                         dataColNames += "\"" + colName + "\", ";
                                         rEngine.eval("pheno[" + c + ",1]<- \"" + colName + "\"");
                                         rEngine.eval("pheno[" + c + ",2]<- \"" + dataset.getParametersValue(colName, this.parameterGroup) + "\"");

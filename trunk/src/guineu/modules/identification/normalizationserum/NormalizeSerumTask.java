@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -21,7 +21,7 @@ import guineu.data.Dataset;
 import guineu.taskcontrol.AbstractTask;
 import guineu.taskcontrol.TaskStatus;
 import guineu.util.GUIUtils;
-import java.util.Vector;
+import java.util.List;
 
 /**
  *
@@ -32,7 +32,7 @@ public class NormalizeSerumTask extends AbstractTask {
         private Dataset dataset;
         private NormalizeSerum serum;
 
-        public NormalizeSerumTask(Dataset simpleDataset, Vector<StandardUmol> standards) {
+        public NormalizeSerumTask(Dataset simpleDataset, List<StandardUmol> standards) {
                 this.dataset = simpleDataset.clone();
                 this.serum = new NormalizeSerum(dataset, standards);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -89,33 +89,46 @@ public class ClinicalKNNImputationTask extends AbstractTask {
                 }
 
                 scores = sort(scores);
-                Iterator<Map.Entry<PeakListRow, Double>> entries = scores.entrySet().iterator();
-                List<PeakListRow> NNSamples = new ArrayList<PeakListRow>();
+              //  Iterator<Map.Entry<PeakListRow, Double>> entries = scores.entrySet().iterator();
+              //  List<PeakListRow> NNSamples = new ArrayList<PeakListRow>();
 
-                for (int i = 0; i < this.K; i++) {
+               /* for (int i = 0; i < this.K; i++) {
                         if (entries.hasNext()) {
                                 Map.Entry<PeakListRow, Double> entry = entries.next();
                                 NNSamples.add(entry.getKey());
                         }
                 }
 
-                if (!NNSamples.isEmpty()) {
+                if (!NNSamples.isEmpty()) {*/
                         for (String sample : dataset.getAllColumnNames()) {
                                 double average = 0;
+                                int count = 0;
                                 if ((Double) target.getPeak(sample) == 0.0) {
-                                        try {
-                                                for (PeakListRow rows : NNSamples) {
-                                                        average += (Double) rows.getPeak(sample);
+                                        Iterator<Map.Entry<PeakListRow, Double>> entries = scores.entrySet().iterator();
+                                        for (int i = 0; i < this.K; i++) {
+                                                if (entries.hasNext()) {
+                                                        Map.Entry<PeakListRow, Double> entry = entries.next();
+                                                        PeakListRow rows = entry.getKey();
+                                                        if ((Double) rows.getPeak(sample) == 0) {
+                                                                i--;
+                                                        } else {
+                                                                try {                                                                        
+                                                                        average += (Double) rows.getPeak(sample);
+                                                                        count++;
+                                                                } catch (Exception e) {
+                                                                        e.printStackTrace();
+                                                                }
+                                                        }
                                                 }
-                                        } catch (Exception e) {
                                         }
+
                                         if (average != 0) {
-                                                average /= K;
+                                                average /= count;
                                         }
                                         target.setPeak(sample, average);
                                 }
                         }
-                }
+               // }
         }
 
         private double getScore(PeakListRow tvalue, PeakListRow svalue) {
@@ -123,6 +136,7 @@ public class ClinicalKNNImputationTask extends AbstractTask {
                         return Double.POSITIVE_INFINITY;
                 }
                 double score = 0;
+                int count = 0;
                 for (String sample : dataset.getAllColumnNames()) {
                         try {
                                 double t = (Double) tvalue.getPeak(sample);
@@ -130,11 +144,12 @@ public class ClinicalKNNImputationTask extends AbstractTask {
 
                                 if (t != 0) {
                                         score += Math.pow((t - s), 2);
+                                        count++;
                                 }
                         } catch (ClassCastException e) {
                         }
                 }
-                return Math.sqrt(score);
+                return Math.sqrt(score) / count;
         }
 
         private HashMap<PeakListRow, Double> sort(HashMap<PeakListRow, Double> scores) {

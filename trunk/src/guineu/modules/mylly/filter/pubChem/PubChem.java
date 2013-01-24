@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -27,16 +27,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class PubChem {
 
-    Hashtable<String, String[]> pubchemNames;
+    HashMap<String, String[]> pubchemNames;
 
     public PubChem() {
-        this.pubchemNames = new Hashtable<String, String[]>();
+        this.pubchemNames = new HashMap<String, String[]>();
     }
 
     public String getName() {

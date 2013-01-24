@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -15,56 +15,56 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.dataanalysis.enrichmenttest;
+package guineu.modules.filter.Alignment.RANSACGCGC;
 
+import guineu.data.Dataset;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
-import guineu.taskcontrol.Task;
-import guineu.data.Dataset;
 import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
+import guineu.taskcontrol.Task;
 
 /**
- *
- * @author scsandra
+ * 
  */
-public class EnrichmentTestModule implements GuineuProcessingModule {
+public class RansacGCGCAlignerModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "Enrichment test (R)";
-
-        public ParameterSet getParameterSet() {
-                return null;
-        }
+        public static final String MODULE_NAME = "Ransac GCGC aligner";
+        private RansacGCGCAlignerParameters parameters = new RansacGCGCAlignerParameters();
 
         public String toString() {
                 return MODULE_NAME;
         }
 
-        public Task[] runModule(ParameterSet parameters) {
-                Dataset[] dataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
-                if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {
-                       
-                                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
-                                // prepare a new group of tasks
-                                Task tasks[] = new EnrichmentTestTask[1];
-                                tasks[0] = new EnrichmentTestTask(DataFiles[0]);
-                                GuineuCore.getTaskController().addTasks(tasks);
+        public ParameterSet getParameterSet() {
+                return parameters;
+        }
 
-                                return tasks;
-                        
+        public Task[] runModule(ParameterSet parameters) {
+                Dataset[] peakLists = GuineuCore.getDesktop().getSelectedDataFiles();
+                // check peak lists
+                if ((peakLists == null) || (peakLists.length == 0)) {
+                        GuineuCore.getDesktop().displayErrorMessage("Please select peak lists for alignment");
+                        return null;
                 }
-                return null;
+
+                // prepare a new group with just one task
+                Task task = new RansacGCGCAlignerTask(peakLists, (RansacGCGCAlignerParameters) parameters);
+
+                GuineuCore.getTaskController().addTask(task);
+
+                return new Task[]{task};
         }
 
         public GuineuModuleCategory getModuleCategory() {
-                return GuineuModuleCategory.DATAANALYSIS;
+                return GuineuModuleCategory.ALIGNMENT;
         }
 
         public String getIcon() {
-                return null;
+                return "icons/alignment.png";
         }
 
         public boolean setSeparator() {
-                return false;
+                return true;
         }
 }

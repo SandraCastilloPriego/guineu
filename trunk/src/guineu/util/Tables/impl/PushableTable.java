@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,35 +17,21 @@
  */
 package guineu.util.Tables.impl;
 
-import guineu.data.LCMSColumnName;
 import guineu.data.DatasetType;
+import guineu.data.LCMSColumnName;
 import guineu.util.Tables.DataTable;
 import guineu.util.Tables.DataTableModel;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -63,18 +49,18 @@ public class PushableTable implements DataTable, ActionListener {
         private String rowstring, value;
         private Clipboard system;
         private StringSelection stsel;
-        private Vector<register> registers;
+        private ArrayList<register> registers;
         int indexRegister = 0;
 
         public PushableTable() {
-                registers = new Vector<register>();
+                registers = new ArrayList<register>();
         }
 
         public PushableTable(DataTableModel model) {
                 this.model = model;
                 table = this.tableRowsColor(model);
                 setTableProperties();
-                registers = new Vector<register>();
+                registers = new ArrayList<register>();
         }
 
         /**
@@ -355,7 +341,7 @@ public class PushableTable implements DataTable, ActionListener {
                         }
 
                         newRegister.getNewValues();
-                        this.registers.addElement(newRegister);
+                        this.registers.add(newRegister);
                         this.indexRegister = this.registers.size() - 1;
                 }
 
@@ -378,13 +364,13 @@ public class PushableTable implements DataTable, ActionListener {
                         }
 
                         newRegister.getNewValues();
-                        this.registers.addElement(newRegister);
+                        this.registers.add(newRegister);
                         this.indexRegister = this.registers.size() - 1;
                 }
 
                 // Undo
                 if (e.getActionCommand().compareTo("Back") == 0) {
-                        this.registers.elementAt(indexRegister).back();
+                        this.registers.get(indexRegister).back();
                         if (indexRegister > 0) {
                                 indexRegister--;
                         }
@@ -392,7 +378,7 @@ public class PushableTable implements DataTable, ActionListener {
 
                 // Redo
                 if (e.getActionCommand().compareTo("Forward") == 0) {
-                        this.registers.elementAt(indexRegister).forward();
+                        this.registers.get(indexRegister).forward();
                         if (indexRegister < this.registers.size() - 1) {
                                 indexRegister++;
                         }

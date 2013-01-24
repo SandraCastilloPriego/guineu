@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -43,7 +43,7 @@ public class AlignStructMol implements Comparator<AlignStructMol> {
     }
 
     public int compare(AlignStructMol arg0, AlignStructMol arg1) {
-        if (arg0.RT < arg1.RT) {
+        if (arg0.RT2 < arg1.RT2) {
             return -1;
         } else {
             return 1;

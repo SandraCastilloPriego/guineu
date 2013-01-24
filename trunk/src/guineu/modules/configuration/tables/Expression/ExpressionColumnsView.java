@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -18,7 +18,6 @@
 package guineu.modules.configuration.tables.Expression;
 
 import guineu.data.datamodels.DatasetExpressionDataModel;
-import guineu.data.datamodels.DatasetGCGCDataModel;
 import guineu.main.GuineuCore;
 import guineu.modules.GuineuModuleCategory;
 import guineu.modules.GuineuProcessingModule;

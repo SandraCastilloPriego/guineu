@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,19 +17,18 @@
  */
 package guineu.data.impl.datasets;
 
-import guineu.data.impl.*;
-import guineu.data.DatasetType;
 import guineu.data.Dataset;
+import guineu.data.DatasetType;
 import guineu.data.LCMSColumnName;
 import guineu.data.PeakListRow;
+import guineu.data.impl.SampleDescription;
 import guineu.data.impl.peaklists.SimplePeakListRowLCMS;
 import guineu.util.Range;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * LC-MS data set implementation.
@@ -40,9 +39,9 @@ public class SimpleLCMSDataset implements Dataset {
 
         private String datasetName;
         private List<PeakListRow> peakList;
-        private Vector<String> sampleNames;
-        private Vector<String> parameterNames;
-        private Hashtable<String, SampleDescription> parameters;
+        private List<String> sampleNames;
+        private List<String> parameterNames;
+        private HashMap<String, SampleDescription> parameters;
         private DatasetType type;
         private String infoDataset = "";
         private int ID;
@@ -50,15 +49,15 @@ public class SimpleLCMSDataset implements Dataset {
         private List<Color> rowColor;
 
         /**
-         * 
+         *
          * @param datasetName Name of the dataset
          */
         public SimpleLCMSDataset(String datasetName) {
                 this.datasetName = datasetName;
                 this.peakList = new ArrayList<PeakListRow>();
-                this.sampleNames = new Vector<String>();
-                this.parameters = new Hashtable<String, SampleDescription>();
-                this.parameterNames = new Vector<String>();
+                this.sampleNames = new ArrayList<String>();
+                this.parameters = new HashMap<String, SampleDescription>();
+                this.parameterNames = new ArrayList<String>();
                 this.rowColor = new ArrayList<Color>();
                 type = DatasetType.LCMS;
         }
@@ -81,7 +80,7 @@ public class SimpleLCMSDataset implements Dataset {
                         parameters.put(experimentName, p);
                 }
                 if (!this.parameterNames.contains(parameterName)) {
-                        parameterNames.addElement(parameterName);
+                        parameterNames.add(parameterName);
                 }
         }
 
@@ -104,10 +103,11 @@ public class SimpleLCMSDataset implements Dataset {
                 }
         }
 
-        public Vector<String> getParameterAvailableValues(String parameter) {
-                Vector<String> availableParameterValues = new Vector<String>();
-                for (String rawDataFile : this.getAllColumnNames()) {
-                        String paramValue = this.getParametersValue(rawDataFile, parameter);
+        @Override
+        public List<String> getParameterAvailableValues(String parameter) {
+                List<String> availableParameterValues = new ArrayList<String>();
+                for (String rawDataFile : this.sampleNames) {
+                       String paramValue = this.getParametersValue(rawDataFile, parameter);
                         if (paramValue != null && !paramValue.isEmpty() && !availableParameterValues.contains(paramValue)) {
                                 availableParameterValues.add(paramValue);
                         }
@@ -115,7 +115,7 @@ public class SimpleLCMSDataset implements Dataset {
                 return availableParameterValues;
         }
 
-        public Vector<String> getParametersName() {
+        public List<String> getParametersName() {
                 return parameterNames;
         }
 
@@ -132,14 +132,14 @@ public class SimpleLCMSDataset implements Dataset {
         }
 
         public void addColumnName(String sampleName) {
-                this.sampleNames.addElement(sampleName);
+                this.sampleNames.add(sampleName);
         }
 
         public void addColumnName(String columnName, int position) {
-                this.sampleNames.insertElementAt(columnName, position);
+                this.sampleNames.set(position, columnName);
         }
 
-        public Vector<String> getAllColumnNames() {
+        public List<String> getAllColumnNames() {
                 return this.sampleNames;
         }
 
@@ -176,7 +176,8 @@ public class SimpleLCMSDataset implements Dataset {
         }
 
         /**
-         * Add new rows into the data set. The rows can be in any kind of Collection class.
+         * Add new rows into the data set. The rows can be in any kind of
+         * Collection class.
          *
          * @param rows Rows to be added.
          */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * 
  * This file is part of Guineu.
  * 
@@ -21,9 +21,7 @@ package guineu.parameters;
 
 
 import guineu.util.dialogs.ExitCode;
-
 import java.util.Collection;
-
 import org.w3c.dom.Element;
 
 /**
@@ -45,7 +43,7 @@ public interface ParameterSet {
 	public void loadValuesFromXML(Element element);
 
 	public void saveValuesToXML(Element element);
-
+        
 	public boolean checkUserParameterValues(Collection<String> errorMessages);
 
 	public boolean checkAllParameterValues(Collection<String> errorMessages);

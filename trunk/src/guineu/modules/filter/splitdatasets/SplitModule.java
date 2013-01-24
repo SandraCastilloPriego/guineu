@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -24,8 +24,6 @@ import guineu.modules.GuineuProcessingModule;
 import guineu.parameters.ParameterSet;
 import guineu.taskcontrol.Task;
 
-import guineu.util.dialogs.ExitCode;
-
 /**
  *
  * @author scsandra
@@ -34,26 +32,10 @@ public class SplitModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "Related Peaks filter";
         private Dataset dataset;
-        private String[] group1, group2;
-        private String parameter;
-
-        public ExitCode setupParameters() {
-                try {
-                        Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
-                        dataset = datasets[0];
-                        SplitDataDialog dialog = new SplitDataDialog(dataset);
-                        dialog.setVisible(true);
-                        group1 = dialog.getGroup1();
-                        group2 = dialog.getGroup2();
-                        parameter = dialog.getParameter();
-                        return dialog.getExitCode();
-                } catch (Exception exception) {
-                        return ExitCode.CANCEL;
-                }
-        }
+        private SplitParameters parameter = new SplitParameters();
 
         public ParameterSet getParameterSet() {
-                return null;
+                return parameter;
         }
 
         public String toString() {
@@ -61,16 +43,15 @@ public class SplitModule implements GuineuProcessingModule {
         }
 
         public Task[] runModule(ParameterSet parameters) {
-                if (ExitCode.OK == setupParameters()) {
-                        Task tasks[] = new SplitTask[1];
-                        tasks[0] = new SplitTask(group1, group2, dataset, parameter);
+                Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
+                dataset = datasets[0];
+                Task tasks[] = new SplitTask[1];
+                tasks[0] = new SplitTask(dataset, parameter);
 
-                        GuineuCore.getTaskController().addTasks(tasks);
+                GuineuCore.getTaskController().addTasks(tasks);
 
-                        return tasks;
-                } else {
-                        return null;
-                }
+                return tasks;
+
         }
 
         public GuineuModuleCategory getModuleCategory() {

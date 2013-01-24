@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -28,7 +28,7 @@ import guineu.util.GUIUtils;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +42,7 @@ public class ConcentrationsFromMassTask extends AbstractTask {
         private SimpleGCGCDataset dataset;
         private double progress = 0.0;
         private String fileName;
-        private Hashtable<String, List<Data>> table;
+        private HashMap<String, List<Data>> table;
         private boolean direction;
         private double spectrumPeak;
 
@@ -51,7 +51,7 @@ public class ConcentrationsFromMassTask extends AbstractTask {
                 this.fileName = parameters.getParameter(ConcentrationsFromMassParameters.fileNames).getValue().getAbsolutePath();
                 this.direction = parameters.getParameter(ConcentrationsFromMassParameters.direction).getValue();
                 this.spectrumPeak = parameters.getParameter(ConcentrationsFromMassParameters.spectrumPeak).getValue();
-                this.table = new Hashtable<String, List<Data>>();
+                this.table = new HashMap<String, List<Data>>();
         }
 
         public String getTaskDescription() {
@@ -85,7 +85,7 @@ public class ConcentrationsFromMassTask extends AbstractTask {
         private SimpleGCGCDataset concentrationFromMass() {
                 try {
                         // Reads the file with 4 columns: Name, Mass, Intensity and SumIntensities.
-                        // Fills the Hashtable "table" with the content of the file.
+                        // Fills the HashMap "table" with the content of the file.
                         this.readFile();
 
                         SimpleGCGCDataset newDataset = (SimpleGCGCDataset) dataset.clone();
@@ -95,7 +95,7 @@ public class ConcentrationsFromMassTask extends AbstractTask {
 
                                         String compoundName = (String) row.getVar("getName");
 
-                                        // If there is no file and the Hashtable is empty or it doesn't contain the compound
+                                        // If there is no file and the HashMap is empty or it doesn't contain the compound
                                         // the module uses the enum (StandardCompoundsEnum).
                                         if (!table.containsKey(compoundName)) {
                                                 List<StandardCompoundsEnum> values = new ArrayList<StandardCompoundsEnum>();
@@ -189,7 +189,7 @@ public class ConcentrationsFromMassTask extends AbstractTask {
                                 }
                                 String compoundName = (String) row.getVar("getName");
 
-                                // If there is no file and the Hashtable is empty or it doesn't contain the compound
+                                // If there is no file and the HashMap is empty or it doesn't contain the compound
                                 // the module uses the enum (StandardCompoundsEnum).
                                 if (!table.containsKey(compoundName)) {
                                         List<StandardCompoundsEnum> values = new ArrayList<StandardCompoundsEnum>();

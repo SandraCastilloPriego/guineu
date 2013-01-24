@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -17,7 +17,7 @@
  */
 package guineu.data.impl;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * Stores the parameters values for one sample.
@@ -26,10 +26,10 @@ import java.util.Hashtable;
  */
 public class SampleDescription {
 
-        Hashtable<String, String> parameters;
+        HashMap<String, String> parameters;
 
         public SampleDescription() {
-                parameters = new Hashtable<String, String>();
+                parameters = new HashMap<String, String>();
         }
 
         /**

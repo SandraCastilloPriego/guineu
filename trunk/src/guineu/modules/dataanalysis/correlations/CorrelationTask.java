@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2012 VTT Biotechnology
+ * Copyright 2007-2013 VTT Biotechnology
  * This file is part of Guineu.
  *
  * Guineu is free software; you can redistribute it and/or modify it under the
@@ -27,7 +27,6 @@ import guineu.util.GUIUtils;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math.linear.BlockRealMatrix;
@@ -55,18 +54,22 @@ public class CorrelationTask extends AbstractTask {
                 showPvalue = parameters.getParameter(CorrelationParameters.show).getValue();
         }
 
+        @Override
         public String getTaskDescription() {
                 return "Performing correlation matrix... ";
         }
 
+        @Override
         public double getFinishedPercentage() {
                 return (float) progress;
         }
 
+        @Override
         public void cancel() {
                 setStatus(TaskStatus.CANCELED);
         }
 
+        @Override
         public void run() {
                 setStatus(TaskStatus.PROCESSING);
                 try {
@@ -153,16 +156,16 @@ public class CorrelationTask extends AbstractTask {
                 }
         }
 
-        private RealMatrix getCorrelation(PeakListRow row, PeakListRow row2, Vector<String> sampleNames) {
+        private RealMatrix getCorrelation(PeakListRow row, PeakListRow row2, List<String> sampleNames) {
 
                 List<Double[]> data = new ArrayList<Double[]>();
                 for (int i = 0; i < sampleNames.size(); i++) {
                         try {
-                                if ((Double) row.getPeak(sampleNames.elementAt(i)) != Double.NaN && (Double) row2.getPeak(sampleNames.elementAt(i)) != Double.NaN
-                                        && (Double) row.getPeak(sampleNames.elementAt(i)) != 0.0 && (Double) row2.getPeak(sampleNames.elementAt(i)) != 0.0) {
+                                if ((Double) row.getPeak(sampleNames.get(i)) != Double.NaN && (Double) row2.getPeak(sampleNames.get(i)) != Double.NaN
+                                        && (Double) row.getPeak(sampleNames.get(i)) != 0.0 && (Double) row2.getPeak(sampleNames.get(i)) != 0.0) {
                                         Double[] dat = new Double[2];
-                                        dat[0] = (Double) row.getPeak(sampleNames.elementAt(i));
-                                        dat[1] = (Double) row2.getPeak(sampleNames.elementAt(i));
+                                        dat[0] = (Double) row.getPeak(sampleNames.get(i));
+                                        dat[1] = (Double) row2.getPeak(sampleNames.get(i));
                                         data.add(dat);
                                        // System.out.println(sampleNames.elementAt(i) + " - " + row.getPeak(sampleNames.elementAt(i)) + " - " + row2.getPeak(sampleNames.elementAt(i)));
 
