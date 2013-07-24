@@ -81,7 +81,7 @@ import guineu.modules.mylly.filter.NonPolarComponents.removeNonPolarModule;
 import guineu.modules.mylly.filter.SimilarityFilter.SimilarityModule;
 import guineu.modules.mylly.filter.calculateDeviations.CalculateDeviationsModule;
 import guineu.modules.mylly.filter.classIdentification.ClassIdentificationModule;
-import guineu.modules.mylly.filter.linearNormalizer.LinearGCGCNormalizerModule;
+import guineu.modules.mylly.filter.linearNormalizerSandra.LinearGCGCNormalizerModule;
 import guineu.modules.mylly.filter.peakCounter.PeakCountModule;
 import guineu.modules.mylly.filter.pubChem.GolmIdentification.GetGolmIDsModule;
 import guineu.modules.mylly.filter.pubChem.PubChemModule;

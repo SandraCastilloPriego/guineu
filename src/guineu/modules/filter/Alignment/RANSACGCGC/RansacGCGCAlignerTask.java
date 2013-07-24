@@ -230,9 +230,12 @@ public class RansacGCGCAlignerTask extends AbstractTask {
                 for (PeakListRow row : allRows) {
                         double rt = 0;
                         if (!this.useOnlyRTI) {
-                                rt = function.value(((SimplePeakListRowGCGC) row).getRT1());
-                                if (Double.isNaN(rt) || rt == -1) {
-                                        rt = ((SimplePeakListRowGCGC) row).getRT1();
+                                try {
+                                        rt = function.value(((SimplePeakListRowGCGC) row).getRT1());
+                                        if (Double.isNaN(rt) || rt == -1) {
+                                                rt = ((SimplePeakListRowGCGC) row).getRT1();
+                                        }
+                                } catch (Exception ee) {
                                 }
                         } else {
                                 try {
