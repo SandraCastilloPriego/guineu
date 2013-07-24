@@ -152,7 +152,7 @@ public class GuineuTOCView extends TOCView {
                 } catch (BadIDException bex2) {
                 }
 
-                TOCItem item = new TOCItem(mapID, imageMapID, hs, Locale.getDefault());
+                TOCItem item = new TOCItem(mapID, imageMapID, hs, Locale.getDefault());               
                 item.setName(title);
                 item.setMergeType("javax.help.AppendMerge");
                 item.setExpansionType(TreeItem.COLLAPSE);

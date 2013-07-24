@@ -20,7 +20,7 @@ import javax.swing.JDialog;
 public class StandardVariationDataDialog extends JDialog {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private Dataset dataset;
-    private TtestDataModel group1, group2, from;
+    private StandardVariationDataModel group1, group2, from;
     private ExitCode exit = ExitCode.UNKNOWN;
     
     /** Creates new form TtestDataDialog */
@@ -32,9 +32,9 @@ public class StandardVariationDataDialog extends JDialog {
         this.dataset = dataset;        
         initComponents();
         try{
-            this.from = new TtestDataModel("Experiment Names");
-            this.group1 = new TtestDataModel("Batch1 - Experiment Names");
-            this.group2 = new TtestDataModel("Batch2 - Experiment Names");
+            this.from = new StandardVariationDataModel("Experiment Names");
+            this.group1 = new StandardVariationDataModel("Batch1 - Experiment Names");
+            this.group2 = new StandardVariationDataModel("Batch2 - Experiment Names");
             this.jTablefrom.setModel(from);
             this.jTablefrom.createToolTip();
             this.jTablegroup1.setModel(group1);            

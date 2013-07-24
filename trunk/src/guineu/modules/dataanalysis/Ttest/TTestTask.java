@@ -96,11 +96,7 @@ public class TTestTask extends AbstractTask {
                         setStatus(TaskStatus.FINISHED);
                 } catch (Exception e) {
                         setStatus(TaskStatus.ERROR);
-                        if(this.parameter.contains("No parameters available")){
-                                errorMessage = "No parameters available";
-                        }else{
-                                errorMessage = e.toString();
-                        }
+                        errorMessage = e.toString();
                 }
         }
 
