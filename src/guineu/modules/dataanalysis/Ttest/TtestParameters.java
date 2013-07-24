@@ -17,7 +17,6 @@
  */
 package guineu.modules.dataanalysis.Ttest;
 
-import guineu.modules.dataanalysis.anova.*;
 import guineu.main.GuineuCore;
 import guineu.parameters.SimpleParameterSet;
 import guineu.parameters.UserParameter;
