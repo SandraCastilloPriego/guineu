@@ -33,7 +33,6 @@ public class TtestModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "T-Test";
         private Dataset dataset;
-        private String[] group1, group2;
         private String parameter;
 
         public ExitCode setupParameters() {
@@ -41,9 +40,7 @@ public class TtestModule implements GuineuProcessingModule {
                         Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
                         dataset = datasets[0];
                         TtestDataDialog dialog = new TtestDataDialog(dataset);
-                        dialog.setVisible(true);
-                        group1 = dialog.getGroup1();
-                        group2 = dialog.getGroup2();                       
+                        dialog.setVisible(true);                    
                         parameter = dialog.getParameter();
                         return dialog.getExitCode();
                 } catch (Exception exception) {
@@ -65,7 +62,7 @@ public class TtestModule implements GuineuProcessingModule {
                 if (code == ExitCode.OK) {
 
                         Task tasks[] = new TTestTask[1];
-                        tasks[0] = new TTestTask(group1, group2, dataset, parameter);
+                        tasks[0] = new TTestTask(dataset, parameter);
 
                         GuineuCore.getTaskController().addTasks(tasks);
 
