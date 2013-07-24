@@ -17,8 +17,8 @@
  */
 package guineu.modules.identification.normalizationserum;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -41,8 +41,8 @@ public class StandardsDataModel extends AbstractTableModel {
                 columns = new String[2];
                 columns[0] = "Standard Name";
                 columns[1] = "Amount";
-                name = new ArrayList<String>();
-                value = new ArrayList<Double>();
+                name = new CopyOnWriteArrayList<String>();
+                value = new CopyOnWriteArrayList<Double>();
                 for (StandardUmol std : standards) {
                         name.add(std.getName());
                         value.add(std.getRealAmount());
@@ -67,9 +67,9 @@ public class StandardsDataModel extends AbstractTableModel {
         @Override
         public void setValueAt(Object aValue, int row, int column) {
                 if (column == 0) {
-                        name.add(row, (String) aValue);
+                        name.set(row, (String) aValue);
                 } else {
-                        value.add(row, (Double) aValue);
+                        value.set(row, (Double) aValue);
                 }
 
         }

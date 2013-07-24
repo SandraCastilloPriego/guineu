@@ -18,8 +18,8 @@
 package guineu.modules.identification.normalizationserum;
 
 import guineu.util.Range;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -42,8 +42,8 @@ public class UnknownsDataModel extends AbstractTableModel {
                 columns = new String[2];
                 columns[0] = "Standard Name";
                 columns[1] = "RT Range";
-                name = new ArrayList<String>();
-                value = new ArrayList<String>();
+                name = new CopyOnWriteArrayList<String>();
+                value = new CopyOnWriteArrayList<String>();
                 for (StandardUmol std : standards) {
                         name.add(std.getName());
                         value.add(std.getRange().toString());
@@ -69,10 +69,10 @@ public class UnknownsDataModel extends AbstractTableModel {
         @Override
         public void setValueAt(Object aValue, int row, int column) {
                 if (column == 0) {
-                        name.add(row, (String) aValue);
+                        name.set(row, (String) aValue);
                 } else {
                         try {
-                                value.add(row, (String) aValue);
+                                value.set(row, (String) aValue);
                         } catch (Exception e) {
                         }
                 }
@@ -109,7 +109,7 @@ public class UnknownsDataModel extends AbstractTableModel {
 
         public void resetStandards() {
                 for (int i = 0; i < this.value.size(); i++) {
-                        this.value.add(i, new Range(0, 0).toString());
+                        this.value.set(i, new Range(0, 0).toString());
                 }
                 this.fireTableDataChanged();
         }
