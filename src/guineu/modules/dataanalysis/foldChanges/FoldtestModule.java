@@ -32,54 +32,49 @@ import guineu.util.dialogs.ExitCode;
 public class FoldtestModule implements GuineuProcessingModule {
 
         public static final String MODULE_NAME = "Fold Test";
-        private Dataset dataset;
-        private String[] group1, group2;
-        private String parameter;
+        private FoldTestParameters parameters;
 
-        public ExitCode setupParameters() {
-                try {
-                        Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
-                        dataset = datasets[0];
-                        FoldtestDataDialog dialog = new FoldtestDataDialog(dataset);
-                        dialog.setVisible(true);
-                        group1 = dialog.getGroup1();
-                        group2 = dialog.getGroup2();
-                        parameter = dialog.getParameter();
-                        return dialog.getExitCode();
-                } catch (Exception exception) {
-                        return ExitCode.CANCEL;
-                }
-        }
-
+        @Override
         public ParameterSet getParameterSet() {
                 return null;
         }
 
+        @Override
         public String toString() {
                 return MODULE_NAME;
         }
 
+        @Override
         public Task[] runModule(ParameterSet parameters) {
-                ExitCode code = setupParameters();
-                if (code == ExitCode.OK) {
-                        // prepare a new group of tasks
-                        Task tasks[] = new FoldTestTask[1];
-                        tasks[0] = new FoldTestTask(group1, group2, dataset, parameter);
-                        GuineuCore.getTaskController().addTasks(tasks);
-                        return tasks;
-                } else {
-                        return null;
+                Dataset[] dataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
+                if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {
+                        String[] parameterList = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
+                        parameters = new FoldTestParameters(parameterList);
+                        ExitCode exitCode = parameters.showSetupDialog();
+                        if (exitCode == ExitCode.OK) {
+                                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
+                                // prepare a new group of tasks
+                                Task tasks[] = new FoldTestTask[1];
+                                tasks[0] = new FoldTestTask(DataFiles[0], (FoldTestParameters) parameters);
+                                GuineuCore.getTaskController().addTasks(tasks);
+
+                                return tasks;
+                        }
                 }
+                return null;   
         }
 
+        @Override
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.DATAANALYSIS;
         }
 
+        @Override
         public String getIcon() {
                 return "icons/fold.png";
         }
 
+        @Override
         public boolean setSeparator() {
                 return true;
         }
