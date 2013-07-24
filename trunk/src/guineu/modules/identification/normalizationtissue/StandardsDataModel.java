@@ -67,9 +67,9 @@ public class StandardsDataModel extends AbstractTableModel {
         @Override
         public void setValueAt(Object aValue, int row, int column) {
                 if (column == 0) {
-                        name.add(row, (String) aValue);
+                        name.set(row, (String) aValue);
                 } else {
-                        value.add(row, (Double) aValue);
+                        value.set(row, (Double) aValue);
                 }
 
         }

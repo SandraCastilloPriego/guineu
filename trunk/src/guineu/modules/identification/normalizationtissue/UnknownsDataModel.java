@@ -69,10 +69,10 @@ public class UnknownsDataModel extends AbstractTableModel {
         @Override
         public void setValueAt(Object aValue, int row, int column) {
                 if (column == 0) {
-                        name.add(row, (String) aValue);
+                        name.set(row, (String) aValue);
                 } else {
                         try {
-                                value.add(row, (String) aValue);
+                                value.set(row, (String) aValue);
                         } catch (Exception e) {
                         }
                 }
@@ -109,7 +109,7 @@ public class UnknownsDataModel extends AbstractTableModel {
 
         public void resetStandards() {
                 for (int i = 0; i < this.value.size(); i++) {
-                        this.value.add(i, new Range(0, 0).toString());
+                        this.value.set(i, new Range(0, 0).toString());
                 }
                 this.fireTableDataChanged();
         }

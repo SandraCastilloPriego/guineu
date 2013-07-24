@@ -27,9 +27,9 @@ import guineu.taskcontrol.Task;
 import guineu.util.GUIUtils;
 import guineu.util.Range;
 import guineu.util.dialogs.ExitCode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -42,7 +42,7 @@ public class NormalizeSerumModule implements GuineuProcessingModule {
         final String helpID = GUIUtils.generateHelpID(this);
 
         public ExitCode setupParameters() {
-                this.standards = new ArrayList<StandardUmol>();
+                this.standards = new CopyOnWriteArrayList<StandardUmol>();
                 Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
                 if (datasets.length > 0) {
                         HashMap<String, Range> stdRanges = GuineuCore.getStandards();
@@ -91,7 +91,7 @@ public class NormalizeSerumModule implements GuineuProcessingModule {
         }
 
         private void purge() {
-                List<StandardUmol> remove = new ArrayList<StandardUmol>();
+                List<StandardUmol> remove = new CopyOnWriteArrayList<StandardUmol>();
                 for (StandardUmol std : this.standards) {
                         if (!std.isSelect()) {
                                 remove.add(std);

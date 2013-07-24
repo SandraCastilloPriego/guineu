@@ -36,10 +36,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -73,7 +73,7 @@ public class ParameterDialog extends JDialog implements ActionListener {
 
         /** Creates new form ParameterDialog */
         public ParameterDialog(String title, String helpID, Dataset dataset) {
-                registers = new ArrayList<register>();
+                registers = new CopyOnWriteArrayList<register>();
                 this.dataset = dataset;
 
                 initComponents();
