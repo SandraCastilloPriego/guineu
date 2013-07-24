@@ -69,7 +69,7 @@ public class FoldtestDataModel extends AbstractTableModel {
 
         @Override
         public void setValueAt(Object aValue, int row, int column) {
-                rows.add(row, aValue.toString());
+                rows.set(row, aValue.toString());
                 //fireTableCellUpdated (row, column);
         }
 

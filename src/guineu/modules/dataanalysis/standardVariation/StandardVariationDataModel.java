@@ -33,7 +33,7 @@ public class StandardVariationDataModel extends AbstractTableModel {
         }
 
         public void removeRow(int rowIndex) {
-                this.rows.add(rowIndex, "1");
+                this.rows.set(rowIndex, "1");
         }
 
         public int getColumnCount() {
@@ -69,7 +69,7 @@ public class StandardVariationDataModel extends AbstractTableModel {
 
         @Override
         public void setValueAt(Object aValue, int row, int column) {
-                rows.add(row, aValue.toString());
+                rows.set(row, aValue.toString());
                 //fireTableCellUpdated (row, column);
         }
 
