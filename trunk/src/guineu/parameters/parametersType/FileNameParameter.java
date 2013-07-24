@@ -22,7 +22,6 @@ package guineu.parameters.parametersType;
 import guineu.parameters.UserParameter;
 import java.io.File;
 import java.util.Collection;
-
 import org.w3c.dom.Element;
 
 

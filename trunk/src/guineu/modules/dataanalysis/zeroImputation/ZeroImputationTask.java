@@ -39,6 +39,7 @@ public class ZeroImputationTask extends AbstractTask {
                 data = new RandomDataImpl();
         }
 
+        @Override
         public String getTaskDescription() {
                 return "Zero imputation... ";
         }
@@ -58,10 +59,10 @@ public class ZeroImputationTask extends AbstractTask {
                                 double min = getMinimun(row, dataset.getAllColumnNames());
                                 double zeroVal = min * 0.5;
                                 for (String name : dataset.getAllColumnNames()) {
-                                        double randomVal = data.nextGaussian(zeroVal, 0.5);
+                                       // double randomVal = data.nextGaussian(zeroVal, 0.5);
                                         Double peak = (Double) row.getPeak(name);
                                         if (peak == 0) {
-                                                row.setPeak(name, Math.abs(randomVal));
+                                                row.setPeak(name, Math.abs(zeroVal));
                                         }
                                 }
                         }

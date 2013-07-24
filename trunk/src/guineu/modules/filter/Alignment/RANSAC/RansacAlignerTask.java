@@ -131,7 +131,11 @@ public class RansacAlignerTask extends AbstractTask {
 
                                                 // Add all peaks from the original row to the aligned row
                                                 for (String file : peakList.getAllColumnNames()) {
-                                                        targetRow.setPeak(file, (Double) row.getPeak(file));
+                                                        try {
+                                                                targetRow.setPeak(file, (Double) row.getPeak(file));
+                                                        } catch (Exception e) {
+                                                                targetRow.setPeak(file, (String) row.getPeak(file));
+                                                        }
                                                 }
                                         }
                                         progress = (double) processedRows++ / (double) totalRows;
@@ -159,7 +163,8 @@ public class RansacAlignerTask extends AbstractTask {
         }
 
         /**
-         * Updates the value of some columns with the values of every data set combined.
+         * Updates the value of some columns with the values of every data set
+         * combined.
          *
          * @param row Source row
          * @param targetRow Combined row
@@ -214,7 +219,12 @@ public class RansacAlignerTask extends AbstractTask {
                 PeakListRow allRows[] = peakList.getRows().toArray(new PeakListRow[0]);
 
                 for (PeakListRow row : allRows) {
-                        double rt = function.value(((SimplePeakListRowLCMS) row).getRT());
+                        double rt = 0.0;
+                        try {
+                                rt = function.value(((SimplePeakListRowLCMS) row).getRT());
+                        } catch (NullPointerException e) {
+                                rt = ((SimplePeakListRowLCMS) row).getRT();
+                        }
 
                         if (Double.isNaN(rt) || rt == -1) {
                                 rt = ((SimplePeakListRowLCMS) row).getRT();

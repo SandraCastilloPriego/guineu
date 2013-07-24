@@ -15,7 +15,7 @@
  * Guineu; if not, write to the Free Software Foundation, Inc., 51 Franklin St,
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
-package guineu.modules.mylly.filter.linearNormalizer;
+package guineu.modules.mylly.filter.linearNormalizerSandra;
 
 import guineu.data.Dataset;
 import guineu.data.DatasetType;
@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  *
- * @author Jarkko Miettinen
+ * @author scsandra
  */
 public class LinearNormalizer {
 
@@ -135,13 +135,14 @@ public class LinearNormalizer {
                 if (onlyStandard == null) //Multiple standards
                 {
                         double[][] coeffs = new double[this._standards.size()][];
+                        //String[] names = new String[stds.size()];
                         for (int i = 0; i < this._standards.size(); i++) {
                                 SimplePeakListRowGCGC curStd = (SimplePeakListRowGCGC) this._standards.get(i);
                                 double[] curCoeffs = new double[curStd.getNumberPeaks()];
                                 for (int j = 0; j < curStd.getNumberPeaks(); j++) {
                                         curCoeffs[j] = baseLevel / curStd.getPeaks(dataset.getColumnNames())[j];
                                 }
-                                coeffs[i] = curCoeffs;
+                                coeffs[i] = curCoeffs;                                
                         }
                         ArrayList<SimplePeakListRowGCGC> rows = new ArrayList<SimplePeakListRowGCGC>();
 
@@ -156,14 +157,15 @@ public class LinearNormalizer {
                 {
                         List<GCGCDatum> stds = ((SimplePeakListRowGCGC) onlyStandard).getDatumArray();
                         double[] coeffs = new double[stds.size()];
+                        String[] names = new String[stds.size()];
                         for (int i = 0; i < stds.size(); i++) {
-                                coeffs[i] = baseLevel / stds.get(i).getArea();
-                                System.out.println(stds.get(i).getArea() + " - " + baseLevel + coeffs[i]);
+                                coeffs[i] = baseLevel / stds.get(i).getArea();                               
+                                names[i] = stds.get(i).getColumnName();
                         }
                         ArrayList<SimplePeakListRowGCGC> rows = new ArrayList<SimplePeakListRowGCGC>();
                         for (int i = 0; i < dataset.getNumberRows(); i++) {
                                 SimplePeakListRowGCGC scaled = (SimplePeakListRowGCGC) dataset.getAlignment().get(i).clone();
-                                scaled.scaleArea(coeffs, dataset.getAllColumnNames().toArray(new String[0]));
+                                scaled.scaleArea(coeffs, names);
                                 rows.add(scaled);
                         }
                         normalized.addAll(rows);
@@ -187,7 +189,7 @@ public class LinearNormalizer {
                 }
                 if (onlyStandard == null) //Multiple standards
                 {
-                        double[][] coeffs = new double[this._standards.size()][];
+                        double[][] coeffs = new double[this._standards.size()][];                       
                         for (int i = 0; i < this._standards.size(); i++) {
                                 SimplePeakListRowLCMS curStd = (SimplePeakListRowLCMS) this._standards.get(i);
                                 double[] curCoeffs = new double[curStd.getNumberPeaks()];
