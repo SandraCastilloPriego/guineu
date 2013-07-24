@@ -40,10 +40,9 @@ public class TTestTask extends AbstractTask {
         private Dataset dataset;
         private String parameter;
 
-        public TTestTask(Dataset dataset, String parameter) {
+        public TTestTask(Dataset dataset, TtestParameters parameters) {
                 this.dataset = dataset;
-                this.parameter = parameter;
-
+                this.parameter = parameters.getParameter(TtestParameters.groups).getValue();
         }
 
         @Override

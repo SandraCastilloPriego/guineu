@@ -31,55 +31,51 @@ import guineu.util.dialogs.ExitCode;
  */
 public class TtestModule implements GuineuProcessingModule {
 
-        public static final String MODULE_NAME = "T-Test";
-        private Dataset dataset;
-        private String parameter;
+        public static final String MODULE_NAME = "T-Test"; 
+        private TtestParameters parameters;       
 
-        public ExitCode setupParameters() {
-                try {
-                        Dataset[] datasets = GuineuCore.getDesktop().getSelectedDataFiles();
-                        dataset = datasets[0];
-                        TtestDataDialog dialog = new TtestDataDialog(dataset);
-                        dialog.setVisible(true);                    
-                        parameter = dialog.getParameter();
-                        return dialog.getExitCode();
-                } catch (Exception exception) {
-                        return ExitCode.CANCEL;
-                }
-        }
-
+        @Override
         public ParameterSet getParameterSet() {
-                return null;
+                return parameters;
         }
 
+        @Override
         public String toString() {
                 return MODULE_NAME;
         }
 
+        @Override
         public Task[] runModule(ParameterSet parameters) {
-                // prepare a new group of tasks
-                ExitCode code = setupParameters();
-                if (code == ExitCode.OK) {
+                
+                Dataset[] dataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
+                if (dataFiles != null && dataFiles[0].getParametersName().size() > 0) {
+                        String[] parameterList = GuineuCore.getDesktop().getSelectedDataFiles()[0].getParametersName().toArray(new String[0]);
+                        parameters = new TtestParameters(parameterList);
+                        ExitCode exitCode = parameters.showSetupDialog();
+                        if (exitCode == ExitCode.OK) {
+                                Dataset[] DataFiles = GuineuCore.getDesktop().getSelectedDataFiles();
+                                // prepare a new group of tasks
+                                Task tasks[] = new TTestTask[1];
+                                tasks[0] = new TTestTask(DataFiles[0], (TtestParameters) parameters);
+                                GuineuCore.getTaskController().addTasks(tasks);
 
-                        Task tasks[] = new TTestTask[1];
-                        tasks[0] = new TTestTask(dataset, parameter);
-
-                        GuineuCore.getTaskController().addTasks(tasks);
-
-                        return tasks;
-                } else {
-                        return null;
+                                return tasks;
+                        }
                 }
+                return null;                
         }
 
+        @Override
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.DATAANALYSIS;
         }
 
+        @Override
         public String getIcon() {
                 return "icons/ttest.png";
         }
 
+        @Override
         public boolean setSeparator() {
                 return false;
         }
