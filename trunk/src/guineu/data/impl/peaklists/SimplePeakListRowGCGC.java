@@ -713,6 +713,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                 return sb.toString();
         }
 
+        @Override
         public Double getPeak(String columnName) {
                 for (GCGCDatum datum : this.row) {
                         if (datum.getColumnName().compareTo(columnName) == 0) {
@@ -723,7 +724,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                                 }
                         }
                 }
-                return null;
+                return 0.0;
         }
 
         public void setPeak(String columnName, Double value) {
@@ -743,7 +744,7 @@ public class SimplePeakListRowGCGC implements Comparable<PeakListRow>, PeakListR
                                 }
                         }
                 }
-                if (!isFound) {
+                if (!isFound) {                        
                         GCGCDatum datum2 = new GCGCDatum(0, this.RT1, this.RT2, this.RTI,
                                 value, value, this.pValue, this.qValue, true, 0, CAS, name, columnName, null);
 
