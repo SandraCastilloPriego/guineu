@@ -253,6 +253,7 @@ public class AlignmentPath implements Comparable<AlignmentPath>, Cloneable, Peak
                 return peaks[index];
         }
 
+        @Override
         public String toString() {
                 StringBuilder sb = new StringBuilder();
                 for (GCGCDatum d : peaks) {
