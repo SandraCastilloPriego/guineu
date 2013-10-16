@@ -33,14 +33,17 @@ public class NameFilterModule implements GuineuProcessingModule {
         public static final String MODULE_NAME = "Name Filter";
         private NameFilterParameters parameters = new NameFilterParameters();
 
+        @Override
         public ParameterSet getParameterSet() {
                 return this.parameters;
         }
 
+        @Override
         public String toString() {
                 return MODULE_NAME;
         }
 
+        @Override
         public Task[] runModule(ParameterSet parameters) {
                 Dataset[] AlignmentFiles = GuineuCore.getDesktop().getSelectedDataFiles();
 
@@ -56,14 +59,17 @@ public class NameFilterModule implements GuineuProcessingModule {
 
         }
 
+        @Override
         public GuineuModuleCategory getModuleCategory() {
                 return GuineuModuleCategory.MYLLY;
         }
 
+        @Override
         public String getIcon() {
                 return "icons/namefilter.png";
         }
 
+        @Override
         public boolean setSeparator() {
                 return false;
         }

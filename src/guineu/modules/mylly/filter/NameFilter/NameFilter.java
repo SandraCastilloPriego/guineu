@@ -43,20 +43,17 @@ public class NameFilter {
 	}
 
 	public GCGCData actualMap(GCGCData obj) {
-
-		int done = 0;
-
+	
 		GCGCData gcgcdata = obj;
 
-		GCGCData filtered = null;
+		GCGCData filtered;
 
 		List<GCGCDatum> filteredFile = new ArrayList<GCGCDatum>();
 		for (GCGCDatum d : gcgcdata) {
 
 			if (curNameFilter.include(d)) {
 				filteredFile.add(d);
-			}
-			done++;
+			}			
 		}
 		filtered = new GCGCData(filteredFile, gcgcdata.getName());
 

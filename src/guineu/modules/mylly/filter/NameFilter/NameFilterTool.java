@@ -44,18 +44,21 @@ public class NameFilterTool implements FilterFunction<GCGCDatum> {
         this.name = filterName;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String toString() {
         return name;
     }
 
+    @Override
     public boolean include(GCGCDatum obj) {
         boolean notFound = true;
         for (String str : namesToFilter) {
-            if (obj.getName().contains(str)) {
+            if (obj.getName().equals(str)) {
                 notFound = false;
                 break;
             }
@@ -66,7 +69,7 @@ public class NameFilterTool implements FilterFunction<GCGCDatum> {
     public boolean include(String obj) {
         boolean notFound = true;
         for (String str : namesToFilter) {
-            if (obj.contains(str)) {
+            if (obj.equals(str)) {
                 notFound = false;
                 break;
             }
@@ -74,6 +77,7 @@ public class NameFilterTool implements FilterFunction<GCGCDatum> {
         return notFound;
     }
 
+    @Override
     public GCGCDatum map(GCGCDatum obj) {
         if (include(obj)) {
             return obj;
@@ -81,6 +85,7 @@ public class NameFilterTool implements FilterFunction<GCGCDatum> {
         return null;
     }
 
+    @Override
     public boolean exclude(GCGCDatum obj) {
         return !include(obj);
     }
