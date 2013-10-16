@@ -35,12 +35,16 @@ public class AlignmentRowFilter
 		final Set<SimplePeakListRowGCGC> unwantedAlignmentRows = new HashSet<SimplePeakListRowGCGC>(unwanted);
 		f = new FilterFunction<SimplePeakListRowGCGC>()
 		{
+                        @Override
 			public boolean exclude(SimplePeakListRowGCGC obj)
 			{
 				return unwantedAlignmentRows.contains(obj);
 			}
+                        @Override
 			public boolean include(SimplePeakListRowGCGC obj){return !exclude(obj);}
+                        @Override
 			public String getName(){return AlignmentRowFilter.this.getName();}
+                        @Override
 			public SimplePeakListRowGCGC map(SimplePeakListRowGCGC obj)
 			{
 				if (include(obj)){return obj;}
