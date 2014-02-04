@@ -1,4 +1,3 @@
-#labels Featured
 = Group Identification =
 
 == Description ==
