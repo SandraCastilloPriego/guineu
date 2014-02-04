@@ -1,4 +1,3 @@
-#labels Featured
 = Parameters Configuration =
 
 == Description ==
