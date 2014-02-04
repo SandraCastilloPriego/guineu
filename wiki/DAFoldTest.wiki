@@ -1,4 +1,3 @@
-#labels Featured
 = Fold Changes Test =
 
 == Description ==
