@@ -1,4 +1,3 @@
-#labels Featured
 = Open multiple sample file =
 
 == Description ==
