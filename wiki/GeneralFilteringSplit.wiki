@@ -1,4 +1,3 @@
-#labels Featured
 = Split Data Set =
 
 == Description ==
