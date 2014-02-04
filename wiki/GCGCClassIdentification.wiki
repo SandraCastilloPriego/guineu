@@ -1,4 +1,3 @@
-#labels Featured
 = Class Identification =
 
 == Description ==
