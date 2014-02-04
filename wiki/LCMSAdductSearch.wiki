@@ -1,4 +1,3 @@
-#labels Featured
 = Adduct Search =
 
 == Description ==
