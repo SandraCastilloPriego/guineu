@@ -1,4 +1,3 @@
-#labels Featured
 = Change Units =
 
 == Description ==
