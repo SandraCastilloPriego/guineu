@@ -1,4 +1,3 @@
-#labels Featured
 = RTI Preparation File =
 
 == Description ==
