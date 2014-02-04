@@ -1,4 +1,3 @@
-#labels Featured
 = Open Mass Lynx Files =
 
 == Description ==
