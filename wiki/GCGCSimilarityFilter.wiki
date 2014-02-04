@@ -1,4 +1,3 @@
-#labels Featured
 = Similarity Filter =
 
 == Description ==
