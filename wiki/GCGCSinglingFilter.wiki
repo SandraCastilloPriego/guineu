@@ -1,4 +1,3 @@
-#labels Featured
 = Singling Filter =
 
 == Description ==
