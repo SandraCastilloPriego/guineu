@@ -1,4 +1,3 @@
-#labels Featured
 = Name Filter =
 
 == Description ==
