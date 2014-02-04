@@ -1,4 +1,3 @@
-#labels Featured
 = Configuration of the LC-MS files's columns =
 
 == Description ==
