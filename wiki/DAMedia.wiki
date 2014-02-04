@@ -1,4 +1,3 @@
-#labels Featured
 = Calculate media =
 
 == Description ==
