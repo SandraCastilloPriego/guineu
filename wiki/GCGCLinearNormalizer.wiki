@@ -1,4 +1,3 @@
-#labels Featured
 = Linear Normalizer =
 
 == Description ==
