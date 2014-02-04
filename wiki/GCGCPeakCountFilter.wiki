@@ -1,4 +1,3 @@
-#labels Featured
 = Peak Count Filter =
 
 == Description ==
