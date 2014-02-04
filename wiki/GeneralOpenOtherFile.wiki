@@ -1,4 +1,3 @@
-#labels Featured
 = Open Other Files =
 
 == Description ==
