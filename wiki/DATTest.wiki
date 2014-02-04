@@ -1,4 +1,3 @@
-#labels Featured
 = T-Test =
 
 == Description ==
