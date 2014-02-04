@@ -1,4 +1,3 @@
-#labels Featured
 = Custom Database Search =
 
 == Description ==
