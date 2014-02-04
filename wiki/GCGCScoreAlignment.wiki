@@ -1,4 +1,3 @@
-#labels Featured
 = Score Alignment =
 
 == Description ==
