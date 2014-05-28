@@ -53,6 +53,7 @@ public class NormalizeSerumModule implements GuineuProcessingModule {
                                                 std.setRange(stdRanges.get(std.getName()));
                                         }
                                         if (!this.isThere(std)) {
+                                                System.out.println(std.getName());
                                                 this.standards.add(std);
                                         }
                                 }

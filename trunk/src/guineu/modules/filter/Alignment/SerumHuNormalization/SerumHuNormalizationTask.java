@@ -519,7 +519,7 @@ class SerumHuNormalizationTask extends AbstractTask {
                 boolean ok = true;
 
                 for (String sampleNames : names) {
-                        if (batch == batches.getPeak(sampleNames)) {
+                        if (batch == (Integer)batches.getPeak(sampleNames)) {
                                 try {
                                         double value = function.value((Double) runOrder.getPeak(sampleNames));
                                         if (value <= 0.0 || value == Double.NaN) {
